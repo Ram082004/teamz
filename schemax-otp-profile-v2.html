@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OTP & Profile v2</title>
+<style>
+@property --a{syntax:"<angle>";inherits:false;initial-value:0deg}
+:root{
+  --ui:"Segoe UI Variable Text","Segoe UI Variable","Segoe UI",Inter,system-ui,sans-serif;
+  --disp:"Segoe UI Variable Display","Segoe UI Variable","Segoe UI",Inter,system-ui,sans-serif;
+  --mono:ui-monospace,"Cascadia Mono","Cascadia Code",Consolas,monospace;
+  --spring:cubic-bezier(.34,1.56,.64,1); --ease:cubic-bezier(.2,.8,.2,1); --out:cubic-bezier(.16,1,.3,1);
+  --teal:#12a39b; --navy:#0e2140;
+}
+:root,[data-theme="dark"]{
+  --base:#0b0c0f; --page:#06070a; --text:#f3f7ff; --text-2:#a8b7d4; --text-3:#6e7fa0;
+  --hair:rgba(255,255,255,.09); --hair-2:rgba(255,255,255,.16); --specular:rgba(255,255,255,.14);
+  --field:rgba(4,10,24,.5); --field-h:rgba(10,18,36,.7); --btn:rgba(255,255,255,.055); --btn-h:rgba(255,255,255,.1);
+  --accent:#16a69d; --accent-2:#2dd4bf; --accent-text:#5fe3d3; --focus:rgba(45,212,191,.28);
+  --grad:linear-gradient(110deg,#0a6f6a 0%,#0d847d 52%,#10968e 100%);
+  --danger:#ff8a94; --danger-bg:rgba(255,80,96,.12); --ok:#34d399; --warn:#ffcf5c;
+  --card:linear-gradient(165deg,rgba(24,40,72,.82),rgba(12,20,40,.9));
+  --stage:radial-gradient(ellipse 55% 60% at 10% 5%,rgba(18,163,155,.16),transparent 60%),radial-gradient(ellipse 60% 70% at 95% 100%,rgba(59,92,150,.2),transparent 62%),#0b111f;
+  color-scheme:dark;
+}
+[data-theme="light"]{
+  --base:#f3f4f6; --page:#e7eaf0; --text:#0e2140; --text-2:#46557a; --text-3:#7a87a5;
+  --hair:rgba(20,40,90,.10); --hair-2:rgba(20,40,90,.18); --specular:rgba(255,255,255,.95);
+  --field:rgba(255,255,255,.85); --field-h:#fff; --btn:rgba(255,255,255,.65); --btn-h:#fff;
+  --accent:#0f8f88; --accent-2:#12a39b; --accent-text:#0b7570; --focus:rgba(18,163,155,.2);
+  --grad:linear-gradient(110deg,#0a6f6a 0%,#0c7f79 52%,#0f938c 100%);
+  --danger:#c4283a; --danger-bg:rgba(220,40,60,.08); --ok:#0f8a5f; --warn:#a86a00;
+  --card:linear-gradient(165deg,rgba(255,255,255,.96),rgba(244,248,252,.94));
+  --stage:radial-gradient(ellipse 55% 60% at 10% 5%,rgba(18,163,155,.12),transparent 60%),radial-gradient(ellipse 60% 70% at 95% 100%,rgba(14,33,64,.08),transparent 62%),#f5f7fb;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--page);color:var(--text);font:400 14px/20px var(--ui);-webkit-font-smoothing:antialiased;transition:background .3s}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* ---------- page ---------- */
+.top{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:14px 28px;background:color-mix(in srgb,var(--page) 85%,transparent);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);border-bottom:1px solid var(--hair)}
+.top h1{margin:0;font:600 18px var(--disp)}
+.top p{margin:2px 0 0;color:var(--text-3);font-size:12.5px}
+.sp{flex:1}
+.seg{display:flex;gap:2px;padding:3px;border-radius:9px;background:var(--btn);box-shadow:inset 0 0 0 1px var(--hair)}
+.seg button{border:0;background:transparent;padding:5px 12px;border-radius:6px;font-size:12.5px;color:var(--text-2)}
+.seg button[aria-pressed="true"]{background:var(--btn-h);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.wrap{max-width:1520px;margin:0 auto;padding:6px 28px 70px}
+.sec h2{display:flex;align-items:baseline;gap:10px;margin:26px 0 14px;font:600 17px var(--disp)}
+.sec h2 small{font:400 12.5px var(--ui);color:var(--text-3)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(470px,1fr));gap:18px}
+@media (max-width:540px){.grid{grid-template-columns:minmax(0,1fr)}.wrap,.top{padding-left:14px;padding-right:14px}}
+.opt{display:flex;flex-direction:column;border-radius:16px;overflow:hidden;background:color-mix(in srgb,var(--base) 70%,transparent);box-shadow:inset 0 0 0 1px var(--hair)}
+.meta{display:flex;gap:10px;align-items:flex-start;padding:13px 15px}
+.num{flex:none;font:700 11.5px var(--ui);color:var(--accent-text);background:color-mix(in srgb,var(--accent-2) 12%,transparent);border-radius:6px;padding:3px 7px}
+.meta b{display:block;font:600 14.5px var(--ui)}
+.meta span{font-size:12.5px;line-height:17px;color:var(--text-3)}
+.meta .rp{margin-left:auto;flex:none;height:28px;padding:0 11px;border:0;border-radius:7px;font-size:12px;color:var(--text-2);background:var(--btn);box-shadow:inset 0 0 0 1px var(--hair)}
+.stage{flex:1;display:grid;place-items:center;padding:24px 14px;background:var(--stage)}
+
+/* ---------- the form card (app size: 426 px) ---------- */
+.card{position:relative;width:426px;max-width:100%;min-height:560px;padding:26px 32px 22px;border-radius:18px;display:flex;flex-direction:column;
+  background:var(--card);box-shadow:0 34px 80px -34px rgba(0,0,0,.65),inset 0 1px 0 var(--specular),inset 0 0 0 1px var(--hair)}
+.card h3{margin:0;font:650 26px/32px var(--disp);letter-spacing:-.025em}
+.card .sub{margin:5px 0 16px;color:var(--text-2);font-size:13.5px;line-height:19px}
+.steps{display:flex;align-items:center;gap:8px;margin:0 0 18px;font:600 11.5px var(--ui);color:var(--text-3)}
+.steps i{height:5px;border-radius:4px;background:var(--hair-2);flex:1}
+.steps i.on{background:var(--grad)}
+.steps i.half{background:linear-gradient(90deg,var(--accent-2) 50%,var(--hair-2) 50%)}
+.steps span{white-space:nowrap}
+.back{margin-top:auto;padding-top:14px;text-align:center}
+.link{border:0;background:none;padding:0;color:var(--accent-text);font:500 13px var(--ui)}
+.link:disabled{color:var(--text-3);cursor:default}
+.primary{position:relative;overflow:hidden;width:100%;height:48px;border:0;border-radius:12px;display:flex;align-items:center;justify-content:center;gap:9px;color:#fff;font:600 15px var(--ui);
+  background:var(--grad);box-shadow:0 16px 30px -14px rgba(13,132,125,.9),inset 0 1px 0 rgba(255,255,255,.28);transition:filter .2s,box-shadow .2s,transform .15s}
+.primary:hover:not(:disabled){filter:brightness(1.08)}
+.primary:active:not(:disabled){transform:translateY(1px)}
+.primary svg{width:17px;height:17px}
+.primary:disabled{cursor:not-allowed}
+.spin{width:17px;height:17px;border-radius:50%;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pop{from{transform:scale(.5);opacity:0}}
+@keyframes up{from{opacity:0;transform:translateY(10px)}}
+@keyframes shake{20%{transform:translateX(-8px)}40%{transform:translateX(7px)}60%{transform:translateX(-4px)}80%{transform:translateX(2px)}}
+.shake{animation:shake .4s}
+svg.i{width:16px;height:16px;flex:none}
+
+/* ================================================================ OTP · A · Glow tiles ================================================================ */
+.oa .who{display:flex;align-items:center;gap:11px;padding:8px 8px 8px 8px;margin-bottom:20px;border-radius:14px;background:var(--btn);box-shadow:inset 0 0 0 1px var(--hair)}
+.oa .who .av{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;flex:none;color:#fff;font:700 15px var(--disp);background:var(--grad)}
+.oa .who div{min-width:0;flex:1;line-height:17px}
+.oa .who small{font-size:11.5px;color:var(--text-3)}
+.oa .who b{display:block;font-weight:600;font-size:13.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.oa .who .chg{height:30px;padding:0 12px;border:0;border-radius:8px;font:600 12px var(--ui);color:var(--accent-text);background:color-mix(in srgb,var(--accent-2) 12%,transparent)}
+.oa .lbl{display:flex;justify-content:space-between;margin-bottom:9px;font:600 12.5px var(--ui)}
+.oa .lbl span{font-weight:400;color:var(--text-3)}
+.tiles{display:grid;grid-template-columns:repeat(6,1fr);gap:9px}
+.tile{position:relative;height:66px;border-radius:15px;padding:1.5px;background:var(--hair-2);transition:transform .2s var(--ease)}
+.tile input{width:100%;height:100%;border:0;outline:0;border-radius:14px;text-align:center;font:650 28px var(--disp);background:var(--field);caret-color:transparent;transition:background .2s}
+.tile.act{background:conic-gradient(from var(--a),#2dd4bf,#0e2140 30%,#12a39b 55%,#7fe9dc 75%,#2dd4bf);animation:rot 2.4s linear infinite;transform:translateY(-3px);box-shadow:0 12px 24px -12px var(--accent-2)}
+@keyframes rot{to{--a:360deg}}
+.tile.act input{background:var(--field-h)}
+.tile.act::after{content:"";position:absolute;left:50%;top:50%;width:2px;height:26px;margin:-13px 0 0 -1px;border-radius:2px;background:var(--accent-2);animation:blink 1s steps(1) infinite}
+.tile.act.has::after{display:none}
+@keyframes blink{50%{opacity:0}}
+.tile.has{background:color-mix(in srgb,var(--accent-2) 55%,transparent)}
+.tile.has input{animation:pop .25s var(--spring)}
+.tiles.ok .tile{background:var(--ok);animation:none}
+.tiles.ok .tile input{color:var(--ok);background:color-mix(in srgb,var(--ok) 12%,var(--field))}
+.tiles.ok .tile:nth-child(n){transition-delay:calc(var(--n) * 60ms)}
+.tiles.bad .tile{background:var(--danger);animation:none}
+.oa .tip{display:flex;align-items:center;gap:7px;margin:12px 0 20px;font-size:12px;color:var(--text-3)}
+.oa .tip svg{width:14px;height:14px;color:var(--accent-text)}
+.fillbtn{background:color-mix(in srgb,var(--text) 10%,transparent);box-shadow:inset 0 0 0 1px var(--hair);color:var(--text-3)}
+.fillbtn::before{content:"";position:absolute;inset:0;width:var(--p,0%);background:var(--grad);transition:width .35s var(--ease)}
+.fillbtn>*{position:relative}
+.fillbtn.ready{color:#fff;box-shadow:0 16px 30px -14px rgba(13,132,125,.9),inset 0 1px 0 rgba(255,255,255,.28)}
+.fillbtn.done::before{background:linear-gradient(110deg,#0c7a52,#14a06a)}
+.oa .resend{display:flex;justify-content:center;align-items:center;gap:8px;margin-top:14px;font-size:12.5px;color:var(--text-3)}
+.oa .resend svg{width:16px;height:16px;transform:rotate(-90deg)}
+.oa .resend circle{fill:none;stroke-width:2.6}
+.oa .resend .bg{stroke:var(--hair-2)}.oa .resend .fg{stroke:var(--accent-2);stroke-dasharray:1;transition:stroke-dashoffset 1s linear}
+
+/* ================================================================ OTP · B · Inbox handoff ================================================================ */
+.ob .note{position:relative;display:flex;gap:11px;padding:12px 13px;border-radius:14px;margin-bottom:14px;background:var(--btn);box-shadow:inset 0 0 0 1px var(--hair),0 14px 28px -18px rgba(0,0,0,.5);animation:noteIn .7s var(--spring) .2s both}
+@keyframes noteIn{from{opacity:0;transform:translateY(-16px) scale(.96)}}
+.ob .note .ic{width:36px;height:36px;border-radius:10px;flex:none;display:grid;place-items:center;background:#fff;box-shadow:0 4px 10px -4px rgba(0,0,0,.4)}
+.ob .note .ic img{width:24px;height:24px}
+.ob .note div{flex:1;min-width:0;line-height:17px}
+.ob .note b{font-size:13px}
+.ob .note em{float:right;font-style:normal;font-size:11px;color:var(--text-3)}
+.ob .note p{margin:2px 0 0;font-size:12.5px;color:var(--text-2)}
+.ob .note p span{font-family:var(--mono);letter-spacing:.12em;color:var(--text)}
+.ob .acts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:18px}
+.ob .acts button{height:38px;border:0;border-radius:10px;display:flex;align-items:center;justify-content:center;gap:7px;font:600 12.5px var(--ui);background:var(--btn);box-shadow:inset 0 0 0 1px var(--hair)}
+.ob .acts button svg{width:15px;height:15px}
+.ob .acts .clip{color:var(--accent-text);background:color-mix(in srgb,var(--accent-2) 11%,transparent);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--accent-2) 35%,transparent)}
+.wide{position:relative;height:74px;border-radius:16px;background:var(--field);box-shadow:inset 0 0 0 1.5px var(--hair-2);transition:box-shadow .2s}
+.wide:focus-within{box-shadow:inset 0 0 0 2px var(--accent-2),0 0 0 5px var(--focus)}
+.wide .slots{position:absolute;inset:0;display:grid;grid-template-columns:repeat(6,1fr);padding:0 14px;pointer-events:none}
+.wide .slots span{display:grid;place-items:center;font:650 32px var(--mono);color:var(--text);position:relative}
+.wide .slots span::after{content:"";position:absolute;left:22%;right:22%;bottom:16px;height:2px;border-radius:2px;background:var(--hair-2);transition:background .2s}
+.wide .slots span.f::after{background:var(--accent-2)}
+.wide .slots span.cur::after{background:var(--accent-2);animation:blink 1s steps(1) infinite}
+.wide .slots span.f{animation:pop .22s var(--spring)}
+.wide input{position:absolute;inset:0;width:100%;height:100%;opacity:0;border:0;font-size:16px}
+.wide.ok{box-shadow:inset 0 0 0 2px var(--ok),0 0 0 5px color-mix(in srgb,var(--ok) 18%,transparent)}
+.wide.ok .slots span{color:var(--ok)}
+.wide.bad{box-shadow:inset 0 0 0 2px var(--danger)}
+.ob .status{display:flex;align-items:center;justify-content:center;gap:8px;height:22px;margin:12px 0 18px;font-size:12.5px;color:var(--text-3)}
+.ob .status.ok{color:var(--ok)}.ob .status.bad{color:var(--danger)}
+.ob .status .spin{width:14px;height:14px;border-color:var(--hair-2);border-top-color:var(--accent-2)}
+
+/* ================================================================ OTP · C · Command console ================================================================ */
+.oc .con{border-radius:16px;overflow:hidden;background:#070d18;box-shadow:inset 0 0 0 1px rgba(95,227,211,.16),0 22px 40px -22px rgba(0,0,0,.8);color:#cfe7ff}
+.oc .bar{display:flex;align-items:center;gap:7px;height:32px;padding:0 12px;background:#0c1626;border-bottom:1px solid rgba(95,227,211,.1);font:600 11px var(--mono);color:#6e86a8}
+.oc .bar i{width:9px;height:9px;border-radius:50%;background:#26354d}
+.oc .bar i:first-child{background:#2dd4bf;box-shadow:0 0 8px #2dd4bf}
+.oc .bar span{margin-left:6px}
+.oc .body{position:relative;padding:16px 14px 14px}
+.oc .body::before{content:"";position:absolute;inset:0;background:linear-gradient(transparent 50%,rgba(45,212,191,.05) 50%);background-size:100% 4px;pointer-events:none}
+.oc .scan{position:absolute;left:0;right:0;height:40px;top:-40px;background:linear-gradient(transparent,rgba(45,212,191,.12),transparent);animation:scan 3.2s linear infinite;pointer-events:none}
+@keyframes scan{to{top:100%}}
+.oc .log{font:12px/19px var(--mono);color:#6e86a8;min-height:76px}
+.oc .log div{animation:up .3s var(--out) both}
+.oc .log b{color:#5fe3d3;font-weight:600}.oc .log .g{color:#34d399}.oc .log .r{color:#ff8a94}
+.oc .cells{display:grid;grid-template-columns:repeat(6,1fr);gap:7px;margin-top:12px}
+.oc .cells input{width:100%;min-width:0;height:60px;border:0;outline:0;border-radius:9px;text-align:center;font:700 30px var(--mono);color:#5dffd2;background:#040912;
+  box-shadow:inset 0 0 0 1px rgba(95,227,211,.14),inset 0 3px 10px rgba(0,0,0,.7);text-shadow:0 0 14px rgba(93,255,210,.7);caret-color:#5dffd2}
+.oc .cells input::placeholder{color:rgba(93,255,210,.1)}
+.oc .cells input:focus{box-shadow:inset 0 0 0 1.5px #2dd4bf,0 0 16px -4px #2dd4bf}
+.oc .cells.ok input{color:#34d399;box-shadow:inset 0 0 0 1.5px #34d399;text-shadow:0 0 14px rgba(52,211,153,.7)}
+.oc .row{display:flex;justify-content:space-between;align-items:center;margin:14px 0 16px;font-size:12.5px;color:var(--text-3)}
+
+/* ================================================================ shared smart field ================================================================ */
+.f{margin-bottom:13px}
+.f>label{display:flex;justify-content:space-between;align-items:baseline;font:600 12.5px var(--ui);margin-bottom:6px}
+.f>label span{font-weight:400;font-size:11.5px;color:var(--text-3)}
+.in{position:relative;display:flex;align-items:center;gap:10px;height:46px;padding:0 12px;border-radius:12px;background:var(--field);box-shadow:inset 0 0 0 1px var(--hair-2);transition:box-shadow .2s,background .2s}
+.in:focus-within{background:var(--field-h);box-shadow:inset 0 0 0 1.5px var(--accent-2),0 0 0 4px var(--focus)}
+.in.ok{box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--ok) 70%,transparent)}
+.in.bad{box-shadow:inset 0 0 0 1.5px var(--danger)}
+.in>svg{width:17px;height:17px;color:var(--text-3)}
+.in:focus-within>svg{color:var(--accent-text)}
+.in input{flex:1;min-width:0;height:100%;border:0;outline:0;background:transparent;font-size:14.5px}
+.in .st{flex:none;display:flex;align-items:center;gap:6px;font:600 11.5px var(--ui)}
+.in .st .spin{width:14px;height:14px;border-color:var(--hair-2);border-top-color:var(--accent-2)}
+.okdot{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;color:#fff;background:var(--ok);animation:pop .3s var(--spring)}
+.okdot svg{width:12px;height:12px}
+.msg{min-height:17px;margin-top:5px;font-size:12px;line-height:17px;color:var(--text-3)}
+.msg.ok{color:var(--ok)}.msg.bad{color:var(--danger)}
+.sugg{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.sugg button{height:26px;padding:0 10px;border:0;border-radius:999px;font:500 12px var(--ui);color:var(--accent-text);background:color-mix(in srgb,var(--accent-2) 12%,transparent)}
+.cc{display:flex;align-items:center;gap:6px;height:30px;padding:0 9px;margin-left:-4px;border-radius:8px;font:700 12.5px var(--ui);background:var(--btn);box-shadow:inset 0 0 0 1px var(--hair);position:relative}
+.cc .fl{display:inline-block;width:18px;height:12px;border-radius:2px;background:linear-gradient(#ff9933 33%,#fff 33% 66%,#138808 66%);box-shadow:0 0 0 1px rgba(0,0,0,.15)}
+.cc select{position:absolute;inset:0;opacity:0;cursor:pointer}
+.cnt{font:600 11.5px var(--mono);color:var(--text-3)}
+.eye{border:0;background:transparent;width:30px;height:30px;border-radius:7px;display:grid;place-items:center;color:var(--text-3)}
+.eye:hover{background:var(--btn-h);color:var(--text)}
+.eye svg{width:17px;height:17px}
+
+/* ================================================================ PROFILE · A · Smart form ================================================================ */
+.pa .ring{width:30px;height:30px;flex:none;position:relative}
+.pa .ring svg{width:30px;height:30px;transform:rotate(-90deg)}
+.pa .ring circle{fill:none;stroke-width:3.4;stroke-linecap:round}
+.pa .ring .bg{stroke:var(--hair-2)}
+.pa .ring .fg{stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset .4s var(--ease),stroke .3s}
+.pa .str{display:flex;align-items:center;gap:8px;margin-top:8px}
+.pa .str b{font:700 11.5px var(--ui);letter-spacing:.04em;text-transform:uppercase;min-width:58px}
+.pa .chips{display:flex;flex-wrap:wrap;gap:5px}
+.pa .chips span{height:22px;padding:0 8px;border-radius:999px;display:inline-flex;align-items:center;font:600 11px var(--ui);color:var(--text-3);background:var(--btn);box-shadow:inset 0 0 0 1px var(--hair);transition:all .2s}
+.pa .chips span.on{color:#fff;background:var(--ok);box-shadow:none}
+.pa .left{display:flex;justify-content:center;margin-top:9px;font-size:12px;color:var(--text-3);min-height:17px}
+
+/* ================================================================ PROFILE · B · Progress rail ================================================================ */
+.pb .sec2{position:relative;display:grid;grid-template-columns:30px 1fr;gap:12px}
+.pb .node{position:relative;display:flex;flex-direction:column;align-items:center}
+.pb .node b{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;flex:none;font:700 12.5px var(--ui);color:var(--text-3);background:var(--btn);box-shadow:inset 0 0 0 1.5px var(--hair-2);transition:all .3s var(--ease);z-index:1}
+.pb .node b svg{width:14px;height:14px;display:none}
+.pb .node::after{content:"";flex:1;width:2px;margin:4px 0;border-radius:2px;background:var(--hair-2);transition:background .4s}
+.pb .sec2:last-of-type .node::after{display:none}
+.pb .sec2.cur .node b{color:#fff;background:var(--grad);box-shadow:0 0 0 4px var(--focus)}
+.pb .sec2.done .node b{color:#fff;background:var(--ok);box-shadow:none}
+.pb .sec2.done .node b svg{display:block}.pb .sec2.done .node b span{display:none}
+.pb .sec2.done .node::after{background:var(--ok)}
+.pb .sec2 h4{margin:5px 0 8px;font:600 14px var(--ui)}
+.pb .sec2 h4 small{font-weight:400;color:var(--text-3);margin-left:6px;font-size:12px}
+.pb .body{padding-bottom:12px}
+.pb .two{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.pb .body,.two>*{min-width:0}
+.pb .in{height:44px}
+
+/* ================================================================ PROFILE · C · Holo pass builder ================================================================ */
+.pc .stagecard{perspective:900px;margin:-2px 0 18px}
+.pc .pass{position:relative;height:150px;border-radius:18px;padding:16px 18px;color:#fff;overflow:hidden;transform-style:preserve-3d;transition:transform .2s ease-out,box-shadow .3s;
+  background:linear-gradient(135deg,#0e2140 0%,#143c63 48%,#0d847d 100%);box-shadow:0 26px 40px -22px rgba(13,132,125,.85),inset 0 1px 0 rgba(255,255,255,.18)}
+.pc .pass::before{content:"";position:absolute;inset:0;background:radial-gradient(400px circle at var(--hx,30%) var(--hy,20%),rgba(255,255,255,.22),transparent 40%);mix-blend-mode:overlay;pointer-events:none}
+.pc .pass::after{content:"";position:absolute;right:-50px;top:-50px;width:170px;height:170px;border-radius:50%;border:22px solid rgba(255,255,255,.06)}
+.pc .pass.ready{box-shadow:0 26px 46px -18px rgba(45,212,191,.95),inset 0 0 0 1.5px rgba(95,227,211,.7)}
+.pc .pass.ready .holo{opacity:1}
+.pc .holo{position:absolute;inset:0;opacity:0;transition:opacity .5s;background:linear-gradient(115deg,transparent 30%,rgba(255,255,255,.28) 45%,rgba(95,227,211,.25) 52%,transparent 65%);background-size:250% 100%;animation:holo 2.6s linear infinite;pointer-events:none}
+@keyframes holo{from{background-position:120% 0}to{background-position:-120% 0}}
+.pc .pt{display:flex;align-items:center;gap:8px;font:700 9.5px var(--ui);letter-spacing:.18em;color:rgba(255,255,255,.75)}
+.pc .pt img{width:22px;height:22px;border-radius:6px;background:#fff;padding:2px}
+.pc .pt em{margin-left:auto;font-style:normal;padding:3px 8px;border-radius:999px;background:rgba(255,255,255,.12);transition:all .3s}
+.pc .pass.ready .pt em{background:#2dd4bf;color:#062a28}
+.pc .pb2{display:flex;gap:13px;align-items:center;margin-top:16px}
+.pc .pav{width:50px;height:50px;border-radius:14px;display:grid;place-items:center;font:700 18px var(--disp);background:rgba(255,255,255,.14);box-shadow:inset 0 0 0 1px rgba(255,255,255,.22)}
+.pc .pb2 b{display:block;font:600 18px var(--disp);letter-spacing:-.01em}
+.pc .pb2 small{font:500 12.5px var(--mono);color:rgba(255,255,255,.75)}
+.pc .ph{opacity:.45}
+.pc .bars{position:absolute;left:18px;right:18px;bottom:14px;display:flex;gap:4px}
+.pc .bars i{flex:1;height:4px;border-radius:3px;background:rgba(255,255,255,.18);transition:background .3s}
+.pc .bars i.on{background:#5fe3d3;box-shadow:0 0 8px #5fe3d3}
+.pc .two{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.pc .in{height:44px}
+
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:1ms!important;animation-iteration-count:1!important;transition:none!important}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div><h1>OTP & profile — v2 · bold + friendly</h1><p>Everything is live. Code that passes: <b>123456</b>. Usernames <b>admin</b> / <b>test</b> show the "taken" state.</p></div>
+  <span class="sp"></span>
+  <div class="seg" role="group" aria-label="Theme"><button data-t="light">Light</button><button data-t="dark">Dark</button></div>
+</header>
+
+<main class="wrap">
+<section class="sec"><h2>Enter the code <small>Step 1 of 2 · email verification</small></h2>
+<div class="grid">
+
+<!-- ============ OTP A ============ -->
+<article class="opt"><div class="meta"><span class="num">A</span><div><b>Glow tiles</b><span>Big tiles; the active one has a spinning brand-gradient border and a blinking caret. The button fills up as you type, then checks the code on its own.</span></div><button class="rp" data-replay>Reset</button></div>
+<div class="stage"><div class="card oa" data-oa>
+  <h3>Verify your email</h3><p class="sub">We've sent a 6-digit code. It's valid for 10 minutes.</p>
+  <div class="steps"><i class="half"></i><i></i><span>Step 1 of 2</span></div>
+  <div class="who"><span class="av">R</span><div><small>Code sent to</small><b>ramprasath109@gmail.com</b></div><button class="chg">Change</button></div>
+  <div class="lbl">Verification code <span data-left>6 digits</span></div>
+  <div class="tiles" data-tiles>@@TILES@@</div>
+  <div class="tip">@@SPARK@@Tip: paste the whole code — it fills every box.</div>
+  <button class="primary fillbtn" data-btn disabled><span data-bt>Enter the 6-digit code</span></button>
+  <div class="resend"><svg viewBox="0 0 20 20"><circle class="bg" cx="10" cy="10" r="8"/><circle class="fg" pathLength="1" cx="10" cy="10" r="8"/></svg><span data-rs>Resend code in 0:30</span><button class="link" data-rsb hidden>Resend code</button></div>
+  <div class="back"><button class="link">← Back to Sign In</button></div>
+</div></div></article>
+
+<!-- ============ OTP B ============ -->
+<article class="opt"><div class="meta"><span class="num">B</span><div><b>Inbox handoff</b><span>Most user-friendly: shows the email as it arrives, opens Gmail in one click, and offers to paste the code it finds on the clipboard. One field, works with autofill.</span></div><button class="rp" data-replay>Reset</button></div>
+<div class="stage"><div class="card ob" data-ob>
+  <h3>Check your inbox</h3><p class="sub">Open the email from Schemax Schematics and enter the code below.</p>
+  <div class="steps"><i class="half"></i><i></i><span>Step 1 of 2</span></div>
+  <div class="note"><span class="ic"><img src="assests/schemax-anim/mark.png" alt=""></span><div><b>Schemax Schematics</b><em>now</em><p>Your verification code is <span>••• •••</span></p></div></div>
+  <div class="acts"><button>@@MAIL@@Open Gmail</button><button class="clip" data-clip>@@CLIP@@Paste 123 456</button></div>
+  <label class="sr" for="obin">Verification code</label>
+  <div class="wide" data-wide><div class="slots">@@SLOTS@@</div><input id="obin" inputmode="numeric" autocomplete="one-time-code" maxlength="6"></div>
+  <div class="status" data-status>Enter the 6 digits — we'll check automatically</div>
+  <div style="display:flex;justify-content:center;gap:6px;font-size:12.5px;color:var(--text-3)">Wrong email? <button class="link" style="font-size:12.5px">Change it</button> · <button class="link" style="font-size:12.5px">Resend</button></div>
+  <div class="back"><button class="link">← Back to Sign In</button></div>
+</div></div></article>
+
+<!-- ============ OTP C ============ -->
+<article class="opt"><div class="meta"><span class="num">C</span><div><b>Command console</b><span>The badass one: a terminal-style panel with a scan line, glowing digits and a live log that narrates every step — made for technicians.</span></div><button class="rp" data-replay>Reset</button></div>
+<div class="stage"><div class="card oc" data-oc>
+  <h3>Verify your email</h3><p class="sub">Enter the 6-digit code we just emailed you.</p>
+  <div class="steps"><i class="half"></i><i></i><span>Step 1 of 2</span></div>
+  <div class="con"><div class="bar"><i></i><i></i><i></i><span>schemax://verify-email</span></div>
+    <div class="body"><span class="scan"></span>
+      <div class="log" data-log></div>
+      <div class="cells" data-cells>@@CELLS@@</div></div></div>
+  <div class="row"><span>Didn't get it?</span><button class="link" style="font-size:12.5px">Resend code</button></div>
+  <button class="primary" data-btn disabled style="opacity:.5">Verify code @@ARROW@@</button>
+  <div class="back"><button class="link">← Back to Sign In</button></div>
+</div></div></article>
+</div></section>
+
+<section class="sec"><h2>Complete your profile <small>Step 2 of 2 · username · phone · password</small></h2>
+<div class="grid">
+
+<!-- ============ PROFILE A ============ -->
+<article class="opt"><div class="meta"><span class="num">A</span><div><b>Smart form</b><span>Helps instead of scolding: live username availability with suggestions, phone auto-formats with a digit counter, a strength ring + rule chips, and the button tells you what's left.</span></div></div>
+<div class="stage"><div class="card pa" data-pa>
+  <h3>Complete your profile</h3><p class="sub">Almost done — this is how you'll sign in.</p>
+  <div class="steps"><i class="on"></i><i class="half"></i><span>Step 2 of 2</span></div>
+  <div class="f"><label for="pau">Username <span>letters, numbers . _ -</span></label>
+    <div class="in" data-k="u">@@USER@@<input id="pau" placeholder="Choose a username" spellcheck="false"><span class="st" data-st></span></div>
+    <div class="msg" data-m="u"></div><div class="sugg" data-sugg></div></div>
+  <div class="f"><label for="pap">Phone number <span class="cnt" data-cnt>0/10</span></label>
+    <div class="in" data-k="p"><span class="cc"><span class="fl"></span>+91<select aria-label="Country"><option>India +91</option><option>UAE +971</option></select></span><input id="pap" inputmode="numeric" placeholder="98765 43210"><span class="st" data-stp></span></div></div>
+  <div class="f"><label for="paa">Password</label>
+    <div class="in" data-k="a">@@LOCK@@<input id="paa" type="password" placeholder="Create a password"><button class="eye" data-eye aria-label="Show password">@@EYE@@</button><span class="ring"><svg viewBox="0 0 30 30"><circle class="bg" cx="15" cy="15" r="12"/><circle class="fg" pathLength="1" cx="15" cy="15" r="12" data-ring/></svg></span></div>
+    <div class="str"><b data-sl style="color:var(--text-3)">Strength</b><div class="chips" data-chips><span data-r="len">8+</span><span data-r="up">A-Z</span><span data-r="lo">a-z</span><span data-r="num">0-9</span><span data-r="sp">!@#</span></div></div></div>
+  <div class="f"><label for="pab">Confirm password</label>
+    <div class="in" data-k="b">@@LOCK@@<input id="pab" type="password" placeholder="Re-enter your password"><span class="st" data-stb></span></div></div>
+  <button class="primary" data-go disabled style="opacity:.5">Create account @@ARROW@@</button>
+  <div class="left" data-left>4 things left</div>
+</div></div></article>
+
+<!-- ============ PROFILE B ============ -->
+<article class="opt"><div class="meta"><span class="num">B</span><div><b>Progress rail</b><span>A vertical rail on the left: 1 Username → 2 Phone → 3 Security. Each node turns into a green tick and the line fills as you finish a part.</span></div></div>
+<div class="stage"><div class="card pb" data-pb>
+  <h3>Complete your profile</h3><p class="sub">Three quick things and you're in.</p>
+  <div class="sec2 cur" data-s="1"><div class="node"><b><span>1</span>@@TICK@@</b></div><div class="body"><h4>Username<small>how you sign in</small></h4>
+    <div class="in" data-k="u">@@USER@@<input placeholder="Choose a username" spellcheck="false"></div></div></div>
+  <div class="sec2" data-s="2"><div class="node"><b><span>2</span>@@TICK@@</b></div><div class="body"><h4>Mobile<small>for support &amp; recovery</small></h4>
+    <div class="in" data-k="p"><span class="cc"><span class="fl"></span>+91<select aria-label="Country"><option>India +91</option></select></span><input inputmode="numeric" placeholder="98765 43210"></div></div></div>
+  <div class="sec2" data-s="3"><div class="node"><b><span>3</span>@@TICK@@</b></div><div class="body"><h4>Security<small>8+ · A-Z · a-z · 0-9 · !@#</small></h4>
+    <div class="two"><div class="in" data-k="a"><input type="password" placeholder="Password"></div><div class="in" data-k="b"><input type="password" placeholder="Confirm"></div></div>
+    <div class="msg" data-m="a"></div></div></div>
+  <button class="primary" data-go disabled style="opacity:.5">Create account @@ARROW@@</button>
+  <div class="back"><button class="link">← Back to Sign In</button></div>
+</div></div></article>
+
+<!-- ============ PROFILE C ============ -->
+<article class="opt"><div class="meta"><span class="num">C</span><div><b>Holo pass builder</b><span>Your Schemax pass builds itself as you type and tilts with the mouse; when everything's valid it turns READY with a holographic shine and the button lights up.</span></div></div>
+<div class="stage"><div class="card pc" data-pc>
+  <h3>Build your pass</h3><p class="sub">Step 2 of 2 · fill in the details below.</p>
+  <div class="stagecard"><div class="pass" data-pass><span class="holo"></span>
+    <div class="pt"><img src="assests/schemax-anim/mark.png" alt="">SCHEMAX SCHEMATICS<em data-ps>DRAFT</em></div>
+    <div class="pb2"><span class="pav" data-av>?</span><div><b data-nm class="ph">your-username</b><small data-phn class="ph">+91 ····· ·····</small></div></div>
+    <div class="bars" data-bars><i></i><i></i><i></i><i></i></div></div></div>
+  <div class="f"><div class="in" data-k="u">@@USER@@<input placeholder="Username" spellcheck="false"><span class="st"></span></div></div>
+  <div class="f"><div class="in" data-k="p"><span class="cc"><span class="fl"></span>+91<select aria-label="Country"><option>India +91</option></select></span><input inputmode="numeric" placeholder="98765 43210"><span class="st"></span></div></div>
+  <div class="two"><div class="f"><div class="in" data-k="a">@@LOCK@@<input type="password" placeholder="Password"><span class="st"></span></div></div>
+  <div class="f"><div class="in" data-k="b">@@LOCK@@<input type="password" placeholder="Confirm"><span class="st"></span></div></div></div>
+  <div class="msg" data-m style="margin:-6px 0 8px">Password: 8+ characters with A-Z, a-z, 0-9 and a symbol.</div>
+  <button class="primary" data-go disabled style="opacity:.5">Create my account @@ARROW@@</button>
+  <div class="back"><button class="link">← Back to Sign In</button></div>
+</div></div></article>
+</div></section>
+</main>
+
+<script>
+(() => {
+  const S = p => `<svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;
+  const I = {
+    ARROW: S('<path d="M5 12h14m-6-6 6 6-6 6"/>'), MAIL: S('<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>'),
+    CLIP: S('<rect x="8" y="3" width="8" height="4" rx="1"/><path d="M8 5H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/>'),
+    SPARK: S('<path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5 18 18M18 6l-2.5 2.5M8.5 15.5 6 18"/>'),
+    USER: S('<circle cx="12" cy="8" r="3.5"/><path d="M5 20c.5-4 2.8-6 7-6s6.5 2 7 6"/>'), LOCK: S('<rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>'),
+    EYE: S('<path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6Z"/><circle cx="12" cy="12" r="2.5"/>'),
+    TICK: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>',
+  };
+  I.TILES = Array.from({length: 6}, (_, i) => `<div class="tile" style="--n:${i}"><input inputmode="numeric" autocomplete="one-time-code" aria-label="Digit ${i + 1}"></div>`).join('');
+  I.SLOTS = '<span></span>'.repeat(6);
+  I.CELLS = '<input inputmode="numeric" placeholder="0" aria-label="Digit">'.repeat(6);
+  const main = document.querySelector('main'), TPL = main.innerHTML.replace(/@@(\w+)@@/g, (_, k) => I[k]);
+  main.innerHTML = TPL;
+  const $ = (r, s) => r.querySelector(s), $$ = (r, s) => [...r.querySelectorAll(s)];
+  const CODE = '123456';
+  const timers = [];
+  const later = (fn, ms) => timers.push(setTimeout(fn, ms));
+
+  // 6 separate boxes: typing moves on, Backspace moves back, paste fills all
+  const boxes = (ins, onChange) => {
+    const val = () => ins.map(i => i.value).join('');
+    const spread = (d, from) => { [...d].slice(0, 6 - from).forEach((c, k) => ins[from + k].value = c); ins[Math.min(5, from + d.length)].focus(); onChange(val()); };
+    ins.forEach((inp, i) => {
+      inp.addEventListener('input', () => { const d = inp.value.replace(/\D/g, ''); if (d.length > 1) return spread(d, i); inp.value = d; if (d && i < 5) ins[i + 1].focus(); onChange(val()); });
+      inp.addEventListener('keydown', e => { if (e.key === 'Backspace' && !inp.value && i) { e.preventDefault(); ins[i - 1].value = ''; ins[i - 1].focus(); onChange(val()); }
+        if (e.key === 'ArrowLeft' && i) ins[i - 1].focus(); if (e.key === 'ArrowRight' && i < 5) ins[i + 1].focus(); });
+      inp.addEventListener('paste', e => { e.preventDefault(); spread((e.clipboardData.getData('text') || '').replace(/\D/g, ''), i); });
+      inp.addEventListener('focus', () => inp.select());
+    });
+    return {val, spread, clear: () => { ins.forEach(i => i.value = ''); onChange(''); }};
+  };
+
+  /* ---------------- OTP A ---------------- */
+  const initA = c => {
+    const tiles = $$(c, '.tile'), ins = tiles.map(t => $(t, 'input')), wrap = $(c, '[data-tiles]'), btn = $(c, '[data-btn]'), bt = $(c, '[data-bt]'), left = $(c, '[data-left]');
+    const act = () => tiles.forEach(t => t.classList.toggle('act', t.contains(document.activeElement)));
+    ins.forEach(i => { i.addEventListener('focus', act); i.addEventListener('blur', () => setTimeout(act)); });
+    let busy = false;
+    const B = boxes(ins, v => {
+      if (busy) return;
+      wrap.classList.remove('ok', 'bad');
+      tiles.forEach((t, k) => t.classList.toggle('has', !!ins[k].value));
+      btn.style.setProperty('--p', (v.length / 6 * 100) + '%'); btn.classList.toggle('ready', v.length === 6);
+      left.textContent = v.length === 6 ? 'complete' : `${6 - v.length} digit${6 - v.length > 1 ? 's' : ''} left`;
+      bt.textContent = v.length ? `${v.length} of 6` : 'Enter the 6-digit code';
+      if (v.length === 6) { busy = true; btn.disabled = false; bt.innerHTML = '<span class="spin"></span>'; bt.insertAdjacentText('beforeend', ' Checking code…'); ins.forEach(i => i.blur());
+        later(() => { busy = false;
+          if (v === CODE) { wrap.classList.add('ok'); btn.classList.add('done'); bt.innerHTML = I.TICK.replace('<svg', '<svg width="17" height="17"') + ' Verified — continue'; left.textContent = 'verified'; }
+          else { wrap.classList.add('bad'); wrap.classList.remove('shake'); void wrap.offsetWidth; wrap.classList.add('shake'); bt.textContent = 'Wrong code — try again'; later(() => { B.clear(); ins[0].focus(); }, 700); }
+        }, 1100); }
+    });
+    // resend ring
+    const fg = $(c, '.fg'), rs = $(c, '[data-rs]'), rsb = $(c, '[data-rsb]'); let s = 30;
+    const tick = () => { fg.style.strokeDashoffset = 1 - s / 30; rs.textContent = `Resend code in 0:${String(s).padStart(2, '0')}`; rs.hidden = s === 0; rsb.hidden = s > 0; };
+    tick(); const iv = setInterval(() => { if (s > 0) { s--; tick(); } }, 1000); timers.push(iv);
+    rsb.addEventListener('click', () => { s = 30; tick(); });
+    return () => clearInterval(iv);
+  };
+
+  /* ---------------- OTP B ---------------- */
+  const initB = c => {
+    const inp = $(c, '#obin'), slots = $$(c, '.slots span'), wide = $(c, '[data-wide]'), st = $(c, '[data-status]');
+    const render = () => { const v = inp.value; slots.forEach((s, k) => { s.textContent = v[k] || ''; s.classList.toggle('f', !!v[k]); s.classList.toggle('cur', document.activeElement === inp && k === Math.min(v.length, 5) && !v[k]); }); };
+    const check = () => {
+      const v = inp.value; wide.classList.remove('ok', 'bad'); st.className = 'status';
+      if (v.length < 6) { st.textContent = v.length ? `${6 - v.length} more to go…` : 'Enter the 6 digits — we\'ll check automatically'; return; }
+      st.innerHTML = '<span class="spin"></span>Checking…'; inp.disabled = true;
+      later(() => { inp.disabled = false;
+        if (v === CODE) { wide.classList.add('ok'); st.className = 'status ok'; st.innerHTML = '✓ Email verified — opening your profile'; }
+        else { wide.classList.add('bad'); st.className = 'status bad'; st.textContent = 'That code didn\'t match. Check the email and try again.'; wide.classList.remove('shake'); void wide.offsetWidth; wide.classList.add('shake'); inp.select(); }
+      }, 1000);
+    };
+    inp.addEventListener('input', () => { inp.value = inp.value.replace(/\D/g, '').slice(0, 6); render(); check(); });
+    ['focus', 'blur', 'keyup', 'click'].forEach(e => inp.addEventListener(e, render));
+    $(c, '[data-clip]').addEventListener('click', () => { inp.value = CODE; inp.focus(); render(); check(); });
+    render();
+  };
+
+  /* ---------------- OTP C ---------------- */
+  const initC = c => {
+    const log = $(c, '[data-log]'), cells = $$(c, '[data-cells] input'), wrap = $(c, '[data-cells]'), btn = $(c, '[data-btn]');
+    const line = (h, d = 0) => later(() => { const el = document.createElement('div'); el.innerHTML = h; log.appendChild(el); while (log.children.length > 4) log.firstChild.remove(); }, d);
+    line('<b>&gt;</b> code sent to r••••••••@gmail.com', 300);
+    line('<b>&gt;</b> link secure · expires in 10:00', 900);
+    line('<b>&gt;</b> waiting for input<span style="animation:blink 1s steps(1) infinite">_</span>', 1500);
+    let busy = false, last = 0;
+    boxes(cells, v => {
+      if (busy) return;
+      btn.disabled = v.length < 6; btn.style.opacity = v.length < 6 ? .5 : 1;
+      if (v.length > last && v.length < 6) line(`<b>&gt;</b> digit ${v.length}/6 received`);
+      last = v.length;
+      if (v.length === 6) { busy = true; line('<b>&gt;</b> verifying…');
+        later(() => { busy = false;
+          if (v === CODE) { wrap.classList.add('ok'); line('<span class="g">&gt; ✓ verified · continue to profile</span>'); }
+          else { line('<span class="r">&gt; ✕ code mismatch · try again</span>'); wrap.classList.remove('shake'); void wrap.offsetWidth; wrap.classList.add('shake'); cells.forEach(i => i.value = ''); last = 0; later(() => cells[0].focus(), 400); }
+        }, 1000); }
+    });
+    btn.addEventListener('click', () => {});
+  };
+
+  /* ---------------- validation ---------------- */
+  const TAKEN = ['admin', 'test', 'schemax', 'root'];
+  const uMsg = v => !v ? '' : v.includes('@') ? 'Use a username, not an email address' : /\s/.test(v) ? 'No spaces, please' : !/^[A-Za-z0-9._-]+$/.test(v) ? 'Only letters, numbers, dot, underscore and hyphen'
+    : v.includes('..') ? 'No two dots in a row' : v[0] === '.' ? 'Can\'t start with a dot' : !/[A-Za-z0-9]$/.test(v) ? 'Must end with a letter or number' : v.length < 3 ? 'At least 3 characters' : '';
+  const digits = v => v.replace(/\D/g, '').slice(0, 10);
+  const fmtPhone = d => d.length > 5 ? d.slice(0, 5) + ' ' + d.slice(5) : d;
+  const okP = d => /^[6-9]\d{9}$/.test(d);
+  const rules = v => ({len: v.length >= 8, up: /[A-Z]/.test(v), lo: /[a-z]/.test(v), num: /\d/.test(v), sp: /[!@#$%^&*(),.?":{}|<>]/.test(v)});
+  const okA = v => Object.values(rules(v)).every(Boolean);
+  const initials = v => (v.replace(/[._-]+/g, ' ').trim().split(/\s+/).map(x => x[0]).join('').slice(0, 2) || '?').toUpperCase();
+  const okDot = '<span class="okdot">' + I.TICK + '</span>';
+  const phoneInput = inp => inp.addEventListener('input', () => { const d = digits(inp.value); inp.value = fmtPhone(d); });
+
+  /* ---------------- PROFILE A ---------------- */
+  const initPA = c => {
+    const u = $(c, '#pau'), p = $(c, '#pap'), a = $(c, '#paa'), b = $(c, '#pab'), st = $(c, '[data-st]'), m = $(c, '[data-m="u"]'), sg = $(c, '[data-sugg]');
+    let avail = false, ut;
+    phoneInput(p);
+    const box = k => $(c, `[data-k="${k}"]`);
+    const upd = () => {
+      const d = digits(p.value), r = rules(a.value), n = Object.values(r).filter(Boolean).length;
+      $(c, '[data-cnt]').textContent = `${d.length}/10`;
+      $(c, '[data-stp]').innerHTML = okP(d) ? okDot : '';
+      box('p').classList.toggle('ok', okP(d)); box('p').classList.toggle('bad', d.length === 10 && !okP(d));
+      $$(c, '[data-chips] span').forEach(s => s.classList.toggle('on', r[s.dataset.r]));
+      const ring = $(c, '[data-ring]'), col = ['var(--hair-2)', '#ff6b6b', '#ff9f43', '#ffcf5c', '#4fc3f7', 'var(--ok)'][a.value ? n : 0];
+      ring.style.strokeDashoffset = 1 - n / 5; ring.style.stroke = col;
+      const sl = $(c, '[data-sl]'); sl.textContent = !a.value ? 'Strength' : ['Too weak', 'Too weak', 'Weak', 'Fair', 'Good', 'Strong'][n]; sl.style.color = a.value ? col : 'var(--text-3)';
+      box('a').classList.toggle('ok', okA(a.value));
+      const match = b.value && b.value === a.value;
+      $(c, '[data-stb]').innerHTML = match ? okDot : b.value ? '<span style="color:var(--danger)">doesn\'t match</span>' : '';
+      box('b').classList.toggle('ok', !!match); box('b').classList.toggle('bad', !!b.value && !match);
+      const left = [!avail && 'username', !okP(d) && 'phone', !okA(a.value) && 'password', !match && 'confirm'].filter(Boolean);
+      const go = $(c, '[data-go]'); go.disabled = left.length > 0; go.style.opacity = left.length ? .5 : 1;
+      $(c, '[data-left]').textContent = left.length ? `${left.length} thing${left.length > 1 ? 's' : ''} left: ${left.join(', ')}` : '✓ All set — create your account';
+    };
+    u.addEventListener('input', () => {
+      clearTimeout(ut); avail = false; sg.innerHTML = ''; box('u').classList.remove('ok', 'bad');
+      const v = u.value.trim(), e = uMsg(v);
+      if (!v) { st.innerHTML = ''; m.textContent = ''; m.className = 'msg'; return upd(); }
+      if (e) { st.innerHTML = ''; m.textContent = e; m.className = 'msg bad'; box('u').classList.add('bad'); return upd(); }
+      st.innerHTML = '<span class="spin"></span>'; m.className = 'msg'; m.textContent = 'Checking availability…';
+      ut = setTimeout(() => {
+        if (TAKEN.includes(v.toLowerCase())) { st.innerHTML = ''; m.className = 'msg bad'; m.textContent = `"${v}" is taken. Try one of these:`; box('u').classList.add('bad');
+          sg.innerHTML = [v + '01', v + '_pro', 'the.' + v].map(s => `<button type="button">${s}</button>`).join('');
+          $$(sg, 'button').forEach(x => x.addEventListener('click', () => { u.value = x.textContent; u.dispatchEvent(new Event('input')); })); }
+        else { avail = true; st.innerHTML = okDot; m.className = 'msg ok'; m.textContent = `✓ "${v}" is available`; box('u').classList.add('ok'); }
+        upd();
+      }, 650);
+      upd();
+    });
+    [p, a, b].forEach(x => x.addEventListener('input', upd));
+    $(c, '[data-eye]').addEventListener('click', () => { a.type = a.type === 'password' ? 'text' : 'password'; });
+    upd();
+  };
+
+  /* ---------------- PROFILE B ---------------- */
+  const initPB = c => {
+    const g = k => $(c, `[data-k="${k}"] input`); phoneInput(g('p'));
+    const upd = () => {
+      const s1 = !uMsg(g('u').value.trim()) && g('u').value.trim().length >= 3, s2 = okP(digits(g('p').value)), s3 = okA(g('a').value) && g('a').value === g('b').value;
+      const done = [s1, s2, s3], cur = done.indexOf(false);
+      $$(c, '.sec2').forEach((s, k) => { s.classList.toggle('done', done[k]); s.classList.toggle('cur', k === cur); });
+      ['u', 'p'].forEach((k, i) => $(c, `[data-k="${k}"]`).classList.toggle('ok', done[i]));
+      ['a', 'b'].forEach(k => $(c, `[data-k="${k}"]`).classList.toggle('ok', s3));
+      const m = $(c, '[data-m="a"]'), a = g('a').value, b = g('b').value;
+      if (!a) { m.textContent = ''; m.className = 'msg'; }
+      else if (!okA(a)) { const r = rules(a), miss = [!r.len && '8+ chars', !r.up && 'A-Z', !r.lo && 'a-z', !r.num && '0-9', !r.sp && 'symbol'].filter(Boolean); m.className = 'msg bad'; m.textContent = 'Still needs: ' + miss.join(' · '); }
+      else if (b && a !== b) { m.className = 'msg bad'; m.textContent = 'Passwords don\'t match yet'; }
+      else if (b) { m.className = 'msg ok'; m.textContent = '✓ Strong password, and they match'; }
+      else { m.className = 'msg ok'; m.textContent = '✓ Strong — now confirm it'; }
+      const go = $(c, '[data-go]'), all = done.every(Boolean); go.disabled = !all; go.style.opacity = all ? 1 : .5;
+    };
+    c.addEventListener('input', upd); upd();
+  };
+
+  /* ---------------- PROFILE C ---------------- */
+  const initPC = c => {
+    const g = k => $(c, `[data-k="${k}"] input`), pass = $(c, '[data-pass]'); phoneInput(g('p'));
+    const upd = () => {
+      const u = g('u').value.trim(), d = digits(g('p').value);
+      const v = {u: u.length >= 3 && !uMsg(u), p: okP(d), a: okA(g('a').value), b: !!g('b').value && g('b').value === g('a').value};
+      Object.entries(v).forEach(([k, ok]) => { const b = $(c, `[data-k="${k}"]`); b.classList.toggle('ok', ok); $(b, '.st').innerHTML = ok ? okDot : ''; });
+      $(c, '[data-av]').textContent = initials(u);
+      const nm = $(c, '[data-nm]'); nm.textContent = u || 'your-username'; nm.classList.toggle('ph', !u);
+      const ph = $(c, '[data-phn]'); ph.textContent = '+91 ' + (d ? fmtPhone(d) : '····· ·····'); ph.classList.toggle('ph', !d);
+      const n = Object.values(v).filter(Boolean).length;
+      $$(c, '[data-bars] i').forEach((i, k) => i.classList.toggle('on', k < n));
+      const all = n === 4; pass.classList.toggle('ready', all); $(c, '[data-ps]').textContent = all ? 'READY ✓' : `DRAFT · ${n}/4`;
+      const go = $(c, '[data-go]'); go.disabled = !all; go.style.opacity = all ? 1 : .5;
+    };
+    c.addEventListener('input', upd);
+    pass.addEventListener('pointermove', e => { const r = pass.getBoundingClientRect(), x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
+      pass.style.transform = `rotateY(${(x - .5) * 14}deg) rotateX(${(.5 - y) * 12}deg)`; pass.style.setProperty('--hx', x * 100 + '%'); pass.style.setProperty('--hy', y * 100 + '%'); });
+    pass.addEventListener('pointerleave', () => { pass.style.transform = ''; });
+    upd();
+  };
+
+  const INIT = {oa: initA, ob: initB, oc: initC, pa: initPA, pb: initPB, pc: initPC};
+  const boot = root => Object.entries(INIT).forEach(([k, fn]) => $$(root, `[data-${k}]`).forEach(fn));
+  boot(document);
+  // reset = rebuild that one card from the template
+  $$(document, '[data-replay]').forEach(b => b.addEventListener('click', () => {
+    const opt = b.closest('.opt'), idx = $$(document, '.opt').indexOf(opt);
+    const fresh = document.createElement('div'); fresh.innerHTML = TPL;
+    const card = $$(fresh, '.opt')[idx].querySelector('.stage');
+    opt.querySelector('.stage').replaceWith(card); boot(card);
+  }));
+
+  /* theme */
+  const setTheme = t => { document.documentElement.dataset.theme = t; $$(document, '[data-t]').forEach(x => x.setAttribute('aria-pressed', x.dataset.t === t)); try { localStorage.setItem('sx-op2-theme', t); } catch (e) {} };
+  let t = matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'; try { t = localStorage.getItem('sx-op2-theme') || t; } catch (e) {}
+  setTheme(t); $$(document, '[data-t]').forEach(x => x.addEventListener('click', () => setTheme(x.dataset.t)));
+})();
+</script>
+</body>
+</html>

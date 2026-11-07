@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OTP & Profile Concepts</title>
+<style>
+:root{
+  --ui:"Segoe UI Variable Text","Segoe UI Variable","Segoe UI",Inter,system-ui,sans-serif;
+  --disp:"Segoe UI Variable Display","Segoe UI Variable","Segoe UI",Inter,system-ui,sans-serif;
+  --spring:cubic-bezier(.34,1.56,.64,1); --ease:cubic-bezier(.2,.8,.2,1);
+}
+:root,[data-theme="dark"]{
+  --base:#0b0c0f; --page:#07080b; --text:#f3f7ff; --text-2:#a8b7d4; --text-3:#6e7fa0;
+  --hair:rgba(255,255,255,.09); --specular:rgba(255,255,255,.14);
+  --field:rgba(4,10,24,.45); --field-h:rgba(8,16,34,.6); --btn:rgba(255,255,255,.055); --btn-h:rgba(255,255,255,.1);
+  --accent:#16a69d; --accent-2:#2dd4bf; --accent-text:#5fe3d3; --focus:rgba(45,212,191,.26);
+  --grad:linear-gradient(110deg,#0a6f6a 0%,#0d847d 52%,#10968e 100%);
+  --danger:#ff8a94; --danger-bg:rgba(255,80,96,.12); --ok:#34d399; --warn:#ffd36b;
+  --card:linear-gradient(160deg,rgba(22,36,66,.75),rgba(14,22,42,.8));
+  --stage:radial-gradient(ellipse 60% 70% at 12% 8%,rgba(18,163,155,.12),transparent 60%),radial-gradient(ellipse 60% 70% at 92% 96%,rgba(59,92,150,.16),transparent 62%),#0d1322;
+  color-scheme:dark;
+}
+[data-theme="light"]{
+  --base:#f3f4f6; --page:#e8ebf0; --text:#0e2140; --text-2:#46557a; --text-3:#7a87a5;
+  --hair:rgba(20,40,90,.10); --specular:rgba(255,255,255,.95);
+  --field:rgba(255,255,255,.75); --field-h:#fff; --btn:rgba(255,255,255,.6); --btn-h:#fff;
+  --accent:#0f8f88; --accent-2:#12a39b; --accent-text:#0b7570; --focus:rgba(18,163,155,.2);
+  --grad:linear-gradient(110deg,#0a6f6a 0%,#0c7f79 52%,#0f938c 100%);
+  --danger:#c4283a; --danger-bg:rgba(220,40,60,.08); --ok:#0f8a5f; --warn:#9d5d00;
+  --card:linear-gradient(160deg,rgba(255,255,255,.92),rgba(246,249,252,.9));
+  --stage:radial-gradient(ellipse 60% 70% at 12% 8%,rgba(18,163,155,.10),transparent 60%),radial-gradient(ellipse 60% 70% at 92% 96%,rgba(14,33,64,.07),transparent 62%),#f6f8fb;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--page);color:var(--text);font:400 14px/20px var(--ui);-webkit-font-smoothing:antialiased;transition:background .3s}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+
+/* page chrome */
+.top{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:14px 28px;background:color-mix(in srgb,var(--page) 84%,transparent);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);border-bottom:1px solid var(--hair)}
+.top h1{margin:0;font:600 18px var(--disp)}
+.top p{margin:2px 0 0;color:var(--text-3);font-size:12.5px}
+.sp{flex:1}
+.seg{display:flex;gap:2px;padding:3px;border-radius:9px;background:var(--btn);box-shadow:inset 0 0 0 1px var(--hair)}
+.seg button{border:0;background:transparent;padding:5px 12px;border-radius:6px;font-size:12.5px;color:var(--text-2)}
+.seg button[aria-pressed="true"]{background:var(--btn-h);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.wrap{max-width:1500px;margin:0 auto;padding:10px 28px 70px}
+.sec h2{margin:28px 0 4px;font:600 17px var(--disp)}
+.sec>p{margin:0 0 14px;color:var(--text-3);font-size:13px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(460px,1fr));gap:18px}
+@media (max-width:540px){.grid{grid-template-columns:minmax(0,1fr)}.wrap,.top{padding-left:14px;padding-right:14px}}
+.opt{display:flex;flex-direction:column;border-radius:14px;overflow:hidden;background:color-mix(in srgb,var(--base) 70%,transparent);box-shadow:inset 0 0 0 1px var(--hair)}
+.meta{display:flex;gap:10px;align-items:flex-start;padding:12px 14px}
+.num{flex:none;font:700 11.5px var(--ui);color:var(--accent-text);background:color-mix(in srgb,var(--accent-2) 12%,transparent);border-radius:6px;padding:3px 7px}
+.meta b{display:block;font:600 14px var(--ui)}
+.meta span{font-size:12.5px;line-height:17px;color:var(--text-3)}
+.stage{flex:1;display:grid;place-items:center;padding:22px 14px;background:var(--stage)}
+
+/* the form card (same size as the app's: 426 px) */
+.card{position:relative;width:426px;max-width:100%;min-height:500px;padding:26px 32px 22px;border-radius:16px;display:flex;flex-direction:column;
+  background:var(--card);box-shadow:0 30px 70px -30px rgba(0,0,0,.6),inset 0 1px 0 var(--specular),inset 0 0 0 1px var(--hair)}
+.card h3{margin:0;font:600 26px/32px var(--disp);letter-spacing:-.02em}
+.card .sub{margin:4px 0 12px;color:var(--text-2);font-size:13.5px}
+.chip{display:inline-flex;align-self:flex-start;align-items:center;gap:8px;margin:0 0 18px;padding:5px 11px 5px 9px;border-radius:999px;font:600 11.5px/14px var(--ui);color:var(--accent-text);
+  background:color-mix(in srgb,var(--accent-2) 11%,transparent);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--accent-2) 30%,transparent)}
+.chip i{width:6px;height:6px;border-radius:50%;background:var(--accent-2)}
+.back{margin-top:auto;padding-top:14px;text-align:center}
+.link{border:0;background:none;padding:0;color:var(--accent-text);font:500 13px var(--ui)}
+.link:disabled{color:var(--text-3);cursor:default}
+.primary{width:100%;height:44px;border:0;border-radius:9px;display:flex;align-items:center;justify-content:center;gap:9px;color:#fff;font:600 14.5px var(--ui);background:var(--grad);
+  box-shadow:0 12px 26px -12px rgba(13,132,125,.85),inset 0 1px 0 rgba(255,255,255,.28);transition:filter .2s,opacity .2s}
+.primary:disabled{filter:saturate(.2) brightness(.92);opacity:.5;box-shadow:none;cursor:not-allowed}
+.primary svg{width:16px;height:16px}
+.ghost{height:40px;border:0;border-radius:9px;padding:0 16px;background:var(--btn);box-shadow:inset 0 0 0 1px var(--hair);font:500 13.5px var(--ui)}
+.muted{color:var(--text-3);font-size:12.5px}
+svg.i{width:16px;height:16px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+@keyframes shake{20%{transform:translateX(-7px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(2px)}}
+.shake{animation:shake .38s}
+@keyframes pop{from{transform:scale(.6);opacity:0}}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ================= OTP 1 · Segmented bar ================= */
+.o1 .to{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:11px;background:var(--btn);box-shadow:inset 0 0 0 1px var(--hair);margin-bottom:18px}
+.o1 .to .av{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;color:#fff;background:var(--grad);flex:none}
+.o1 .to .av svg{width:15px;height:15px}
+.o1 .to div{min-width:0;flex:1}
+.o1 .to small{display:block;font-size:11.5px;color:var(--text-3)}
+.o1 .to b{font-weight:600;font-size:13.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block}
+.o1 .bar{display:grid;grid-template-columns:repeat(6,1fr);height:58px;border-radius:13px;overflow:hidden;background:var(--field);box-shadow:inset 0 0 0 1px var(--hair);transition:box-shadow .2s}
+.o1 .bar:focus-within{box-shadow:inset 0 0 0 1.5px var(--accent-2),0 0 0 4px var(--focus)}
+.o1 .bar input{width:100%;min-width:0;height:100%;border:0;outline:0;background:transparent;text-align:center;font:600 24px var(--disp);caret-color:var(--accent-2);border-left:1px solid var(--hair)}
+.o1 .bar input:first-child{border-left:0}
+.o1 .bar input:focus{background:color-mix(in srgb,var(--accent-2) 10%,transparent)}
+.o1 .bar input.f{animation:pop .22s var(--spring)}
+.o1 .row{display:flex;justify-content:space-between;align-items:center;margin:12px 2px 18px}
+.o1 .ring{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;color:var(--text-3)}
+.o1 .ring svg{width:18px;height:18px;transform:rotate(-90deg)}
+.o1 .ring circle{fill:none;stroke-width:2.6}
+.o1 .ring .bg{stroke:var(--hair)}
+.o1 .ring .fg{stroke:var(--accent-2);stroke-dasharray:1;transition:stroke-dashoffset 1s linear}
+
+/* ================= OTP 2 · Underline digits ================= */
+.o2 .mail{display:flex;flex-direction:column;align-items:center;text-align:center;margin:6px 0 22px}
+.o2 .env{width:56px;height:56px;border-radius:16px;display:grid;place-items:center;color:var(--accent-text);background:color-mix(in srgb,var(--accent-2) 13%,transparent);margin-bottom:10px;position:relative}
+.o2 .env svg{width:26px;height:26px}
+.o2 .env::after{content:"";position:absolute;right:-3px;top:-3px;width:14px;height:14px;border-radius:50%;background:var(--accent-2);box-shadow:0 0 0 3px var(--base);animation:pop .4s var(--spring) .3s both}
+.o2 .mail span{font-size:13px;color:var(--text-2)}
+.o2 .mail b{color:var(--text)}
+.o2 .digits{position:relative;display:grid;grid-template-columns:repeat(6,1fr);gap:14px;margin:0 6px 26px}
+.o2 .digits input{width:100%;min-width:0;height:54px;border:0;outline:0;background:transparent;text-align:center;font:600 32px var(--disp);caret-color:transparent;border-bottom:2px solid color-mix(in srgb,var(--text) 22%,transparent)}
+.o2 .digits input.f{border-bottom-color:color-mix(in srgb,var(--accent-2) 55%,transparent)}
+.o2 .ind{position:absolute;bottom:0;height:3px;border-radius:3px;background:var(--accent-2);box-shadow:0 0 10px var(--accent-2);transition:left .25s var(--ease),width .25s var(--ease),opacity .2s;opacity:0}
+.o2 .digits:focus-within .ind{opacity:1}
+.o2 .foot{display:flex;justify-content:center;gap:6px;margin-top:14px;font-size:12.5px;color:var(--text-3)}
+
+/* ================= OTP 3 · 3 + 3 groups with paste ================= */
+.o3 .lbl{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;font:600 12.5px var(--ui)}
+.o3 .paste{display:inline-flex;align-items:center;gap:6px;height:28px;padding:0 10px;border:0;border-radius:7px;font:500 12px var(--ui);color:var(--accent-text);background:color-mix(in srgb,var(--accent-2) 11%,transparent)}
+.o3 .paste svg{width:13px;height:13px}
+.o3 .groups{display:flex;align-items:center;gap:8px}
+.o3 .g{flex:1;display:grid;grid-template-columns:repeat(3,1fr);gap:6px;padding:6px;border-radius:13px;background:var(--btn);box-shadow:inset 0 0 0 1px var(--hair)}
+.o3 .g input{width:100%;min-width:0;height:50px;border:0;outline:0;border-radius:9px;text-align:center;font:600 22px ui-monospace,"Cascadia Mono",Consolas,monospace;background:var(--field);box-shadow:inset 0 0 0 1px var(--hair)}
+.o3 .g input:focus{box-shadow:inset 0 0 0 1.5px var(--accent-2),0 0 0 3px var(--focus)}
+.o3 .g input.f{background:color-mix(in srgb,var(--accent-2) 10%,var(--field))}
+.o3 .dash{width:12px;height:3px;border-radius:2px;background:var(--text-3);flex:none}
+.o3 .dots{display:flex;gap:5px;justify-content:center;margin:14px 0 18px}
+.o3 .dots i{width:22px;height:4px;border-radius:3px;background:var(--hair);transition:background .2s}
+.o3 .dots i.on{background:var(--accent-2)}
+.o3 .help{display:flex;gap:8px;margin-top:14px;padding:10px 12px;border-radius:10px;font-size:12.5px;line-height:17px;color:var(--text-2);background:var(--btn);box-shadow:inset 0 0 0 1px var(--hair)}
+.o3 .help svg{width:15px;height:15px;flex:none;color:var(--accent-text);margin-top:1px}
+
+/* ================= OTP 4 · Auto-verify (no button) ================= */
+.o4 .boxes{display:grid;grid-template-columns:repeat(6,1fr);gap:9px}
+.o4 .boxes input{width:100%;min-width:0;height:60px;border:0;outline:0;border-radius:14px;text-align:center;font:600 26px var(--disp);background:var(--field);
+  box-shadow:inset 0 0 0 1px var(--hair),inset 0 -3px 0 color-mix(in srgb,var(--text) 12%,transparent);transition:box-shadow .2s,transform .2s}
+.o4 .boxes input:focus{transform:translateY(-2px);box-shadow:inset 0 0 0 1.5px var(--accent-2),0 8px 18px -8px var(--accent),0 0 0 4px var(--focus)}
+.o4 .boxes.ok input{box-shadow:inset 0 0 0 1.5px var(--ok);color:var(--ok)}
+.o4 .boxes.bad input{box-shadow:inset 0 0 0 1.5px var(--danger)}
+.o4 .state{display:flex;align-items:center;justify-content:center;gap:8px;height:44px;margin:16px 0 4px;border-radius:10px;font:500 13.5px var(--ui);color:var(--text-2);background:var(--btn);box-shadow:inset 0 0 0 1px var(--hair)}
+.o4 .state .sp2{width:16px;height:16px;border-radius:50%;border:2px solid var(--hair);border-top-color:var(--accent-2);animation:spin .8s linear infinite;display:none}
+.o4 .state.busy .sp2{display:block}
+.o4 .state.ok{color:var(--ok);background:color-mix(in srgb,var(--ok) 12%,transparent)}
+.o4 .state.bad{color:var(--danger);background:var(--danger-bg)}
+.o4 .state svg{width:16px;height:16px}
+.o4 .timer{display:flex;justify-content:space-between;margin-top:14px;font-size:12.5px;color:var(--text-3)}
+
+/* ================= OTP 5 · Bench display ================= */
+.o5 .panel{border-radius:16px;padding:14px;background:linear-gradient(180deg,#0f1b2e,#0a1322);box-shadow:inset 0 0 0 1px rgba(255,255,255,.08),0 16px 30px -16px rgba(0,0,0,.6)}
+.o5 .ann{display:flex;justify-content:space-between;margin-bottom:8px;font:700 9.5px ui-monospace,Consolas,monospace;letter-spacing:.12em;color:#5fe3d3;opacity:.85}
+.o5 .lcd{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}
+.o5 .lcd input{width:100%;min-width:0;height:62px;border:0;outline:0;border-radius:8px;text-align:center;font:700 34px ui-monospace,"Cascadia Mono",Consolas,monospace;color:#5dffd2;
+  background:#06101c;box-shadow:inset 0 2px 8px rgba(0,0,0,.6),inset 0 0 0 1px rgba(95,227,211,.12);text-shadow:0 0 12px rgba(93,255,210,.6);caret-color:#5dffd2}
+.o5 .lcd input::placeholder{color:rgba(93,255,210,.12)}
+.o5 .lcd input:focus{box-shadow:inset 0 2px 8px rgba(0,0,0,.6),inset 0 0 0 1.5px #2dd4bf}
+.o5 .leds{display:flex;gap:8px;margin-top:12px;align-items:center;font:600 10px ui-monospace,Consolas,monospace;color:rgba(255,255,255,.5);letter-spacing:.08em}
+.o5 .leds i{width:8px;height:8px;border-radius:50%;background:#253247}
+.o5 .leds i.on{background:#2dd4bf;box-shadow:0 0 8px #2dd4bf}
+.o5 .leds span{margin-left:auto}
+.o5 .tx{margin:14px 0 16px;font-size:13px;color:var(--text-2)}
+
+/* ================= shared profile field ================= */
+.fl{margin-bottom:12px}
+.fl label{display:block;font:600 12.5px var(--ui);margin-bottom:6px}
+.box{display:flex;align-items:center;gap:10px;height:42px;padding:0 12px;border-radius:9px;background:var(--field);box-shadow:inset 0 0 0 1px var(--hair),inset 0 -1px 0 color-mix(in srgb,var(--text) 20%,transparent);transition:box-shadow .18s}
+.box:focus-within{box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--accent) 60%,transparent),inset 0 -2px 0 var(--accent),0 0 0 4px var(--focus)}
+.box svg{width:16px;height:16px;color:var(--text-3);flex:none}
+.box input,.box select{flex:1;min-width:0;height:100%;border:0;outline:0;background:transparent;font-size:14px}
+.box select{flex:none;width:auto;font-weight:500}
+.box .tick{width:20px;height:20px;border-radius:50%;display:grid;place-items:center;flex:none;color:#fff;background:var(--ok);transform:scale(0);transition:transform .25s var(--spring)}
+.box .tick svg{width:12px;height:12px;color:#fff}
+.box.v .tick{transform:scale(1)}
+
+/* ================= PROFILE 1 · Avatar + floating labels ================= */
+.p1 .who{display:flex;align-items:center;gap:14px;margin:0 0 18px;padding:12px;border-radius:13px;background:var(--btn);box-shadow:inset 0 0 0 1px var(--hair)}
+.p1 .avatar{width:52px;height:52px;border-radius:15px;display:grid;place-items:center;flex:none;color:#fff;font:700 19px var(--disp);background:var(--grad);box-shadow:0 10px 20px -10px var(--accent)}
+.p1 .who b{display:block;font:600 15px var(--ui)}
+.p1 .who small{color:var(--text-3);font-size:12px}
+.flt{position:relative;margin-bottom:12px}
+.flt input{width:100%;height:52px;padding:18px 40px 4px 14px;border:0;outline:0;border-radius:10px;font-size:14px;background:var(--field);box-shadow:inset 0 0 0 1px var(--hair);transition:box-shadow .18s}
+.flt input:focus{box-shadow:inset 0 0 0 1.5px var(--accent-2),0 0 0 4px var(--focus)}
+.flt label{position:absolute;left:14px;top:16px;font-size:14px;color:var(--text-3);pointer-events:none;transition:all .18s var(--ease)}
+.flt input:focus+label,.flt input:not(:placeholder-shown)+label{top:7px;font-size:11px;font-weight:600;color:var(--accent-text)}
+.flt .phone-pre{position:absolute;left:14px;top:25px;font-size:14px;color:var(--text-2);opacity:0;transition:opacity .18s}
+.flt.ph input{padding-left:50px}
+.flt.ph input:focus~.phone-pre,.flt.ph input:not(:placeholder-shown)~.phone-pre{opacity:1}
+.p1 .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.p1 .meter{display:flex;gap:4px;margin:-4px 0 14px}
+.p1 .meter i{flex:1;height:4px;border-radius:3px;background:var(--hair);transition:background .2s}
+.p1 .meter.s1 i:nth-child(-n+1){background:#ff6b6b}.p1 .meter.s2 i:nth-child(-n+2){background:#ffb347}.p1 .meter.s3 i:nth-child(-n+3){background:#4fc3f7}.p1 .meter.s4 i{background:var(--ok)}
+
+/* ================= PROFILE 2 · Checklist rows with progress ================= */
+.p2 .prog{display:flex;align-items:center;gap:10px;margin:-6px 0 18px;font-size:12px;color:var(--text-3)}
+.p2 .prog .tr{flex:1;height:6px;border-radius:4px;background:var(--hair);overflow:hidden}
+.p2 .prog .tr i{display:block;height:100%;width:0;background:var(--grad);transition:width .35s var(--ease)}
+.p2 .prog b{color:var(--text);font-weight:600}
+.p2 .row{display:flex;align-items:center;gap:12px;padding:10px 12px;margin-bottom:8px;border-radius:12px;background:var(--btn);box-shadow:inset 0 0 0 1px var(--hair);transition:box-shadow .2s}
+.p2 .row:focus-within{box-shadow:inset 0 0 0 1.5px var(--accent-2),0 0 0 4px var(--focus)}
+.p2 .row .ti{width:36px;height:36px;flex:none;border-radius:10px;display:grid;place-items:center;color:var(--accent-text);background:color-mix(in srgb,var(--accent-2) 12%,transparent);transition:background .2s,color .2s}
+.p2 .row.v .ti{background:var(--ok);color:#fff}
+.p2 .row .ti svg{width:17px;height:17px}
+.p2 .row div{flex:1;min-width:0}
+.p2 .row small{display:block;font:600 11px var(--ui);letter-spacing:.04em;text-transform:uppercase;color:var(--text-3)}
+.p2 .row input,.p2 .row select{width:100%;border:0;outline:0;background:transparent;font-size:14px;padding:2px 0}
+.p2 .row .pf{display:flex;gap:6px;align-items:center}
+.p2 .row .pf select{width:auto;font-weight:600}
+
+/* ================= PROFILE 3 · Live password rules ================= */
+.p3 .two{display:grid;grid-template-columns:110px 1fr;gap:8px}
+.p3 .rules{display:grid;grid-template-columns:1fr 1fr;gap:6px 10px;margin:-2px 0 14px;padding:10px 12px;border-radius:10px;background:var(--btn);box-shadow:inset 0 0 0 1px var(--hair)}
+.p3 .rules span{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--text-3);transition:color .2s}
+.p3 .rules span i{width:15px;height:15px;border-radius:50%;flex:none;display:grid;place-items:center;box-shadow:inset 0 0 0 1.5px var(--hair);transition:all .2s}
+.p3 .rules span i svg{width:9px;height:9px;color:#fff;opacity:0}
+.p3 .rules span.on{color:var(--text)}
+.p3 .rules span.on i{background:var(--ok);box-shadow:none}
+.p3 .rules span.on i svg{opacity:1}
+.p3 .match{display:flex;align-items:center;gap:6px;margin:-6px 0 14px;font-size:12px;color:var(--text-3);min-height:16px}
+.p3 .match.ok{color:var(--ok)}.p3 .match.no{color:var(--danger)}
+
+/* ================= PROFILE 4 · One question at a time ================= */
+.p4 .dots{display:flex;gap:6px;margin:-6px 0 22px}
+.p4 .dots i{height:6px;width:22px;border-radius:4px;background:var(--hair);transition:all .3s var(--ease)}
+.p4 .dots i.on{width:40px;background:var(--accent-2)}
+.p4 .dots i.done{background:color-mix(in srgb,var(--accent-2) 55%,transparent)}
+.p4 .q{display:none;animation:qIn .4s var(--ease) both}
+.p4 .q.on{display:block}
+@keyframes qIn{from{opacity:0;transform:translateX(24px)}}
+.p4 .q h4{margin:0 0 4px;font:600 20px/26px var(--disp)}
+.p4 .q p{margin:0 0 16px;color:var(--text-2);font-size:13px}
+.p4 .big{height:52px}
+.p4 .big input{font-size:17px}
+.p4 .nav{display:grid;grid-template-columns:100px 1fr;gap:10px;margin-top:20px}
+.p4 .err{min-height:18px;margin-top:8px;font-size:12px;color:var(--danger)}
+
+/* ================= PROFILE 5 · Live pass preview ================= */
+.p5 .pass{position:relative;margin:-4px 0 18px;padding:14px 16px;border-radius:14px;overflow:hidden;color:#fff;background:linear-gradient(135deg,#0e2140 0%,#123a5c 55%,#0d847d 100%);box-shadow:0 18px 30px -18px rgba(13,132,125,.8)}
+.p5 .pass::after{content:"";position:absolute;right:-40px;top:-40px;width:140px;height:140px;border-radius:50%;border:18px solid rgba(255,255,255,.06)}
+.p5 .pass .t{display:flex;justify-content:space-between;font:700 9.5px var(--ui);letter-spacing:.16em;color:rgba(255,255,255,.7)}
+.p5 .pass .t em{font-style:normal;color:#5fe3d3}
+.p5 .pass .b{display:flex;gap:12px;align-items:center;margin-top:12px}
+.p5 .pass .av{width:42px;height:42px;border-radius:11px;display:grid;place-items:center;font:700 15px var(--disp);background:rgba(255,255,255,.14);box-shadow:inset 0 0 0 1px rgba(255,255,255,.2)}
+.p5 .pass b{display:block;font:600 16px var(--disp)}
+.p5 .pass small{font-size:12px;color:rgba(255,255,255,.72)}
+.p5 .pass .ph{opacity:.5}
+.p5 .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+</style>
+</head>
+<body>
+<header class="top">
+  <div><h1>OTP & profile — 5 + 5 new looks</h1><p>All live: type a code (any 6 digits; <b>123456</b> passes in the auto-verify one) and fill the profile fields.</p></div>
+  <span class="sp"></span>
+  <div class="seg" role="group" aria-label="Theme"><button data-t="light">Light</button><button data-t="dark">Dark</button></div>
+</header>
+
+<main class="wrap">
+<!-- ===================================================== OTP ===================================================== -->
+<section class="sec"><h2>OTP — "Enter the code"</h2><p>Same step as now (Step 1 of 2 · Enter the code); only the look and feel change.</p>
+<div class="grid">
+
+<article class="opt"><div class="meta"><span class="num">O1</span><div><b>Segmented bar</b><span>One connected bar split into 6 cells, the email shown as a "sent to" card with Change, and a resend countdown ring.</span></div></div>
+<div class="stage"><div class="card o1">
+  <h3>Create your account</h3><p class="sub">Sign up to start building schematics.</p><span class="chip"><i></i>Step 1 of 2 · Enter the code</span>
+  <div class="to"><span class="av">@@MAIL@@</span><div><small>Code sent to</small><b>ramprasath109@gmail.com</b></div><button class="link">Change</button></div>
+  <div class="bar otp" data-otp>@@SIX@@</div>
+  <div class="row"><span class="ring" data-timer="30"><svg viewBox="0 0 20 20"><circle class="bg" cx="10" cy="10" r="8"/><circle class="fg" pathLength="1" cx="10" cy="10" r="8"/></svg><span>Resend in 0:30</span></span><button class="link" data-resend disabled>Resend code</button></div>
+  <button class="primary" data-verify disabled>Verify code @@ARROW@@</button>
+  <div class="back"><button class="link">← Back to Sign In</button></div>
+</div></div></article>
+
+<article class="opt"><div class="meta"><span class="num">O2</span><div><b>Big underline digits</b><span>Clean and calm: envelope badge, large digits on underlines, and a glowing indicator that slides to the active digit.</span></div></div>
+<div class="stage"><div class="card o2">
+  <h3>Check your email</h3>
+  <div class="mail" style="margin-top:16px"><span class="env">@@MAIL@@</span><span>We sent a 6-digit code to<br><b>ramprasath109@gmail.com</b></span></div>
+  <div class="digits otp" data-otp>@@SIX@@<span class="ind"></span></div>
+  <button class="primary" data-verify disabled>Verify code @@ARROW@@</button>
+  <div class="foot">Didn't get it? <button class="link">Resend code</button> · <button class="link">Change email</button></div>
+  <div class="back"><button class="link">← Back to Sign In</button></div>
+</div></div></article>
+
+<article class="opt"><div class="meta"><span class="num">O3</span><div><b>3 + 3 groups with Paste</b><span>Easier to read and copy: the code is split 123 – 456, a one-click "Paste code" button, and progress dots.</span></div></div>
+<div class="stage"><div class="card o3">
+  <h3>Create your account</h3><p class="sub">Sign up to start building schematics.</p><span class="chip"><i></i>Step 1 of 2 · Enter the code</span>
+  <p class="muted" style="margin:0 0 14px">Enter the 6-digit code sent to <b style="color:var(--text)">ramprasath109@gmail.com</b></p>
+  <div class="lbl">Verification code <button class="paste" data-paste>@@CLIP@@Paste code</button></div>
+  <div class="groups otp" data-otp><div class="g">@@THREE@@</div><span class="dash"></span><div class="g">@@THREE@@</div></div>
+  <div class="dots" data-dots><i></i><i></i><i></i><i></i><i></i><i></i></div>
+  <button class="primary" data-verify disabled>Verify code @@ARROW@@</button>
+  <div class="help">@@INFO@@<span>Can't find it? Check Spam or Promotions. Codes expire after 10 minutes. <button class="link" style="font-size:12.5px">Resend code</button></span></div>
+</div></div></article>
+
+<article class="opt"><div class="meta"><span class="num">O4</span><div><b>Auto-verify (no button)</b><span>Fastest: boxes lift when active, and the 6th digit checks the code by itself — spinner, then green "Verified" or a shake.</span></div></div>
+<div class="stage"><div class="card o4">
+  <h3>Create your account</h3><p class="sub">Sign up to start building schematics.</p><span class="chip"><i></i>Step 1 of 2 · Enter the code</span>
+  <p class="muted" style="margin:0 0 14px">Code sent to <b style="color:var(--text)">ramprasath109@gmail.com</b> · <button class="link" style="font-size:12.5px">Change</button></p>
+  <div class="boxes otp" data-otp data-auto>@@SIX@@</div>
+  <div class="state" data-state><span class="sp2"></span><span data-st>Type the code — it checks automatically</span></div>
+  <div class="timer"><span>Code expires in <b data-exp style="color:var(--text)">9:59</b></span><button class="link" style="font-size:12.5px">Resend code</button></div>
+  <div class="back"><button class="link">← Back to Sign In</button></div>
+</div></div></article>
+
+<article class="opt"><div class="meta"><span class="num">O5</span><div><b>Bench display</b><span>Technician style: the code goes into a glowing meter display; status LEDs light up as each digit arrives.</span></div></div>
+<div class="stage"><div class="card o5">
+  <h3>Create your account</h3><p class="sub">Sign up to start building schematics.</p><span class="chip"><i></i>Step 1 of 2 · Enter the code</span>
+  <div class="panel"><div class="ann"><span>VERIFY · EMAIL</span><span>6-DIGIT CODE</span></div>
+    <div class="lcd otp" data-otp data-ph="0">@@SIX@@</div>
+    <div class="leds" data-leds><i></i><i></i><i></i><i></i><i></i><i></i><span>READY</span></div></div>
+  <p class="tx">Sent to <b style="color:var(--text)">ramprasath109@gmail.com</b> · <button class="link" style="font-size:13px">Resend code</button></p>
+  <button class="primary" data-verify disabled>Verify code @@ARROW@@</button>
+  <div class="back"><button class="link">← Back to Sign In</button></div>
+</div></div></article>
+</div></section>
+
+<!-- ===================================================== PROFILE ===================================================== -->
+<section class="sec"><h2>Profile — "Complete your profile"</h2><p>Same fields as now (username · country + phone · password · confirm), new presentation.</p>
+<div class="grid">
+
+<article class="opt"><div class="meta"><span class="num">P1</span><div><b>Avatar + floating labels</b><span>A live avatar builds from the username, labels float up inside the fields, and a 4-bar strength meter for the password.</span></div></div>
+<div class="stage"><div class="card p1" data-p1>
+  <h3>Complete your profile</h3><p class="sub">Step 2 of 2 · Almost there.</p>
+  <div class="who"><span class="avatar" data-av>?</span><div><b data-nm>Your username</b><small>ramprasath109@gmail.com · verified ✓</small></div></div>
+  <div class="flt"><input id="p1u" placeholder=" " data-u><label for="p1u">Username</label></div>
+  <div class="flt ph"><input id="p1p" placeholder=" " inputmode="numeric" maxlength="10"><label for="p1p">Phone number (India)</label><span class="phone-pre">+91</span></div>
+  <div class="two"><div class="flt"><input id="p1a" type="password" placeholder=" " data-pw><label for="p1a">Password</label></div>
+  <div class="flt"><input id="p1b" type="password" placeholder=" "><label for="p1b">Confirm</label></div></div>
+  <div class="meter" data-meter><i></i><i></i><i></i><i></i></div>
+  <button class="primary">Create account @@ARROW@@</button>
+  <div class="back"><button class="link">← Back to Sign In</button></div>
+</div></div></article>
+
+<article class="opt"><div class="meta"><span class="num">P2</span><div><b>Checklist rows + progress</b><span>Each field is a row with an icon tile that turns green when valid; the bar on top shows "3 of 4 done".</span></div></div>
+<div class="stage"><div class="card p2" data-p2>
+  <h3>Create your account</h3><p class="sub">Sign up to start building schematics.</p>
+  <div class="prog"><span class="tr"><i data-bar></i></span><span><b data-cnt>0</b> of 4 done</span></div>
+  <label class="row" data-k="u"><span class="ti">@@USER@@</span><div><small>Username</small><input placeholder="Choose a username"></div></label>
+  <label class="row" data-k="p"><span class="ti">@@PHONE@@</span><div><small>Country &amp; phone</small><span class="pf"><select><option>IN +91</option><option>AE +971</option><option>US +1</option></select><input placeholder="10 digits" inputmode="numeric" maxlength="10"></span></div></label>
+  <label class="row" data-k="a"><span class="ti">@@LOCK@@</span><div><small>Password</small><input type="password" placeholder="Create a password"></div></label>
+  <label class="row" data-k="b"><span class="ti">@@SHIELD@@</span><div><small>Confirm password</small><input type="password" placeholder="Re-enter your password"></div></label>
+  <button class="primary" style="margin-top:8px" data-go disabled>Create account @@ARROW@@</button>
+  <div class="back"><button class="link">← Back to Sign In</button></div>
+</div></div></article>
+
+<article class="opt"><div class="meta"><span class="num">P3</span><div><b>Live password rules</b><span>No guessing: the 5 password rules tick green as you type, and "Passwords match" confirms under the second box.</span></div></div>
+<div class="stage"><div class="card p3" data-p3>
+  <h3>Create your account</h3><p class="sub">Sign up to start building schematics.</p><span class="chip"><i></i>Step 2 of 2 · Complete your profile</span>
+  <div class="fl"><label>Username</label><div class="box">@@USER@@<input placeholder="Choose a username"></div></div>
+  <div class="fl"><label>Country &amp; phone number</label><div class="two"><div class="box"><select><option>IN +91</option><option>AE +971</option></select></div><div class="box"><input placeholder="10 digits" inputmode="numeric"></div></div></div>
+  <div class="fl"><label>Password</label><div class="box">@@LOCK@@<input type="password" placeholder="Create a password" data-pw></div></div>
+  <div class="rules" data-rules><span data-r="len"><i>@@TICK@@</i>8+ characters</span><span data-r="up"><i>@@TICK@@</i>Uppercase</span><span data-r="lo"><i>@@TICK@@</i>Lowercase</span><span data-r="num"><i>@@TICK@@</i>Number</span><span data-r="sp"><i>@@TICK@@</i>Special ! @ # $ …</span></div>
+  <div class="fl"><label>Confirm password</label><div class="box">@@LOCK@@<input type="password" placeholder="Re-enter your password" data-pw2></div></div>
+  <div class="match" data-match></div>
+  <button class="primary">Create account @@ARROW@@</button>
+</div></div></article>
+
+<article class="opt"><div class="meta"><span class="num">P4</span><div><b>One question at a time</b><span>Friendly and focused: one big question per screen, Enter moves on, dots show where you are. Great for first-time users.</span></div></div>
+<div class="stage"><div class="card p4" data-p4>
+  <h3>Create your account</h3><p class="sub">Step 2 of 2 · Complete your profile</p>
+  <div class="dots" data-dots><i class="on"></i><i></i><i></i></div>
+  <div class="q on"><h4>Pick a username</h4><p>This is how you'll sign in. Letters, numbers, . _ and - only.</p><div class="box big">@@USER@@<input placeholder="e.g. ramprasath" data-v="u"></div></div>
+  <div class="q"><h4>Your mobile number</h4><p>Used for support and account recovery.</p><div class="box big"><select><option>IN +91</option><option>AE +971</option></select><input placeholder="10 digits" inputmode="numeric" data-v="p"></div></div>
+  <div class="q"><h4>Set a password</h4><p>8+ characters with upper, lower, number and a special character.</p><div class="box big">@@LOCK@@<input type="password" placeholder="Create a password" data-v="a"></div>
+    <div class="box big" style="margin-top:10px">@@LOCK@@<input type="password" placeholder="Re-enter your password" data-v="b"></div></div>
+  <div class="err" data-err></div>
+  <div class="nav"><button class="ghost" data-prev>Back</button><button class="primary" data-next>Next @@ARROW@@</button></div>
+  <div class="back"><button class="link">← Back to Sign In</button></div>
+</div></div></article>
+
+<article class="opt"><div class="meta"><span class="num">P5</span><div><b>Live pass preview</b><span>The Schemax pass card at the top fills in as you type — you see your account taking shape. Fields tick when valid.</span></div></div>
+<div class="stage"><div class="card p5" data-p5>
+  <h3>Complete your profile</h3><p class="sub">Step 2 of 2 · Your Schemax pass is almost ready.</p>
+  <div class="pass"><div class="t"><span>SCHEMAX PASS</span><em data-st>DRAFT</em></div>
+    <div class="b"><span class="av" data-av>?</span><div><b data-nm class="ph">username</b><small data-phn class="ph">+91 ··········</small></div></div></div>
+  <div class="fl"><label>Username</label><div class="box" data-k="u">@@USER@@<input placeholder="Choose a username"><span class="tick">@@TICK@@</span></div></div>
+  <div class="fl"><label>Country &amp; phone number</label><div class="box" data-k="p"><select><option>IN +91</option></select><input placeholder="10 digits" inputmode="numeric" maxlength="10"><span class="tick">@@TICK@@</span></div></div>
+  <div class="two"><div class="fl"><label>Password</label><div class="box" data-k="a"><input type="password" placeholder="Create"><span class="tick">@@TICK@@</span></div></div>
+  <div class="fl"><label>Confirm</label><div class="box" data-k="b"><input type="password" placeholder="Re-enter"><span class="tick">@@TICK@@</span></div></div></div>
+  <button class="primary">Create account @@ARROW@@</button>
+</div></div></article>
+</div></section>
+</main>
+
+<script>
+(() => {
+  const S = p => `<svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;
+  const I = {
+    MAIL: S('<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>'),
+    ARROW: S('<path d="M5 12h14m-6-6 6 6-6 6"/>'),
+    CLIP: S('<rect x="8" y="3" width="8" height="4" rx="1"/><path d="M8 5H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/>'),
+    INFO: S('<circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/>'),
+    USER: S('<circle cx="12" cy="8" r="3.5"/><path d="M5 20c.5-4 2.8-6 7-6s6.5 2 7 6"/>'),
+    PHONE: S('<rect x="7" y="2.5" width="10" height="19" rx="2.2"/><path d="M11 18.5h2"/>'),
+    LOCK: S('<rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>'),
+    SHIELD: S('<path d="M12 3 5 6v6c0 4.5 3 7.5 7 9 4-1.5 7-4.5 7-9V6z"/><path d="m9 12 2 2 4-4"/>'),
+    TICK: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>',
+  };
+  const box = '<input inputmode="numeric" autocomplete="one-time-code" aria-label="Digit">';
+  I.SIX = box.repeat(6); I.THREE = box.repeat(3);
+  document.querySelector('main').innerHTML = document.querySelector('main').innerHTML.replace(/@@(\w+)@@/g, (_, k) => I[k]);
+  const $$ = (r, s) => [...r.querySelectorAll(s)];
+
+  /* ---------- generic OTP behaviour ---------- */
+  $$(document, '[data-otp]').forEach(g => {
+    const card = g.closest('.card'), ins = $$(g, 'input'), verify = card.querySelector('[data-verify]');
+    if (g.dataset.ph) ins.forEach(i => i.placeholder = g.dataset.ph);
+    const val = () => ins.map(i => i.value).join('');
+    const ind = g.querySelector('.ind');
+    const moveInd = i => { if (!ind) return; ind.style.left = i.offsetLeft + 'px'; ind.style.width = i.offsetWidth + 'px'; };
+    const changed = () => {
+      ins.forEach(i => i.classList.toggle('f', !!i.value));
+      const v = val();
+      if (verify) verify.disabled = v.length < 6;
+      $$(card, '[data-dots] i').forEach((d, k) => d.classList.toggle('on', k < v.length));
+      $$(card, '[data-leds] i').forEach((d, k) => d.classList.toggle('on', k < v.length));
+      const led = card.querySelector('[data-leds] span'); if (led) led.textContent = v.length === 6 ? 'CODE OK' : v.length ? 'READING…' : 'READY';
+      if (g.hasAttribute('data-auto')) auto(card, g, v, ins);
+    };
+    const spread = (d, from) => { [...d].slice(0, 6 - from).forEach((c, k) => ins[from + k].value = c); ins[Math.min(5, from + d.length)].focus(); changed(); };
+    ins.forEach((inp, i) => {
+      inp.addEventListener('input', () => { const d = inp.value.replace(/\D/g, ''); if (d.length > 1) return spread(d, i); inp.value = d; if (d && i < 5) ins[i + 1].focus(); changed(); });
+      inp.addEventListener('keydown', e => { if (e.key === 'Backspace' && !inp.value && i) { ins[i - 1].focus(); ins[i - 1].value = ''; changed(); e.preventDefault(); } if (e.key === 'ArrowLeft' && i) ins[i - 1].focus(); if (e.key === 'ArrowRight' && i < 5) ins[i + 1].focus(); });
+      inp.addEventListener('paste', e => { e.preventDefault(); spread((e.clipboardData.getData('text') || '').replace(/\D/g, ''), i); });
+      inp.addEventListener('focus', () => { inp.select(); moveInd(inp); });
+    });
+    const paste = card.querySelector('[data-paste]');
+    if (paste) paste.addEventListener('click', () => spread('123456', 0));
+    if (ind) requestAnimationFrame(() => moveInd(ins[0]));
+  });
+
+  // O4 auto-verify
+  const auto = (card, g, v, ins) => {
+    const st = card.querySelector('[data-state]'), tx = st.querySelector('[data-st]');
+    g.classList.remove('ok', 'bad'); st.className = 'state';
+    if (v.length < 6) { tx.textContent = v.length ? `${6 - v.length} more digit${6 - v.length > 1 ? 's' : ''}…` : 'Type the code — it checks automatically'; return; }
+    st.classList.add('busy'); tx.textContent = 'Checking code…'; ins.forEach(i => i.disabled = true);
+    setTimeout(() => {
+      ins.forEach(i => i.disabled = false); st.classList.remove('busy');
+      if (v === '123456') { g.classList.add('ok'); st.classList.add('ok'); tx.innerHTML = I.TICK + ' Verified — opening your profile…'; }
+      else { g.classList.add('bad'); st.classList.add('bad'); tx.textContent = 'That code isn\'t right. Try again.'; g.classList.remove('shake'); void g.offsetWidth; g.classList.add('shake'); ins.forEach(i => i.value = ''); setTimeout(() => ins[0].focus(), 400); }
+    }, 1100);
+  };
+  // O4 expiry clock
+  (() => { const el = document.querySelector('[data-exp]'); let s = 599; setInterval(() => { s = s > 0 ? s - 1 : 599; el.textContent = `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`; }, 1000); })();
+  // O1 resend ring
+  $$(document, '[data-timer]').forEach(r => {
+    const card = r.closest('.card'), fg = r.querySelector('.fg'), t = r.querySelector('span'), btn = card.querySelector('[data-resend]'), total = +r.dataset.timer;
+    let left = total;
+    const tick = () => { fg.style.strokeDashoffset = 1 - left / total; t.textContent = left ? `Resend in 0:${String(left).padStart(2, '0')}` : 'You can resend now'; btn.disabled = left > 0; };
+    tick(); setInterval(() => { left = left > 0 ? left - 1 : total; tick(); }, 1000);
+  });
+
+  /* ---------- validation helpers ---------- */
+  const okU = v => /^[A-Za-z0-9_-][A-Za-z0-9._-]{1,}[A-Za-z0-9]$/.test(v) && !v.includes('..');
+  const okP = v => /^[6-9]\d{9}$/.test(v);
+  const rules = v => ({len: v.length >= 8, up: /[A-Z]/.test(v), lo: /[a-z]/.test(v), num: /\d/.test(v), sp: /[!@#$%^&*(),.?":{}|<>]/.test(v)});
+  const okA = v => Object.values(rules(v)).every(Boolean);
+  const initials = v => (v.replace(/[^A-Za-z0-9]/g, ' ').trim().split(/\s+|(?=[A-Z])/).map(x => x[0]).join('').slice(0, 2) || '?').toUpperCase();
+
+  // P1
+  (() => { const c = document.querySelector('[data-p1]'), u = c.querySelector('[data-u]'), a = c.querySelector('[data-pw]'), m = c.querySelector('[data-meter]');
+    u.addEventListener('input', () => { c.querySelector('[data-av]').textContent = initials(u.value); c.querySelector('[data-nm]').textContent = u.value || 'Your username'; });
+    a.addEventListener('input', () => { const r = rules(a.value), s = [r.len, r.up && r.lo, r.num, r.sp].filter(Boolean).length; m.className = 'meter' + (a.value ? ' s' + Math.max(1, s) : ''); }); })();
+  // P2
+  (() => { const c = document.querySelector('[data-p2]'), rows = $$(c, '.row');
+    const val = k => c.querySelector(`[data-k="${k}"] input`).value;
+    const upd = () => { const v = {u: okU(val('u')), p: okP(val('p')), a: okA(val('a')), b: !!val('b') && val('b') === val('a')};
+      rows.forEach(r => r.classList.toggle('v', v[r.dataset.k])); const n = Object.values(v).filter(Boolean).length;
+      c.querySelector('[data-cnt]').textContent = n; c.querySelector('[data-bar]').style.width = n * 25 + '%'; c.querySelector('[data-go]').disabled = n < 4; };
+    c.addEventListener('input', upd); })();
+  // P3
+  (() => { const c = document.querySelector('[data-p3]'), a = c.querySelector('[data-pw]'), b = c.querySelector('[data-pw2]'), m = c.querySelector('[data-match]');
+    const upd = () => { const r = rules(a.value); $$(c, '[data-r]').forEach(s => s.classList.toggle('on', r[s.dataset.r]));
+      if (!b.value) { m.className = 'match'; m.textContent = ''; } else if (b.value === a.value) { m.className = 'match ok'; m.innerHTML = '✓ Passwords match'; } else { m.className = 'match no'; m.textContent = '✕ Passwords do not match'; } };
+    a.addEventListener('input', upd); b.addEventListener('input', upd); })();
+  // P4
+  (() => { const c = document.querySelector('[data-p4]'), qs = $$(c, '.q'), dots = $$(c, '[data-dots] i'), err = c.querySelector('[data-err]'), nx = c.querySelector('[data-next]'), pv = c.querySelector('[data-prev]');
+    let i = 0;
+    const show = () => { qs.forEach((q, k) => q.classList.toggle('on', k === i)); dots.forEach((d, k) => { d.className = k === i ? 'on' : k < i ? 'done' : ''; });
+      nx.firstChild.textContent = i === 2 ? 'Create account ' : 'Next '; pv.style.visibility = i ? 'visible' : 'hidden'; err.textContent = ''; setTimeout(() => qs[i].querySelector('input').focus(), 50); };
+    const check = () => { const g = k => c.querySelector(`[data-v="${k}"]`).value;
+      if (i === 0 && !okU(g('u'))) return 'Use 3+ letters or numbers (. _ - allowed, must end with a letter or number).';
+      if (i === 1 && !okP(g('p'))) return 'Indian mobile numbers are 10 digits and start with 6, 7, 8 or 9.';
+      if (i === 2 && !okA(g('a'))) return 'Password needs 8+ characters, upper, lower, a number and a special character.';
+      if (i === 2 && g('a') !== g('b')) return 'Passwords do not match.'; return ''; };
+    nx.addEventListener('click', () => { const e = check(); if (e) { err.textContent = e; qs[i].classList.remove('shake'); void qs[i].offsetWidth; qs[i].classList.add('shake'); return; } if (i < 2) { i++; show(); } else { err.style.color = 'var(--ok)'; err.textContent = '✓ Account created (demo)'; } });
+    pv.addEventListener('click', () => { if (i) { i--; show(); } });
+    c.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); nx.click(); } });
+    pv.style.visibility = 'hidden'; })();
+  // P5
+  (() => { const c = document.querySelector('[data-p5]'), g = k => c.querySelector(`[data-k="${k}"] input`);
+    const upd = () => { const u = g('u').value, p = g('p').value;
+      const v = {u: okU(u), p: okP(p), a: okA(g('a').value), b: !!g('b').value && g('b').value === g('a').value};
+      Object.entries(v).forEach(([k, ok]) => c.querySelector(`[data-k="${k}"]`).classList.toggle('v', ok));
+      c.querySelector('[data-av]').textContent = initials(u);
+      const nm = c.querySelector('[data-nm]'); nm.textContent = u || 'username'; nm.classList.toggle('ph', !u);
+      const ph = c.querySelector('[data-phn]'); ph.textContent = '+91 ' + (p ? p.replace(/(\d{5})(\d{0,5})/, '$1 $2') : '··········'); ph.classList.toggle('ph', !p);
+      c.querySelector('.pass [data-st]').textContent = Object.values(v).every(Boolean) ? 'READY ✓' : 'DRAFT'; };
+    c.addEventListener('input', upd); })();
+
+  /* theme */
+  const setTheme = t => { document.documentElement.dataset.theme = t; $$(document, '[data-t]').forEach(b => b.setAttribute('aria-pressed', b.dataset.t === t)); try { localStorage.setItem('sx-op-theme', t); } catch (e) {} };
+  let t = matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'; try { t = localStorage.getItem('sx-op-theme') || t; } catch (e) {}
+  setTheme(t); $$(document, '[data-t]').forEach(b => b.addEventListener('click', () => setTheme(b.dataset.t)));
+})();
+</script>
+</body>
+</html>

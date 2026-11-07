@@ -820,7 +820,7 @@ h1{font:600 28px/36px var(--disp);letter-spacing:-.02em;margin:0}
 .nc-btns button{white-space:nowrap;padding:0 14px}
 .ncard.three{width:476px}
 
-/* ---- HD Reset dialog: one card that morphs loader (340) → result (460) ---- */
+/* ---- HWID Reset dialog: one card that morphs loader (340) → result (460) ---- */
 .hdd{width:340px;overflow:hidden;animation:ncIn .34s var(--spring) both}
 .hd-load{display:flex;flex-direction:column;align-items:center;text-align:center;padding:28px 24px 26px}
 .arc{width:36px;height:36px;border-radius:50%;border:3px solid color-mix(in srgb,var(--text) 12%,transparent);border-top-color:var(--accent-2);animation:spin .9s linear infinite;margin-bottom:14px}
@@ -963,7 +963,7 @@ h1{font:600 28px/36px var(--disp);letter-spacing:-.02em;margin:0}
 .nc-tips i svg{width:15px;height:15px}
 @keyframes ncRise{from{opacity:0;transform:translateY(10px)}}
 @keyframes ncPop{from{opacity:0;transform:scale(.6)}}
-/* HD Reset result uses the same split layout (the loader card grows into it) */
+/* HWID Reset result uses the same split layout (the loader card grows into it) */
 .hd-split{display:grid;grid-template-columns:200px minmax(0,1fr)}
 .hd-split .nc-side{min-height:220px}
 .hd-split .hd-x{position:absolute;top:8px;right:8px;width:34px;height:30px;border-radius:7px}
@@ -979,7 +979,7 @@ h1{font:600 28px/36px var(--disp);letter-spacing:-.02em;margin:0}
 /* ---- tertiary (Cancel / Close) = a real outlined button ---- */
 .ghost.tert{background:transparent;color:var(--text);-webkit-backdrop-filter:none;backdrop-filter:none;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--text) 24%,transparent)}
 .ghost.tert:hover{background:var(--glass-btn);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--text) 36%,transparent)}
-/* ---- HD Reset: illustration side ---- */
+/* ---- HWID Reset: illustration side ---- */
 .hd-side{min-height:262px}
 .hd-art{position:absolute;left:16px;right:16px;top:22px}
 .hd-art svg{display:block;width:100%;height:auto}
@@ -990,7 +990,7 @@ h1{font:600 28px/36px var(--disp);letter-spacing:-.02em;margin:0}
 .hd-meter{position:relative;display:flex;align-items:center;gap:5px;margin-bottom:12px;font:600 11px var(--ui);color:rgba(255,255,255,.8)}
 .hd-meter i{width:15px;height:5px;border-radius:3px;background:#5fe3d3}
 .hd-meter span{margin-left:5px}
-/* ---- HD Reset: route tiles ---- */
+/* ---- HWID Reset: route tiles ---- */
 .nc-opts{display:grid;gap:10px;margin-top:14px}
 .nc-opt{display:flex;align-items:center;gap:12px;width:100%;padding:12px 14px;border:0;border-radius:11px;text-align:left;cursor:pointer;color:var(--text);
   background:var(--glass-btn);box-shadow:inset 0 0 0 1px var(--hair);transition:background .15s,box-shadow .15s,transform .15s}
@@ -1004,10 +1004,55 @@ h1{font:600 28px/36px var(--disp);letter-spacing:-.02em;margin:0}
 .nc-opt small{display:block;margin-top:2px;font-size:12.5px;line-height:17px;color:var(--text-2)}
 .nc-opt>svg{width:16px;height:16px;margin-left:auto;flex:none;color:var(--text-3);transition:transform .15s}
 .nc-opt:hover>svg{transform:translateX(2px);color:var(--accent-text)}
-/* ---- HD Reset loader: illustration band on top ---- */
+/* ---- HWID Reset loader: illustration band on top ---- */
 .hd-band{padding:18px 40px 8px;background:linear-gradient(160deg,#0e2140 0%,#14335a 55%,#1d6a8c 100%)}
 .hd-band svg{display:block;width:100%;height:auto}
 .hdd .hd-load{padding:18px 24px 22px}
+
+
+/* =================== OTP: ODOMETER (chosen design) =================== */
+.otp.odo{position:relative;display:flex;justify-content:center;gap:6px;margin:12px 0 14px;padding:12px;border-radius:14px;cursor:text;
+  background:var(--glass-field);box-shadow:inset 0 0 0 1px var(--hair),inset 0 -1px 0 color-mix(in srgb,var(--text) 18%,transparent);transition:box-shadow .2s}
+.otp.odo:focus-within{box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--accent-2) 70%,transparent),0 0 0 4px var(--focus)}
+.odo .win{position:relative;flex:1;max-width:46px;height:60px;overflow:hidden;border-radius:10px;background:var(--glass-btn-hover);
+  box-shadow:inset 0 0 0 1px var(--hair),inset 0 12px 14px -12px rgba(0,0,0,.4),inset 0 -12px 14px -12px rgba(0,0,0,.4);transition:box-shadow .2s}
+.odo .win:nth-child(3){margin-right:10px}
+.odo .strip{position:absolute;left:0;right:0;top:0;height:1000%;display:flex;flex-direction:column;transition:transform .55s cubic-bezier(.16,1,.3,1)}
+.odo .strip i{flex:1;display:grid;place-items:center;font:700 28px ui-monospace,"Cascadia Mono",Consolas,monospace;font-style:normal;color:var(--text)}
+.odo .win.empty .strip{opacity:.13}
+.odo .win.cur{box-shadow:inset 0 0 0 1.5px var(--accent-2),0 0 0 3px var(--focus)}
+.odo .win.cur::after{content:"";position:absolute;left:30%;right:30%;bottom:9px;height:2px;border-radius:2px;background:var(--accent-2);animation:odoBlink 1s steps(1) infinite}
+@keyframes odoBlink{50%{opacity:0}}
+.otp.odo.bad .win{box-shadow:inset 0 0 0 1.5px var(--danger)}
+.otp.odo.dis{opacity:.6}
+.otp.odo input.odo-in{position:absolute;inset:0;width:100%;height:100%;opacity:0;border:0;border-radius:14px;box-shadow:none;background:transparent;font-size:16px;cursor:text;caret-color:transparent}
+
+/* =================== PROFILE: CARD STACK (chosen design) =================== */
+:root,[data-theme="dark"]{--psc-bg:#17243f}
+[data-theme="light"]{--psc-bg:#ffffff}
+@media (prefers-color-scheme: light){[data-theme="auto"]{--psc-bg:#ffffff}}
+.sr-only{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.pstack{position:relative;height:208px;margin:2px 0 10px}
+.psc{position:absolute;left:0;right:0;top:0;height:178px;padding:16px 16px 14px;border-radius:16px;background:var(--psc-bg);
+  box-shadow:inset 0 0 0 1px var(--hair),0 18px 30px -20px rgba(0,0,0,.6);
+  transform:translateY(calc(var(--d,0) * 12px)) scale(calc(1 - var(--d,0) * .05));z-index:calc(10 - var(--d,0));
+  transition:transform .5s cubic-bezier(.16,1,.3,1),opacity .4s}
+.psc.behind{opacity:calc(1 - var(--d) * .28)}
+.psc.behind>*{visibility:hidden}
+.psc.gone{transform:translateX(-115%) rotate(-9deg);opacity:0;pointer-events:none}
+.psc .pk{font:700 10.5px var(--ui);letter-spacing:.16em;color:var(--accent-text)}
+.psc h4{margin:5px 0 2px;font:600 18px/23px var(--disp);letter-spacing:-.01em}
+.psc p{margin:0 0 12px;font-size:12.5px;color:var(--text-2)}
+.psc .field{margin-bottom:0}
+.pmeta{display:flex;justify-content:space-between;align-items:center;margin:0 2px 12px;font:600 12px var(--ui);color:var(--text-3)}
+.pdots{display:flex;gap:5px}
+.pdots i{width:18px;height:4px;border-radius:3px;background:color-mix(in srgb,var(--text) 15%,transparent);transition:all .3s}
+.pdots i.on{width:28px;background:var(--accent-2)}
+.pdots i.done{background:color-mix(in srgb,var(--accent-2) 55%,transparent)}
+.pnav{display:grid;grid-template-columns:96px minmax(0,1fr);gap:10px}
+.pnav .ghost{height:44px}
+.pnav .primary{grid-column:2}
+.wizard [data-step="2"] .g-banner{margin-bottom:12px}
 
 /* ---- browser autofill: no light-blue box inside the field — saved values keep the glass field look ---- */
 input:-webkit-autofill,input:-webkit-autofill:hover,input:-webkit-autofill:focus,input:-webkit-autofill:active{
@@ -1106,7 +1151,7 @@ input:autofill{background:transparent!important}
 
         <div class="row2">
           <button class="ghost" type="button" id="toRegister"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="9" cy="7" r="3.5"/><path d="M2.8 20v-1.5c0-3 2.5-5 6.2-5 1.6 0 3 .4 4 1.1M18 14v7m-3.5-3.5h7"/></svg><span class="btxt">Register</span></button>
-          <button class="ghost" type="button" id="hdBtn" data-tip="Moved to a new PC? Release your licence from the old one"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4.5 8.5A8 8 0 1 1 4 14"/><path d="M4 4v5h5"/></svg><span class="btxt">HD Reset</span></button>
+          <button class="ghost" type="button" id="hdBtn" data-tip="Moved to a new PC? Release your licence from the old one"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4.5 8.5A8 8 0 1 1 4 14"/><path d="M4 4v5h5"/></svg><span class="btxt">HWID Reset</span></button>
         </div>
         <div class="sep">or continue with</div>
         <button class="ghost google" type="button" id="googleBtn"><span class="spin" aria-hidden="true"></span><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M22.5 12.3c0-.8-.1-1.5-.2-2.3H12v4.3h5.9a5 5 0 0 1-2.2 3.3v2.7h3.6c2-1.9 3.2-4.7 3.2-8Z"/><path fill="#34A853" d="M12 23c3 0 5.5-1 7.3-2.7l-3.6-2.7c-1 .7-2.2 1.1-3.7 1.1-2.9 0-5.3-1.9-6.2-4.5H2.1v2.8A11 11 0 0 0 12 23Z"/><path fill="#FBBC05" d="M5.8 14.2a6.6 6.6 0 0 1 0-4.3V7.1H2.1a11 11 0 0 0 0 9.9l3.7-2.8Z"/><path fill="#EA4335" d="M12 5.4c1.6 0 3.1.6 4.2 1.7l3.2-3.2A11 11 0 0 0 2.1 7.1l3.7 2.8C6.7 7.3 9.1 5.4 12 5.4Z"/></svg><span class="btxt">Sign in with Google</span></button>
@@ -1141,27 +1186,39 @@ input:autofill{background:transparent!important}
 
         <div class="wz-step" data-step="2" inert>
           <div class="g-banner" id="regGBanner" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M22.5 12.3c0-.8-.1-1.5-.2-2.3H12v4.3h5.9a5 5 0 0 1-2.2 3.3v2.7h3.6c2-1.9 3.2-4.7 3.2-8Z"/><path fill="#34A853" d="M12 23c3 0 5.5-1 7.3-2.7l-3.6-2.7c-1 .7-2.2 1.1-3.7 1.1-2.9 0-5.3-1.9-6.2-4.5H2.1v2.8A11 11 0 0 0 12 23Z"/><path fill="#FBBC05" d="M5.8 14.2a6.6 6.6 0 0 1 0-4.3V7.1H2.1a11 11 0 0 0 0 9.9l3.7-2.8Z"/><path fill="#EA4335" d="M12 5.4c1.6 0 3.1.6 4.2 1.7l3.2-3.2A11 11 0 0 0 2.1 7.1l3.7 2.8C6.7 7.3 9.1 5.4 12 5.4Z"/></svg><span>Signing up with Google as <b id="regGEmail"></b></span></div>
-          <div class="field">
-            <label for="regUser">Username</label>
-            <div class="ctl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c.5-4 2.8-6 7-6s6.5 2 7 6"/></svg><input id="regUser" autocomplete="username" spellcheck="false" placeholder="Choose a username" data-enter="regCreate"></div>
+          <div class="pstack" id="pStack">
+            <div class="psc" data-c="0"><div class="pk">01 · USERNAME</div><h4>How should we call you?</h4><p>This is how you'll sign in.</p>
+            <div class="field">
+            <label class="sr-only" for="regUser">Username</label>
+            <div class="ctl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c.5-4 2.8-6 7-6s6.5 2 7 6"/></svg><input id="regUser" autocomplete="username" spellcheck="false" placeholder="Choose a username" data-enter="pNext"></div>
           </div>
-          <div class="field">
-            <label for="regPhone">Country &amp; phone number</label>
+            </div>
+            <div class="psc" data-c="1"><div class="pk">02 · MOBILE</div><h4>Your mobile number</h4><p>For support and account recovery.</p>
+            <div class="field">
+            <label class="sr-only" for="regPhone">Country &amp; phone number</label>
             <div class="phone">
               <div class="ctl cc"><span id="ccText">IN +91</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg><select id="regCountry" aria-label="Country"></select></div>
-              <div class="ctl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="2.5" width="10" height="19" rx="2.2"/><path d="M11 18.5h2"/></svg><input id="regPhone" type="tel" inputmode="numeric" autocomplete="tel-national" placeholder="10 digits" data-enter="regCreate"></div>
+              <div class="ctl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="2.5" width="10" height="19" rx="2.2"/><path d="M11 18.5h2"/></svg><input id="regPhone" type="tel" inputmode="numeric" autocomplete="tel-national" placeholder="10 digits" data-enter="pNext"></div>
             </div>
           </div>
-          <div class="field">
-            <label for="regPass">Password</label>
-            <div class="ctl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg><input id="regPass" type="password" autocomplete="new-password" placeholder="Create a password" data-enter="regCreate"><button class="reveal" type="button" aria-label="Show password" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6Z"/><circle cx="12" cy="12" r="2.5"/></svg></button></div>
+            </div>
+            <div class="psc" data-c="2"><div class="pk">03 · PASSWORD</div><h4>Create a password</h4><p>8+ characters with A-Z, a-z, 0-9 and a symbol.</p>
+            <div class="field">
+            <label class="sr-only" for="regPass">Password</label>
+            <div class="ctl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg><input id="regPass" type="password" autocomplete="new-password" placeholder="Create a password" data-enter="pNext"><button class="reveal" type="button" aria-label="Show password" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6Z"/><circle cx="12" cy="12" r="2.5"/></svg></button></div>
           </div>
-          <div class="field">
-            <label for="regPass2">Confirm password</label>
+            </div>
+            <div class="psc" data-c="3"><div class="pk">04 · CONFIRM</div><h4>Type it once more</h4><p>Just to be sure there are no typos.</p>
+            <div class="field">
+            <label class="sr-only" for="regPass2">Confirm password</label>
             <div class="ctl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg><input id="regPass2" type="password" autocomplete="new-password" placeholder="Re-enter your password" data-enter="regCreate"><button class="reveal" type="button" aria-label="Show password" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6Z"/><circle cx="12" cy="12" r="2.5"/></svg></button></div>
           </div>
+            </div>
+          </div>
+          <div class="pmeta"><span id="pCount">Card 1 of 4</span><span class="pdots" id="pDots"><i></i><i></i><i></i><i></i></span></div>
           <div class="step-err" id="reg2Err" role="none"><div><div class="se"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg><span></span></div></div></div>
-          <button class="primary" type="button" id="regCreate"><span class="spin" aria-hidden="true"></span><span class="btxt">Create account</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></button>
+          <div class="pnav"><button class="ghost" type="button" id="pBack">Back</button><button class="primary" type="button" id="pNext"><span class="spin" aria-hidden="true"></span><span class="btxt">Next</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></button>
+          <button class="primary" type="button" id="regCreate" hidden><span class="spin" aria-hidden="true"></span><span class="btxt">Create account</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></button></div>
         </div>
 
         <div class="wz-foot"><button class="link back-link" type="button" data-back data-tip="Return to the sign-in screen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5m6 6-6-6 6-6"/></svg>Back to Sign In</button></div>
@@ -1251,7 +1308,7 @@ input:autofill{background:transparent!important}
     </div>
   </div>
 
-  <!-- ============ Modal layer: notify cards · HD Reset dialog · security check ============ -->
+  <!-- ============ Modal layer: notify cards · HWID Reset dialog · security check ============ -->
   <div class="layer" id="layer"><div class="scrim"></div></div>
 
 </div>
@@ -1313,7 +1370,7 @@ input:autofill{background:transparent!important}
       <select id="pv-forgot"><option value="ok">Success</option><option value="notfound">No account found</option><option value="resetfail">Reset fails</option></select></label>
     <label>Google sign-up check
       <select id="pv-google"><option value="new">New user → complete profile</option><option value="existing">Existing account → signs in</option><option value="error">Check fails</option></select></label>
-    <label>HD Reset result
+    <label>HWID Reset result
       <select id="pv-hd"><option value="ok">Success</option><option value="limit">Limit reached (3 a month)</option><option value="wrongpw">Wrong password</option><option value="notfound">Account not found</option><option value="network">No internet</option><option value="long">Long message (cut at 4 lines)</option></select></label>
     <p class="pv-note">Verification code that passes: <b>123456</b> — any other code is wrong.
       <button type="button" class="link" id="pvForget">Clear saved sign-in</button></p>
@@ -1371,7 +1428,7 @@ input:autofill{background:transparent!important}
 
   /* =====================================================================
      AUTH WORKFLOWS — implements every screen and branch of docs/auth-workflows:
-       01 Login · 02 Register · 03 Forgot password · 04 HD Reset · 05 Google sign-in / sign-up
+       01 Login · 02 Register · 03 Forgot password · 04 HWID Reset · 05 Google sign-in / sign-up
      Server calls are simulated here; choose each outcome in "Preview scenarios" (preview only).
      ===================================================================== */
   const $ = id => document.getElementById(id);
@@ -1398,7 +1455,7 @@ input:autofill{background:transparent!important}
     chev: SVG('<path d="m9 6 6 6-6 6"/>'),
     g: '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M22.5 12.3c0-.8-.1-1.5-.2-2.3H12v4.3h5.9a5 5 0 0 1-2.2 3.3v2.7h3.6c2-1.9 3.2-4.7 3.2-8Z"/><path fill="#34A853" d="M12 23c3 0 5.5-1 7.3-2.7l-3.6-2.7c-1 .7-2.2 1.1-3.7 1.1-2.9 0-5.3-1.9-6.2-4.5H2.1v2.8A11 11 0 0 0 12 23Z"/><path fill="#FBBC05" d="M5.8 14.2a6.6 6.6 0 0 1 0-4.3V7.1H2.1a11 11 0 0 0 0 9.9l3.7-2.8Z"/><path fill="#EA4335" d="M12 5.4c1.6 0 3.1.6 4.2 1.7l3.2-3.2A11 11 0 0 0 2.1 7.1l3.7 2.8C6.7 7.3 9.1 5.4 12 5.4Z"/></svg>',
   };
-  // HD Reset illustration: OLD PC → THIS PC, the licence travels across (st: move · ok · err · warn)
+  // HWID Reset illustration: OLD PC → THIS PC, the licence travels across (st: move · ok · err · warn)
   const hdArt = st => {
     const col = {move: '#5fe3d3', ok: '#5fe3d3', err: '#ff9eab', warn: '#ffd27a'}[st];
     const mark = {ok: '<path d="m131 26 5 5 10-10"/>', err: '<path d="m133 21 10 10M143 21l-10 10"/>', warn: '<path d="M138 19v8M138 33h.01"/>'}[st] || '';
@@ -1527,7 +1584,7 @@ input:autofill{background:transparent!important}
     : !/\d/.test(v) ? 'Password must contain a number'
     : !PW_SPECIAL.test(v) ? 'Password must contain a special character' : null;
 
-  /* =================== modal layer: Notify card · HD Reset dialog · security check =================== */
+  /* =================== modal layer: Notify card · HWID Reset dialog · security check =================== */
   const layer = $('layer');
   let modal = null;                                   // {el, esc}
   const mount = (el, esc, cls = '') => {
@@ -1583,7 +1640,7 @@ input:autofill{background:transparent!important}
       return e;
     });
     const row = el.querySelector('.nc-btns'); btnEls.forEach(b => row.appendChild(b));
-    // route tiles (HD Reset choice): big clickable options, the suggested one highlighted
+    // route tiles (HWID Reset choice): big clickable options, the suggested one highlighted
     (o.options || []).forEach(op => {
       const e = document.createElement('button'); e.type = 'button'; e.className = 'nc-opt' + (op.rec ? ' rec' : '');
       e.innerHTML = `<span class="oi">${IC[op.ic]}</span><span class="ot"><b></b><small></small></span>${IC.chev}`;
@@ -1908,33 +1965,30 @@ input:autofill{background:transparent!important}
     setOpen('reg1c', false); setOpen('reg1a', true); setChip('regChip', 'Step 1 of 2 · Verify your email'); $('regEmail').focus();
   });
 
-  /* OTP input: 6 boxes · typing moves on · Backspace on an empty box moves back · paste fills all */
+  /* OTP input: ODOMETER — each digit rolls into its window like a mechanical counter (3 + 3).
+     One real input underneath, so typing, Backspace, paste and Windows/Chrome one-time-code autofill all just work. */
   const mkOtp = (box, onChange) => {
-    box.innerHTML = Array.from({length: 6}, (_, i) => `<input inputmode="numeric" autocomplete="one-time-code" aria-label="Digit ${i + 1}">`).join('');
-    const ins = [...box.querySelectorAll('input')];
-    const val = () => ins.map(i => i.value).join('');
-    const fire = () => { ins.forEach(i => i.classList.toggle('f', !!i.value)); box.classList.remove('bad'); onChange(val()); };
-    const spread = (d, from) => { for (let k = 0; k < d.length && from + k < 6; k++) ins[from + k].value = d[k]; ins[Math.min(5, from + d.length)].focus(); fire(); };
-    ins.forEach((inp, i) => {
-      inp.addEventListener('input', () => {
-        const d = inp.value.replace(/\D/g, '');
-        if (d.length >= 6) return spread(d.slice(0, 6), 0);
-        inp.value = d.slice(-1); if (inp.value && i < 5) ins[i + 1].focus(); fire();
-      });
-      inp.addEventListener('keydown', e => {
-        if (e.key === 'Backspace' && !inp.value && i > 0) { e.preventDefault(); ins[i - 1].focus(); }
-        else if (e.key === 'ArrowLeft' && i > 0) { e.preventDefault(); ins[i - 1].focus(); }
-        else if (e.key === 'ArrowRight' && i < 5) { e.preventDefault(); ins[i + 1].focus(); }
-        else if (e.key === 'Enter') { e.preventDefault(); box.dispatchEvent(new CustomEvent('otpenter')); }
-      });
-      inp.addEventListener('paste', e => { e.preventDefault(); const d = (e.clipboardData.getData('text') || '').replace(/\D/g, ''); if (d) spread(d, d.length >= 6 ? 0 : i); });
-      inp.addEventListener('focus', () => inp.select());
-    });
+    box.classList.add('odo');
+    box.innerHTML = Array.from({length: 6}, () => `<span class="win empty" aria-hidden="true"><span class="strip">${[...'0123456789'].map(d => `<i>${d}</i>`).join('')}</span></span>`).join('')
+      + '<input class="odo-in" inputmode="numeric" autocomplete="one-time-code" maxlength="6" aria-label="6-digit code">';
+    const inp = box.querySelector('input'), wins = [...box.querySelectorAll('.win')];
+    const render = () => {
+      const v = inp.value, f = document.activeElement === inp;
+      wins.forEach((w, i) => { const d = v[i];
+        w.classList.toggle('empty', d === undefined); w.classList.toggle('cur', f && i === v.length);
+        w.firstChild.style.transform = `translateY(-${(d === undefined ? 0 : +d) * 10}%)`; });
+    };
+    const fire = () => { box.classList.remove('bad'); render(); onChange(inp.value); };
+    inp.addEventListener('input', () => { inp.value = inp.value.replace(/\D/g, '').slice(0, 6); fire(); });
+    inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); box.dispatchEvent(new CustomEvent('otpenter')); } });
+    inp.addEventListener('focus', () => { const n = inp.value.length; inp.setSelectionRange(n, n); render(); });
+    inp.addEventListener('blur', render);
+    render();
     return {
-      val, focus: () => (ins.find(i => !i.value) || ins[5]).focus({preventScroll: true}),
-      clear: (focus = true) => { ins.forEach(i => { i.value = ''; }); fire(); if (focus) ins[0].focus({preventScroll: true}); },
-      bad: () => { box.classList.add('bad'); if (!reduce) box.animate([{translate: '0 0'}, {translate: '-6px 0'}, {translate: '5px 0'}, {translate: '-3px 0'}, {translate: '0 0'}], {duration: 360}); },
-      disable: on => ins.forEach(i => { i.disabled = on; }),
+      val: () => inp.value, focus: () => inp.focus({preventScroll: true}),
+      clear: (focus = true) => { inp.value = ''; fire(); if (focus) inp.focus({preventScroll: true}); },
+      bad: () => { box.classList.add('bad'); if (!reduce) box.animate([{translate: '0 0'}, {translate: '-7px 0'}, {translate: '6px 0'}, {translate: '-3px 0'}, {translate: '0 0'}], {duration: 380}); },
+      disable: on => { inp.disabled = on; box.classList.toggle('dis', on); },
     };
   };
   const regOtp = mkOtp($('regOtp'), v => { $('regVerify').classList.toggle('off', v.length < 6); stepErr('reg1cErr', ''); });
@@ -1986,6 +2040,28 @@ input:autofill{background:transparent!important}
   sel.addEventListener('change', syncCountry);
   ['regUser', 'regPhone', 'regPass', 'regPass2'].forEach(i => F[i].input.addEventListener('input', () => stepErr('reg2Err', '')));
 
+  /* profile = CARD STACK: one field per card; Next checks the card, flicks it away and the next one rises */
+  const P_IDS = ['regUser', 'regPhone', 'regPass', 'regPass2'];
+  const pCards = [...document.querySelectorAll('#pStack .psc')];
+  let pIdx = 0;
+  const pLay = (focus = true) => {
+    pCards.forEach((c, k) => { const d = k - pIdx;
+      c.classList.toggle('gone', d < 0); c.classList.toggle('behind', d > 0); c.style.setProperty('--d', Math.max(0, d)); c.inert = d !== 0; });
+    $('pCount').textContent = `Card ${pIdx + 1} of 4`;
+    [...$('pDots').children].forEach((d, k) => { d.className = k < pIdx ? 'done' : k === pIdx ? 'on' : ''; });
+    $('pBack').style.visibility = pIdx ? 'visible' : 'hidden';
+    $('pNext').hidden = pIdx === 3; $('regCreate').hidden = pIdx !== 3;
+    if (focus) setTimeout(() => { if (view === 'register') F[P_IDS[pIdx]].input.focus({preventScroll: true}); }, reduce ? 0 : 340);
+  };
+  const pGo = i => { pIdx = Math.max(0, Math.min(3, i)); pLay(); };
+  const pBad = () => P_IDS.findIndex(id => { F[id].eval(); return F[id].res && F[id].res.level === 'err'; });
+  $('pNext').addEventListener('click', () => {
+    const f = F[P_IDS[pIdx]]; f.touched = true; f.eval();
+    if (f.res && f.res.level === 'err') { f.input.focus({preventScroll: true}); f.force(); if (!reduce) pCards[pIdx].animate([{translate: '0 0'}, {translate: '-8px 0'}, {translate: '7px 0'}, {translate: '-4px 0'}, {translate: '0 0'}], {duration: 380}); return; }
+    pGo(pIdx + 1);
+  });
+  $('pBack').addEventListener('click', () => pGo(pIdx - 1));
+
   function regStep2(google) {
     gmode = google;
     if (google) { resetRegister(); gmode = true; if (view !== 'register') showView('register'); }
@@ -1994,22 +2070,23 @@ input:autofill{background:transparent!important}
     ['regUser', 'regPhone', 'regPass', 'regPass2'].forEach(i => F[i].reset());
     if (google) F.regUser.reset(cleanName(GOOGLE.name));         // suggested from the Google name, editable
     stepErr('reg2Err', ''); gCreate.update();
+    pIdx = 0; pLay(false);
     setStep($('registerPanel'), 2); setChip('regChip', 'Step 2 of 2 · Complete your profile');
-    setTimeout(() => (google && $('regUser').value ? $('regPhone') : $('regUser')).focus({preventScroll: true}), reduce ? 0 : google && view !== 'register' ? 760 : 90);
+    setTimeout(() => $('regUser').focus({preventScroll: true}), reduce ? 0 : google && view !== 'register' ? 760 : 90);
   }
   $('regCreate').addEventListener('click', async () => {
-    if (!gCreate.ok()) return gCreate.block();
+    if (!gCreate.ok()) { const k = pBad(); if (k >= 0 && k !== pIdx) { pGo(k); setTimeout(() => gCreate.block(), reduce ? 0 : 360); } else gCreate.block(); return; }
     stepErr('reg2Err', '');
     const b = $('regCreate'), step2 = $('registerPanel').querySelector('[data-step="2"]');
     setBusy(b, true, gmode ? 'Finishing sign-up…' : 'Creating account…'); lockInputs(step2, true);
     if (!await req('reg', dur(1500))) return;
     setBusy(b, false); lockInputs(step2, false);
     const name = $('regUser').value.trim();
-    if (scn('reg') === 'usertaken') { stepErr('reg2Err', 'This username is already taken. Please choose another one.'); F.regUser.input.focus(); return; }
+    if (scn('reg') === 'usertaken') { stepErr('reg2Err', 'This username is already taken. Please choose another one.'); pGo(0); return; }
     if (gmode) { showView('signin'); googleFinish(name); return; } // Google sign-up signs in automatically ("already registered" counts as success)
     showView('signin'); F.username.reset(name); F.password.reset(''); gLogin.update();   // creating the account does not sign in
     setTimeout(() => card({heading: 'Account created', kind: 'ok', title: `Welcome, ${name}`, lead: 'You\'re all set', body: ['Please sign in to continue. A few things you\'ll use:'],
-      tips: [['board', 'Boardview', 'Pin-accurate layouts for every board.'], ['search', '2.3M+ schematics', 'Search by model, part or net name.'], ['hd', 'HD Reset', 'Move your licence to a new PC, 3 times a month.']],
+      tips: [['board', 'Boardview', 'Pin-accurate layouts for every board.'], ['search', '2.3M+ schematics', 'Search by model, part or net name.'], ['hd', 'HWID Reset', 'Move your licence to a new PC, 3 times a month.']],
       buttons: [{t: 'Sign in', k: 'primary'}], after: () => pw.focus({preventScroll: true})}), reduce ? 0 : 650);
   });
 
@@ -2024,6 +2101,7 @@ input:autofill{background:transparent!important}
     if (!(gPending && gPending.intent === 'signup')) setBusy($('googleUp'), false);
     lockInputs($('registerPanel'), false);
     setStep($('registerPanel'), 1); setChip('regChip', 'Step 1 of 2 · Verify your email');
+    pIdx = 0; pLay(false);
     gSend.update(); gCreate.update(); $('regVerify').classList.add('off');
   }
 
@@ -2138,10 +2216,10 @@ input:autofill{background:transparent!important}
     card({...base, title: 'How do you sign in?', lead: 'Prove the account is yours',
       body: ['Releasing this licence from its current PC needs proof that the account is yours.'],
       options: [google('Signed in with Google? Choose Continue with Google — there is no password to type.', true),
-                {ic: 'key', t: 'I use a password', d: 'Otherwise type your username and password on the sign-in screen, then press HD Reset again.', on: () => {
+                {ic: 'key', t: 'I use a password', d: 'Otherwise type your username and password on the sign-in screen, then press HWID Reset again.', on: () => {
                   const missUser = !user.value.trim();
                   card({heading: 'Hardware ID Reset', kind: 'warn', art: 'warn', title: 'Credentials required', lead: 'One more box to fill',
-                    body: [missUser ? 'Enter your username or email as well, then press HD Reset again.' : 'Enter your password as well, then press HD Reset again.'],
+                    body: [missUser ? 'Enter your username or email as well, then press HWID Reset again.' : 'Enter your password as well, then press HWID Reset again.'],
                     buttons: [{t: 'OK', k: 'primary'}], after: () => setTimeout(() => (missUser ? user : pw).focus({preventScroll: true}), 30)});
                 }}]});
   }

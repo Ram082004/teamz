@@ -132,7 +132,7 @@ button{font:inherit;color:inherit}
 .hd .nc-btns{grid-template-columns:minmax(0,1fr) 150px}.hd .nc-btns .primary{grid-column:2}
 .rail{height:3px;grid-column:1/-1;background:color-mix(in srgb,var(--text) 8%,transparent)}
 .rail i{display:block;height:100%;width:100%;background:linear-gradient(90deg,var(--accent),var(--accent-2))}
-/* HD Reset loader (phase 1, 340 px) */
+/* HWID Reset loader (phase 1, 340 px) */
 .hdd{width:340px;border-radius:14px;overflow:hidden;background:color-mix(in srgb,var(--base) 86%,transparent);
   box-shadow:0 40px 90px -30px rgba(0,0,0,.6),inset 0 1px 0 var(--specular),inset 0 0 0 1px var(--hair)}
 .hd-load{display:flex;flex-direction:column;align-items:center;text-align:center;padding:28px 24px 26px}
@@ -235,7 +235,7 @@ button{font:inherit;color:inherit}
      buttons: [['OK', 's', 'Back to Sign In'], ['Open w2rsolutions.in', 'p', 'Opens the website in the browser']]},
     {wf: 'Login', name: 'Hardware ID Error', when: '<code>Hardware ID</code> · <code>activated on another device</code> · <code>device limit reached</code> · <code>mismatch</code> (rule 5)', kind: 'err', heading: 'Sign in', title: 'Hardware ID Error', lead: 'This licence is on another PC',
      body: ['Hardware ID mismatch: this account is already activated on another device.'], enq: ENQ,
-     buttons: [['Close', 's', 'Back to Sign In'], ['Reset Hardware ID', 'p', 'HD Reset choice card (#17 or #18)']]},
+     buttons: [['Close', 's', 'Back to Sign In'], ['Reset Hardware ID', 'p', 'HWID Reset choice card (#17 or #18)']]},
     {wf: 'Login', name: 'Upgrade Required', when: '<code>Free plan users</code> · <code>upgrade to Premium</code> · <code>FREE_PLAN_RESTRICTION</code> (rule 6)', kind: 'warn', heading: 'Sign in', title: 'Upgrade Required', lead: 'The desktop app needs Premium',
      body: ['Free plan users can\'t use the desktop app. Please upgrade to Premium.'],
      buttons: [['Enter Activation Key', 'p', 'Activation key dialog (#11)'], ['Get Activation Key', 's', 'Website plans page (or WhatsApp)'], ['Close', 't', 'Back to Sign In']]},
@@ -261,36 +261,36 @@ button{font:inherit;color:inherit}
     /* ---------------- 2 · REGISTER ---------------- */
     {wf: 'Register', name: 'Account created', when: 'POST /api/auth/signup → 201 · the form swaps back to Sign In first', kind: 'ok', heading: 'Account created', title: 'Welcome, ramprasath', lead: 'You\'re all set',
      body: ['Please sign in to continue. A few things you\'ll use:'],
-     tips: [['board', 'Boardview', 'Pin-accurate layouts for every board.'], ['search', '2.3M+ schematics', 'Search by model, part or net name.'], ['hd', 'HD Reset', 'Move your licence to a new PC, 3 times a month.']],
+     tips: [['board', 'Boardview', 'Pin-accurate layouts for every board.'], ['search', '2.3M+ schematics', 'Search by model, part or net name.'], ['hd', 'HWID Reset', 'Move your licence to a new PC, 3 times a month.']],
      buttons: [['Sign in', 'p', 'Closes; username is prefilled, focus on password']]},
     /* ---------------- 3 · FORGOT PASSWORD ---------------- */
     {wf: 'Forgot password', name: 'Password updated', when: 'POST /api/auth/reset succeeded · the form swaps back to Sign In first', kind: 'ok', heading: 'Password reset', title: 'Password updated', lead: 'Your account is secure again',
      body: ['Your password has been reset. Please sign in with your new password.'], buttons: [['OK', 'p', 'Username prefilled, focus on password']]},
     /* ---------------- 4 · HD RESET ---------------- */
-    {wf: 'HD Reset', name: 'Choice — credentials in the boxes', when: 'HD Reset / Reset Hardware ID while username AND password are filled (variant A)', kind: 'info', art: 'move', meter: true, heading: 'Hardware ID Reset', title: 'Reset which account?', lead: 'Choose the account to release',
+    {wf: 'HWID Reset', name: 'Choice — credentials in the boxes', when: 'HWID Reset / Reset Hardware ID while username AND password are filled (variant A)', kind: 'info', art: 'move', meter: true, heading: 'Hardware ID Reset', title: 'Reset which account?', lead: 'Choose the account to release',
      body: ['The sign-in boxes hold "ramprasath". Resetting releases that account from every PC it is signed in on, and spends one of its three resets for this month.'],
-     options: [['user', 'Use these credentials', 'Release "ramprasath" using the password in the sign-in boxes.', true, 'HD Reset loader (#21) → result'],
+     options: [['user', 'Use these credentials', 'Release "ramprasath" using the password in the sign-in boxes.', true, 'HWID Reset loader (#21) → result'],
                ['g', 'Continue with Google', 'If you sign in with Google, that is a different account — choose Continue with Google.', false, 'Browser Google consent (flagged as a reset)']],
      buttons: [['Cancel', 't', 'Back to Sign In (Esc does the same)']]},
-    {wf: 'HD Reset', name: 'Choice — boxes empty', when: 'HD Reset while the boxes are empty or only one is filled (variant B)', kind: 'info', art: 'move', meter: true, heading: 'Hardware ID Reset', title: 'How do you sign in?', lead: 'Prove the account is yours',
+    {wf: 'HWID Reset', name: 'Choice — boxes empty', when: 'HWID Reset while the boxes are empty or only one is filled (variant B)', kind: 'info', art: 'move', meter: true, heading: 'Hardware ID Reset', title: 'How do you sign in?', lead: 'Prove the account is yours',
      body: ['Releasing this licence from its current PC needs proof that the account is yours.'],
      options: [['g', 'Continue with Google', 'Signed in with Google? Choose Continue with Google — there is no password to type.', true, 'Browser Google consent (flagged as a reset)'],
-               ['key', 'I use a password', 'Otherwise type your username and password on the sign-in screen, then press HD Reset again.', false, 'Credentials required (#19 / #20)']],
+               ['key', 'I use a password', 'Otherwise type your username and password on the sign-in screen, then press HWID Reset again.', false, 'Credentials required (#19 / #20)']],
      buttons: [['Cancel', 't', 'Back to Sign In (Esc does the same)']]},
-    {wf: 'HD Reset', name: 'Credentials required — username missing', when: '"I use a password" with the username box empty', kind: 'warn', art: 'warn', heading: 'Hardware ID Reset', title: 'Credentials required', lead: 'One more box to fill',
-     body: ['Enter your username or email as well, then press HD Reset again.'], buttons: [['OK', 'p', 'Focus moves to the username box']]},
-    {wf: 'HD Reset', name: 'Credentials required — password missing', when: '"I use a password" with the password box empty', kind: 'warn', art: 'warn', heading: 'Hardware ID Reset', title: 'Credentials required', lead: 'One more box to fill',
-     body: ['Enter your password as well, then press HD Reset again.'], buttons: [['OK', 'p', 'Focus moves to the password box']]},
-    {wf: 'HD Reset', name: 'Loader', when: 'POST /auth/reset-hwid running (phase 1 · 340 px)', loader: 'Checking your license with the server',
+    {wf: 'HWID Reset', name: 'Credentials required — username missing', when: '"I use a password" with the username box empty', kind: 'warn', art: 'warn', heading: 'Hardware ID Reset', title: 'Credentials required', lead: 'One more box to fill',
+     body: ['Enter your username or email as well, then press HWID Reset again.'], buttons: [['OK', 'p', 'Focus moves to the username box']]},
+    {wf: 'HWID Reset', name: 'Credentials required — password missing', when: '"I use a password" with the password box empty', kind: 'warn', art: 'warn', heading: 'Hardware ID Reset', title: 'Credentials required', lead: 'One more box to fill',
+     body: ['Enter your password as well, then press HWID Reset again.'], buttons: [['OK', 'p', 'Focus moves to the password box']]},
+    {wf: 'HWID Reset', name: 'Loader', when: 'POST /auth/reset-hwid running (phase 1 · 340 px)', loader: 'Checking your license with the server',
      acts: [['Esc / close', 'Cancels; a late reply is ignored'], ['Rail', 'Trickles toward 90 % over the 30 s timeout, fills on reply']]},
-    {wf: 'HD Reset', name: 'Loader — slow server', when: 'Still no reply after a few seconds', loader: 'Still working — the server is taking longer than usual.', acts: [['Reply', 'Card grows (≈900 ms) into one of the results below']]},
-    {wf: 'HD Reset', name: 'Result — success', when: 'Server says <code>success: true</code>', hd: 'ok', side: 'Reset complete', lead: 'Your licence is free',
+    {wf: 'HWID Reset', name: 'Loader — slow server', when: 'Still no reply after a few seconds', loader: 'Still working — the server is taking longer than usual.', acts: [['Reply', 'Card grows (≈900 ms) into one of the results below']]},
+    {wf: 'HWID Reset', name: 'Result — success', when: 'Server says <code>success: true</code>', hd: 'ok', side: 'Reset complete', lead: 'Your licence is free',
      msg: 'Hardware ID reset successfully. Your licence is released from the old PC — press Sign In to use it on this one.', buttons: [['OK', 'p', 'Back to Sign In; user presses Sign In again']]},
-    {wf: 'HD Reset', name: 'Result — error', when: 'Message has <code>password</code> · <code>credential</code> · <code>auth</code> · <code>incorrect</code> · <code>invalid</code> · <code>not found</code> · <code>no account</code>', hd: 'err', side: 'Reset failed', lead: 'Check your sign-in details',
+    {wf: 'HWID Reset', name: 'Result — error', when: 'Message has <code>password</code> · <code>credential</code> · <code>auth</code> · <code>incorrect</code> · <code>invalid</code> · <code>not found</code> · <code>no account</code>', hd: 'err', side: 'Reset failed', lead: 'Check your sign-in details',
      msg: 'Incorrect password for this account. Check your username and password and try again.', buttons: [['OK', 'p', 'Back to Sign In']]},
-    {wf: 'HD Reset', name: 'Result — warning', when: 'Any other failure, e.g. the monthly limit or no internet', hd: 'warn', side: 'Couldn\'t reset', lead: 'Please try again later',
+    {wf: 'HWID Reset', name: 'Result — warning', when: 'Any other failure, e.g. the monthly limit or no internet', hd: 'warn', side: 'Couldn\'t reset', lead: 'Please try again later',
      msg: 'You have reached the limit of 3 hardware ID resets for this month. Please try again next month.', buttons: [['OK', 'p', 'Back to Sign In']]},
-    {wf: 'HD Reset', name: 'Result — long message (cut at 4 lines)', when: 'Server message longer than 4 lines → ends with …', hd: 'warn', side: 'Couldn\'t reset', lead: 'Please try again later',
+    {wf: 'HWID Reset', name: 'Result — long message (cut at 4 lines)', when: 'Server message longer than 4 lines → ends with …', hd: 'warn', side: 'Couldn\'t reset', lead: 'Please try again later',
      msg: 'The licence server is still finishing an earlier request for this account, so it can\'t release the hardware ID right now. Wait a few minutes and try again. If this keeps happening, contact support with your username, the time you tried, and the name of this PC so the team can release it manually from the admin panel.', buttons: [['OK', 'p', 'Back to Sign In']]},
     /* ---------------- 5 · GOOGLE ---------------- */
     {wf: 'Google', name: 'Google Sign-In Failed — cancelled', when: 'Browser tab closed or Cancel pressed (sign in, sign up or HD reset)', kind: 'warn', heading: 'Google', title: 'Google Sign-In Failed', lead: 'Google didn\'t finish',
@@ -332,7 +332,7 @@ button{font:inherit;color:inherit}
   };
 
   const WF = [['Login', '01-login.md · error cards in server-message order'], ['Register', '02-register.md'], ['Forgot password', '03-forgot-password.md'],
-              ['HD Reset', '04-hd-reset.md · choice → loader → morph → result'], ['Google', '05-google-sign-in.md']];
+              ['HWID Reset', '04-hd-reset.md · choice → loader → morph → result'], ['Google', '05-google-sign-in.md']];
   let n = 0;
   document.getElementById('out').innerHTML = WF.map(([w, src]) => {
     const list = P.filter(p => p.wf === w);
