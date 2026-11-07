@@ -182,8 +182,6 @@ button{cursor:default}
 .main{position:relative}
 .form-card{position:relative;z-index:3;will-change:transform;transition:transform var(--glide),box-shadow var(--glide)}
 .visual{z-index:1;will-change:transform;transition:transform var(--glide)}
-.main.reg .form-card{transform:translateX(646px);box-shadow:0 30px 70px -20px rgba(0,0,0,.4),inset 0 1px 0 var(--specular),inset 0 0 0 1px var(--hair)}
-.main.reg .visual{transform:translateX(-440px)}
 .v-copy,.features{transition:opacity .35s var(--ease)}
 .main.gliding .v-copy,.main.gliding .features{opacity:.25}
 
@@ -191,9 +189,6 @@ button{cursor:default}
 .slider{display:grid;height:100%}
 .panel{grid-area:1/1;height:100%;padding:26px 36px 18px;display:flex;flex-direction:column;min-height:0;
   transition:opacity .45s var(--ease),transform .7s var(--ease),filter .45s var(--ease)}
-.main.reg #signinPanel{opacity:0;transform:translateX(-36px);filter:blur(6px);pointer-events:none;transition-delay:0s}
-.main:not(.reg) #registerPanel{opacity:0;transform:translateX(36px);filter:blur(6px);pointer-events:none;transition-delay:0s}
-.main.reg #registerPanel,.main:not(.reg) #signinPanel{transition-delay:.25s}
 .back-row{display:flex;align-items:center;gap:10px;margin-bottom:16px}
 .back{width:34px;height:34px;border:0;border-radius:9px;display:grid;place-items:center;color:var(--text);
   background:var(--glass-btn);box-shadow:inset 0 0 0 1px var(--hair),inset 0 1px 0 var(--specular);transition:background .15s,transform .15s}
@@ -536,10 +531,6 @@ h1{font:600 28px/36px var(--disp);letter-spacing:-.02em;margin:0}
 .main{grid-template-columns:minmax(0,1fr) 440px}
 .form-card{grid-column:2;grid-row:1;margin:14px 14px 14px 0}
 .visual{grid-column:1;grid-row:1}
-.main.reg .form-card{transform:translateX(-646px)}
-.main.reg .visual{transform:translateX(440px)}
-.main.reg #signinPanel{transform:translateX(36px)}
-.main:not(.reg) #registerPanel{transform:translateX(-36px)}
 
 /* =================== SPLASH (launch screen) =================== */
 .splash{position:fixed;left:50%;top:50%;width:560px;height:380px;margin:-190px 0 0 -280px;z-index:30;border-radius:18px;overflow:hidden;
@@ -667,6 +658,326 @@ h1{font:600 28px/36px var(--disp);letter-spacing:-.02em;margin:0}
 
 /* status bar tag — calmer */
 .status .tag{letter-spacing:.22em;font-weight:600;color:var(--text-3)}
+
+/* =====================================================================
+   AUTH WORKFLOWS  (docs/auth-workflows: 01 login · 02 register · 03 forgot · 04 HD reset · 05 Google)
+   ===================================================================== */
+[hidden]{display:none!important}
+
+/* ---- form swap: Register / Forgot password glide the card to the LEFT, the window never changes ---- */
+.main.alt .form-card{transform:translateX(-646px);box-shadow:0 30px 70px -20px rgba(0,0,0,.4),inset 0 1px 0 var(--specular),inset 0 0 0 1px var(--hair)}
+.main.alt .visual{transform:translateX(440px)}
+.panel{opacity:0;transform:translateX(-36px);filter:blur(6px);pointer-events:none;transition-delay:0s;overflow-y:auto;overflow-x:hidden;scrollbar-width:none}
+.panel::-webkit-scrollbar{display:none}
+#signinPanel{transform:translateX(36px)}
+.main[data-view="signin"] #signinPanel,.main[data-view="register"] #registerPanel,.main[data-view="forgot"] #forgotPanel{
+  opacity:1;transform:none;filter:none;pointer-events:auto;transition-delay:.25s}
+.main.snap *,.main.snap{transition:none!important}
+
+/* sign-in panel spacing (no eyebrow / help row — exactly the elements the spec lists) */
+#signinPanel .brand{margin-bottom:20px}
+#signinPanel .intro{margin:4px 0 18px}
+.opts{margin:2px 0 16px}
+.cb:has(input:disabled){opacity:.5}
+.cb input:disabled{cursor:default}
+.link:disabled{opacity:.5;text-decoration:none;cursor:default}
+.ghost:disabled{opacity:.55}
+.ghost:disabled:hover{background:var(--glass-btn)}
+.row2{margin-top:2px}
+
+/* loading stage text under Sign In (fixed slot → nothing moves when it appears) */
+.stage{height:36px;margin-top:6px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
+  font:500 12.5px/16px var(--ui);color:var(--text-2);opacity:0;transition:opacity .25s var(--ease)}
+.stage small{font:400 11px/15px var(--ui);color:var(--text-3)}
+.stage.show{opacity:1}
+
+/* gated primary button: looks disabled, but a click still explains why (opens the first field tooltip + shakes) */
+.primary.off{filter:saturate(.2) brightness(.92);opacity:.55;box-shadow:none;cursor:not-allowed}
+.primary.off::after{display:none}
+.primary.off:hover svg{transform:none}
+.primary.busy{filter:none;opacity:.85;cursor:progress}
+.primary.sm{height:38px;font-size:13.5px}
+.primary.danger{background:linear-gradient(110deg,#a8231a,#c42b1c);box-shadow:0 10px 22px -12px rgba(196,43,28,.9),inset 0 1px 0 rgba(255,255,255,.25)}
+.ghost.sm{height:38px;width:100%;font-size:13.5px}
+.ghost.tert{background:transparent;box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none;color:var(--text-2)}
+.ghost.tert:hover{background:var(--glass-btn)}
+.ghost .spin{display:none;width:16px;height:16px;border-radius:50%;flex:none;border:2px solid color-mix(in srgb,var(--text) 18%,transparent);border-top-color:var(--accent-2);animation:spin .8s linear infinite}
+.ghost.busy .spin{display:block}
+.ghost.busy svg{display:none}
+.ghost.busy{opacity:1;cursor:progress}
+.ghost.sm .spin{display:none}.ghost.sm.busy .spin{display:block}
+
+/* ---- field tooltips: float under the field, never change the card height ---- */
+.field{position:relative}
+.ftip{position:absolute;left:0;top:calc(100% + 7px);z-index:8;display:flex;align-items:center;gap:7px;width:max-content;max-width:100%;
+  padding:7px 11px;border-radius:8px;font:500 12px/16px var(--ui);color:#fff;background:#c42b3c;
+  box-shadow:0 10px 24px -10px rgba(0,0,0,.55);opacity:0;transform:translateY(-4px);pointer-events:none;
+  transition:opacity .16s var(--ease),transform .16s var(--ease)}
+.ftip::before{content:"";position:absolute;left:18px;top:-4px;width:9px;height:9px;background:inherit;transform:rotate(45deg);border-radius:2px 0 0 0}
+.ftip svg{width:14px;height:14px;flex:none}
+.ftip.warn{background:#f2b33d;color:#3a2600}
+.ftip .fix{border:0;background:rgba(0,0,0,.14);color:inherit;font:600 11.5px var(--ui);padding:3px 8px;border-radius:6px;cursor:pointer;margin-left:2px}
+.ftip .fix:hover{background:rgba(0,0,0,.24)}
+.field:focus-within .ftip.has,.field:hover .ftip.has,.ftip.has.forced{opacity:1;transform:none;pointer-events:auto}
+.ctl.warned{box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--warn) 55%,transparent),inset 0 -2px 0 var(--warn)}
+.ctl.invalid:focus-within{box-shadow:inset 0 0 0 1px var(--danger-line),inset 0 -2px 0 var(--danger),0 0 0 4px color-mix(in srgb,var(--danger) 18%,transparent)}
+.ctl input:disabled{opacity:.6}
+.ctl input[readonly]{color:var(--text-2)}
+.ctl-act{flex:none;border:0;background:transparent;color:var(--accent-text);font:600 12px var(--ui);padding:6px 9px;border-radius:6px;cursor:pointer}
+.ctl-act:hover{background:var(--glass-btn-hover)}
+
+/* ---- wizard pieces ---- */
+.wizard .ctl{height:40px}
+.wizard .field{margin-bottom:12px}
+.wizard h1{margin-top:2px}
+.wizard .intro{margin:4px 0 12px}
+.step-chip{display:inline-flex;align-self:flex-start;align-items:center;gap:8px;margin:0 0 18px;padding:5px 11px 5px 9px;border-radius:999px;
+  font:600 11.5px/14px var(--ui);color:var(--accent-text);background:color-mix(in srgb,var(--accent-2) 11%,transparent);
+  box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--accent-2) 30%,transparent)}
+.step-chip i{width:6px;height:6px;border-radius:50%;background:var(--accent-2);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent-2) 20%,transparent)}
+.wz-step{display:none;flex-direction:column}
+.wz-step.on{display:flex;animation:stepIn .5s var(--ease) both}
+@keyframes stepIn{from{opacity:0;transform:translateX(18px)}}
+.wz-foot{margin-top:auto;padding-top:14px;text-align:center}
+.back-link{display:inline-flex;align-items:center;gap:7px;font-size:13px}
+.back-link svg{width:15px;height:15px}
+.fhint{margin:10px 0 0;font-size:12px;line-height:16px;color:var(--text-3);text-align:center}
+.wizard .sep{margin:16px 0 12px}
+
+/* sections that slide open in place (OTP) / fold away (Send button) */
+.collapse{display:grid;grid-template-rows:0fr;opacity:0;transition:grid-template-rows .45s var(--glideE),opacity .3s var(--ease)}
+.collapse>div{min-height:0;overflow:hidden;padding:4px;margin:-4px}
+.collapse.open{grid-template-rows:1fr;opacity:1}
+
+/* one-line step error above the button */
+.step-err{display:grid;grid-template-rows:0fr;opacity:0;transition:grid-template-rows .3s var(--ease),opacity .2s,margin .3s var(--ease)}
+.step-err>div{min-height:0;overflow:hidden}
+.step-err .se{display:flex;align-items:center;gap:8px;padding:8px 11px;border-radius:8px;font:500 12.5px/17px var(--ui);color:var(--danger);
+  background:var(--danger-bg);box-shadow:inset 0 0 0 1px var(--danger-line)}
+.step-err .se svg{width:15px;height:15px;flex:none}
+.step-err.show{grid-template-rows:1fr;opacity:1;margin-bottom:12px}
+
+/* OTP — 6 single-digit boxes */
+.sent{margin:2px 0 0;font-size:13px;line-height:18px;color:var(--text-2)}
+.sent b{color:var(--text);font-weight:600;word-break:break-all}
+.otp{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin:12px 0 14px}
+.otp input{width:100%;height:48px;min-width:0;text-align:center;border:0;outline:0;border-radius:10px;font:600 20px var(--disp);color:var(--text);caret-color:var(--accent);
+  background:var(--glass-field);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
+  box-shadow:inset 0 0 0 1px var(--hair),inset 0 -1px 0 color-mix(in srgb,var(--text) 22%,transparent);transition:box-shadow .15s,background .15s}
+.otp input.f{box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--accent) 45%,transparent),inset 0 -2px 0 var(--accent)}
+.otp input:focus{background:var(--glass-field-hover);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--accent) 60%,transparent),inset 0 -2px 0 var(--accent),0 0 0 4px var(--focus)}
+.otp.bad input{box-shadow:inset 0 0 0 1px var(--danger-line),inset 0 -2px 0 var(--danger)}
+.otp input:disabled{opacity:.5}
+.otp-links{display:flex;justify-content:center;align-items:center;gap:6px;margin-top:12px;font-size:12.5px;color:var(--text-3)}
+.otp-links .link{font-size:12.5px}
+.otp-links .ok{color:var(--ok);font-weight:500}
+
+/* phone: country + number */
+.phone{display:grid;grid-template-columns:100px minmax(0,1fr);gap:8px}
+.cc{position:relative;padding:0 10px 0 12px;gap:6px;justify-content:space-between;font:500 13.5px var(--ui)}
+.cc svg{width:14px;height:14px;color:var(--text-3)}
+.cc select{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;font:inherit}
+.g-banner{display:flex;align-items:center;gap:10px;padding:9px 12px;margin:0 0 14px;border-radius:10px;font-size:12.5px;line-height:17px;color:var(--text-2);
+  background:var(--glass-btn);box-shadow:inset 0 0 0 1px var(--hair),inset 0 1px 0 var(--specular)}
+.g-banner svg{width:16px;height:16px;flex:none}
+.g-banner b{color:var(--text);font-weight:600}
+
+/* ---- modal layer (inside the window, below the title bar so caption buttons keep working) ---- */
+.win>.layer{position:absolute;left:0;right:0;top:40px;bottom:0;z-index:20;display:grid;place-items:center;pointer-events:none}
+.layer .scrim{position:absolute;inset:0;border-radius:0 0 var(--r-win) var(--r-win);opacity:0;transition:opacity .22s var(--ease);
+  background:color-mix(in srgb,var(--base) 42%,transparent);-webkit-backdrop-filter:blur(6px) saturate(120%);backdrop-filter:blur(6px) saturate(120%)}
+.layer.on{pointer-events:auto}
+.layer.on .scrim{opacity:1}
+.layer.light .scrim{background:color-mix(in srgb,var(--base) 18%,transparent);-webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px)}
+.lite .layer .scrim{-webkit-backdrop-filter:none;backdrop-filter:none;background:color-mix(in srgb,var(--base) 62%,transparent)}
+.ncard,.hdd,.secwin{position:relative;border-radius:14px;color:var(--text);
+  background:color-mix(in srgb,var(--base) 86%,transparent);-webkit-backdrop-filter:blur(30px) saturate(160%);backdrop-filter:blur(30px) saturate(160%);
+  box-shadow:0 40px 90px -30px rgba(0,0,0,.6),0 12px 30px -14px rgba(0,0,0,.4),inset 0 1px 0 var(--specular),inset 0 0 0 1px var(--hair)}
+.ncard{width:430px;max-width:calc(100% - 48px);padding:20px 22px 18px;animation:ncIn .34s var(--spring) both}
+@keyframes ncIn{from{opacity:0;transform:translateY(10px) scale(.95)}}
+.nc-head{font:700 10.5px var(--ui);letter-spacing:.13em;text-transform:uppercase;color:var(--text-3)}
+.nc-title{display:flex;align-items:center;gap:11px;margin:10px 0 8px}
+.nc-title h2{margin:0;font:600 18px/24px var(--disp);letter-spacing:-.01em}
+.badge{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;flex:none}
+.badge svg,.glyph svg{width:16px;height:16px;stroke-width:2.4}
+.badge.err,.glyph.err{background:var(--danger-bg);color:var(--danger);box-shadow:inset 0 0 0 1px var(--danger-line)}
+.badge.ok,.glyph.ok{background:color-mix(in srgb,var(--ok) 15%,transparent);color:var(--ok);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--ok) 40%,transparent)}
+.badge.warn,.glyph.warn{background:color-mix(in srgb,var(--warn) 16%,transparent);color:var(--warn);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--warn) 42%,transparent)}
+.badge.info,.glyph.info{background:color-mix(in srgb,var(--accent-2) 14%,transparent);color:var(--accent-text);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--accent-2) 38%,transparent)}
+.nc-body{font-size:13.5px;line-height:20px;color:var(--text-2);padding-left:41px}
+.nc-body p{margin:0 0 8px}
+.nc-body p:last-child{margin-bottom:0}
+.nc-enq{margin:8px 0 0 41px;font-size:12.5px;color:var(--text-3)}
+.nc-enq .link{font-size:12.5px}
+.nc-field{margin:12px 0 0 41px}
+.nc-field .ctl{height:40px}
+.nc-field input{font-family:ui-monospace,"Cascadia Mono",Consolas,monospace;letter-spacing:.06em}
+.nc-err{display:none;align-items:center;gap:6px;margin-top:7px;font:500 12px var(--ui);color:var(--danger)}
+.nc-err svg{width:13px;height:13px}
+.nc-err.show{display:flex}
+.nc-btns{display:grid;gap:8px;margin-top:20px}
+.nc-btns .primary{width:100%}
+.nc-btns button{white-space:nowrap;padding:0 14px}
+.ncard.three{width:476px}
+
+/* ---- HD Reset dialog: one card that morphs loader (340) → result (460) ---- */
+.hdd{width:340px;overflow:hidden;animation:ncIn .34s var(--spring) both}
+.hd-load{display:flex;flex-direction:column;align-items:center;text-align:center;padding:28px 24px 26px}
+.arc{width:36px;height:36px;border-radius:50%;border:3px solid color-mix(in srgb,var(--text) 12%,transparent);border-top-color:var(--accent-2);animation:spin .9s linear infinite;margin-bottom:14px}
+.hd-load b{font:600 15px/20px var(--disp)}
+.hd-sub{margin-top:4px;font-size:12.5px;line-height:17px;color:var(--text-2);max-width:260px}
+.hd-rail{height:3px;background:color-mix(in srgb,var(--text) 8%,transparent)}
+.hd-rail i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent-2))}
+.hd-tb{display:flex;align-items:center;gap:9px;height:38px;padding-left:12px;font:500 12px var(--ui);color:var(--text-2);border-bottom:1px solid var(--hair)}
+.hd-tb>span:nth-child(2){flex:1}
+.hd-x{width:44px;height:38px;border:0;background:transparent;color:var(--text);display:grid;place-items:center;border-radius:0 14px 0 0}
+.hd-x:hover{background:#c42b1c;color:#fff}
+.hd-x svg{width:13px;height:13px}
+.hd-body{display:flex;gap:14px;padding:20px 22px 4px}
+.glyph{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;flex:none}
+.glyph svg{width:19px;height:19px}
+.hd-msg{margin:2px 0 0;font-size:13.5px;line-height:20px;color:var(--text);display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:4;line-clamp:4;overflow:hidden}
+.hd-enq{margin:8px 0 0;font-size:12.5px;color:var(--text-3)}
+.hd-enq .link{font-size:12.5px}
+.hd-foot{display:flex;justify-content:flex-end;padding:18px 22px 18px}
+.hd-foot .primary{width:120px}
+
+/* ---- security check (Cloudflare Turnstile in WebView2) — small window over the login card ---- */
+.secwin{position:absolute;width:340px;overflow:hidden;animation:ncIn .3s var(--spring) both}
+.sw-tb{display:flex;align-items:center;height:34px;padding-left:12px;font:500 12px var(--ui);color:var(--text-2);border-bottom:1px solid var(--hair)}
+.sw-tb span{flex:1}
+.sw-x{width:42px;height:34px;border:0;background:transparent;color:var(--text);display:grid;place-items:center}
+.sw-x:hover{background:#c42b1c;color:#fff}
+.sw-x svg{width:12px;height:12px}
+.sw-body{padding:16px 18px 4px}
+.sw-body b{font:600 15px/20px var(--disp)}
+.sw-body p{margin:4px 0 14px;font-size:12.5px;line-height:17px;color:var(--text-2)}
+.ts{display:flex;align-items:center;gap:12px;height:62px;padding:0 14px;border-radius:6px;background:color-mix(in srgb,var(--text) 5%,transparent);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--text) 14%,transparent)}
+.ts-ic{width:26px;height:26px;display:grid;place-items:center;flex:none}
+.ts-spin{width:22px;height:22px;border-radius:50%;border:2.5px solid color-mix(in srgb,var(--text) 14%,transparent);border-top-color:#f38020;animation:spin .8s linear infinite}
+.ts-ic svg{width:22px;height:22px;color:#fff;background:#1a9a4b;border-radius:50%;padding:4px;stroke-width:3}
+.ts-t{flex:1;font:500 13.5px var(--ui)}
+.ts-brand{font:600 9.5px/12px var(--ui);text-align:right;color:var(--text-3);letter-spacing:.02em}
+.sw-foot{display:flex;justify-content:flex-end;padding:14px 18px 16px}
+.sw-foot .ghost{width:auto;padding:0 18px}
+
+/* ---- main app placeholder after sign-in ---- */
+.win>.appview{position:absolute;left:0;right:0;top:40px;bottom:0;z-index:15;display:grid;place-items:center;border-radius:0 0 var(--r-win) var(--r-win);
+  background:var(--win-tint),color-mix(in srgb,var(--base) 62%,transparent);-webkit-backdrop-filter:blur(22px);backdrop-filter:blur(22px)}
+.av-in{display:flex;flex-direction:column;align-items:center;text-align:center;width:460px}
+.av-badge{width:58px;height:58px;border-radius:50%;display:grid;place-items:center;margin-bottom:16px;color:var(--ok);
+  background:color-mix(in srgb,var(--ok) 15%,transparent);box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--ok) 45%,transparent);animation:avPop .55s var(--spring) both}
+.av-badge svg{width:27px;height:27px;stroke-width:2.4}
+@keyframes avPop{from{opacity:0;transform:scale(.6)}}
+.appview h2{margin:0;font:600 22px/28px var(--disp);letter-spacing:-.01em}
+.appview p{margin:6px 0 0;color:var(--text-2)}
+.av-bar{width:220px;height:3px;margin-top:18px;border-radius:3px;overflow:hidden;background:color-mix(in srgb,var(--text) 10%,transparent)}
+.av-bar i{display:block;width:40%;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-2));animation:avBar 1.1s ease-in-out infinite}
+@keyframes avBar{from{transform:translateX(-110%)}to{transform:translateX(260%)}}
+.av-ready{display:none}
+.appview.ready .av-bar,.appview.ready .av-wait{display:none}
+.appview.ready .av-ready{display:block;animation:stepIn .4s var(--ease) both}
+.av-ready .ghost{width:160px;margin:18px auto 0}
+
+/* ---- system browser window (Google consent) ---- */
+.gbrowser{position:fixed;right:max(20px,4vw);top:9vh;width:384px;z-index:50;border-radius:10px;overflow:hidden;color:var(--text);
+  background:color-mix(in srgb,var(--base) 95%,#fff 5%);box-shadow:0 40px 90px -25px rgba(0,0,0,.6),0 0 0 1px var(--hair);animation:ncIn .32s var(--spring) both}
+.gb-bar{display:flex;align-items:flex-end;height:36px;padding-left:8px;background:color-mix(in srgb,var(--text) 7%,transparent)}
+.gb-tab{display:flex;align-items:center;gap:8px;height:30px;padding:0 14px 0 10px;border-radius:8px 8px 0 0;font:500 12px var(--ui);background:color-mix(in srgb,var(--base) 95%,#fff 5%)}
+.gb-tab svg{width:14px;height:14px}
+.gb-sp{flex:1}
+.gb-x{align-self:stretch;width:44px;border:0;background:transparent;color:var(--text);display:grid;place-items:center}
+.gb-x:hover{background:#c42b1c;color:#fff}
+.gb-x svg{width:12px;height:12px}
+.gb-url{display:flex;align-items:center;gap:8px;margin:8px 10px;height:30px;padding:0 12px;border-radius:15px;font:400 11.5px ui-monospace,Consolas,monospace;color:var(--text-2);
+  background:color-mix(in srgb,var(--text) 6%,transparent);overflow:hidden;white-space:nowrap}
+.gb-url span{overflow:hidden;text-overflow:ellipsis}
+.gb-url svg{width:12px;height:12px;flex:none}
+.gb-page{display:flex;flex-direction:column;align-items:center;text-align:center;padding:18px 26px 8px}
+.gb-logo svg{width:30px;height:30px}
+.gb-page h3{margin:10px 0 2px;font:500 21px/28px var(--ui)}
+.gb-page>p{margin:0 0 16px;font-size:13px;color:var(--text-2)}
+.gb-acct{display:flex;align-items:center;gap:12px;width:100%;padding:10px 12px;border:0;border-top:1px solid var(--hair);background:transparent;text-align:left;cursor:pointer;font:inherit;color:var(--text)}
+.gb-acct:last-of-type{border-bottom:1px solid var(--hair)}
+.gb-acct:hover{background:color-mix(in srgb,var(--text) 5%,transparent)}
+.gb-acct b{display:block;font-weight:500;font-size:13.5px}
+.gb-acct small{font-size:12px;color:var(--text-2)}
+.gb-acct .av{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;flex:none;font:600 13px var(--ui);color:#fff;background:#7b5ea7}
+.gb-acct .av.plus{background:transparent;color:var(--text-2);box-shadow:inset 0 0 0 1px var(--hair);font-size:17px;font-weight:400}
+.gb-fine{margin:14px 0 0!important;font-size:11.5px!important;line-height:16px;color:var(--text-3)!important}
+.gb-foot{display:flex;justify-content:flex-end;width:100%;padding:12px 0 4px}
+.gb-done{padding:34px 26px 26px}
+.gb-done .av-badge{margin-bottom:6px}
+.gb-tag{padding:6px 12px 8px;font:600 9.5px var(--ui);letter-spacing:.1em;text-transform:uppercase;color:var(--text-3);text-align:center;border-top:1px solid var(--hair)}
+
+/* ---- Windows-style tooltip ---- */
+.tt{position:fixed;z-index:60;max-width:300px;padding:6px 10px;border-radius:7px;font:400 12px/16px var(--ui);color:var(--text);pointer-events:none;
+  background:color-mix(in srgb,var(--base) 94%,transparent);box-shadow:0 8px 22px -8px rgba(0,0,0,.45),inset 0 0 0 1px var(--hair);
+  opacity:0;transform:translateY(3px);transition:opacity .14s,transform .14s}
+.tt.show{opacity:1;transform:none}
+
+/* ---- preview scenarios panel (outside the app) ---- */
+.pv{position:fixed;left:16px;bottom:16px;z-index:45;border-radius:14px;max-width:calc(100vw - 32px);
+  box-shadow:0 18px 40px -16px rgba(0,0,0,.5),inset 0 1px 0 var(--specular),inset 0 0 0 1px var(--hair)}
+.pv-tg{display:flex;align-items:center;gap:9px;height:38px;padding:0 14px 0 12px;border:0;background:transparent;font:500 12.5px var(--ui);color:var(--text);cursor:pointer;border-radius:14px}
+.pv-tg svg{width:15px;height:15px;color:var(--accent-text)}
+.pv-tg em{font:600 9.5px var(--ui);font-style:normal;letter-spacing:.08em;text-transform:uppercase;color:var(--text-3);padding-left:9px;border-left:1px solid var(--hair)}
+.pv-body{display:grid;grid-template-columns:repeat(2,minmax(0,210px));gap:10px 12px;padding:4px 14px 14px}
+.pv-body label{display:flex;flex-direction:column;gap:4px;font:600 10.5px var(--ui);letter-spacing:.02em;color:var(--text-2)}
+.pv-body select{height:30px;padding:0 8px;border:0;border-radius:7px;font:400 12.5px var(--ui);color:var(--text);background:var(--glass-field);box-shadow:inset 0 0 0 1px var(--hair)}
+.pv-body select option{background:var(--base);color:var(--text)}
+.pv-note{grid-column:1/-1;margin:2px 0 0;font-size:11.5px;line-height:16px;color:var(--text-3)}
+.pv-note b{color:var(--text);font-family:ui-monospace,Consolas,monospace}
+.pv-note .link{font-size:11.5px;margin-left:8px}
+@media (max-width:620px){.pv-body{grid-template-columns:minmax(0,1fr)}}
+
+
+/* =================== POPUPS — "Split welcome" style (chosen concept 09) ===================
+   left: brand panel (logo, status glyph, small label, big title) — colour follows the message kind
+   right: headline, message, tips / input / enquiry link, actions */
+.ncard.split{width:620px;max-width:calc(100% - 48px);padding:0;display:grid;grid-template-columns:200px minmax(0,1fr);overflow:hidden}
+.nc-side{position:relative;display:flex;flex-direction:column;justify-content:flex-end;gap:4px;min-height:236px;padding:20px 18px;color:#fff;overflow:hidden;
+  background:linear-gradient(160deg,#0e2140 0%,#123a5c 50%,#0d847d 100%)}
+.k-info .nc-side{background:linear-gradient(160deg,#0e2140 0%,#14335a 55%,#1d6a8c 100%)}
+.k-warn .nc-side{background:linear-gradient(160deg,#0e2140 0%,#3f3518 58%,#a06e17 100%)}
+.k-err .nc-side{background:linear-gradient(160deg,#0e2140 0%,#43192a 58%,#9e2738 100%)}
+.nc-side::before{content:"";position:absolute;right:-58px;top:-40px;width:190px;height:190px;border-radius:50%;border:22px solid rgba(255,255,255,.06)}
+.nc-logo{position:absolute;top:18px;left:18px;width:42px;height:42px;border-radius:11px;background:#fff;padding:5px;box-shadow:0 8px 18px -8px rgba(0,0,0,.5);animation:ncPop .5s var(--spring) .12s both}
+.nc-glyph{position:absolute;top:24px;right:18px;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;color:#fff;
+  background:rgba(255,255,255,.14);box-shadow:inset 0 0 0 1px rgba(255,255,255,.28);animation:ncPop .45s var(--spring) .3s both}
+.nc-glyph svg{width:15px;height:15px;stroke-width:2.6}
+.ncard.split .nc-head,.hd-split .nc-head{position:relative;font:700 10px var(--ui);letter-spacing:.16em;text-transform:uppercase;color:#5fe3d3}
+.k-info .nc-head{color:#8fd3ff!important}.k-warn .nc-head{color:#ffd27a!important}.k-err .nc-head{color:#ff9eab!important}
+.ncard.split h2,.hd-split h2{position:relative;margin:0;font:600 21px/26px var(--disp);letter-spacing:-.015em;color:#fff;overflow-wrap:anywhere;animation:ncRise .5s var(--ease) .2s both}
+.nc-main{position:relative;display:flex;flex-direction:column;min-width:0;padding:22px 22px 20px}
+.nc-main>*{animation:ncRise .45s var(--ease) both;animation-delay:.18s}
+.nc-lead{margin:0 0 6px;font:600 18px/23px var(--disp);letter-spacing:-.01em;color:var(--text)}
+.ncard.split .nc-body{padding-left:0}
+.ncard.split .nc-enq,.ncard.split .nc-field{margin-left:0}
+.ncard.split .nc-btns{margin-top:auto;padding-top:18px}
+.nc-tips{list-style:none;margin:12px 0 0;padding:0;display:grid;gap:10px}
+.nc-tips li{display:flex;gap:11px;align-items:flex-start;font-size:13px;line-height:18px;color:var(--text-2);animation:ncRise .4s var(--ease) both;animation-delay:calc(.35s + var(--i) * .1s)}
+.nc-tips li b{display:block;color:var(--text);font-weight:600}
+.nc-tips i{width:30px;height:30px;flex:none;border-radius:8px;display:grid;place-items:center;color:var(--accent-text);
+  background:color-mix(in srgb,var(--accent-2) 12%,transparent);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--accent-2) 35%,transparent)}
+.nc-tips i svg{width:15px;height:15px}
+@keyframes ncRise{from{opacity:0;transform:translateY(10px)}}
+@keyframes ncPop{from{opacity:0;transform:scale(.6)}}
+/* HD Reset result uses the same split layout (the loader card grows into it) */
+.hd-split{display:grid;grid-template-columns:200px minmax(0,1fr)}
+.hd-split .nc-side{min-height:220px}
+.hd-split .hd-x{position:absolute;top:8px;right:8px;width:34px;height:30px;border-radius:7px}
+.hd-split .nc-lead{padding-right:30px}
+.hd-split .hd-msg{margin:0}
+.hd-split .hd-foot{margin-top:auto;padding:18px 0 0}
+
+/* ---- browser autofill: no light-blue box inside the field — saved values keep the glass field look ---- */
+input:-webkit-autofill,input:-webkit-autofill:hover,input:-webkit-autofill:focus,input:-webkit-autofill:active{
+  -webkit-text-fill-color:var(--text);caret-color:var(--text);
+  -webkit-box-shadow:0 0 0 1000px transparent inset;box-shadow:0 0 0 1000px transparent inset;
+  transition:background-color 600000s 0s,color 600000s 0s;font:400 14px var(--ui)}
+input:autofill{background:transparent!important}
+.ctl input{background-clip:padding-box}
 </style>
 </head>
 <body>
@@ -724,126 +1035,139 @@ h1{font:600 28px/36px var(--disp);letter-spacing:-.02em;margin:0}
     </div>
   </header>
 
-  <div class="main">
+  <div class="main" data-view="signin">
     <!-- ============ Form ============ -->
     <section class="form-card glass" id="formCard" aria-label="Account">
      <div class="slider">
-      <!-- ===== Panel 1: Sign in ===== -->
+      <!-- ===== 1 · Sign in  (docs/auth-workflows/01-login.md) ===== -->
       <div class="panel" id="signinPanel">
-      <div class="brand">
-        <span class="sx-tile sx-small" aria-hidden="true"><img src="assests/schemax-anim/mark.png" alt=""></span>
-        <div><div class="brand-name"><span>Schemax</span> Solutions</div><div class="brand-tag">WORLD'S FASTEST SCHEMATICS</div></div>
-      </div>
-
-      <p class="eyebrow"><i></i>Secure workspace access</p>
-      <h1>Welcome back</h1>
-      <p class="intro">Sign in to continue to your schematics workspace.</p>
-
-      <div class="infobar" id="infobar" role="alert">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>
-        <div id="infotext"></div>
-      </div>
-
-      <form id="loginForm" novalidate>
-        <div class="field">
-          <label for="username">Username or email</label>
-          <div class="ctl" id="userCtl">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c.5-4 2.8-6 7-6s6.5 2 7 6"/></svg>
-            <input id="username" autocomplete="username" spellcheck="false" value="buddies400" placeholder="Enter your username or email">
-          </div>
-          <div class="hint err" id="userErr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>Enter your username or email.</div>
+        <div class="brand">
+          <span class="sx-tile sx-small" aria-hidden="true"><img src="assests/schemax-anim/mark.png" alt=""></span>
+          <div><div class="brand-name"><span>Schemax</span> Solutions</div><div class="brand-tag">WORLD'S FASTEST SCHEMATICS</div></div>
         </div>
-        <div class="field">
-          <label for="password">Password</label>
-          <div class="ctl" id="passCtl">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
-            <input id="password" type="password" autocomplete="current-password" placeholder="Enter your password">
-            <button class="reveal" type="button" id="reveal" aria-label="Show password" aria-pressed="false">
-              <svg id="eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6Z"/><circle cx="12" cy="12" r="2.5"/></svg>
-            </button>
-          </div>
-          <div class="hint err" id="passErr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>Enter your password.</div>
-          <div class="hint caps" id="caps"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4 4 12h4v6h8v-6h4z"/></svg>Caps Lock is on</div>
-        </div>
+        <h1>Welcome back</h1>
+        <p class="intro">Sign in to open your schematics workspace.</p>
 
-        <div class="opts">
-          <label class="cb"><input type="checkbox" checked> Remember me</label>
-          <label class="cb"><input type="checkbox"> Auto login</label>
-          <button class="link" type="button" data-msg="Opens the password recovery window.">Forgot password?</button>
-        </div>
-
-        <button class="primary" type="submit" id="submit">
-          <span class="spin" aria-hidden="true"></span><span id="submitText">Sign in</span>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
-        </button>
-      </form>
-
-      <div class="sep">or continue with</div>
-      <button class="ghost google" type="button" data-msg="Opens Google sign-in in your browser. Finish there to continue.">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M22.5 12.3c0-.8-.1-1.5-.2-2.3H12v4.3h5.9a5 5 0 0 1-2.2 3.3v2.7h3.6c2-1.9 3.2-4.7 3.2-8Z"/><path fill="#34A853" d="M12 23c3 0 5.5-1 7.3-2.7l-3.6-2.7c-1 .7-2.2 1.1-3.7 1.1-2.9 0-5.3-1.9-6.2-4.5H2.1v2.8A11 11 0 0 0 12 23Z"/><path fill="#FBBC05" d="M5.8 14.2a6.6 6.6 0 0 1 0-4.3V7.1H2.1a11 11 0 0 0 0 9.9l3.7-2.8Z"/><path fill="#EA4335" d="M12 5.4c1.6 0 3.1.6 4.2 1.7l3.2-3.2A11 11 0 0 0 2.1 7.1l3.7 2.8C6.7 7.3 9.1 5.4 12 5.4Z"/></svg>
-        Sign in with Google
-      </button>
-      <div class="row2">
-        <button class="ghost" type="button" id="toRegister"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="9" cy="7" r="3.5"/><path d="M2.8 20v-1.5c0-3 2.5-5 6.2-5 1.6 0 3 .4 4 1.1M18 14v7m-3.5-3.5h7"/></svg>Register</button>
-        <button class="ghost" type="button" data-msg="Starts HD Reset — moves your licence to this PC."><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4.5 8.5A8 8 0 1 1 4 14"/><path d="M4 4v5h5"/></svg>HD Reset</button>
-      </div>
-      <div class="help">Having trouble connecting? <button class="link" type="button" data-msg="Opens Schemax support in your browser.">Get help</button></div>
-      </div>
-
-      <!-- ===== Panel 2: Register (slides in from the right) ===== -->
-      <div class="panel" id="registerPanel" inert>
-        <div class="back-row">
-          <button class="back" type="button" id="toSignin" aria-label="Back to sign in"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5m6 6-6-6 6-6"/></svg></button>
-          <span>Back to sign in</span>
-          <div class="steps" aria-hidden="true"><i class="on"></i><i class="on"></i><i></i></div>
-        </div>
-        <h1>Create account</h1>
-        <p class="intro">Join technicians in 45+ countries using Schemax.</p>
-
-        <form id="regForm" novalidate>
-          <div class="grid2">
-            <div class="field">
-              <label for="regName">Full name</label>
-              <div class="ctl" id="regNameCtl"><input id="regName" autocomplete="name" placeholder="Your name"></div>
-            </div>
-            <div class="field">
-              <label for="regPhone">Phone</label>
-              <div class="ctl"><input id="regPhone" type="tel" autocomplete="tel" placeholder="+91 98765 43210"></div>
-            </div>
+        <form id="loginForm" novalidate>
+          <div class="field">
+            <label for="username">Username or email</label>
+            <div class="ctl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c.5-4 2.8-6 7-6s6.5 2 7 6"/></svg><input id="username" autocomplete="username" spellcheck="false" placeholder="Enter your username or email"></div>
           </div>
           <div class="field">
-            <label for="regEmail">Email</label>
-            <div class="ctl" id="regEmailCtl">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
-              <input id="regEmail" type="email" autocomplete="email" spellcheck="false" placeholder="name@workshop.com">
-            </div>
+            <label for="password">Password</label>
+            <div class="ctl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg><input id="password" type="password" autocomplete="current-password" placeholder="Enter your password"><button class="reveal" type="button" aria-label="Show password" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6Z"/><circle cx="12" cy="12" r="2.5"/></svg></button></div>
           </div>
+          <div class="opts">
+            <label class="cb"><input type="checkbox" id="remember"> Remember me</label>
+            <label class="cb" id="autoWrap" data-tip="Sign in automatically the next time the app opens (needs Remember me)"><input type="checkbox" id="autoLogin" disabled> Auto Login</label>
+            <button class="link" type="button" id="toForgot">Forgot password?</button>
+          </div>
+          <button class="primary" type="submit" id="signinBtn"><span class="spin" aria-hidden="true"></span><span class="btxt">Sign In</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></button>
+          <div class="stage" id="stage" aria-live="polite"><span id="stageText"></span><small>Please don't close this window.</small></div>
+        </form>
+
+        <div class="row2">
+          <button class="ghost" type="button" id="toRegister"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="9" cy="7" r="3.5"/><path d="M2.8 20v-1.5c0-3 2.5-5 6.2-5 1.6 0 3 .4 4 1.1M18 14v7m-3.5-3.5h7"/></svg><span class="btxt">Register</span></button>
+          <button class="ghost" type="button" id="hdBtn" data-tip="Moved to a new PC? Release your licence from the old one"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4.5 8.5A8 8 0 1 1 4 14"/><path d="M4 4v5h5"/></svg><span class="btxt">HD Reset</span></button>
+        </div>
+        <div class="sep">or continue with</div>
+        <button class="ghost google" type="button" id="googleBtn"><span class="spin" aria-hidden="true"></span><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M22.5 12.3c0-.8-.1-1.5-.2-2.3H12v4.3h5.9a5 5 0 0 1-2.2 3.3v2.7h3.6c2-1.9 3.2-4.7 3.2-8Z"/><path fill="#34A853" d="M12 23c3 0 5.5-1 7.3-2.7l-3.6-2.7c-1 .7-2.2 1.1-3.7 1.1-2.9 0-5.3-1.9-6.2-4.5H2.1v2.8A11 11 0 0 0 12 23Z"/><path fill="#FBBC05" d="M5.8 14.2a6.6 6.6 0 0 1 0-4.3V7.1H2.1a11 11 0 0 0 0 9.9l3.7-2.8Z"/><path fill="#EA4335" d="M12 5.4c1.6 0 3.1.6 4.2 1.7l3.2-3.2A11 11 0 0 0 2.1 7.1l3.7 2.8C6.7 7.3 9.1 5.4 12 5.4Z"/></svg><span class="btxt">Sign in with Google</span></button>
+      </div>
+
+      <!-- ===== 2 · Register wizard  (02-register.md · Google mode from 05-google-sign-in.md) ===== -->
+      <div class="panel wizard" id="registerPanel" inert>
+        <h1>Create your account</h1>
+        <p class="intro">Sign up to start building schematics.</p>
+        <span class="step-chip" id="regChip"><i></i><span>Step 1 of 2 · Verify your email</span></span>
+
+        <div class="wz-step on" data-step="1">
+          <div class="field">
+            <label for="regEmail">Email address</label>
+            <div class="ctl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg><input id="regEmail" type="email" autocomplete="email" spellcheck="false" placeholder="you@gmail.com" data-enter="sendOtp"><button class="ctl-act" type="button" id="regEmailChange" hidden>Change</button></div>
+          </div>
+          <div class="collapse open" id="reg1a"><div>
+            <div class="step-err" id="reg1aErr" role="none"><div><div class="se"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg><span></span></div></div></div>
+            <button class="primary" type="button" id="sendOtp" data-tip="Email a 6-digit verification code to this address"><span class="spin" aria-hidden="true"></span><span class="btxt">Send OTP</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></button>
+            <p class="fhint">We'll send a 6-digit verification code to this address.</p>
+            <div class="sep">or</div>
+            <button class="ghost google" type="button" id="googleUp" data-tip="Sign up with your Google account — no email code needed"><span class="spin" aria-hidden="true"></span><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M22.5 12.3c0-.8-.1-1.5-.2-2.3H12v4.3h5.9a5 5 0 0 1-2.2 3.3v2.7h3.6c2-1.9 3.2-4.7 3.2-8Z"/><path fill="#34A853" d="M12 23c3 0 5.5-1 7.3-2.7l-3.6-2.7c-1 .7-2.2 1.1-3.7 1.1-2.9 0-5.3-1.9-6.2-4.5H2.1v2.8A11 11 0 0 0 12 23Z"/><path fill="#FBBC05" d="M5.8 14.2a6.6 6.6 0 0 1 0-4.3V7.1H2.1a11 11 0 0 0 0 9.9l3.7-2.8Z"/><path fill="#EA4335" d="M12 5.4c1.6 0 3.1.6 4.2 1.7l3.2-3.2A11 11 0 0 0 2.1 7.1l3.7 2.8C6.7 7.3 9.1 5.4 12 5.4Z"/></svg><span class="btxt">Sign up with Google</span></button>
+          </div></div>
+          <div class="collapse" id="reg1c" inert><div>
+            <p class="sent" id="regSent"></p>
+            <div class="otp" id="regOtp" role="group" aria-label="6-digit verification code"></div>
+            <div class="step-err" id="reg1cErr" role="none"><div><div class="se"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg><span></span></div></div></div>
+            <button class="primary off" type="button" id="regVerify"><span class="spin" aria-hidden="true"></span><span class="btxt">Verify code</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></button>
+            <div class="otp-links"><span id="regNote">Didn't get it?</span><button class="link" type="button" id="regResend" data-tip="Send a new code if the first one didn't arrive">Resend code</button></div>
+          </div></div>
+        </div>
+
+        <div class="wz-step" data-step="2" inert>
+          <div class="g-banner" id="regGBanner" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M22.5 12.3c0-.8-.1-1.5-.2-2.3H12v4.3h5.9a5 5 0 0 1-2.2 3.3v2.7h3.6c2-1.9 3.2-4.7 3.2-8Z"/><path fill="#34A853" d="M12 23c3 0 5.5-1 7.3-2.7l-3.6-2.7c-1 .7-2.2 1.1-3.7 1.1-2.9 0-5.3-1.9-6.2-4.5H2.1v2.8A11 11 0 0 0 12 23Z"/><path fill="#FBBC05" d="M5.8 14.2a6.6 6.6 0 0 1 0-4.3V7.1H2.1a11 11 0 0 0 0 9.9l3.7-2.8Z"/><path fill="#EA4335" d="M12 5.4c1.6 0 3.1.6 4.2 1.7l3.2-3.2A11 11 0 0 0 2.1 7.1l3.7 2.8C6.7 7.3 9.1 5.4 12 5.4Z"/></svg><span>Signing up with Google as <b id="regGEmail"></b></span></div>
           <div class="field">
             <label for="regUser">Username</label>
-            <div class="ctl" id="regUserCtl">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c.5-4 2.8-6 7-6s6.5 2 7 6"/></svg>
-              <input id="regUser" autocomplete="username" spellcheck="false" placeholder="Choose a username">
+            <div class="ctl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c.5-4 2.8-6 7-6s6.5 2 7 6"/></svg><input id="regUser" autocomplete="username" spellcheck="false" placeholder="Choose a username" data-enter="regCreate"></div>
+          </div>
+          <div class="field">
+            <label for="regPhone">Country &amp; phone number</label>
+            <div class="phone">
+              <div class="ctl cc"><span id="ccText">IN +91</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg><select id="regCountry" aria-label="Country"></select></div>
+              <div class="ctl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="2.5" width="10" height="19" rx="2.2"/><path d="M11 18.5h2"/></svg><input id="regPhone" type="tel" inputmode="numeric" autocomplete="tel-national" placeholder="10 digits" data-enter="regCreate"></div>
             </div>
           </div>
-          <div class="grid2">
-            <div class="field">
-              <label for="regPass">Password</label>
-              <div class="ctl" id="regPassCtl"><input id="regPass" type="password" autocomplete="new-password" placeholder="8+ characters"></div>
-              <div class="meter" id="meter" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
-            </div>
-            <div class="field">
-              <label for="regPass2">Confirm</label>
-              <div class="ctl" id="regPass2Ctl"><input id="regPass2" type="password" autocomplete="new-password" placeholder="Repeat password"></div>
-            </div>
+          <div class="field">
+            <label for="regPass">Password</label>
+            <div class="ctl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg><input id="regPass" type="password" autocomplete="new-password" placeholder="Create a password" data-enter="regCreate"><button class="reveal" type="button" aria-label="Show password" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6Z"/><circle cx="12" cy="12" r="2.5"/></svg></button></div>
           </div>
-          <div class="hint err" id="regErr" style="margin:-2px 0 10px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg><span id="regErrText"></span></div>
-          <label class="cb terms"><input type="checkbox" id="regTerms"><span>I agree to the <button class="link" type="button" data-msg="Opens the Terms of Service.">Terms</button> and <button class="link" type="button" data-msg="Opens the Privacy Policy.">Privacy Policy</button></span></label>
-          <button class="primary" type="submit" id="regSubmit">
-            <span class="spin" aria-hidden="true"></span><span id="regSubmitText">Create account</span>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
-          </button>
-        </form>
-        <div class="help">Already have an account? <button class="link" type="button" id="toSignin2">Sign in</button></div>
+          <div class="field">
+            <label for="regPass2">Confirm password</label>
+            <div class="ctl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg><input id="regPass2" type="password" autocomplete="new-password" placeholder="Re-enter your password" data-enter="regCreate"><button class="reveal" type="button" aria-label="Show password" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6Z"/><circle cx="12" cy="12" r="2.5"/></svg></button></div>
+          </div>
+          <div class="step-err" id="reg2Err" role="none"><div><div class="se"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg><span></span></div></div></div>
+          <button class="primary" type="button" id="regCreate"><span class="spin" aria-hidden="true"></span><span class="btxt">Create account</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></button>
+        </div>
+
+        <div class="wz-foot"><button class="link back-link" type="button" data-back data-tip="Return to the sign-in screen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5m6 6-6-6 6-6"/></svg>Back to Sign In</button></div>
+      </div>
+
+      <!-- ===== 3 · Forgot password wizard  (03-forgot-password.md) ===== -->
+      <div class="panel wizard" id="forgotPanel" inert>
+        <h1>Reset your password</h1>
+        <p class="intro">Enter your account email or username to get a reset code.</p>
+        <span class="step-chip" id="fpChip"><i></i><span>Step 1 of 3 · Verify your identity</span></span>
+
+        <div class="wz-step on" data-step="1">
+          <div class="field">
+            <label for="fpId">Email or username</label>
+            <div class="ctl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c.5-4 2.8-6 7-6s6.5 2 7 6"/></svg><input id="fpId" autocomplete="username" spellcheck="false" placeholder="you@gmail.com or username" data-enter="fpSend"><button class="ctl-act" type="button" id="fpChange" hidden>Change</button></div>
+          </div>
+          <div class="collapse open" id="fp1a"><div>
+            <div class="step-err" id="fp1Err" role="none"><div><div class="se"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg><span></span></div></div></div>
+            <button class="primary" type="button" id="fpSend" data-tip="Email a 6-digit reset code to the account's email address"><span class="spin" aria-hidden="true"></span><span class="btxt">Send code</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></button>
+            <p class="fhint">We'll email a 6-digit reset code to the account's email address.</p>
+          </div></div>
+          <div class="collapse" id="fp1c" inert><div>
+            <p class="sent" id="fpSent"></p>
+            <div class="otp" id="fpOtp" role="group" aria-label="6-digit reset code"></div>
+            <div class="step-err" id="fp2Err" role="none"><div><div class="se"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg><span></span></div></div></div>
+            <button class="primary off" type="button" id="fpVerify"><span class="spin" aria-hidden="true"></span><span class="btxt">Verify code</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></button>
+            <div class="otp-links"><span id="fpNote">Didn't get it?</span><button class="link" type="button" id="fpResend" data-tip="Send a new code if the first one didn't arrive">Resend code</button></div>
+          </div></div>
+        </div>
+
+        <div class="wz-step" data-step="3" inert>
+          <div class="field">
+            <label for="fpPass">New password</label>
+            <div class="ctl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg><input id="fpPass" type="password" autocomplete="new-password" placeholder="Create a new password" data-enter="fpReset"><button class="reveal" type="button" aria-label="Show password" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6Z"/><circle cx="12" cy="12" r="2.5"/></svg></button></div>
+          </div>
+          <div class="field">
+            <label for="fpPass2">Confirm new password</label>
+            <div class="ctl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg><input id="fpPass2" type="password" autocomplete="new-password" placeholder="Re-enter your new password" data-enter="fpReset"><button class="reveal" type="button" aria-label="Show password" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6Z"/><circle cx="12" cy="12" r="2.5"/></svg></button></div>
+          </div>
+          <div class="step-err" id="fp3Err" role="none"><div><div class="se"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg><span></span></div></div></div>
+          <button class="primary" type="button" id="fpReset" data-tip="Save your new password"><span class="spin" aria-hidden="true"></span><span class="btxt">Reset password</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></button>
+        </div>
+
+        <div class="wz-foot"><button class="link back-link" type="button" data-back data-tip="Return to the sign-in screen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5m6 6-6-6 6-6"/></svg>Back to Sign In</button></div>
       </div>
      </div>
     </section>
@@ -875,9 +1199,90 @@ h1{font:600 28px/36px var(--disp);letter-spacing:-.02em;margin:0}
     </aside>
   </div>
 
+  <!-- ============ Main app placeholder (after a successful sign-in) ============ -->
+  <div class="appview" id="appview" hidden>
+    <div class="av-in">
+      <span class="av-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></span>
+      <h2>Signed in as <span id="avName"></span></h2>
+      <p class="av-wait">Opening your schematics workspace…</p>
+      <div class="av-bar" aria-hidden="true"><i></i></div>
+      <div class="av-ready">
+        <p>Workspace ready. In the real app the main window opens here.</p>
+        <button class="ghost" type="button" id="signOut"><span class="btxt">Sign out</span></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ Modal layer: notify cards · HD Reset dialog · security check ============ -->
+  <div class="layer" id="layer"><div class="scrim"></div></div>
+
 </div>
 
 <div class="toast glass" id="toast" role="status" aria-live="polite"></div>
+
+<!-- ============ System browser (Google consent) — a separate window, the app stays usable ============ -->
+<div class="gbrowser" id="gbrowser" hidden role="dialog" aria-label="Web browser — Google sign-in">
+  <div class="gb-bar">
+    <span class="gb-tab"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M22.5 12.3c0-.8-.1-1.5-.2-2.3H12v4.3h5.9a5 5 0 0 1-2.2 3.3v2.7h3.6c2-1.9 3.2-4.7 3.2-8Z"/><path fill="#34A853" d="M12 23c3 0 5.5-1 7.3-2.7l-3.6-2.7c-1 .7-2.2 1.1-3.7 1.1-2.9 0-5.3-1.9-6.2-4.5H2.1v2.8A11 11 0 0 0 12 23Z"/><path fill="#FBBC05" d="M5.8 14.2a6.6 6.6 0 0 1 0-4.3V7.1H2.1a11 11 0 0 0 0 9.9l3.7-2.8Z"/><path fill="#EA4335" d="M12 5.4c1.6 0 3.1.6 4.2 1.7l3.2-3.2A11 11 0 0 0 2.1 7.1l3.7 2.8C6.7 7.3 9.1 5.4 12 5.4Z"/></svg><span>Sign in – Google Accounts</span></span>
+    <span class="gb-sp"></span>
+    <button type="button" class="gb-x" id="gbClose" aria-label="Close browser tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M7 7l10 10M17 7 7 17"/></svg></button>
+  </div>
+  <div class="gb-url"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg><span id="gbUrl"></span></div>
+  <div class="gb-page" id="gbPick">
+    <span class="gb-logo"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M22.5 12.3c0-.8-.1-1.5-.2-2.3H12v4.3h5.9a5 5 0 0 1-2.2 3.3v2.7h3.6c2-1.9 3.2-4.7 3.2-8Z"/><path fill="#34A853" d="M12 23c3 0 5.5-1 7.3-2.7l-3.6-2.7c-1 .7-2.2 1.1-3.7 1.1-2.9 0-5.3-1.9-6.2-4.5H2.1v2.8A11 11 0 0 0 12 23Z"/><path fill="#FBBC05" d="M5.8 14.2a6.6 6.6 0 0 1 0-4.3V7.1H2.1a11 11 0 0 0 0 9.9l3.7-2.8Z"/><path fill="#EA4335" d="M12 5.4c1.6 0 3.1.6 4.2 1.7l3.2-3.2A11 11 0 0 0 2.1 7.1l3.7 2.8C6.7 7.3 9.1 5.4 12 5.4Z"/></svg></span>
+    <h3>Choose an account</h3>
+    <p id="gbTo">to continue to <b>Schemax Solutions</b></p>
+    <button type="button" class="gb-acct" data-acct><span class="av">R</span><span><b>Ravi Kumar</b><small>ravi.kumar@gmail.com</small></span></button>
+    <button type="button" class="gb-acct" data-acct><span class="av plus">+</span><span><b>Use another account</b></span></button>
+    <p class="gb-fine">Google will share your name, email address and profile picture with Schemax Solutions.</p>
+    <div class="gb-foot"><button type="button" class="link" id="gbCancel">Cancel</button></div>
+  </div>
+  <div class="gb-page gb-done" id="gbDone" hidden>
+    <span class="av-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></span>
+    <h3>Sign-in complete</h3>
+    <p>You can close this tab and return to Schemax Solutions.</p>
+  </div>
+  <div class="gb-tag">Your web browser · preview</div>
+</div>
+
+<!-- ============ Preview scenarios (NOT part of the app — lets you open every branch of the workflows) ============ -->
+<aside class="pv glass" id="pv" aria-label="Preview scenarios">
+  <button type="button" class="pv-tg" id="pvToggle" aria-expanded="false" aria-controls="pvBody"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></svg><span>Preview scenarios</span><em>Demo only</em></button>
+  <div class="pv-body" id="pvBody" hidden>
+    <label>Sign-in result (password &amp; Google)
+      <select id="pv-login">
+        <option value="ok">Success → app opens</option>
+        <option value="other">Wrong password → Login Failed</option>
+        <option value="version">Old version → Update required</option>
+        <option value="nextkey">Next key is ready</option>
+        <option value="blocked">Account Blocked</option>
+        <option value="email">Email not verified</option>
+        <option value="hwid">Hardware ID Error</option>
+        <option value="free">Free plan → Upgrade Required</option>
+        <option value="notact">Account not activated</option>
+        <option value="expired">Plan Expired</option>
+        <option value="hwread">Can't read hardware ID</option>
+      </select></label>
+    <label>Server speed
+      <select id="pv-speed"><option value="normal">Normal</option><option value="slow">Slow (shows every loading message)</option></select></label>
+    <label>Auto-login on app start
+      <select id="pv-resume"><option value="ok">Session resumes</option><option value="fail">Refresh fails → Sign In</option></select></label>
+    <label>Security check (Register)
+      <select id="pv-captcha"><option value="pass">Passes</option><option value="cantrun">Can't run (no WebView2)</option><option value="nostart">Couldn't start</option></select></label>
+    <label>Register server
+      <select id="pv-reg"><option value="ok">Success</option><option value="emailtaken">Email already registered</option><option value="usertaken">Username taken</option></select></label>
+    <label>Forgot password server
+      <select id="pv-forgot"><option value="ok">Success</option><option value="notfound">No account found</option><option value="resetfail">Reset fails</option></select></label>
+    <label>Google sign-up check
+      <select id="pv-google"><option value="new">New user → complete profile</option><option value="existing">Existing account → signs in</option><option value="error">Check fails</option></select></label>
+    <label>HD Reset result
+      <select id="pv-hd"><option value="ok">Success</option><option value="limit">Limit reached (3 a month)</option><option value="wrongpw">Wrong password</option><option value="notfound">Account not found</option><option value="network">No internet</option><option value="long">Long message (cut at 4 lines)</option></select></label>
+    <p class="pv-note">Verification code that passes: <b>123456</b> — any other code is wrong.
+      <button type="button" class="link" id="pvForget">Clear saved sign-in</button></p>
+  </div>
+</aside>
+
+<div class="tt" id="tt" role="tooltip"></div>
 
 <script>
 (() => {
@@ -926,98 +1331,836 @@ h1{font:600 28px/36px var(--disp);letter-spacing:-.02em;margin:0}
   };
   document.querySelectorAll('[data-msg]').forEach(el => el.addEventListener('click', e => { e.preventDefault(); notify(el.dataset.msg); }));
 
-  /* ---- password reveal ---- */
-  const pw = document.getElementById('password'), rv = document.getElementById('reveal'), eye = document.getElementById('eye');
-  rv.addEventListener('click', () => {
-    const show = pw.type === 'password'; pw.type = show ? 'text' : 'password';
-    rv.setAttribute('aria-pressed', show); rv.setAttribute('aria-label', show ? 'Hide password' : 'Show password');
-    eye.innerHTML = show ? '<path d="M3 3l18 18M10.6 10.6a2 2 0 0 0 2.8 2.8"/><path d="M9.9 5.2A10.8 10.8 0 0 1 12 5c6.5 0 10 7 10 7a15 15 0 0 1-3.1 3.8M6.2 6.2C3.8 7.8 2 12 2 12s3.5 7 10 7c1 0 1.9-.2 2.7-.5"/>'
-                         : '<path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6Z"/><circle cx="12" cy="12" r="2.5"/>';
-    pw.focus();
-  });
-
-  /* ---- caps lock ---- */
-  const caps = document.getElementById('caps');
-  const capsCheck = e => { if (e.getModifierState) caps.classList.toggle('show', e.getModifierState('CapsLock')); };
-  pw.addEventListener('keydown', capsCheck); pw.addEventListener('keyup', capsCheck);
-  pw.addEventListener('blur', () => caps.classList.remove('show'));
-
-  /* ---- validation + sign-in states ---- */
-  const user = document.getElementById('username'), info = document.getElementById('infobar'), infoText = document.getElementById('infotext');
-  const submit = document.getElementById('submit'), submitText = document.getElementById('submitText');
-  const setErr = (ctl, hint, on) => { document.getElementById(ctl).classList.toggle('invalid', on); document.getElementById(hint).classList.toggle('show', on); };
-  user.addEventListener('input', () => setErr('userCtl','userErr',false));
-  pw.addEventListener('input', () => setErr('passCtl','passErr',false));
-
-  const showInfo = (html, error) => { infoText.innerHTML = html; info.classList.toggle('error', !!error); info.classList.add('show'); };
-
-  document.getElementById('loginForm').addEventListener('submit', e => {
-    e.preventDefault(); info.classList.remove('show');
-    const noUser = !user.value.trim(), noPass = !pw.value;
-    setErr('userCtl','userErr',noUser); setErr('passCtl','passErr',noPass);
-    if (noUser) return user.focus();
-    if (noPass) return pw.focus();
-
-    submit.disabled = true; submit.classList.add('busy'); submitText.textContent = 'Signing in…';
-    [user, pw].forEach(i => i.disabled = true);
-    setTimeout(() => {
-      submit.disabled = false; submit.classList.remove('busy'); submitText.textContent = 'Sign in';
-      [user, pw].forEach(i => i.disabled = false);
-      showInfo('<b>Demo mode</b> · Sign-in service isn\'t connected yet.', false);
-    }, 1500);
-  });
-
-  /* ---- slide: Sign in ⇄ Register ---- */
-  const card = document.getElementById('formCard'), signinPanel = document.getElementById('signinPanel'),
-        registerPanel = document.getElementById('registerPanel'), crumb = document.getElementById('crumb');
-  const main = card.parentElement; let glideT;
-  const showRegister = on => {
-    if (main.classList.contains('reg') === on) return;
-    main.classList.add('gliding'); clearTimeout(glideT);
-    glideT = setTimeout(() => main.classList.remove('gliding'), reduce ? 0 : 850);
-    main.classList.toggle('reg', on); card.classList.toggle('reg', on);
-    signinPanel.inert = on; registerPanel.inert = !on;
-    crumb.textContent = on ? 'Create account' : 'Sign in';
-    setTimeout(() => (on ? document.getElementById('regName') : (user.value ? pw : user)).focus({preventScroll:true}), reduce ? 0 : 750);
-  };
-  document.getElementById('toRegister').addEventListener('click', () => showRegister(true));
-  document.getElementById('toSignin').addEventListener('click', () => showRegister(false));
-  document.getElementById('toSignin2').addEventListener('click', () => showRegister(false));
-  addEventListener('keydown', e => { if (e.key === 'Escape' && card.classList.contains('reg')) showRegister(false); });
-
-  /* ---- register: strength meter + validation ---- */
+  /* =====================================================================
+     AUTH WORKFLOWS — implements every screen and branch of docs/auth-workflows:
+       01 Login · 02 Register · 03 Forgot password · 04 HD Reset · 05 Google sign-in / sign-up
+     Server calls are simulated here; choose each outcome in "Preview scenarios" (preview only).
+     ===================================================================== */
   const $ = id => document.getElementById(id);
-  const regPass = $('regPass'), meter = $('meter');
-  regPass.addEventListener('input', () => {
-    const v = regPass.value; let s = 0;
-    if (v.length >= 8) s++; if (/[A-Z]/.test(v) && /[a-z]/.test(v)) s++; if (/\d/.test(v)) s++; if (/[^A-Za-z0-9]/.test(v)) s++;
-    meter.className = 'meter' + (v ? ' s' + Math.max(1, s) : '');
-  });
-  const regErr = (ctlId, inputId, msg) => {
-    document.querySelectorAll('#registerPanel .ctl').forEach(c => c.classList.remove('invalid'));
-    if (ctlId) $(ctlId).classList.add('invalid');
-    $('regErrText').textContent = msg; $('regErr').classList.toggle('show', !!msg);
-    if (inputId) $(inputId).focus();
-  };
-  $('regForm').addEventListener('input', () => regErr(null, null, ''));
-  $('regForm').addEventListener('submit', e => {
-    e.preventDefault();
-    if (!$('regName').value.trim()) return regErr('regNameCtl','regName','Enter your full name.');
-    if (!/^\S+@\S+\.\S+$/.test($('regEmail').value)) return regErr('regEmailCtl','regEmail','Enter a valid email address.');
-    if ($('regUser').value.trim().length < 3) return regErr('regUserCtl','regUser','Username needs at least 3 characters.');
-    if (regPass.value.length < 8) return regErr('regPassCtl','regPass','Password needs at least 8 characters.');
-    if (regPass.value !== $('regPass2').value) return regErr('regPass2Ctl','regPass2','Passwords don\'t match.');
-    if (!$('regTerms').checked) return regErr(null,'regTerms','Please accept the Terms and Privacy Policy.');
+  const main = $('formCard').parentElement, formCard = $('formCard'), crumb = $('crumb');
+  const user = $('username'), pw = $('password'), remember = $('remember'), autoLogin = $('autoLogin');
+  const scn = k => { const el = $('pv-' + k); return el ? el.value : ''; };
+  const DEMO_CODE = '123456';
+  const REMEMBERED_PW = 'Remembered#1';      // stand-in for the password the real app keeps in the Windows DPAPI store
+  const GOOGLE = {name: 'Ravi Kumar', email: 'ravi.kumar@gmail.com'};
 
-    const btn = $('regSubmit'); btn.disabled = true; btn.classList.add('busy'); $('regSubmitText').textContent = 'Creating account…';
-    setTimeout(() => {
-      btn.disabled = false; btn.classList.remove('busy'); $('regSubmitText').textContent = 'Create account';
-      user.value = $('regUser').value.trim(); pw.value = '';
-      $('regForm').reset(); meter.className = 'meter';
-      showRegister(false);
-      showInfo('<b>Account created</b> · Sign in with your new username.', false);
-    }, 1500);
+  /* ---------- icons ---------- */
+  const SVG = p => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;
+  const IC = {
+    alert: SVG('<circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/>'),
+    err: SVG('<path d="M7 7l10 10M17 7 7 17"/>'),
+    ok: SVG('<path d="m5 12.5 4.5 4.5L19 7.5"/>'),
+    warn: SVG('<path d="M12 6.5v7M12 17.5h.01"/>'),
+    info: SVG('<path d="M12 11v6M12 7h.01"/>'),
+    key: SVG('<circle cx="8" cy="15" r="4"/><path d="m11 12 9-9M17 6l3 3M14 9l2 2"/>'),
+    board: SVG('<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h6v10M15 4v6h6"/><circle cx="12" cy="15" r="1.4"/>'),
+    search: SVG('<circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/>'),
+    hd: SVG('<path d="M4.5 8.5A8 8 0 1 1 4 14"/><path d="M4 4v5h5"/>'),
+  };
+  const sideHTML = kind => `<img class="nc-logo" src="assests/schemax-anim/mark.png" alt=""><span class="nc-glyph" role="img" aria-label="${{ok: 'Success', err: 'Error', warn: 'Warning', info: 'Information'}[kind]}">${IC[kind]}</span>`;
+  const EYE_ON = '<path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6Z"/><circle cx="12" cy="12" r="2.5"/>';
+  const EYE_OFF = '<path d="M3 3l18 18M10.6 10.6a2 2 0 0 0 2.8 2.8"/><path d="M9.9 5.2A10.8 10.8 0 0 1 12 5c6.5 0 10 7 10 7a15 15 0 0 1-3.1 3.8M6.2 6.2C3.8 7.8 2 12 2 12s3.5 7 10 7c1 0 1.9-.2 2.7-.5"/>';
+  const toWeb = () => notify('Opening w2rsolutions.in in your browser…');
+
+  /* ---------- Windows-style tooltips for [data-tip] ---------- */
+  const tipEl = $('tt'); let ttT, ttOwner = null;
+  const ttHide = () => { clearTimeout(ttT); tipEl.classList.remove('show'); ttOwner = null; };
+  document.addEventListener('pointerover', e => {
+    const el = e.target.closest && e.target.closest('[data-tip]');
+    if (el === ttOwner) return;
+    ttHide(); if (!el) return; ttOwner = el;
+    ttT = setTimeout(() => {
+      if (ttOwner !== el || !el.isConnected) return;
+      tipEl.textContent = el.dataset.tip;
+      const r = el.getBoundingClientRect(), w = tipEl.offsetWidth, h = tipEl.offsetHeight;
+      let y = r.top - h - 8; if (y < 8) y = r.bottom + 8;
+      tipEl.style.left = Math.max(8, Math.min(innerWidth - w - 8, r.left + r.width / 2 - w / 2)) + 'px'; tipEl.style.top = y + 'px';
+      tipEl.classList.add('show');
+    }, 600);
   });
+  document.addEventListener('pointerdown', ttHide);
+
+  /* ---------- password eye (every password field) ---------- */
+  const eyeReset = inp => { const b = inp.parentElement.querySelector('.reveal'); inp.type = 'password'; if (b) { b.setAttribute('aria-pressed', 'false'); b.setAttribute('aria-label', 'Show password'); b.querySelector('svg').innerHTML = EYE_ON; } };
+  document.querySelectorAll('.reveal').forEach(b => {
+    const inp = b.parentElement.querySelector('input');
+    b.addEventListener('click', () => {
+      const show = inp.type === 'password'; inp.type = show ? 'text' : 'password';
+      b.setAttribute('aria-pressed', show); b.setAttribute('aria-label', show ? 'Hide password' : 'Show password');
+      b.querySelector('svg').innerHTML = show ? EYE_OFF : EYE_ON; inp.focus();
+    });
+  });
+
+  /* ---------- field tooltips (red = error, blocks · amber = warning, doesn't block) ---------- */
+  const E = msg => ({level: 'err', msg}), Wn = (msg, fix) => ({level: 'warn', msg, fix});
+  const F = {};
+  const field = (id, rule) => {
+    const input = $(id), wrap = input.closest('.field'), ctl = input.closest('.ctl');
+    const tip = document.createElement('div'); tip.className = 'ftip'; tip.setAttribute('role', 'status');
+    tip.innerHTML = IC.alert + '<span></span><button type="button" class="fix" hidden>Use it</button>';
+    wrap.appendChild(tip);
+    const f = F[id] = {input, wrap, ctl, tip, touched: false, forced: false, pre: null, extra: null, res: null};
+    f.eval = () => (f.res = rule(input.value, f) || null);
+    f.render = () => {
+      const shown = (f.touched && f.res) || f.extra || null;
+      const bad = !!(f.touched && f.res && f.res.level === 'err'), warn = !!(f.touched && f.res && f.res.level === 'warn');
+      ctl.classList.toggle('invalid', bad); ctl.classList.toggle('warned', warn);
+      input.setAttribute('aria-invalid', bad);
+      tip.classList.toggle('has', !!shown); tip.classList.toggle('forced', !!(shown && f.forced));
+      if (shown) {
+        tip.classList.toggle('warn', shown.level === 'warn');
+        tip.children[1].textContent = shown.msg;
+        const fx = tip.querySelector('.fix'); fx.hidden = !shown.fix; fx.dataset.v = shown.fix || '';
+      }
+    };
+    f.reset = (v = '') => { input.value = v; f.touched = f.forced = false; f.pre = f.extra = null; if (input.type === 'text' && input.parentElement.querySelector('.reveal')) eyeReset(input); f.eval(); f.render(); };
+    f.force = () => { f.touched = true; f.eval(); f.forced = true; f.render(); clearTimeout(f.ft); f.ft = setTimeout(() => { f.forced = false; f.render(); }, 4000); };
+    input.addEventListener('input', () => { f.touched = true; f.forced = false; f.pre = null; f.eval(); f.render(); });
+    input.addEventListener('blur', () => { if (input.value) f.touched = true; f.forced = false; f.eval(); f.render(); });
+    tip.querySelector('.fix').addEventListener('click', e => { input.value = e.currentTarget.dataset.v; input.dispatchEvent(new Event('input')); input.focus(); });
+    f.eval(); return f;
+  };
+  const shake = () => { if (!reduce) formCard.animate([{translate: '0 0'}, {translate: '-9px 0'}, {translate: '8px 0'}, {translate: '-6px 0'}, {translate: '4px 0'}, {translate: '0 0'}], {duration: 420, easing: 'ease-out'}); };
+
+  /* gated primary button — off until the step is valid; a click on it still shows the reason */
+  const gate = (btnId, ids, extra = () => true) => {
+    const btn = $(btnId);
+    const g = {btn};
+    g.bad = () => ids.map(i => F[i]).find(f => { f.eval(); return f.res && f.res.level === 'err'; });
+    g.ok = () => !g.bad() && extra();
+    g.update = () => { const ok = g.ok(); btn.classList.toggle('off', !ok); btn.setAttribute('aria-disabled', String(!ok)); return ok; };
+    g.block = () => {
+      ids.forEach(i => { F[i].touched = true; F[i].eval(); F[i].render(); });
+      const f = g.bad(); if (f) { f.input.focus({preventScroll: true}); f.force(); }
+      shake();
+    };
+    ids.forEach(i => F[i].input.addEventListener('input', g.update));
+    g.update(); return g;
+  };
+
+  /* busy button: label changes + spinner, disabled while the request runs */
+  document.querySelectorAll('button .btxt').forEach(t => { t.parentElement.dataset.idle = t.textContent; });
+  const setBusy = (btn, on, text) => {
+    const t = btn.querySelector('.btxt');
+    btn.classList.toggle('busy', on); btn.disabled = on; btn.setAttribute('aria-busy', String(on));
+    t.textContent = on ? text : btn.dataset.idle;
+  };
+  const setLabel = (btn, text) => { btn.dataset.idle = text; if (!btn.classList.contains('busy')) btn.querySelector('.btxt').textContent = text; };
+  const linkBusy = (b, on, text) => { if (!b.dataset.idle) b.dataset.idle = b.textContent; b.disabled = on; b.textContent = on ? text : b.dataset.idle; };
+  const stepErr = (id, msg) => { const el = $(id); if (msg) el.querySelector('.se span').textContent = msg; el.classList.toggle('show', !!msg); el.setAttribute('role', msg ? 'alert' : 'none'); };
+  const setOpen = (id, on) => { const el = $(id); el.classList.toggle('open', on); el.inert = !on; };
+  const setStep = (panel, n) => panel.querySelectorAll('.wz-step').forEach(s => { const on = s.dataset.step == n; s.classList.toggle('on', on); s.inert = !on; });
+  const setChip = (id, text) => { const s = $(id).querySelector('span'); if (s.textContent === text) return; s.textContent = text; if (!reduce) $(id).animate([{opacity: .2, translate: '0 3px'}, {opacity: 1, translate: '0 0'}], {duration: 260, easing: 'ease-out'}); };
+  const note = (id, text) => { const n = $(id); n.textContent = text; n.classList.add('ok'); clearTimeout(n.t); n.t = setTimeout(() => { n.textContent = "Didn't get it?"; n.classList.remove('ok'); }, 4000); };
+  const lockInputs = (el, on) => el.querySelectorAll('input,select').forEach(i => { i.disabled = on; });
+  document.querySelectorAll('[data-enter]').forEach(i => i.addEventListener('keydown', e => {
+    if (e.key !== 'Enter' || i.readOnly) return; e.preventDefault(); const b = $(i.dataset.enter); if (!b.disabled) b.click();
+  }));
+
+  /* simulated server: one channel per flow, so closing/going back can drop a late reply */
+  const chan = {};
+  const req = (ch, ms) => { const t = chan[ch] = (chan[ch] || 0) + 1; return new Promise(r => setTimeout(() => r(chan[ch] === t), ms)); };
+  const cancel = ch => { chan[ch] = (chan[ch] || 0) + 1; };
+  const slow = () => scn('speed') === 'slow';
+  const dur = ms => slow() ? ms * 5 : ms;
+
+  /* ---------- password rules (Register, Forgot password, Login pre-check) ---------- */
+  const PW_SPECIAL = /[!@#$%^&*(),.?":{}|<>]/;
+  const pwMsg = v => v.length < 8 ? 'Password must be at least 8 characters'
+    : !/[A-Z]/.test(v) ? 'Password must contain an uppercase letter'
+    : !/[a-z]/.test(v) ? 'Password must contain a lowercase letter'
+    : !/\d/.test(v) ? 'Password must contain a number'
+    : !PW_SPECIAL.test(v) ? 'Password must contain a special character' : null;
+
+  /* =================== modal layer: Notify card · HD Reset dialog · security check =================== */
+  const layer = $('layer');
+  let modal = null;                                   // {el, esc}
+  const mount = (el, esc, cls = '') => {
+    if (modal) modal.el.remove();
+    layer.className = 'layer on' + (cls ? ' ' + cls : ''); layer.appendChild(el);
+    modal = {el, esc}; main.inert = true; ttHide();
+  };
+  const unmount = el => {
+    if (!modal || modal.el !== el) return false;
+    modal = null; layer.classList.remove('on'); main.inert = false;
+    if (reduce) el.remove();
+    else el.animate([{opacity: 1, scale: '1'}, {opacity: 0, scale: '.97'}], {duration: 140, easing: 'ease-in', fill: 'forwards'}).finished.then(() => el.remove(), () => el.remove());
+    return true;
+  };
+  const dropModal = () => { if (modal) { modal.el.remove(); modal = null; } layer.className = 'layer'; main.inert = false; };
+
+  /* Notify card: heading · glyph + title · body · up to 3 buttons (primary / secondary / tertiary) */
+  function card(o) {
+    const kind = o.kind || 'info', id = 'nc' + Math.random().toString(36).slice(2, 8);
+    const el = document.createElement('div');
+    // "Split welcome" layout: brand/status panel on the left (colour = kind) · message + actions on the right
+    el.className = 'ncard split k-' + kind; el.setAttribute('role', 'alertdialog'); el.setAttribute('aria-modal', 'true'); el.setAttribute('aria-labelledby', id);
+    el.innerHTML = `<div class="nc-side">${sideHTML(kind)}<div class="nc-head"></div><h2 id="${id}"></h2></div><div class="nc-main">`
+      + (o.lead ? `<h3 class="nc-lead"></h3>` : '') + `<div class="nc-body"></div>`
+      + (o.tips ? `<ul class="nc-tips">${o.tips.map(([ic, b, t], i) => `<li style="--i:${i}"><i>${IC[ic]}</i><div><b>${b}</b>${t}</div></li>`).join('')}</ul>` : '')
+      + (o.input ? `<div class="nc-field"><div class="ctl">${IC.key}<input spellcheck="false" autocomplete="off"></div><div class="nc-err">${IC.alert}<span></span></div></div>` : '')
+      + (o.enquiry ? `<p class="nc-enq">For enquiries: <button type="button" class="link">https://w2rsolutions.in/</button></p>` : '')
+      + `<div class="nc-btns"></div></div>`;
+    el.querySelector('.nc-head').textContent = o.heading || 'Schemax Solutions';
+    el.querySelector('h2').textContent = o.title;
+    if (o.lead) el.querySelector('.nc-lead').textContent = o.lead;
+    [].concat(o.body || []).forEach(t => { const p = document.createElement('p'); p.textContent = t; el.querySelector('.nc-body').appendChild(p); });
+    if (o.enquiry) el.querySelector('.nc-enq .link').addEventListener('click', toWeb);
+    const inp = o.input ? el.querySelector('.nc-field input') : null;
+    const ctl = {
+      el,
+      value: () => (inp ? inp.value : ''),
+      error: m => { const e = el.querySelector('.nc-err'); e.lastChild.textContent = m; e.classList.toggle('show', !!m); el.querySelector('.nc-field .ctl').classList.toggle('invalid', !!m); },
+      busy: (i, on) => { setBusy(btnEls[i], on, o.buttons[i].busy || ''); btnEls.forEach((b, j) => { if (j !== i) b.disabled = on; }); if (inp) inp.disabled = on; },
+      close: () => { if (unmount(el) && o.after) o.after(); },
+    };
+    const btnEls = o.buttons.map(b => {
+      const e = document.createElement('button'); e.type = 'button';
+      e.className = {primary: 'primary sm', danger: 'primary sm danger', secondary: 'ghost sm', tertiary: 'ghost sm tert'}[b.k || 'secondary'];
+      e.innerHTML = '<span class="spin" aria-hidden="true"></span><span class="btxt"></span>';
+      e.querySelector('.btxt').textContent = b.t; e.dataset.idle = b.t;
+      e.addEventListener('click', () => {
+        const r = b.on ? b.on(ctl) : undefined;
+        if (r === false || (r && typeof r.then === 'function')) return;   // handler keeps the card open
+        if (modal && modal.el === el) ctl.close();                          // (unless it already opened the next card)
+      });
+      return e;
+    });
+    const row = el.querySelector('.nc-btns'); btnEls.forEach(b => row.appendChild(b));
+    row.style.gridTemplateColumns = btnEls.length === 1 ? 'minmax(0,1fr) 150px' : 'repeat(2,minmax(0,1fr))';
+    if (btnEls.length === 1) btnEls[0].style.gridColumn = '2';
+    if (btnEls.length === 3) btnEls[0].style.gridColumn = '1 / -1';     // main action on its own row, the other two below
+    if (inp) {
+      inp.placeholder = o.input.placeholder; inp.setAttribute('aria-label', o.input.label);
+      inp.addEventListener('input', () => { ctl.error(''); if (o.input.upper) inp.value = inp.value.toUpperCase(); });
+      inp.addEventListener('keydown', e => { if (e.key === 'Enter') btnEls[0].click(); });
+    }
+    const esc = o.buttons.findIndex(b => b.cancel);
+    mount(el, () => { const b = btnEls[esc >= 0 ? esc : btnEls.length - 1]; if (!b.disabled) b.click(); });
+    setTimeout(() => (inp || btnEls[0]).focus({preventScroll: true}), 40);
+    return ctl;
+  }
+  addEventListener('keydown', e => {
+    if (e.key !== 'Escape' || state !== 'open') return;
+    if (modal) { e.preventDefault(); modal.esc(); }
+    else if (view !== 'signin' && $('appview').hidden) { e.preventDefault(); goBack(); }
+  });
+
+  /* =================== views: Sign In ⇄ Register / Forgot password (form swap) =================== */
+  const PANELS = {signin: $('signinPanel'), register: $('registerPanel'), forgot: $('forgotPanel')};
+  const CRUMB = {signin: 'Sign in', register: 'Create account', forgot: 'Reset password'};
+  let view = 'signin', glideT;
+  const firstFocus = v => v === 'register' ? (F.regEmail && $('registerPanel').querySelector('.wz-step.on').dataset.step === '2' ? $('regUser') : $('regEmail'))
+    : v === 'forgot' ? $('fpId') : (user.value ? pw : user);
+  function showView(v, instant) {
+    if (v === view && !instant) return;
+    view = v; ttHide();
+    if (instant) { main.classList.add('snap'); requestAnimationFrame(() => requestAnimationFrame(() => main.classList.remove('snap'))); }
+    else { main.classList.add('gliding'); clearTimeout(glideT); glideT = setTimeout(() => main.classList.remove('gliding'), reduce ? 0 : 850); }
+    main.dataset.view = v; main.classList.toggle('alt', v !== 'signin');
+    Object.entries(PANELS).forEach(([k, p]) => { p.inert = k !== v; });
+    crumb.textContent = CRUMB[v];
+    if (!instant) setTimeout(() => { if (view === v && !modal) firstFocus(v).focus({preventScroll: true}); }, reduce ? 0 : 750);
+  }
+  function goBack() {
+    if (gPending && gPending.intent === 'signup') cancelGoogle();
+    cancel('reg'); cancel('fp'); dropSecCheck();
+    showView('signin');
+  }
+  $('toRegister').addEventListener('click', () => { resetRegister(); showView('register'); });   // always from a clean start
+  $('toForgot').addEventListener('click', () => { resetForgot(); showView('forgot'); });
+  document.querySelectorAll('[data-back]').forEach(b => b.addEventListener('click', goBack));
+
+  /* =================== 1 · LOGIN =================== */
+  field('username', v => v.trim() ? null : E('Username or email is required'));     // no register rules here — the server decides
+  field('password', (v, f) => !v ? E('Password is required') : f.pre ? E(f.pre) : null);
+  const gLogin = gate('signinBtn', ['username', 'password']);
+  const caps = e => { if (!e.getModifierState) return; F.password.extra = e.getModifierState('CapsLock') ? Wn('Caps Lock is on') : null; F.password.render(); };
+  pw.addEventListener('keydown', caps); pw.addEventListener('keyup', caps);
+  pw.addEventListener('blur', () => { F.password.extra = null; F.password.render(); });
+
+  const syncAuto = () => { autoLogin.disabled = !remember.checked || formBusy; if (!remember.checked) autoLogin.checked = false; };
+  remember.addEventListener('change', syncAuto);
+
+  // preview "remember me" store (the real app: username in settings, password in Windows DPAPI, refresh token cached)
+  const STORE = 'sx-auth-preview';
+  const loadStore = () => { try { return JSON.parse(localStorage.getItem(STORE)) || {}; } catch (e) { return {}; } };
+  const saveStore = o => { try { localStorage.setItem(STORE, JSON.stringify(o)); } catch (e) {} };
+  const saveRemember = name => saveStore(remember.checked ? {remember: true, user: name, auto: autoLogin.checked, token: Date.now() + 7 * 864e5} : {});
+
+  const STAGES = [[0, 'Connecting to server…'], [3, 'Verifying your account…'], [8, 'Downloading your library…'], [20, 'Almost done…'], [45, 'Slow connection — still working…']];
+  let formBusy = false, stageT = null;
+  const lockables = () => [user, pw, remember, autoLogin, $('toForgot'), $('toRegister'), $('hdBtn'), $('googleBtn'), $('signinBtn'), ...$('signinPanel').querySelectorAll('.reveal')];
+  function setFormBusy(on, btn, text, stage) {
+    formBusy = on;
+    lockables().forEach(c => { if (c !== btn) c.disabled = on; });
+    setBusy(btn, on, text);
+    syncAuto();
+    clearInterval(stageT);
+    if (on && stage) {
+      const t0 = Date.now(), tick = () => { const s = (Date.now() - t0) / 1000; $('stageText').textContent = STAGES.filter(([t]) => s >= t).pop()[1]; };
+      tick(); stageT = setInterval(tick, 250); $('stage').classList.add('show');
+    } else $('stage').classList.remove('show');
+  }
+  const focusUser = () => setTimeout(() => user.focus({preventScroll: true}), 30);
+
+  const LOGIN_MSG = {
+    other: 'Invalid username or password.',
+    version: 'Version not allowed. This version of Schemax Solutions is no longer supported.',
+    nextkey: 'Your plan has ended and your next activation key is ready to start. It begins the next time you sign in.',
+    blocked: 'ACCOUNT_BLOCKED: Your account has been blocked. Please contact support.',
+    email: 'EMAIL_NOT_VERIFIED: Please verify your email before signing in. Check your inbox for the verification link.',
+    hwid: 'Hardware ID mismatch: this account is already activated on another device.',
+    free: 'FREE_PLAN_RESTRICTION: Free plan users can\'t use the desktop app. Please upgrade to Premium.',
+    notact: 'Account Not Activated. Activate your account with an activation key, or contact support.',
+    expired: 'PLAN_EXPIRED: Your plan has expired. Renew it to keep using Schemax Solutions.',
+  };
+  // the server's message text decides which card opens — checked in this exact order (01-login.md, Error routing)
+  function routeLoginError(raw) {
+    const m = (raw || '').toLowerCase(), has = (...k) => k.some(x => m.includes(x.toLowerCase()));
+    const text = (raw || '').replace(/^[A-Z_]{4,}:\s*/, '') || 'Authentication failed';
+    const base = {heading: 'Sign in', after: focusUser};
+    const keyBtn = {t: 'Enter Activation Key', k: 'primary', on: () => { keyDialog(); }};
+    if (has('version not allowed')) return card({...base, kind: 'info', title: 'Update required', lead: 'A newer version is needed', body: [text, 'Download the latest version to keep signing in.'],
+      buttons: [{t: 'Download update', k: 'primary', on: () => notify('Downloading the latest Schemax Solutions installer…')}, {t: 'Close', k: 'secondary', cancel: true}]});
+    if (has('activation key is ready to start')) return card({...base, kind: 'info', title: 'Your next key is ready', lead: 'Your new plan starts at sign-in', body: [text], buttons: [{t: 'OK', k: 'primary'}]});
+    if (has('ACCOUNT_BLOCKED', 'account has been blocked')) return card({...base, kind: 'err', title: 'Account Blocked', lead: 'Access to this account is paused', body: [text], enquiry: true,
+      buttons: [{t: 'OK', k: 'secondary', cancel: true}, {t: 'Contact Support on WhatsApp', k: 'primary', on: () => notify(`Opening WhatsApp — a support chat prefilled with "${user.value.trim() || 'your username'}"…`)}]});
+    if (has('EMAIL_NOT_VERIFIED', 'verify your email')) return card({...base, kind: 'warn', title: 'Verify your email', lead: 'One step left before signing in', body: [text],
+      buttons: [{t: 'OK', k: 'secondary', cancel: true}, {t: 'Open w2rsolutions.in', k: 'primary', on: toWeb}]});
+    if (has('hardware id', 'activated on another device', 'device limit reached', 'mismatch')) return card({...base, kind: 'err', title: 'Hardware ID Error', lead: 'This licence is on another PC', body: [text], enquiry: true,
+      buttons: [{t: 'Close', k: 'secondary', cancel: true}, {t: 'Reset Hardware ID', k: 'primary', on: () => { hdStart(); }}]});
+    if (has('free plan users', 'upgrade to premium', 'FREE_PLAN_RESTRICTION')) return card({...base, kind: 'warn', title: 'Upgrade Required', lead: 'The desktop app needs Premium', body: [text],
+      buttons: [keyBtn, {t: 'Get Activation Key', k: 'secondary', on: () => notify('Opening the plans page on w2rsolutions.in (or WhatsApp support)…')}, {t: 'Close', k: 'tertiary', cancel: true}]});
+    if (has('account not activated')) return card({...base, kind: 'warn', title: 'Account Activation Required', lead: 'Your account isn\'t active yet', body: [text], buttons: [{t: 'OK', k: 'primary'}]});
+    if (has('plan has expired', 'PLAN_EXPIRED')) return card({...base, kind: 'warn', title: 'Plan Expired', lead: 'Renew to keep working', body: [text],
+      buttons: [keyBtn, {t: 'Renew Plan', k: 'secondary', on: () => notify('Opening plan renewal on w2rsolutions.in…')}, {t: 'Close', k: 'tertiary', cancel: true}]});
+    return card({...base, kind: 'err', title: 'Login Failed', lead: 'We couldn\'t sign you in', body: [text], buttons: [{t: 'OK', k: 'primary'}]});
+  }
+  const hwFail = () => card({heading: 'Sign in', kind: 'err', title: 'Hardware ID Collection Failed', lead: 'This PC couldn\'t be identified', after: focusUser,
+    body: ['Unable to identify your device. Please ensure you have administrator privileges and try again.'], buttons: [{t: 'OK', k: 'primary'}]});
+
+  function keyDialog() {
+    card({heading: 'Activation key', kind: 'info', title: 'Enter your activation key', lead: 'Unlock your plan', body: ['Paste the key you received with your plan.'], after: focusUser,
+      input: {placeholder: 'e.g. XXXX-XXXX-XXXX-XXXX', label: 'Activation key', upper: true},
+      buttons: [{t: 'Activate', k: 'primary', busy: 'Activating...', on: async c => {
+        if (!c.value().trim()) return c.error('Please enter your activation key.'), false;
+        c.busy(0, true);
+        if (!await req('key', dur(1400))) return;
+        c.busy(0, false); c.close();
+        card({heading: 'Activation key', kind: 'ok', title: 'Key activated', lead: 'You\'re all set', body: ['Your plan is active. Press Sign In to continue.'], buttons: [{t: 'OK', k: 'primary'}], after: () => $('signinBtn').focus()});
+      }}, {t: 'Cancel', k: 'secondary', cancel: true}]});
+  }
+
+  // password / Google sign-in request → app, or the error card the message routes to
+  async function runSignIn(ch, btn, text, name) {
+    setFormBusy(true, btn, text, true);
+    if (!await req(ch, slow() ? 50000 : 2400)) return;              // dropped (window closed)
+    setFormBusy(false, btn);
+    const s = scn('login');
+    if (s === 'ok' || s === 'hwread') { saveRemember(name); openApp(name); }
+    else routeLoginError(LOGIN_MSG[s]);
+  }
+  $('loginForm').addEventListener('submit', e => {
+    e.preventDefault();
+    if (formBusy) return;
+    if (!gLogin.ok()) return gLogin.block();
+    cancelGoogle();                                                  // a manual Sign In cancels a Google attempt still waiting in the browser
+    const rule = pwMsg(pw.value);
+    if (rule) { F.password.pre = rule; pw.focus(); F.password.force(); shake(); return; }   // pre-check: no request is sent
+    if (scn('login') === 'hwread') return hwFail();
+    runSignIn('login', $('signinBtn'), 'Signing in…', user.value.trim());
+  });
+
+  /* auto-login on app start: Remember me + Auto Login + cached token not expired */
+  function afterOpen() {
+    const s = loadStore();
+    if (!(s.remember && s.auto && s.token > Date.now())) return;
+    (async () => {
+      setFormBusy(true, $('signinBtn'), 'Resuming session...', false);
+      if (!await req('login', slow() ? 6000 : 1800)) return;
+      setFormBusy(false, $('signinBtn'));
+      if (scn('resume') === 'ok') openApp(s.user);
+      else { saveStore({...s, token: 0}); pw.focus({preventScroll: true}); }
+    })();
+  }
+
+  /* main app placeholder */
+  function openApp(name) {
+    const av = $('appview'); $('avName').textContent = name || 'you';
+    av.classList.remove('ready'); av.hidden = false; main.inert = true; crumb.textContent = 'Opening workspace'; ttHide();
+    if (!reduce) av.animate([{opacity: 0}, {opacity: 1}], {duration: 320, easing: 'ease-out'});
+    clearTimeout(av.t); av.t = setTimeout(() => { if (av.hidden) return; av.classList.add('ready'); crumb.textContent = 'Workspace'; $('signOut').focus({preventScroll: true}); }, 1700);
+  }
+  $('signOut').addEventListener('click', () => {
+    const s = loadStore(); if (s.token) saveStore({...s, token: 0});   // signing out drops the cached session
+    $('appview').hidden = true; main.inert = false; crumb.textContent = CRUMB.signin;
+    F.password.reset(s.remember ? REMEMBERED_PW : ''); gLogin.update(); focusUser();
+  });
+
+  /* closing the window while signing in asks first */
+  const confirmClose = () => card({kind: 'warn', title: 'Sign-in in progress', lead: 'Closing now cancels sign-in', body: ['Sign-in is still working. Close the app anyway?'],
+    buttons: [{t: 'Close anyway', k: 'danger', on: () => { setTimeout(() => closeApp(true)); }}, {t: 'Keep waiting', k: 'secondary', cancel: true}]});
+
+  /* =================== 5 · GOOGLE (one browser OAuth, three intents: sign in · sign up · HD reset) =================== */
+  let gPending = null;
+  const gb = $('gbrowser');
+  const cleanName = n => { const s = n.replace(/[^A-Za-z0-9._-]/g, '').replace(/\.{2,}/g, '.').replace(/^\.+/, '').replace(/[._-]+$/, '').slice(0, 50); return s.length >= 3 ? s : ''; };
+  function googleStart(intent) {
+    cancelGoogle();
+    const btn = intent === 'signup' ? $('googleUp') : intent === 'signin' ? $('googleBtn') : null;
+    if (btn) setBusy(btn, true, 'Signing in');                     // spinner on the Google button only — manual login stays usable
+    gPending = {intent, btn, timer: setTimeout(() => googleFail('No reply from Google within 2 minutes. Please try again and finish within 2 minutes.'), 120000)};
+    browserOpen(intent);
+  }
+  function cancelGoogle() {
+    if (!gPending) return;
+    clearTimeout(gPending.timer); if (gPending.btn) setBusy(gPending.btn, false);
+    gPending = null; browserClose(true);
+  }
+  function googleFail(reason) {
+    if (!gPending) return;
+    cancelGoogle();                                                // pending intents are cleared
+    card({heading: 'Google', kind: 'warn', title: 'Google Sign-In Failed', lead: 'Google didn\'t finish', body: [reason], buttons: [{t: 'OK', k: 'primary'}]});
+  }
+  function googleToken() {                                         // idToken received → route by intent: HD reset → sign up → sign in
+    const p = gPending; if (!p) return;
+    clearTimeout(p.timer); gPending = null; if (p.btn) setBusy(p.btn, false);
+    if (!reduce) win.animate([{scale: '.985', filter: 'brightness(.97)'}, {scale: '1', filter: 'brightness(1)'}], {duration: 340, easing: 'cubic-bezier(.2,.9,.25,1)'});   // app comes to the front
+    if (p.intent === 'reset') return hdRun();
+    if (p.intent === 'signup') return googleSignupCheck();
+    googleFinish();
+  }
+  async function googleSignupCheck() {                             // POST /api/auth/google
+    const b = $('googleUp'); setBusy(b, true, 'Signing in');
+    if (!await req('reg', dur(1200))) return;
+    setBusy(b, false);
+    const s = scn('google');
+    if (s === 'error') return card({heading: 'Google', kind: 'warn', title: 'Google Sign-Up', lead: 'We couldn\'t check this account', body: ['We couldn\'t check this Google account right now. Please try again.'], buttons: [{t: 'OK', k: 'primary'}]});
+    if (s === 'existing') { showView('signin'); return googleFinish(); }
+    regStep2(true);                                                // needsProfile → Register form in Google mode
+  }
+  function googleFinish(name) {                                    // read hardware ID → POST /auth/google-login
+    if (scn('login') === 'hwread') return hwFail();
+    runSignIn('google', $('googleBtn'), 'Signing in', name || cleanName(GOOGLE.name) || GOOGLE.email);
+  }
+  $('googleBtn').addEventListener('click', () => googleStart('signin'));
+  $('googleUp').addEventListener('click', () => googleStart('signup'));
+
+  // the system browser window (preview stand-in for the real browser tab)
+  function browserOpen(intent) {
+    $('gbPick').hidden = false; $('gbDone').hidden = true;
+    $('gbUrl').textContent = 'accounts.google.com/o/oauth2/v2/auth?client_id=schemax-desktop&redirect_uri=http://localhost:53682&response_type=code';
+    $('gbTo').innerHTML = intent === 'reset' ? 'to confirm a <b>hardware ID reset</b> (not a sign-in) for <b>Schemax Solutions</b>' : 'to continue to <b>Schemax Solutions</b>';
+    gb.hidden = false; gb.style.animation = 'none'; void gb.offsetWidth; gb.style.animation = '';
+    setTimeout(() => gb.querySelector('[data-acct]').focus({preventScroll: true}), 60);
+  }
+  function browserClose(instant) {
+    if (gb.hidden) return;
+    if (instant || reduce) { gb.hidden = true; return; }
+    gb.animate([{opacity: 1, scale: '1'}, {opacity: 0, scale: '.96'}], {duration: 160, easing: 'ease-in'}).finished.then(() => { gb.hidden = true; }, () => { gb.hidden = true; });
+  }
+  gb.querySelectorAll('[data-acct]').forEach(b => b.addEventListener('click', () => {
+    $('gbPick').hidden = true; $('gbDone').hidden = false;
+    $('gbUrl').textContent = 'http://localhost:53682/?code=4/0AeanS0b…&scope=email%20profile%20openid';
+    setTimeout(() => { browserClose(); googleToken(); }, reduce ? 300 : 1200);
+  }));
+  const gbCancel = () => { browserClose(); googleFail('Google sign-in was cancelled in the browser.'); };
+  $('gbCancel').addEventListener('click', gbCancel);
+  $('gbClose').addEventListener('click', gbCancel);
+
+  /* =================== 2 · REGISTER =================== */
+  // DEMO ONLY: no mail server here, so the code arrives as a Windows-style notification instead of an email
+  const demoCode = () => setTimeout(() => notify(`Your verification code is ${DEMO_CODE}. In the real app this code arrives by email.`, 'Demo mode · code sent'), 500);
+  const ALLOWED = ['gmail.com', 'googlemail.com', 'outlook.com', 'hotmail.com', 'live.com', 'yahoo.com', 'yahoo.co.in', 'icloud.com', 'me.com'];
+  let gmode = false;
+  field('regEmail', v => {
+    v = v.trim();
+    if (!v) return E('Email address is mandatory');
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) return E('Enter a valid email address');
+    if (!ALLOWED.includes(v.split('@').pop().toLowerCase())) return E('Email must be a valid Gmail, Outlook, Hotmail, Yahoo, or iCloud address');
+  });
+  const gSend = gate('sendOtp', ['regEmail']);
+
+  // security check: Cloudflare Turnstile in a small WebView2 window over the login card
+  let secDrop = null;
+  const dropSecCheck = () => { if (secDrop) secDrop(); };
+  function secCheck() {
+    return new Promise(res => {
+      const mode = scn('captcha');
+      if (mode === 'cantrun') return res({error: 'The security check can\'t run on this PC. Install the Microsoft Edge WebView2 Runtime, then try again.'});
+      if (mode === 'nostart') return res({error: 'The security check couldn\'t start. Please try again, or sign up with Google.'});
+      const el = document.createElement('div');
+      el.className = 'secwin'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-label', 'Security check');
+      el.innerHTML = `<div class="sw-tb"><span>Security check</span><button type="button" class="sw-x" aria-label="Cancel security check">${IC.err}</button></div>
+        <div class="sw-body"><b>Quick security check</b><p>This keeps automated sign-ups out. It only takes a moment.</p>
+          <div class="ts"><span class="ts-ic"><i class="ts-spin"></i></span><span class="ts-t" aria-live="polite">Verifying…</span><span class="ts-brand">Cloudflare<br>Turnstile</span></div></div>
+        <div class="sw-foot"><button type="button" class="ghost sm"><span class="btxt">Cancel</span></button></div>`;
+      const timers = []; let done = false;
+      const finish = r => { if (done) return; done = true; secDrop = null; timers.forEach(clearTimeout); unmount(el); res(r); };
+      secDrop = () => finish({cancelled: true});
+      el.querySelector('.sw-x').addEventListener('click', () => finish({cancelled: true}));
+      el.querySelector('.sw-foot button').addEventListener('click', () => finish({cancelled: true}));
+      mount(el, () => finish({cancelled: true}), 'light');
+      const lr = layer.getBoundingClientRect(), cr = formCard.getBoundingClientRect(), k = lr.width / layer.offsetWidth || 1;
+      el.style.left = ((cr.left + cr.width / 2 - lr.left) / k - el.offsetWidth / 2) + 'px';
+      el.style.top = Math.max(12, (cr.top + cr.height / 2 - lr.top) / k - el.offsetHeight / 2) + 'px';
+      el.querySelector('.sw-foot button').focus({preventScroll: true});
+      timers.push(setTimeout(() => { el.querySelector('.ts-ic').innerHTML = IC.ok; el.querySelector('.ts-t').textContent = 'Success!'; }, 1500));
+      timers.push(setTimeout(() => finish({token: 'turnstile-token'}), 2100));
+    });
+  }
+
+  async function sendRegCode(resend) {
+    if (!resend && !gSend.ok()) return gSend.block();
+    const errId = resend ? 'reg1cErr' : 'reg1aErr';
+    stepErr('reg1aErr', ''); stepErr('reg1cErr', '');
+    const cap = await secCheck();                                  // runs again for every Resend code
+    if (cap.cancelled) return;                                     // back where we were, button enabled
+    if (cap.error) return stepErr(errId, cap.error);
+    const b = resend ? $('regResend') : $('sendOtp');
+    resend ? linkBusy(b, true, 'Sending…') : setBusy(b, true, 'Sending…');
+    lockInputs($('registerPanel'), true);
+    const live = await req('reg', dur(1300));
+    if (!live) return;
+    resend ? linkBusy(b, false) : setBusy(b, false);
+    lockInputs($('registerPanel'), false);
+    if (scn('reg') === 'emailtaken') return stepErr(errId, 'An account with this email already exists. Please sign in instead.');
+    regOtp.clear();
+    demoCode();                                                    // DEMO ONLY — the real app emails the code
+    if (resend) return note('regNote', 'New code sent.');
+    $('regEmail').readOnly = true; $('regEmailChange').hidden = false;
+    $('regSent').innerHTML = 'Enter the 6-digit code sent to <b></b>'; $('regSent').querySelector('b').textContent = $('regEmail').value.trim();
+    setOpen('reg1a', false); setOpen('reg1c', true);
+    setChip('regChip', 'Step 1 of 2 · Enter the code');
+    setTimeout(() => regOtp.focus(), reduce ? 0 : 250);
+  }
+  $('sendOtp').addEventListener('click', () => sendRegCode(false));
+  $('regResend').addEventListener('click', () => sendRegCode(true));
+  $('regEmailChange').addEventListener('click', () => {
+    cancel('reg'); setBusy($('regVerify'), false); lockInputs($('registerPanel'), false);
+    $('regEmail').readOnly = false; $('regEmailChange').hidden = true; stepErr('reg1cErr', '');
+    setOpen('reg1c', false); setOpen('reg1a', true); setChip('regChip', 'Step 1 of 2 · Verify your email'); $('regEmail').focus();
+  });
+
+  /* OTP input: 6 boxes · typing moves on · Backspace on an empty box moves back · paste fills all */
+  const mkOtp = (box, onChange) => {
+    box.innerHTML = Array.from({length: 6}, (_, i) => `<input inputmode="numeric" autocomplete="one-time-code" aria-label="Digit ${i + 1}">`).join('');
+    const ins = [...box.querySelectorAll('input')];
+    const val = () => ins.map(i => i.value).join('');
+    const fire = () => { ins.forEach(i => i.classList.toggle('f', !!i.value)); box.classList.remove('bad'); onChange(val()); };
+    const spread = (d, from) => { for (let k = 0; k < d.length && from + k < 6; k++) ins[from + k].value = d[k]; ins[Math.min(5, from + d.length)].focus(); fire(); };
+    ins.forEach((inp, i) => {
+      inp.addEventListener('input', () => {
+        const d = inp.value.replace(/\D/g, '');
+        if (d.length >= 6) return spread(d.slice(0, 6), 0);
+        inp.value = d.slice(-1); if (inp.value && i < 5) ins[i + 1].focus(); fire();
+      });
+      inp.addEventListener('keydown', e => {
+        if (e.key === 'Backspace' && !inp.value && i > 0) { e.preventDefault(); ins[i - 1].focus(); }
+        else if (e.key === 'ArrowLeft' && i > 0) { e.preventDefault(); ins[i - 1].focus(); }
+        else if (e.key === 'ArrowRight' && i < 5) { e.preventDefault(); ins[i + 1].focus(); }
+        else if (e.key === 'Enter') { e.preventDefault(); box.dispatchEvent(new CustomEvent('otpenter')); }
+      });
+      inp.addEventListener('paste', e => { e.preventDefault(); const d = (e.clipboardData.getData('text') || '').replace(/\D/g, ''); if (d) spread(d, d.length >= 6 ? 0 : i); });
+      inp.addEventListener('focus', () => inp.select());
+    });
+    return {
+      val, focus: () => (ins.find(i => !i.value) || ins[5]).focus({preventScroll: true}),
+      clear: (focus = true) => { ins.forEach(i => { i.value = ''; }); fire(); if (focus) ins[0].focus({preventScroll: true}); },
+      bad: () => { box.classList.add('bad'); if (!reduce) box.animate([{translate: '0 0'}, {translate: '-6px 0'}, {translate: '5px 0'}, {translate: '-3px 0'}, {translate: '0 0'}], {duration: 360}); },
+      disable: on => ins.forEach(i => { i.disabled = on; }),
+    };
+  };
+  const regOtp = mkOtp($('regOtp'), v => { $('regVerify').classList.toggle('off', v.length < 6); stepErr('reg1cErr', ''); });
+  $('regOtp').addEventListener('otpenter', () => $('regVerify').click());
+  $('regVerify').addEventListener('click', async () => {
+    const code = regOtp.val();
+    if (code.length < 6) { stepErr('reg1cErr', 'Enter all 6 digits of the code'); regOtp.bad(); return; }
+    setBusy($('regVerify'), true, 'Verifying…'); regOtp.disable(true);
+    if (!await req('reg', dur(1100))) return;
+    setBusy($('regVerify'), false); regOtp.disable(false);
+    if (code !== DEMO_CODE) { stepErr('reg1cErr', 'That code isn\'t right. Check the email and try again.'); regOtp.bad(); regOtp.focus(); return; }
+    regStep2(false);
+  });
+
+  /* step 2 — complete your profile */
+  const COUNTRIES = [['India', 'IN', '91', 10, 10], ['United States', 'US', '1', 10, 10], ['United Kingdom', 'GB', '44', 10, 10], ['United Arab Emirates', 'AE', '971', 9, 9],
+    ['Saudi Arabia', 'SA', '966', 9, 9], ['Qatar', 'QA', '974', 8, 8], ['Kuwait', 'KW', '965', 8, 8], ['Oman', 'OM', '968', 8, 8], ['Pakistan', 'PK', '92', 10, 10],
+    ['Bangladesh', 'BD', '880', 10, 10], ['Sri Lanka', 'LK', '94', 9, 9], ['Nepal', 'NP', '977', 10, 10], ['Malaysia', 'MY', '60', 9, 10], ['Singapore', 'SG', '65', 8, 8],
+    ['Indonesia', 'ID', '62', 9, 12], ['Philippines', 'PH', '63', 10, 10], ['Vietnam', 'VN', '84', 9, 10], ['Nigeria', 'NG', '234', 10, 10], ['Kenya', 'KE', '254', 9, 9], ['Egypt', 'EG', '20', 10, 10]];
+  const sel = $('regCountry');
+  sel.innerHTML = COUNTRIES.map(([n, , d], i) => `<option value="${i}">${n} (+${d})</option>`).join('');
+  const country = () => COUNTRIES[+sel.value || 0];
+  field('regUser', v => {
+    if (!v) return E('Username is mandatory');
+    if (v.includes('@')) return E('Enter a username, not an email address');
+    if (/\s/.test(v)) return E('Username can\'t contain spaces');
+    if (!/^[A-Za-z0-9._-]+$/.test(v)) return E('Use only letters, numbers, dot (.), underscore (_) and hyphen (-)');
+    if (v.includes('..')) return E('Username can\'t contain two dots in a row (..)');
+    if (v[0] === '.') return E('Username can\'t start with a dot');
+    if (!/[A-Za-z0-9]$/.test(v)) return E('Username must end with a letter or number');
+    if (v.length < 3) return E('Username must be at least 3 characters');
+  });
+  field('regPhone', v => {
+    const [, c, , a, b] = country(); v = v.trim();
+    if (!v) return E('Phone number is mandatory');
+    if (!/^\d+$/.test(v)) return E('Phone number must contain digits only');
+    if (v.length < a || v.length > b) return E(a === b ? `Phone number must be exactly ${a} digits` : `Phone number must be ${a}-${b} digits`);
+    if (c === 'IN' && !/^[6-9]/.test(v)) return E('Indian mobile numbers must start with 6, 7, 8 or 9');
+  });
+  field('regPass', v => { const m = pwMsg(v); return m && E(m); });
+  field('regPass2', v => !v ? E('Please confirm your password') : v !== $('regPass').value ? E('Passwords do not match.') : null);
+  $('regPass').addEventListener('input', () => { F.regPass2.eval(); F.regPass2.render(); });
+  const gCreate = gate('regCreate', ['regUser', 'regPhone', 'regPass', 'regPass2']);
+  const syncCountry = () => {
+    const [, c, d, a, b] = country();
+    $('ccText').textContent = `${c} +${d}`; $('regPhone').placeholder = a === b ? `${a} digits` : `${a}-${b} digits`;
+    F.regPhone.eval(); F.regPhone.render(); gCreate.update();
+  };
+  sel.addEventListener('change', syncCountry);
+  ['regUser', 'regPhone', 'regPass', 'regPass2'].forEach(i => F[i].input.addEventListener('input', () => stepErr('reg2Err', '')));
+
+  function regStep2(google) {
+    gmode = google;
+    if (google) { resetRegister(); gmode = true; if (view !== 'register') showView('register'); }
+    $('regGBanner').hidden = !google; $('regGEmail').textContent = GOOGLE.email;
+    setLabel($('regCreate'), google ? 'Finish sign-up' : 'Create account');
+    ['regUser', 'regPhone', 'regPass', 'regPass2'].forEach(i => F[i].reset());
+    if (google) F.regUser.reset(cleanName(GOOGLE.name));         // suggested from the Google name, editable
+    stepErr('reg2Err', ''); gCreate.update();
+    setStep($('registerPanel'), 2); setChip('regChip', 'Step 2 of 2 · Complete your profile');
+    setTimeout(() => (google && $('regUser').value ? $('regPhone') : $('regUser')).focus({preventScroll: true}), reduce ? 0 : google && view !== 'register' ? 760 : 90);
+  }
+  $('regCreate').addEventListener('click', async () => {
+    if (!gCreate.ok()) return gCreate.block();
+    stepErr('reg2Err', '');
+    const b = $('regCreate'), step2 = $('registerPanel').querySelector('[data-step="2"]');
+    setBusy(b, true, gmode ? 'Finishing sign-up…' : 'Creating account…'); lockInputs(step2, true);
+    if (!await req('reg', dur(1500))) return;
+    setBusy(b, false); lockInputs(step2, false);
+    const name = $('regUser').value.trim();
+    if (scn('reg') === 'usertaken') { stepErr('reg2Err', 'This username is already taken. Please choose another one.'); F.regUser.input.focus(); return; }
+    if (gmode) { showView('signin'); googleFinish(name); return; } // Google sign-up signs in automatically ("already registered" counts as success)
+    showView('signin'); F.username.reset(name); F.password.reset(''); gLogin.update();   // creating the account does not sign in
+    setTimeout(() => card({heading: 'Account created', kind: 'ok', title: `Welcome, ${name}`, lead: 'You\'re all set', body: ['Please sign in to continue. A few things you\'ll use:'],
+      tips: [['board', 'Boardview', 'Pin-accurate layouts for every board.'], ['search', '2.3M+ schematics', 'Search by model, part or net name.'], ['hd', 'HD Reset', 'Move your licence to a new PC, 3 times a month.']],
+      buttons: [{t: 'Sign in', k: 'primary'}], after: () => pw.focus({preventScroll: true})}), reduce ? 0 : 650);
+  });
+
+  function resetRegister() {
+    cancel('reg'); gmode = false;
+    F.regEmail.reset(); $('regEmail').readOnly = false; $('regEmailChange').hidden = true;
+    setOpen('reg1a', true); setOpen('reg1c', false); regOtp.clear(false); regOtp.disable(false);
+    ['reg1aErr', 'reg1cErr', 'reg2Err'].forEach(i => stepErr(i, ''));
+    ['regUser', 'regPhone', 'regPass', 'regPass2'].forEach(i => F[i].reset()); sel.value = '0'; syncCountry();
+    $('regGBanner').hidden = true; setLabel($('regCreate'), 'Create account');
+    ['sendOtp', 'regVerify', 'regCreate'].forEach(i => setBusy($(i), false)); linkBusy($('regResend'), false);
+    if (!(gPending && gPending.intent === 'signup')) setBusy($('googleUp'), false);
+    lockInputs($('registerPanel'), false);
+    setStep($('registerPanel'), 1); setChip('regChip', 'Step 1 of 2 · Verify your email');
+    gSend.update(); gCreate.update(); $('regVerify').classList.add('off');
+  }
+
+  /* =================== 3 · FORGOT PASSWORD =================== */
+  const TYPO = {'gmail.con': 'gmail.com', 'gmial.com': 'gmail.com', 'gamil.com': 'gmail.com', 'gmai.com': 'gmail.com', 'gmal.com': 'gmail.com', 'gnail.com': 'gmail.com',
+    'gmail.co': 'gmail.com', 'gmail.cm': 'gmail.com', 'outlook.con': 'outlook.com', 'outlok.com': 'outlook.com', 'hotmail.con': 'hotmail.com', 'hotmial.com': 'hotmail.com',
+    'hotmal.com': 'hotmail.com', 'yahoo.con': 'yahoo.com', 'yaho.com': 'yahoo.com', 'yahooo.com': 'yahoo.com', 'icloud.con': 'icloud.com', 'iclod.com': 'icloud.com'};
+  const TLDS = ['com', 'in', 'net', 'org', 'co', 'co.in', 'co.uk', 'uk', 'io', 'edu', 'gov', 'me', 'info', 'biz', 'ae', 'sa', 'qa', 'kw', 'om', 'pk', 'bd', 'lk', 'np',
+    'my', 'sg', 'id', 'ph', 'vn', 'ng', 'ke', 'eg', 'us', 'ca', 'au', 'de', 'fr'];
+  field('fpId', v => {
+    v = v.trim();
+    if (!v) return E('Enter username or email');
+    if (v.includes('@')) {
+      if (v.length < 5 || v.length > 128) return E('Email must be between 5 and 128 characters');
+      if (!/^[^\s@]+@[^\s@]+\.[A-Za-z]{2,}$/.test(v)) return E('Please enter a valid format: user@example.com');
+      const at = v.lastIndexOf('@'), local = v.slice(0, at), dom = v.slice(at + 1).toLowerCase(), parts = dom.split('.');
+      if (TYPO[dom]) return Wn(`Did you mean ${local}@${TYPO[dom]}?`, `${local}@${TYPO[dom]}`);
+      if (!TLDS.includes(parts[parts.length - 1]) && !TLDS.includes(parts.slice(-2).join('.'))) return Wn('This domain extension is not supported yet.');
+      return null;
+    }
+    if (v.length < 3 || v.length > 32) return E('Username must be between 3 and 32 characters');
+    if (!/^[A-Za-z0-9._-]+$/.test(v)) return E('Username contains invalid characters');
+  });
+  const gFp = gate('fpSend', ['fpId']);
+  let fpAttempts = 5, fpTarget = '';
+  async function fpSendCode(resend) {
+    if (!resend && !gFp.ok()) return gFp.block();
+    const errId = resend ? 'fp2Err' : 'fp1Err', b = resend ? $('fpResend') : $('fpSend');
+    stepErr('fp1Err', ''); stepErr('fp2Err', '');
+    resend ? linkBusy(b, true, 'Sending…') : setBusy(b, true, 'Sending…');
+    $('fpId').disabled = true;
+    if (!await req('fp', dur(1300))) return;
+    resend ? linkBusy(b, false) : setBusy(b, false); $('fpId').disabled = false;
+    if (scn('forgot') === 'notfound') return stepErr(errId, 'No account found with this email or username');
+    fpAttempts = 5; fpOtp.disable(false); fpOtp.clear(); $('fpVerify').classList.add('off');
+    demoCode();                                                    // DEMO ONLY — the real app emails the code
+    if (resend) return note('fpNote', 'New code sent.');
+    fpTarget = $('fpId').value.trim();
+    const s = $('fpSent');
+    if (fpTarget.includes('@')) { s.innerHTML = 'Enter the 6-digit code sent to <b></b>'; s.querySelector('b').textContent = fpTarget; }
+    else s.textContent = 'Enter the 6-digit code sent to your account\'s email.';
+    $('fpId').readOnly = true; $('fpChange').hidden = false;
+    setOpen('fp1a', false); setOpen('fp1c', true); setChip('fpChip', 'Step 2 of 3 · Enter the code');
+    setTimeout(() => fpOtp.focus(), reduce ? 0 : 250);
+  }
+  $('fpSend').addEventListener('click', () => fpSendCode(false));
+  $('fpResend').addEventListener('click', () => fpSendCode(true));   // boxes cleared, attempts reset
+  $('fpChange').addEventListener('click', () => {
+    cancel('fp'); setBusy($('fpVerify'), false);
+    $('fpId').readOnly = false; $('fpChange').hidden = true; stepErr('fp2Err', '');
+    setOpen('fp1c', false); setOpen('fp1a', true); setChip('fpChip', 'Step 1 of 3 · Verify your identity'); $('fpId').focus();
+  });
+  const fpOtp = mkOtp($('fpOtp'), v => { $('fpVerify').classList.toggle('off', v.length < 6 || fpAttempts <= 0); if (fpAttempts > 0) stepErr('fp2Err', ''); });
+  $('fpOtp').addEventListener('otpenter', () => $('fpVerify').click());
+  const TOO_MANY = 'Too many incorrect attempts. Please request a new code.';
+  $('fpVerify').addEventListener('click', async () => {
+    if (fpAttempts <= 0) return stepErr('fp2Err', TOO_MANY);
+    const code = fpOtp.val();
+    if (code.length < 6) { stepErr('fp2Err', 'Enter all 6 digits of the code'); fpOtp.bad(); return; }
+    setBusy($('fpVerify'), true, 'Verifying…'); fpOtp.disable(true);
+    if (!await req('fp', dur(1100))) return;
+    setBusy($('fpVerify'), false); fpOtp.disable(false);
+    if (code !== DEMO_CODE) {
+      fpAttempts--;
+      if (fpAttempts <= 0) { fpOtp.clear(false); fpOtp.disable(true); $('fpVerify').classList.add('off'); stepErr('fp2Err', TOO_MANY); }
+      else { stepErr('fp2Err', `Invalid or expired code (${fpAttempts} attempt${fpAttempts === 1 ? '' : 's'} remaining)`); fpOtp.bad(); fpOtp.focus(); }
+      return;
+    }
+    // ok → short-lived resetToken → step 3
+    F.fpPass.reset(); F.fpPass2.reset(); stepErr('fp3Err', ''); gReset.update();
+    setStep($('forgotPanel'), 3); setChip('fpChip', 'Step 3 of 3 · Set a new password');
+    setTimeout(() => $('fpPass').focus({preventScroll: true}), 90);
+  });
+  field('fpPass', v => { const m = pwMsg(v); return m && E(m); });
+  field('fpPass2', v => !v ? E('Please confirm your new password') : v !== $('fpPass').value ? E('Passwords do not match.') : null);
+  $('fpPass').addEventListener('input', () => { F.fpPass2.eval(); F.fpPass2.render(); });
+  ['fpPass', 'fpPass2'].forEach(i => F[i].input.addEventListener('input', () => stepErr('fp3Err', '')));
+  const gReset = gate('fpReset', ['fpPass', 'fpPass2']);
+  $('fpReset').addEventListener('click', async () => {
+    if (!gReset.ok()) return gReset.block();
+    const b = $('fpReset'), step3 = $('forgotPanel').querySelector('[data-step="3"]');
+    setBusy(b, true, 'Resetting…'); lockInputs(step3, true);
+    if (!await req('fp', dur(1400))) return;
+    setBusy(b, false); lockInputs(step3, false);
+    if (scn('forgot') === 'resetfail') return stepErr('fp3Err', 'Your reset session has expired. Please go back and request a new code.');
+    showView('signin'); F.username.reset(fpTarget); F.password.reset(''); gLogin.update();
+    setTimeout(() => card({heading: 'Password reset', kind: 'ok', title: 'Password updated', lead: 'Your account is secure again', body: ['Your password has been reset. Please sign in with your new password.'],
+      buttons: [{t: 'OK', k: 'primary'}], after: () => pw.focus({preventScroll: true})}), reduce ? 0 : 650);
+  });
+  function resetForgot() {
+    cancel('fp'); fpAttempts = 5; fpTarget = '';
+    F.fpId.reset(); $('fpId').readOnly = false; $('fpId').disabled = false; $('fpChange').hidden = true;
+    setOpen('fp1a', true); setOpen('fp1c', false); fpOtp.clear(false); fpOtp.disable(false);
+    ['fp1Err', 'fp2Err', 'fp3Err'].forEach(i => stepErr(i, ''));
+    F.fpPass.reset(); F.fpPass2.reset();
+    ['fpSend', 'fpVerify', 'fpReset'].forEach(i => setBusy($(i), false)); linkBusy($('fpResend'), false);
+    lockInputs($('forgotPanel'), false);
+    setStep($('forgotPanel'), 1); setChip('fpChip', 'Step 1 of 3 · Verify your identity');
+    gFp.update(); gReset.update(); $('fpVerify').classList.add('off');
+  }
+
+  /* =================== 4 · HD RESET =================== */
+  // the app never guesses the route from the form (Remember me may hold someone else's credentials) — it always asks
+  function hdStart() {
+    const u = user.value.trim(), p = pw.value;
+    const google = {t: 'Continue with Google', on: () => { googleStart('reset'); }};
+    if (u && p) return card({heading: 'Hardware ID Reset', kind: 'info', title: 'Reset which account?', lead: 'Choose the account to release', after: focusUser,
+      body: [`The sign-in boxes hold "${u}". Resetting releases that account from every PC it is signed in on, and spends one of its three resets for this month.`,
+             'If you sign in with Google, that is a different account — choose Continue with Google.'],
+      buttons: [{t: 'Use these credentials', k: 'primary', on: () => { hdRun(); }}, {...google, k: 'secondary'}, {t: 'Cancel', k: 'tertiary', cancel: true}]});
+    card({heading: 'Hardware ID Reset', kind: 'info', title: 'How do you sign in?', lead: 'Prove the account is yours', after: focusUser,
+      body: ['Releasing this licence from its current PC needs proof that the account is yours.',
+             'Signed in with Google? Choose Continue with Google — there is no password to type.',
+             'Otherwise type your username and password on the sign-in screen, then press HD Reset again.'],
+      buttons: [{...google, k: 'primary'}, {t: 'I use a password', k: 'secondary', on: () => {
+        const missUser = !user.value.trim();
+        card({heading: 'Hardware ID Reset', kind: 'warn', title: 'Credentials required', lead: 'One more box to fill',
+          body: [missUser ? 'Enter your username or email as well, then press HD Reset again.' : 'Enter your password as well, then press HD Reset again.'],
+          buttons: [{t: 'OK', k: 'primary'}], after: () => setTimeout(() => (missUser ? user : pw).focus({preventScroll: true}), 30)});
+      }}, {t: 'Cancel', k: 'tertiary', cancel: true}]});
+  }
+  $('hdBtn').addEventListener('click', hdStart);
+
+  const HD_RESULT = {
+    ok: [true, 'Hardware ID reset successfully. Your licence is released from the old PC — press Sign In to use it on this one.'],
+    limit: [false, 'You have reached the limit of 3 hardware ID resets for this month. Please try again next month.'],
+    wrongpw: [false, 'Incorrect password for this account. Check your username and password and try again.'],
+    notfound: [false, 'No account found with this username or email.'],
+    network: [false, 'Unable to connect to the server. Please check your internet connection.'],
+    long: [false, 'The licence server is still finishing an earlier request for this account, so it can\'t release the hardware ID right now. Wait a few minutes and try again. If this keeps happening, contact support with your username, the time you tried, and the name of this PC so the team can release it manually from the admin panel.'],
+  };
+  // one card that morphs: loader (340 px) → result (460 px)    POST /auth/reset-hwid
+  async function hdRun() {
+    const el = document.createElement('div');
+    el.className = 'hdd'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-label', 'Hardware ID reset');
+    el.innerHTML = `<div class="hd-load" aria-live="polite"><span class="arc" aria-hidden="true"></span><b>Requesting hardware ID reset…</b><span class="hd-sub">Checking your license with the server</span></div><div class="hd-rail" aria-hidden="true"><i></i></div>`;
+    let alive = true, slowT = 0;
+    const close = () => { alive = false; cancel('hd'); clearTimeout(slowT); unmount(el); };   // Esc / close: a late reply is ignored
+    mount(el, close);
+    const rail = el.querySelector('.hd-rail i'), sub = el.querySelector('.hd-sub');
+    const trickle = rail.animate([{width: '0%'}, {width: '90%'}], {duration: 30000, easing: 'cubic-bezier(.1,.7,.3,1)', fill: 'forwards'});   // toward 90 % over the 30 s timeout
+    slowT = setTimeout(() => { sub.textContent = 'Still working — the server is taking longer than usual.'; if (!reduce) sub.animate([{opacity: 0}, {opacity: 1}], 300); }, 6000);
+    if (!await req('hd', slow() ? 12000 : 2600) || !alive) return;
+    clearTimeout(slowT);
+    const [success, msg] = HD_RESULT[scn('hd')] || HD_RESULT.ok;
+    const kind = success ? 'ok' : /password|credential|auth|incorrect|invalid|not found|no account/i.test(msg) ? 'err' : 'warn';
+    // morph: rail commits to 100 % (220) → loader fades (240) → card grows to 460 (420), result rises in over its last 30 %
+    const w = getComputedStyle(rail).width; trickle.cancel(); rail.style.width = w;
+    const T = ms => (reduce ? 1 : ms);
+    await rail.animate([{width: w}, {width: '100%'}], {duration: T(220), easing: 'ease-out', fill: 'forwards'}).finished.catch(() => {});
+    if (!alive) return;
+    const load = el.querySelector('.hd-load');
+    await load.animate([{opacity: 1}, {opacity: 0}], {duration: T(240), fill: 'forwards'}).finished.catch(() => {});
+    if (!alive) return;
+    const h0 = el.offsetHeight;
+    load.remove();
+    const res = document.createElement('div');
+    res.className = 'hd-split k-' + kind;
+    res.innerHTML = `<div class="nc-side">${sideHTML(kind)}<div class="nc-head">Hardware ID reset</div><h2>${{ok: 'Reset complete', err: 'Reset failed', warn: 'Couldn\'t reset'}[kind]}</h2></div>
+      <div class="nc-main"><button type="button" class="hd-x" aria-label="Close">${IC.err}</button>
+        <h3 class="nc-lead">${{ok: 'Your licence is free', err: 'Check your sign-in details', warn: 'Please try again later'}[kind]}</h3>
+        <p class="hd-msg"></p><p class="hd-enq">For enquiries: <button type="button" class="link">https://w2rsolutions.in/</button></p>
+        <div class="hd-foot"><button type="button" class="primary sm"><span class="spin" aria-hidden="true"></span><span class="btxt">OK</span></button></div></div>`;
+    res.querySelector('.hd-msg').textContent = msg; res.querySelector('.hd-msg').title = msg;
+    el.insertBefore(res, el.firstChild);
+    el.querySelector('.hd-rail').animate([{opacity: 1}, {opacity: 0}], {duration: T(300), fill: 'forwards'});
+    el.style.width = '600px'; const h1 = el.offsetHeight;
+    el.animate([{width: '340px', height: h0 + 'px'}, {width: '600px', height: h1 + 'px'}], {duration: T(420), easing: 'cubic-bezier(.2,.9,.25,1)'});
+    res.animate([{opacity: 0, transform: 'translateY(12px)'}, {opacity: 0, transform: 'translateY(12px)', offset: .7}, {opacity: 1, transform: 'none'}], {duration: T(420), easing: 'ease-out'});
+    el.setAttribute('role', 'alertdialog');
+    const ok = () => { close(); setTimeout(() => (success ? $('signinBtn') : user).focus({preventScroll: true}), 40); };   // back to Sign In; user presses Sign In again
+    modal.esc = ok;
+    res.querySelector('.hd-x').addEventListener('click', ok);
+    res.querySelector('.hd-foot button').addEventListener('click', ok);
+    res.querySelector('.hd-enq .link').addEventListener('click', toWeb);
+    setTimeout(() => res.querySelector('.hd-foot button').focus({preventScroll: true}), T(300));
+  }
+
+  /* =================== app (re)start · shutdown =================== */
+  function shutdown() {
+    Object.keys(chan).forEach(cancel); dropSecCheck(); cancelGoogle(); dropModal(); ttHide();
+  }
+  function resetApp() {                                           // every launch starts like a fresh process
+    shutdown();
+    const av = $('appview'); av.hidden = true; clearTimeout(av.t); main.inert = false;
+    setFormBusy(false, $('signinBtn')); setBusy($('googleBtn'), false);
+    showView('signin', true); resetRegister(); resetForgot();
+    const s = loadStore();
+    F.username.reset(s.remember ? s.user || '' : ''); F.password.reset(s.remember ? REMEMBERED_PW : ''); eyeReset(pw);
+    remember.checked = !!s.remember; autoLogin.checked = !!(s.remember && s.auto); syncAuto(); gLogin.update();
+  }
+
+  /* =================== preview scenarios panel (not part of the app) =================== */
+  const pvBody = $('pvBody'), pvTg = $('pvToggle');
+  const pvSet = open => { pvBody.hidden = !open; pvTg.setAttribute('aria-expanded', String(open)); try { localStorage.setItem('sx-pv-open', open ? '1' : ''); } catch (e) {} };
+  pvTg.addEventListener('click', () => pvSet(pvBody.hidden));
+  try { pvSet(localStorage.getItem('sx-pv-open') === '1'); } catch (e) {}
+  pvBody.querySelectorAll('select').forEach(s => {
+    try { const v = localStorage.getItem('sx-' + s.id); if (v && [...s.options].some(o => o.value === v)) s.value = v; } catch (e) {}
+    s.addEventListener('change', () => { try { localStorage.setItem('sx-' + s.id, s.value); } catch (e) {} });
+  });
+  $('pvForget').addEventListener('click', () => { saveStore({}); notify('Saved sign-in cleared — the next launch starts empty.', 'Preview'); });
 
   /* =====================================================================
      HERO CONCEPTS · SET 2 (technician-focused)
@@ -1126,11 +2269,13 @@ h1{font:600 28px/36px var(--disp);letter-spacing:-.02em;margin:0}
       Object.assign(win.style, {visibility: '', opacity: '1', scale: '1', filter: 'none'});
       sp.remove(); splashEl = null;
       win.inert = false; state = 'open'; focusFirst();
+      afterOpen();                                               // Remember me + Auto Login → 'Resuming session...'
     }
   };
 
   const launch = () => {
     state = 'launching'; hidePill();
+    resetApp();                                                  // a fresh process: clean sign-in screen, Remember-me prefill
     let sp = splashEl;
     if (!sp) { sp = splashTpl.cloneNode(true); document.body.insertBefore(sp, win); splashEl = sp; syncLogo(); }
     win.classList.add('boot'); win.inert = true; token++;
@@ -1145,8 +2290,10 @@ h1{font:600 28px/36px var(--disp);letter-spacing:-.02em;margin:0}
   };
   addEventListener('keydown', e => { if (state === 'launching' && skip && ['Enter', 'Escape', ' '].includes(e.key)) { e.preventDefault(); skip(); } });
 
-  const closeApp = async () => {
+  const closeApp = async force => {
     if (state !== 'open') return;
+    if (force !== true && formBusy) return confirmClose();       // 'Sign-in in progress' — asks before quitting
+    shutdown();
     state = 'closing'; win.inert = true; token++;               // stops the hero animation loop
     await go(win, [{opacity: 1, scale: '1', filter: 'blur(0px)'}, {opacity: 0, scale: '.96', filter: 'blur(2px)'}], 220, SHUT);
     win.style.visibility = 'hidden'; state = 'closed';
@@ -1183,8 +2330,6 @@ h1{font:600 28px/36px var(--disp);letter-spacing:-.02em;margin:0}
 
   launch();
 
-  /* focus first empty field */
-  (user.value ? pw : user).focus();
 })();
 </script>
 </body>

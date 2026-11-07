@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Popup Workflow Check</title>
+<style>
+:root{
+  --ui:"Segoe UI Variable Text","Segoe UI Variable","Segoe UI",Inter,system-ui,sans-serif;
+  --disp:"Segoe UI Variable Display","Segoe UI Variable","Segoe UI",Inter,system-ui,sans-serif;
+  --spring:cubic-bezier(.34,1.56,.64,1); --ease:cubic-bezier(.2,.8,.2,1); --r-ctl:8px;
+}
+/* same tokens as schemax-login.html */
+:root,[data-theme="dark"]{
+  --base:#0b0c0f; --page:#07080b; --text:#f3f7ff; --text-2:#a8b7d4; --text-3:#6e7fa0;
+  --hair:rgba(255,255,255,.09); --specular:rgba(255,255,255,.16);
+  --glass-field:rgba(4,10,24,.42); --glass-btn:rgba(255,255,255,.055); --glass-btn-hover:rgba(255,255,255,.10);
+  --accent:#16a69d; --accent-2:#2dd4bf; --accent-text:#5fe3d3;
+  --accent-grad:linear-gradient(110deg,#0a6f6a 0%,#0d847d 52%,#10968e 100%);
+  --danger:#ff8a94; --danger-bg:rgba(255,80,96,.12); --danger-line:rgba(255,120,130,.35); --warn:#ffd36b; --ok:#34d399;
+  --stage:radial-gradient(ellipse 60% 70% at 12% 8%,rgba(18,163,155,.13),transparent 60%),radial-gradient(ellipse 60% 70% at 92% 96%,rgba(59,92,150,.16),transparent 62%),#0e1424;
+  color-scheme:dark;
+}
+[data-theme="light"]{
+  --base:#f3f4f6; --page:#e8ebf0; --text:#0e2140; --text-2:#46557a; --text-3:#7a87a5;
+  --hair:rgba(20,40,90,.09); --specular:rgba(255,255,255,.9);
+  --glass-field:rgba(255,255,255,.62); --glass-btn:rgba(255,255,255,.55); --glass-btn-hover:rgba(255,255,255,.82);
+  --accent:#0f8f88; --accent-2:#12a39b; --accent-text:#0b7570;
+  --accent-grad:linear-gradient(110deg,#0a6f6a 0%,#0c7f79 52%,#0f938c 100%);
+  --danger:#c4283a; --danger-bg:rgba(220,40,60,.08); --danger-line:rgba(220,40,60,.28); --warn:#9d5d00; --ok:#0f8a5f;
+  --stage:radial-gradient(ellipse 60% 70% at 12% 8%,rgba(18,163,155,.10),transparent 60%),radial-gradient(ellipse 60% 70% at 92% 96%,rgba(14,33,64,.07),transparent 62%),#f7f9fc;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--page);color:var(--text);font:400 14px/20px var(--ui);-webkit-font-smoothing:antialiased;transition:background .3s}
+button{font:inherit;color:inherit}
+
+/* ---------- page chrome ---------- */
+.top{position:sticky;top:0;z-index:20;padding:14px 28px 12px;background:color-mix(in srgb,var(--page) 84%,transparent);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);border-bottom:1px solid var(--hair)}
+.top-row{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.top h1{margin:0;font:600 18px var(--disp);letter-spacing:-.01em}
+.top p{margin:2px 0 0;color:var(--text-3);font-size:12.5px}
+.sp{flex:1}
+.seg{display:flex;gap:2px;padding:3px;border-radius:9px;background:var(--glass-btn);box-shadow:inset 0 0 0 1px var(--hair)}
+.seg button{border:0;background:transparent;padding:5px 12px;border-radius:6px;font-size:12.5px;color:var(--text-2);cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--glass-btn-hover);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.filters{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}
+.chip{border:0;cursor:pointer;height:28px;padding:0 12px;border-radius:999px;font:500 12px var(--ui);color:var(--text-2);background:var(--glass-btn);box-shadow:inset 0 0 0 1px var(--hair)}
+.chip b{font-weight:600;color:var(--text-3);margin-left:4px}
+.chip[aria-pressed="true"]{background:var(--accent-grad);color:#fff;box-shadow:none}
+.chip[aria-pressed="true"] b{color:rgba(255,255,255,.75)}
+.legend{display:flex;gap:14px;flex-wrap:wrap;margin-left:auto;font-size:12px;color:var(--text-3)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:12px;height:12px;border-radius:4px}
+.wrap{max-width:1440px;margin:0 auto;padding:20px 28px 70px}
+.group h2{display:flex;align-items:baseline;gap:10px;margin:26px 0 12px;font:600 16px var(--disp)}
+.group h2 small{font:400 12.5px var(--ui);color:var(--text-3)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,660px),1fr));gap:18px}
+.item{display:flex;flex-direction:column;border-radius:14px;background:color-mix(in srgb,var(--base) 70%,transparent);box-shadow:inset 0 0 0 1px var(--hair);overflow:hidden}
+.meta{display:flex;align-items:flex-start;gap:10px;padding:12px 14px 10px}
+.num{flex:none;font:700 11.5px var(--ui);color:var(--accent-text);background:color-mix(in srgb,var(--accent-2) 12%,transparent);border-radius:6px;padding:3px 7px}
+.meta b{display:block;font:600 13.5px var(--ui)}
+.meta .when{font-size:12px;line-height:17px;color:var(--text-3)}
+.meta .when code{font:11.5px ui-monospace,Consolas,monospace;color:var(--text-2);background:var(--glass-btn);padding:0 4px;border-radius:4px}
+.tags{margin-left:auto;display:flex;gap:6px;flex:none}
+.tag{font:600 10.5px var(--ui);letter-spacing:.04em;text-transform:uppercase;padding:3px 8px;border-radius:6px}
+.tag.ok{color:var(--ok);background:color-mix(in srgb,var(--ok) 14%,transparent)}
+.tag.err{color:var(--danger);background:var(--danger-bg)}
+.tag.warn{color:var(--warn);background:color-mix(in srgb,var(--warn) 15%,transparent)}
+.tag.info{color:var(--accent-text);background:color-mix(in srgb,var(--accent-2) 13%,transparent)}
+.stage{position:relative;display:grid;place-items:center;padding:26px 16px;min-height:300px;background:var(--stage);isolation:isolate;overflow:hidden}
+.stage::before{content:"";position:absolute;right:20px;top:16px;bottom:16px;width:34%;border-radius:14px;background:var(--glass-btn);box-shadow:inset 0 0 0 1px var(--hair);filter:blur(3px);opacity:.6;z-index:-1}
+.stage::after{content:"";position:absolute;inset:0;z-index:-1;background:color-mix(in srgb,var(--base) 40%,transparent)}
+.acts{list-style:none;margin:0;padding:10px 14px 12px;display:grid;gap:4px;font-size:12px;color:var(--text-3);border-top:1px solid var(--hair)}
+.acts li{display:flex;gap:8px}
+.acts li b{color:var(--text-2);font-weight:600;white-space:nowrap}
+.acts li b::after{content:" →";color:var(--text-3);font-weight:400}
+
+/* ---------- controls (same as the app) ---------- */
+.primary{position:relative;width:100%;height:38px;border:0;border-radius:var(--r-ctl);color:#fff;font:600 13.5px var(--ui);background:var(--accent-grad);
+  display:flex;align-items:center;justify-content:center;gap:10px;white-space:nowrap;padding:0 14px;
+  box-shadow:0 12px 26px -12px rgba(13,132,125,.85),inset 0 1px 0 rgba(255,255,255,.28),inset 0 -1px 0 rgba(0,0,0,.18)}
+.primary.danger{background:linear-gradient(110deg,#a8231a,#c42b1c);box-shadow:0 10px 22px -12px rgba(196,43,28,.9),inset 0 1px 0 rgba(255,255,255,.25)}
+.ghost{height:38px;width:100%;border:0;border-radius:var(--r-ctl);background:var(--glass-btn);display:flex;align-items:center;justify-content:center;white-space:nowrap;padding:0 14px;
+  font:500 13.5px var(--ui);color:var(--text);box-shadow:inset 0 0 0 1px var(--hair),inset 0 1px 0 var(--specular)}
+.ghost.tert{background:transparent;box-shadow:none;color:var(--text-2)}
+.link{border:0;background:none;padding:0;color:var(--accent-text);font:500 12.5px var(--ui)}
+.ctl{display:flex;align-items:center;gap:10px;height:40px;padding:0 13px;border-radius:var(--r-ctl);background:var(--glass-field);
+  box-shadow:inset 0 0 0 1px var(--hair),inset 0 -1px 0 color-mix(in srgb,var(--text) 22%,transparent)}
+.ctl.invalid{box-shadow:inset 0 0 0 1px var(--danger-line),inset 0 -2px 0 var(--danger)}
+.ctl svg{width:16px;height:16px;color:var(--text-3);flex:none}
+.ctl span{font:400 13px ui-monospace,"Cascadia Mono",Consolas,monospace;letter-spacing:.06em;color:var(--text-3)}
+.ctl span.v{color:var(--text)}
+
+/* ---------- the popup: "Split welcome" (copied from schemax-login.html) ---------- */
+.ncard{position:relative;width:620px;max-width:100%;border-radius:14px;color:var(--text);overflow:hidden;display:grid;grid-template-columns:200px minmax(0,1fr);
+  background:color-mix(in srgb,var(--base) 86%,transparent);-webkit-backdrop-filter:blur(30px) saturate(160%);backdrop-filter:blur(30px) saturate(160%);
+  box-shadow:0 40px 90px -30px rgba(0,0,0,.6),0 12px 30px -14px rgba(0,0,0,.4),inset 0 1px 0 var(--specular),inset 0 0 0 1px var(--hair);animation:ncIn .34s var(--spring) both}
+@keyframes ncIn{from{opacity:0;transform:translateY(10px) scale(.95)}}
+.nc-side{position:relative;display:flex;flex-direction:column;justify-content:flex-end;gap:4px;min-height:236px;padding:20px 18px;color:#fff;overflow:hidden;
+  background:linear-gradient(160deg,#0e2140 0%,#123a5c 50%,#0d847d 100%)}
+.k-info .nc-side{background:linear-gradient(160deg,#0e2140 0%,#14335a 55%,#1d6a8c 100%)}
+.k-warn .nc-side{background:linear-gradient(160deg,#0e2140 0%,#3f3518 58%,#a06e17 100%)}
+.k-err .nc-side{background:linear-gradient(160deg,#0e2140 0%,#43192a 58%,#9e2738 100%)}
+.nc-side::before{content:"";position:absolute;right:-58px;top:-40px;width:190px;height:190px;border-radius:50%;border:22px solid rgba(255,255,255,.06)}
+.nc-logo{position:absolute;top:18px;left:18px;width:42px;height:42px;border-radius:11px;background:#fff;padding:5px;box-shadow:0 8px 18px -8px rgba(0,0,0,.5)}
+.nc-glyph{position:absolute;top:24px;right:18px;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;color:#fff;background:rgba(255,255,255,.14);box-shadow:inset 0 0 0 1px rgba(255,255,255,.28)}
+.nc-glyph svg{width:15px;height:15px;stroke-width:2.6}
+.nc-head{position:relative;font:700 10px var(--ui);letter-spacing:.16em;text-transform:uppercase;color:#5fe3d3}
+.k-info .nc-head{color:#8fd3ff}.k-warn .nc-head{color:#ffd27a}.k-err .nc-head{color:#ff9eab}
+.nc-side h3{position:relative;margin:0;font:600 21px/26px var(--disp);letter-spacing:-.015em;color:#fff;overflow-wrap:anywhere}
+.nc-main{position:relative;display:flex;flex-direction:column;min-width:0;padding:22px 22px 20px}
+.nc-lead{margin:0 0 6px;font:600 18px/23px var(--disp);letter-spacing:-.01em}
+.nc-body{font-size:13.5px;line-height:20px;color:var(--text-2)}
+.nc-body p{margin:0 0 8px}.nc-body p:last-child{margin-bottom:0}
+.nc-enq{margin:8px 0 0;font-size:12.5px;color:var(--text-3)}
+.nc-field{margin-top:12px}
+.nc-err{display:flex;align-items:center;gap:6px;margin-top:7px;font:500 12px var(--ui);color:var(--danger)}
+.nc-err svg{width:13px;height:13px}
+.nc-btns{display:grid;gap:8px;margin-top:auto;padding-top:18px}
+.nc-tips{list-style:none;margin:12px 0 0;padding:0;display:grid;gap:10px}
+.nc-tips li{display:flex;gap:11px;align-items:flex-start;font-size:13px;line-height:18px;color:var(--text-2)}
+.nc-tips li b{display:block;color:var(--text);font-weight:600}
+.nc-tips i{width:30px;height:30px;flex:none;border-radius:8px;display:grid;place-items:center;color:var(--accent-text);
+  background:color-mix(in srgb,var(--accent-2) 12%,transparent);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--accent-2) 35%,transparent)}
+.nc-tips i svg{width:15px;height:15px}
+.hd-x{position:absolute;top:8px;right:8px;width:34px;height:30px;border:0;border-radius:7px;background:transparent;color:var(--text);display:grid;place-items:center}
+.hd-x svg{width:13px;height:13px}
+.hd-msg{margin:0;font-size:13.5px;line-height:20px;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:4;line-clamp:4;overflow:hidden}
+.hd .nc-lead{padding-right:30px}
+.hd .nc-btns{grid-template-columns:minmax(0,1fr) 150px}.hd .nc-btns .primary{grid-column:2}
+.rail{height:3px;grid-column:1/-1;background:color-mix(in srgb,var(--text) 8%,transparent)}
+.rail i{display:block;height:100%;width:100%;background:linear-gradient(90deg,var(--accent),var(--accent-2))}
+/* HD Reset loader (phase 1, 340 px) */
+.hdd{width:340px;border-radius:14px;overflow:hidden;background:color-mix(in srgb,var(--base) 86%,transparent);
+  box-shadow:0 40px 90px -30px rgba(0,0,0,.6),inset 0 1px 0 var(--specular),inset 0 0 0 1px var(--hair)}
+.hd-load{display:flex;flex-direction:column;align-items:center;text-align:center;padding:28px 24px 26px}
+.arc{width:36px;height:36px;border-radius:50%;border:3px solid color-mix(in srgb,var(--text) 12%,transparent);border-top-color:var(--accent-2);animation:spin .9s linear infinite;margin-bottom:14px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.hd-load b{font:600 15px/20px var(--disp)}
+.hd-sub{margin-top:4px;font-size:12.5px;line-height:17px;color:var(--text-2);max-width:260px}
+.hdd .rail i{width:46%}
+.morph{display:flex;align-items:center;gap:14px;color:var(--text-3);font-size:12px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}}
+@media (max-width:720px){.wrap,.top{padding-left:16px;padding-right:16px}.ncard{grid-template-columns:1fr}.nc-side{min-height:150px}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="top-row">
+    <div><h1>All popups — Split welcome style</h1><p>Every popup from the 5 auth workflows, with its trigger, exact text and what each button does. Same design as schemax-login.html.</p></div>
+    <span class="sp"></span>
+    <div class="seg" role="group" aria-label="Theme"><button data-t="light">Light</button><button data-t="dark">Dark</button></div>
+  </div>
+  <div class="top-row">
+    <div class="filters" id="filters"></div>
+    <div class="legend">
+      <span><i style="background:linear-gradient(160deg,#0e2140,#0d847d)"></i>Success</span>
+      <span><i style="background:linear-gradient(160deg,#0e2140,#1d6a8c)"></i>Info</span>
+      <span><i style="background:linear-gradient(160deg,#0e2140,#a06e17)"></i>Warning</span>
+      <span><i style="background:linear-gradient(160deg,#0e2140,#9e2738)"></i>Error</span>
+    </div>
+  </div>
+</header>
+<main class="wrap" id="out"></main>
+
+<script>
+(() => {
+  const SVG = p => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;
+  const IC = {
+    alert: SVG('<circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/>'), err: SVG('<path d="M7 7l10 10M17 7 7 17"/>'),
+    ok: SVG('<path d="m5 12.5 4.5 4.5L19 7.5"/>'), warn: SVG('<path d="M12 6.5v7M12 17.5h.01"/>'), info: SVG('<path d="M12 11v6M12 7h.01"/>'),
+    key: SVG('<circle cx="8" cy="15" r="4"/><path d="m11 12 9-9M17 6l3 3M14 9l2 2"/>'),
+    board: SVG('<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h6v10M15 4v6h6"/><circle cx="12" cy="15" r="1.4"/>'),
+    search: SVG('<circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/>'), hd: SVG('<path d="M4.5 8.5A8 8 0 1 1 4 14"/><path d="M4 4v5h5"/>'),
+  };
+  const KIND = {ok: 'Success', err: 'Error', warn: 'Warning', info: 'Info'};
+  const ENQ = true;
+  // [label, style, action]   style: p = primary · s = secondary · t = tertiary · d = danger
+  const P = [
+    /* ---------------- 1 · LOGIN ---------------- */
+    {wf: 'Login', name: 'Update required', when: 'Server message contains <code>Version not allowed</code> (rule 1)', kind: 'info', heading: 'Sign in', title: 'Update required', lead: 'A newer version is needed',
+     body: ['Version not allowed. This version of Schemax Solutions is no longer supported.', 'Download the latest version to keep signing in.'],
+     buttons: [['Download update', 'p', 'Downloads the latest installer'], ['Close', 's', 'Back to Sign In, focus on username']]},
+    {wf: 'Login', name: 'Your next key is ready', when: 'Message contains <code>activation key is ready to start</code> (rule 2)', kind: 'info', heading: 'Sign in', title: 'Your next key is ready', lead: 'Your new plan starts at sign-in',
+     body: ['Your plan has ended and your next activation key is ready to start. It begins the next time you sign in.'], buttons: [['OK', 'p', 'Back to Sign In']]},
+    {wf: 'Login', name: 'Account Blocked', when: '<code>ACCOUNT_BLOCKED</code> / <code>account has been blocked</code> (rule 3)', kind: 'err', heading: 'Sign in', title: 'Account Blocked', lead: 'Access to this account is paused',
+     body: ['Your account has been blocked. Please contact support.'], enq: ENQ,
+     buttons: [['OK', 's', 'Back to Sign In'], ['Contact Support on WhatsApp', 'p', 'Opens WhatsApp with a chat prefilled with the username']]},
+    {wf: 'Login', name: 'Verify your email', when: '<code>EMAIL_NOT_VERIFIED</code> / <code>verify your email</code> (rule 4)', kind: 'warn', heading: 'Sign in', title: 'Verify your email', lead: 'One step left before signing in',
+     body: ['Please verify your email before signing in. Check your inbox for the verification link.'],
+     buttons: [['OK', 's', 'Back to Sign In'], ['Open w2rsolutions.in', 'p', 'Opens the website in the browser']]},
+    {wf: 'Login', name: 'Hardware ID Error', when: '<code>Hardware ID</code> · <code>activated on another device</code> · <code>device limit reached</code> · <code>mismatch</code> (rule 5)', kind: 'err', heading: 'Sign in', title: 'Hardware ID Error', lead: 'This licence is on another PC',
+     body: ['Hardware ID mismatch: this account is already activated on another device.'], enq: ENQ,
+     buttons: [['Close', 's', 'Back to Sign In'], ['Reset Hardware ID', 'p', 'HD Reset choice card (#16 or #17)']]},
+    {wf: 'Login', name: 'Upgrade Required', when: '<code>Free plan users</code> · <code>upgrade to Premium</code> · <code>FREE_PLAN_RESTRICTION</code> (rule 6)', kind: 'warn', heading: 'Sign in', title: 'Upgrade Required', lead: 'The desktop app needs Premium',
+     body: ['Free plan users can\'t use the desktop app. Please upgrade to Premium.'],
+     buttons: [['Enter Activation Key', 'p', 'Activation key dialog (#11)'], ['Get Activation Key', 's', 'Website plans page (or WhatsApp)'], ['Close', 't', 'Back to Sign In']]},
+    {wf: 'Login', name: 'Account Activation Required', when: 'Message contains <code>Account Not Activated</code> (rule 7)', kind: 'warn', heading: 'Sign in', title: 'Account Activation Required', lead: 'Your account isn\'t active yet',
+     body: ['Account Not Activated. Activate your account with an activation key, or contact support.'], buttons: [['OK', 'p', 'Back to Sign In']]},
+    {wf: 'Login', name: 'Plan Expired', when: '<code>plan has expired</code> / <code>PLAN_EXPIRED</code> (rule 8)', kind: 'warn', heading: 'Sign in', title: 'Plan Expired', lead: 'Renew to keep working',
+     body: ['Your plan has expired. Renew it to keep using Schemax Solutions.'],
+     buttons: [['Enter Activation Key', 'p', 'Activation key dialog (#11)'], ['Renew Plan', 's', 'Plan renewal on the website'], ['Close', 't', 'Back to Sign In']]},
+    {wf: 'Login', name: 'Login Failed', when: 'Any other server message (rule 9) — server text, or "Authentication failed"', kind: 'err', heading: 'Sign in', title: 'Login Failed', lead: 'We couldn\'t sign you in',
+     body: ['Invalid username or password.'], buttons: [['OK', 'p', 'Back to Sign In, focus on username']]},
+    {wf: 'Login', name: 'Hardware ID Collection Failed', when: 'Sign In / Google sign-in, before the request — the PC id can\'t be read', kind: 'err', heading: 'Sign in', title: 'Hardware ID Collection Failed', lead: 'This PC couldn\'t be identified',
+     body: ['Unable to identify your device. Please ensure you have administrator privileges and try again.'], buttons: [['OK', 'p', 'Back to Sign In']]},
+    {wf: 'Login', name: 'Activation key dialog', when: '"Enter Activation Key" on Upgrade Required or Plan Expired', kind: 'info', heading: 'Activation key', title: 'Enter your activation key', lead: 'Unlock your plan',
+     body: ['Paste the key you received with your plan.'], input: {ph: 'e.g. XXXX-XXXX-XXXX-XXXX'},
+     buttons: [['Activate', 'p', 'Busy "Activating..." → Key activated (#12)'], ['Cancel', 's', 'Back to Sign In']]},
+    {wf: 'Login', name: 'Activation key dialog — empty submit', when: 'Activate pressed with an empty box', kind: 'info', heading: 'Activation key', title: 'Enter your activation key', lead: 'Unlock your plan',
+     body: ['Paste the key you received with your plan.'], input: {ph: 'e.g. XXXX-XXXX-XXXX-XXXX', err: 'Please enter your activation key.'},
+     buttons: [['Activate', 'p', 'Stays open until a key is typed'], ['Cancel', 's', 'Back to Sign In']]},
+    {wf: 'Login', name: 'Key activated', when: 'Activation key accepted', kind: 'ok', heading: 'Activation key', title: 'Key activated', lead: 'You\'re all set',
+     body: ['Your plan is active. Press Sign In to continue.'], buttons: [['OK', 'p', 'Back to Sign In, focus on Sign In']]},
+    {wf: 'Login', name: 'Sign-in in progress', when: 'Window close (✕) pressed while signing in', kind: 'warn', heading: 'Schemax Solutions', title: 'Sign-in in progress', lead: 'Closing now cancels sign-in',
+     body: ['Sign-in is still working. Close the app anyway?'], buttons: [['Close anyway', 'd', 'Cancels the request and closes the app'], ['Keep waiting', 's', 'Sign-in keeps running (Esc does the same)']]},
+    /* ---------------- 2 · REGISTER ---------------- */
+    {wf: 'Register', name: 'Account created', when: 'POST /api/auth/signup → 201 · the form swaps back to Sign In first', kind: 'ok', heading: 'Account created', title: 'Welcome, ramprasath', lead: 'You\'re all set',
+     body: ['Please sign in to continue. A few things you\'ll use:'],
+     tips: [['board', 'Boardview', 'Pin-accurate layouts for every board.'], ['search', '2.3M+ schematics', 'Search by model, part or net name.'], ['hd', 'HD Reset', 'Move your licence to a new PC, 3 times a month.']],
+     buttons: [['Sign in', 'p', 'Closes; username is prefilled, focus on password']]},
+    /* ---------------- 3 · FORGOT PASSWORD ---------------- */
+    {wf: 'Forgot password', name: 'Password updated', when: 'POST /api/auth/reset succeeded · the form swaps back to Sign In first', kind: 'ok', heading: 'Password reset', title: 'Password updated', lead: 'Your account is secure again',
+     body: ['Your password has been reset. Please sign in with your new password.'], buttons: [['OK', 'p', 'Username prefilled, focus on password']]},
+    /* ---------------- 4 · HD RESET ---------------- */
+    {wf: 'HD Reset', name: 'Choice — credentials in the boxes', when: 'HD Reset / Reset Hardware ID while username AND password are filled (variant A)', kind: 'info', heading: 'Hardware ID Reset', title: 'Reset which account?', lead: 'Choose the account to release',
+     body: ['The sign-in boxes hold "ramprasath". Resetting releases that account from every PC it is signed in on, and spends one of its three resets for this month.', 'If you sign in with Google, that is a different account — choose Continue with Google.'],
+     buttons: [['Use these credentials', 'p', 'HD Reset loader (#19) → result'], ['Continue with Google', 's', 'Browser Google consent (flagged as a reset)'], ['Cancel', 't', 'Back to Sign In']]},
+    {wf: 'HD Reset', name: 'Choice — boxes empty', when: 'HD Reset while the boxes are empty or only one is filled (variant B)', kind: 'info', heading: 'Hardware ID Reset', title: 'How do you sign in?', lead: 'Prove the account is yours',
+     body: ['Releasing this licence from its current PC needs proof that the account is yours.', 'Signed in with Google? Choose Continue with Google — there is no password to type.', 'Otherwise type your username and password on the sign-in screen, then press HD Reset again.'],
+     buttons: [['Continue with Google', 'p', 'Browser Google consent (flagged as a reset)'], ['I use a password', 's', 'Credentials required (#18)'], ['Cancel', 't', 'Back to Sign In']]},
+    {wf: 'HD Reset', name: 'Credentials required — username missing', when: '"I use a password" with the username box empty', kind: 'warn', heading: 'Hardware ID Reset', title: 'Credentials required', lead: 'One more box to fill',
+     body: ['Enter your username or email as well, then press HD Reset again.'], buttons: [['OK', 'p', 'Focus moves to the username box']]},
+    {wf: 'HD Reset', name: 'Credentials required — password missing', when: '"I use a password" with the password box empty', kind: 'warn', heading: 'Hardware ID Reset', title: 'Credentials required', lead: 'One more box to fill',
+     body: ['Enter your password as well, then press HD Reset again.'], buttons: [['OK', 'p', 'Focus moves to the password box']]},
+    {wf: 'HD Reset', name: 'Loader', when: 'POST /auth/reset-hwid running (phase 1 · 340 px)', loader: 'Checking your license with the server',
+     acts: [['Esc / close', 'Cancels; a late reply is ignored'], ['Rail', 'Trickles toward 90 % over the 30 s timeout, fills on reply']]},
+    {wf: 'HD Reset', name: 'Loader — slow server', when: 'Still no reply after a few seconds', loader: 'Still working — the server is taking longer than usual.', acts: [['Reply', 'Card grows (≈900 ms) into one of the results below']]},
+    {wf: 'HD Reset', name: 'Result — success', when: 'Server says <code>success: true</code>', hd: 'ok', side: 'Reset complete', lead: 'Your licence is free',
+     msg: 'Hardware ID reset successfully. Your licence is released from the old PC — press Sign In to use it on this one.', buttons: [['OK', 'p', 'Back to Sign In; user presses Sign In again']]},
+    {wf: 'HD Reset', name: 'Result — error', when: 'Message has <code>password</code> · <code>credential</code> · <code>auth</code> · <code>incorrect</code> · <code>invalid</code> · <code>not found</code> · <code>no account</code>', hd: 'err', side: 'Reset failed', lead: 'Check your sign-in details',
+     msg: 'Incorrect password for this account. Check your username and password and try again.', buttons: [['OK', 'p', 'Back to Sign In']]},
+    {wf: 'HD Reset', name: 'Result — warning', when: 'Any other failure, e.g. the monthly limit or no internet', hd: 'warn', side: 'Couldn\'t reset', lead: 'Please try again later',
+     msg: 'You have reached the limit of 3 hardware ID resets for this month. Please try again next month.', buttons: [['OK', 'p', 'Back to Sign In']]},
+    {wf: 'HD Reset', name: 'Result — long message (cut at 4 lines)', when: 'Server message longer than 4 lines → ends with …', hd: 'warn', side: 'Couldn\'t reset', lead: 'Please try again later',
+     msg: 'The licence server is still finishing an earlier request for this account, so it can\'t release the hardware ID right now. Wait a few minutes and try again. If this keeps happening, contact support with your username, the time you tried, and the name of this PC so the team can release it manually from the admin panel.', buttons: [['OK', 'p', 'Back to Sign In']]},
+    /* ---------------- 5 · GOOGLE ---------------- */
+    {wf: 'Google', name: 'Google Sign-In Failed — cancelled', when: 'Browser tab closed or Cancel pressed (sign in, sign up or HD reset)', kind: 'warn', heading: 'Google', title: 'Google Sign-In Failed', lead: 'Google didn\'t finish',
+     body: ['Google sign-in was cancelled in the browser.'], buttons: [['OK', 'p', 'Pending Google attempt cleared']]},
+    {wf: 'Google', name: 'Google Sign-In Failed — timed out', when: 'No reply from the browser within 2 minutes', kind: 'warn', heading: 'Google', title: 'Google Sign-In Failed', lead: 'Google didn\'t finish',
+     body: ['No reply from Google within 2 minutes. Please try again and finish within 2 minutes.'], buttons: [['OK', 'p', 'Pending Google attempt cleared']]},
+    {wf: 'Google', name: 'Google Sign-Up', when: 'Sign up with Google → POST /api/auth/google failed', kind: 'warn', heading: 'Google', title: 'Google Sign-Up', lead: 'We couldn\'t check this account',
+     body: ['We couldn\'t check this Google account right now. Please try again.'], buttons: [['OK', 'p', 'Stays on Register step 1']]},
+  ];
+
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));
+  const side = (kind, head, title) => `<div class="nc-side"><img class="nc-logo" src="assests/schemax-anim/mark.png" alt=""><span class="nc-glyph">${IC[kind]}</span><div class="nc-head">${esc(head)}</div><h3>${esc(title)}</h3></div>`;
+  const btns = list => {
+    const cls = {p: 'primary', s: 'ghost', t: 'ghost tert', d: 'primary danger'};
+    const cols = list.length === 1 ? 'minmax(0,1fr) 150px' : 'repeat(2,minmax(0,1fr))';
+    return `<div class="nc-btns" style="grid-template-columns:${cols}">${list.map(([t, k], i) =>
+      `<button type="button" class="${cls[k]}" style="${list.length === 1 ? 'grid-column:2' : list.length === 3 && i === 0 ? 'grid-column:1/-1' : ''}">${esc(t)}</button>`).join('')}</div>`;
+  };
+  const popup = p => {
+    if (p.loader) return `<div class="morph"><div class="hdd"><div class="hd-load"><span class="arc"></span><b>Requesting hardware ID reset…</b><span class="hd-sub">${esc(p.loader)}</span></div><div class="rail"><i></i></div></div></div>`;
+    if (p.hd) return `<div class="ncard hd k-${p.hd}">${side(p.hd, 'Hardware ID reset', p.side)}<div class="nc-main"><button class="hd-x" aria-label="Close">${IC.err}</button>
+      <h4 class="nc-lead">${esc(p.lead)}</h4><p class="hd-msg">${esc(p.msg)}</p><p class="nc-enq">For enquiries: <button class="link">https://w2rsolutions.in/</button></p>${btns(p.buttons)}</div><div class="rail"><i></i></div></div>`;
+    return `<div class="ncard k-${p.kind}">${side(p.kind, p.heading, p.title)}<div class="nc-main"><h4 class="nc-lead">${esc(p.lead)}</h4>
+      <div class="nc-body">${p.body.map(t => `<p>${esc(t)}</p>`).join('')}</div>
+      ${p.tips ? `<ul class="nc-tips">${p.tips.map(([ic, b, t]) => `<li><i>${IC[ic]}</i><div><b>${esc(b)}</b>${esc(t)}</div></li>`).join('')}</ul>` : ''}
+      ${p.input ? `<div class="nc-field"><div class="ctl${p.input.err ? ' invalid' : ''}">${IC.key}<span>${esc(p.input.ph)}</span></div>${p.input.err ? `<div class="nc-err">${IC.alert}${esc(p.input.err)}</div>` : ''}</div>` : ''}
+      ${p.enq ? `<p class="nc-enq">For enquiries: <button class="link">https://w2rsolutions.in/</button></p>` : ''}
+      ${btns(p.buttons)}</div></div>`;
+  };
+  const item = (p, n) => {
+    const kind = p.kind || p.hd || 'info';
+    const acts = p.buttons ? p.buttons.map(([t, , a]) => [t, a]) : p.acts;
+    return `<article class="item" data-wf="${p.wf}">
+      <div class="meta"><span class="num">${String(n).padStart(2, '0')}</span><div><b>${esc(p.name)}</b><div class="when">${p.when}</div></div>
+        <div class="tags"><span class="tag ${p.loader ? 'info' : kind}">${p.loader ? 'Loader' : KIND[kind]}</span></div></div>
+      <div class="stage">${popup(p)}</div>
+      <ul class="acts">${acts.map(([t, a]) => `<li><b>${esc(t)}</b><span>${esc(a)}</span></li>`).join('')}</ul></article>`;
+  };
+
+  const WF = [['Login', '01-login.md · error cards in server-message order'], ['Register', '02-register.md'], ['Forgot password', '03-forgot-password.md'],
+              ['HD Reset', '04-hd-reset.md · choice → loader → morph → result'], ['Google', '05-google-sign-in.md']];
+  let n = 0;
+  document.getElementById('out').innerHTML = WF.map(([w, src]) => {
+    const list = P.filter(p => p.wf === w);
+    return `<section class="group" data-wf="${w}"><h2>${w} <small>${list.length} popup${list.length > 1 ? 's' : ''} · ${src}</small></h2><div class="grid">${list.map(p => item(p, ++n)).join('')}</div></section>`;
+  }).join('');
+
+  // filters
+  const f = document.getElementById('filters');
+  f.innerHTML = [['All', P.length], ...WF.map(([w]) => [w, P.filter(p => p.wf === w).length])]
+    .map(([w, c], i) => `<button class="chip" data-f="${w}" aria-pressed="${i === 0}">${w}<b>${c}</b></button>`).join('');
+  f.addEventListener('click', e => {
+    const b = e.target.closest('.chip'); if (!b) return;
+    f.querySelectorAll('.chip').forEach(c => c.setAttribute('aria-pressed', c === b));
+    document.querySelectorAll('.group').forEach(g => { g.hidden = b.dataset.f !== 'All' && g.dataset.wf !== b.dataset.f; });
+  });
+
+  // theme
+  const setTheme = t => {
+    document.documentElement.dataset.theme = t;
+    document.querySelectorAll('[data-t]').forEach(b => b.setAttribute('aria-pressed', b.dataset.t === t));
+    try { localStorage.setItem('sx-pw-theme', t); } catch (e) {}
+  };
+  let t = matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+  try { t = localStorage.getItem('sx-pw-theme') || t; } catch (e) {}
+  setTheme(t);
+  document.querySelectorAll('[data-t]').forEach(b => b.addEventListener('click', () => setTheme(b.dataset.t)));
+})();
+</script>
+</body>
+</html>
