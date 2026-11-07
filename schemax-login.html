@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Schemax Solutions — Sign in</title>
+<title>Schemax Schematics — Sign in</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet">
@@ -395,7 +395,7 @@ h1{font:600 28px/36px var(--disp);letter-spacing:-.02em;margin:0}
 .sx-small{width:40px;height:40px;--sxw:36;filter:drop-shadow(0 4px 10px rgba(18,163,155,.25))}
 .sx-hero{width:104px;height:104px;--sxw:31;filter:drop-shadow(0 0 14px color-mix(in srgb,var(--sx-teal) 45%,transparent))}
 
-/* intro: rings draw → teal arcs sweep in → mark settles → SCHEMAX rises → SOLUTIONS spreads */
+/* intro: rings draw → teal arcs sweep in → mark settles → SCHEMAX rises → SCHEMATICS spreads */
 .cw-mark{width:104px;height:104px}
 .cine.play .sx-hero .sx-ring{stroke-dasharray:1;animation:cwDraw 1.3s var(--glideE) both;animation-delay:calc(.15s + var(--i) * .16s)}
 .cine.play .sx-hero .sx-teal{stroke-dasharray:1;animation:cwDraw .9s var(--glideE) both;animation-delay:calc(1.05s + var(--i) * .12s)}
@@ -430,16 +430,16 @@ h1{font:600 28px/36px var(--disp);letter-spacing:-.02em;margin:0}
 .lg{--lw:340px;position:relative;overflow:hidden;padding:30px 42px 32px;border-radius:26px;align-items:center;
   background:linear-gradient(160deg,rgba(255,255,255,.97),rgba(244,248,252,.93));
   box-shadow:0 34px 70px -26px rgba(0,0,0,.6),inset 0 1px 0 #fff,inset 0 0 0 1px rgba(255,255,255,.7),0 0 90px -20px color-mix(in srgb,var(--sx-teal) 55%,transparent)}
-.lg-mark{position:relative;width:calc(var(--lw) * .3123);aspect-ratio:1;display:grid;place-items:center}
+.lg-mark{position:relative;width:calc(var(--lw) * .3184);aspect-ratio:520/513;display:grid;place-items:center}
 .lg-mark img{width:100%;height:100%;display:block;-webkit-mask-image:conic-gradient(#000 var(--sweep),transparent 0);mask-image:conic-gradient(#000 var(--sweep),transparent 0)}
 .lg .cw-flare{inset:-8px;border-color:var(--sx-teal)}
-.lg-word{position:relative;width:var(--lw);aspect-ratio:7.9537;margin-top:calc(var(--lw) * .0799);clip-path:inset(-40% -6% 0 -6%)}
-.lg-sub{position:relative;width:var(--lw);aspect-ratio:25.5811;margin-top:calc(var(--lw) * .0463)}
+.lg-word{position:relative;width:var(--lw);aspect-ratio:7.9809;margin-top:calc(var(--lw) * .0702);clip-path:inset(-40% -6% 0 -6%)}
+.lg-sub{position:relative;width:var(--lw);aspect-ratio:25.9574;margin-top:calc(var(--lw) * .0447)}
 .lg-word img,.lg-sub img{position:absolute;top:0;height:100%;display:block}
 .lg-glint{position:absolute;inset:0;z-index:3;pointer-events:none;opacity:0;
   background:linear-gradient(105deg,transparent 42%,rgba(255,255,255,.75) 50%,transparent 58%) no-repeat;background-size:260% 100%;background-position:140% 0}
 
-/* timeline: plate 0s · mark sweeps in .35s · glow + teal rings 1.6s · SCHEMAX rises 1.7s · SOLUTIONS 2.75s · glint 3.6s */
+/* timeline: plate 0s · mark sweeps in .35s · glow + teal rings 1.6s · SCHEMAX rises 1.7s · SCHEMATICS 2.75s · glint 3.6s */
 .cine.play .lg{animation:lgIn 1s var(--glideE) both,cwBreath 6s ease-in-out 4.2s infinite}
 @keyframes lgIn{from{opacity:0;transform:scale(.9);filter:blur(10px)}}
 .cine.play .lg-mark img{animation:lgSweep 1.4s var(--glideE) .35s both,lgSpin 1.7s var(--glideE) .35s both}
@@ -542,11 +542,11 @@ h1{font:600 28px/36px var(--disp);letter-spacing:-.02em;margin:0}
 .splash.leave{animation:spOut .6s var(--glideE) both}
 @keyframes spOut{to{opacity:0;transform:scale(1.04);filter:blur(10px)}}
 .sp-lock{--lw:270px;display:flex;flex-direction:column;align-items:center;margin-top:-22px}
-.sp-mark{width:calc(var(--lw) * .3123);aspect-ratio:1}
+.sp-mark{width:calc(var(--lw) * .3184);aspect-ratio:520/513}
 .sp-mark img{width:100%;height:100%;display:block;-webkit-mask-image:conic-gradient(#000 var(--sweep),transparent 0);mask-image:conic-gradient(#000 var(--sweep),transparent 0);
   animation:lgSweep 1.3s var(--glideE) .3s both,lgSpin 1.6s var(--glideE) .3s both}
-.sp-word{position:relative;width:var(--lw);aspect-ratio:7.9537;margin-top:calc(var(--lw) * .0799);clip-path:inset(-40% -6% 0 -6%)}
-.sp-sub{position:relative;width:var(--lw);aspect-ratio:25.5811;margin-top:calc(var(--lw) * .0463)}
+.sp-word{position:relative;width:var(--lw);aspect-ratio:7.9809;margin-top:calc(var(--lw) * .0702);clip-path:inset(-40% -6% 0 -6%)}
+.sp-sub{position:relative;width:var(--lw);aspect-ratio:25.9574;margin-top:calc(var(--lw) * .0447)}
 .sp-word img,.sp-sub img{position:absolute;top:0;height:100%;display:block}
 .sp-word img{animation:cwLetter .85s cubic-bezier(.2,.9,.25,1.15) both;animation-delay:calc(1.2s + var(--i) * 95ms)}
 .sp-sub img{animation:cwUp .7s var(--glideE) both;animation-delay:calc(2.05s + var(--i) * 55ms)}
@@ -588,7 +588,7 @@ h1{font:600 28px/36px var(--disp);letter-spacing:-.02em;margin:0}
 /* very soft navy/teal tint INSIDE the window only, so the glass panels read as glass (outside stays plain) */
 .win{background-image:var(--win-tint)}
 .win .sheen{background:radial-gradient(600px circle at var(--mx) var(--my),color-mix(in srgb,var(--sheen) 70%,transparent),transparent 45%)}
-/* brand row: "Schemax" in teal, "Solutions" in ink */
+/* brand row: "Schemax" in teal, "Schematics" in ink */
 .brand-name span{background:none;-webkit-background-clip:border-box;background-clip:border-box;color:var(--accent-2)}
 :root[data-theme="light"] .brand-name span{color:var(--accent-text)}
 @media (prefers-color-scheme: light){:root[data-theme="auto"] .brand-name span{color:var(--accent-text)}}
@@ -971,6 +971,44 @@ h1{font:600 28px/36px var(--disp);letter-spacing:-.02em;margin:0}
 .hd-split .hd-msg{margin:0}
 .hd-split .hd-foot{margin-top:auto;padding:18px 0 0}
 
+
+/* ---- status glyph: solid white disc + coloured symbol (readable on every panel colour) ---- */
+.nc-glyph{top:22px;width:34px;height:34px;background:#fff;color:#0d847d;box-shadow:0 6px 14px -6px rgba(0,0,0,.55),0 0 0 4px rgba(255,255,255,.12)}
+.nc-glyph svg{width:18px;height:18px;stroke-width:3}
+.k-info .nc-glyph{color:#1d6a8c}.k-warn .nc-glyph{color:#a06e17}.k-err .nc-glyph{color:#b3263a}
+/* ---- tertiary (Cancel / Close) = a real outlined button ---- */
+.ghost.tert{background:transparent;color:var(--text);-webkit-backdrop-filter:none;backdrop-filter:none;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--text) 24%,transparent)}
+.ghost.tert:hover{background:var(--glass-btn);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--text) 36%,transparent)}
+/* ---- HD Reset: illustration side ---- */
+.hd-side{min-height:262px}
+.hd-art{position:absolute;left:16px;right:16px;top:22px}
+.hd-art svg{display:block;width:100%;height:auto}
+.hd-art .flow,.hd-band .flow{stroke-dasharray:4 5;animation:hdFlow .9s linear infinite}
+@keyframes hdFlow{to{stroke-dashoffset:-9}}
+.hd-art .lic,.hd-band .lic{animation:hdLic 1.8s ease-in-out infinite}
+@keyframes hdLic{0%{transform:translateX(0);opacity:0}15%,80%{opacity:1}100%{transform:translateX(40px);opacity:0}}
+.hd-meter{position:relative;display:flex;align-items:center;gap:5px;margin-bottom:12px;font:600 11px var(--ui);color:rgba(255,255,255,.8)}
+.hd-meter i{width:15px;height:5px;border-radius:3px;background:#5fe3d3}
+.hd-meter span{margin-left:5px}
+/* ---- HD Reset: route tiles ---- */
+.nc-opts{display:grid;gap:10px;margin-top:14px}
+.nc-opt{display:flex;align-items:center;gap:12px;width:100%;padding:12px 14px;border:0;border-radius:11px;text-align:left;cursor:pointer;color:var(--text);
+  background:var(--glass-btn);box-shadow:inset 0 0 0 1px var(--hair);transition:background .15s,box-shadow .15s,transform .15s}
+.nc-opt:hover{background:var(--glass-btn-hover);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--accent-2) 55%,transparent);transform:translateY(-1px)}
+.nc-opt.rec{background:color-mix(in srgb,var(--accent-2) 9%,var(--glass-btn));box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--accent-2) 60%,transparent)}
+.nc-opt .oi{width:40px;height:40px;flex:none;border-radius:10px;display:grid;place-items:center;color:var(--accent-text);background:color-mix(in srgb,var(--accent-2) 13%,transparent)}
+.nc-opt .oi svg{width:20px;height:20px}
+.nc-opt .ot{min-width:0}
+.nc-opt b{display:flex;align-items:center;gap:8px;font:600 14px var(--ui)}
+.nc-opt b em{font:700 9px var(--ui);font-style:normal;letter-spacing:.08em;text-transform:uppercase;color:#fff;background:var(--accent-grad);padding:2px 7px;border-radius:999px}
+.nc-opt small{display:block;margin-top:2px;font-size:12.5px;line-height:17px;color:var(--text-2)}
+.nc-opt>svg{width:16px;height:16px;margin-left:auto;flex:none;color:var(--text-3);transition:transform .15s}
+.nc-opt:hover>svg{transform:translateX(2px);color:var(--accent-text)}
+/* ---- HD Reset loader: illustration band on top ---- */
+.hd-band{padding:18px 40px 8px;background:linear-gradient(160deg,#0e2140 0%,#14335a 55%,#1d6a8c 100%)}
+.hd-band svg{display:block;width:100%;height:auto}
+.hdd .hd-load{padding:18px 24px 22px}
+
 /* ---- browser autofill: no light-blue box inside the field — saved values keep the glass field look ---- */
 input:-webkit-autofill,input:-webkit-autofill:hover,input:-webkit-autofill:focus,input:-webkit-autofill:active{
   -webkit-text-fill-color:var(--text);caret-color:var(--text);
@@ -1011,17 +1049,17 @@ input:autofill{background:transparent!important}
   </div>
   <div class="sp-load"><span class="sp-spin" aria-hidden="true"></span><span id="spMsg">Starting…</span></div>
   <div class="sp-bar" aria-hidden="true"><i id="spBar"></i></div>
-  <div class="sp-foot"><span>© 2026 Schemax Solutions</span><span>v3.2.1</span></div>
+  <div class="sp-foot"><span>© 2026 Schemax Schematics</span><span>v3.2.1</span></div>
 </div>
 
 <!-- ============ App window ============ -->
-<div class="win glass boot" id="win" role="dialog" aria-label="Schemax Solutions sign in">
+<div class="win glass boot" id="win" role="dialog" aria-label="Schemax Schematics sign in">
   <div class="sheen" aria-hidden="true"></div>
 
   <header class="titlebar">
     <div class="tb-brand">
       <span class="sx-tile sx-tiny" aria-hidden="true"><img src="assests/schemax-anim/mark.png" alt=""></span>
-      <b>Schemax Solutions</b><i>/</i><span id="crumb">Sign in</span>
+      <b>Schemax Schematics</b><i>/</i><span id="crumb">Sign in</span>
     </div>
     <div class="theme-seg" role="group" aria-label="Theme">
       <button type="button" data-theme-set="light" aria-label="Light theme" title="Light"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></button>
@@ -1043,7 +1081,7 @@ input:autofill{background:transparent!important}
       <div class="panel" id="signinPanel">
         <div class="brand">
           <span class="sx-tile sx-small" aria-hidden="true"><img src="assests/schemax-anim/mark.png" alt=""></span>
-          <div><div class="brand-name"><span>Schemax</span> Solutions</div><div class="brand-tag">WORLD'S FASTEST SCHEMATICS</div></div>
+          <div><div class="brand-name"><span>Schemax</span> Schematics</div><div class="brand-tag">WORLD'S FASTEST SCHEMATICS</div></div>
         </div>
         <h1>Welcome back</h1>
         <p class="intro">Sign in to open your schematics workspace.</p>
@@ -1181,7 +1219,7 @@ input:autofill{background:transparent!important}
         <div class="concept on" data-c="12">
           <div class="cine" id="cine">
             <svg class="cw-bg" id="cwBg" viewBox="0 0 580 377" preserveAspectRatio="xMidYMid slice" aria-hidden="true"></svg>
-            <div class="cw-stage"><div class="cw-lock lg" role="img" aria-label="Schemax Solutions">
+            <div class="cw-stage"><div class="cw-lock lg" role="img" aria-label="Schemax Schematics">
               <i class="lg-glint" aria-hidden="true"></i>
               <div class="lg-mark" aria-hidden="true"><img src="assests/schemax-anim/mark.png" data-logo="mark.png" alt="" draggable="false"></div>
               <div class="lg-word" id="lgWord" aria-hidden="true"></div>
@@ -1231,16 +1269,16 @@ input:autofill{background:transparent!important}
   <div class="gb-page" id="gbPick">
     <span class="gb-logo"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M22.5 12.3c0-.8-.1-1.5-.2-2.3H12v4.3h5.9a5 5 0 0 1-2.2 3.3v2.7h3.6c2-1.9 3.2-4.7 3.2-8Z"/><path fill="#34A853" d="M12 23c3 0 5.5-1 7.3-2.7l-3.6-2.7c-1 .7-2.2 1.1-3.7 1.1-2.9 0-5.3-1.9-6.2-4.5H2.1v2.8A11 11 0 0 0 12 23Z"/><path fill="#FBBC05" d="M5.8 14.2a6.6 6.6 0 0 1 0-4.3V7.1H2.1a11 11 0 0 0 0 9.9l3.7-2.8Z"/><path fill="#EA4335" d="M12 5.4c1.6 0 3.1.6 4.2 1.7l3.2-3.2A11 11 0 0 0 2.1 7.1l3.7 2.8C6.7 7.3 9.1 5.4 12 5.4Z"/></svg></span>
     <h3>Choose an account</h3>
-    <p id="gbTo">to continue to <b>Schemax Solutions</b></p>
+    <p id="gbTo">to continue to <b>Schemax Schematics</b></p>
     <button type="button" class="gb-acct" data-acct><span class="av">R</span><span><b>Ravi Kumar</b><small>ravi.kumar@gmail.com</small></span></button>
     <button type="button" class="gb-acct" data-acct><span class="av plus">+</span><span><b>Use another account</b></span></button>
-    <p class="gb-fine">Google will share your name, email address and profile picture with Schemax Solutions.</p>
+    <p class="gb-fine">Google will share your name, email address and profile picture with Schemax Schematics.</p>
     <div class="gb-foot"><button type="button" class="link" id="gbCancel">Cancel</button></div>
   </div>
   <div class="gb-page gb-done" id="gbDone" hidden>
     <span class="av-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></span>
     <h3>Sign-in complete</h3>
-    <p>You can close this tab and return to Schemax Solutions.</p>
+    <p>You can close this tab and return to Schemax Schematics.</p>
   </div>
   <div class="gb-tag">Your web browser · preview</div>
 </div>
@@ -1325,7 +1363,7 @@ input:autofill{background:transparent!important}
 
   /* ---- toast (Windows notification) ---- */
   const toast = document.getElementById('toast'); let tt;
-  const notify = (msg, title = 'Schemax Solutions') => {
+  const notify = (msg, title = 'Schemax Schematics') => {
     toast.innerHTML = '<b></b><span></span>'; toast.firstChild.textContent = title; toast.lastChild.textContent = msg;
     toast.classList.add('show'); clearTimeout(tt); tt = setTimeout(() => toast.classList.remove('show'), 3200);
   };
@@ -1356,7 +1394,24 @@ input:autofill{background:transparent!important}
     board: SVG('<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h6v10M15 4v6h6"/><circle cx="12" cy="15" r="1.4"/>'),
     search: SVG('<circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/>'),
     hd: SVG('<path d="M4.5 8.5A8 8 0 1 1 4 14"/><path d="M4 4v5h5"/>'),
+    user: SVG('<circle cx="12" cy="8" r="3.5"/><path d="M5 20c.5-4 2.8-6 7-6s6.5 2 7 6"/>'),
+    chev: SVG('<path d="m9 6 6 6-6 6"/>'),
+    g: '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M22.5 12.3c0-.8-.1-1.5-.2-2.3H12v4.3h5.9a5 5 0 0 1-2.2 3.3v2.7h3.6c2-1.9 3.2-4.7 3.2-8Z"/><path fill="#34A853" d="M12 23c3 0 5.5-1 7.3-2.7l-3.6-2.7c-1 .7-2.2 1.1-3.7 1.1-2.9 0-5.3-1.9-6.2-4.5H2.1v2.8A11 11 0 0 0 12 23Z"/><path fill="#FBBC05" d="M5.8 14.2a6.6 6.6 0 0 1 0-4.3V7.1H2.1a11 11 0 0 0 0 9.9l3.7-2.8Z"/><path fill="#EA4335" d="M12 5.4c1.6 0 3.1.6 4.2 1.7l3.2-3.2A11 11 0 0 0 2.1 7.1l3.7 2.8C6.7 7.3 9.1 5.4 12 5.4Z"/></svg>',
   };
+  // HD Reset illustration: OLD PC → THIS PC, the licence travels across (st: move · ok · err · warn)
+  const hdArt = st => {
+    const col = {move: '#5fe3d3', ok: '#5fe3d3', err: '#ff9eab', warn: '#ffd27a'}[st];
+    const mark = {ok: '<path d="m131 26 5 5 10-10"/>', err: '<path d="m133 21 10 10M143 21l-10 10"/>', warn: '<path d="M138 19v8M138 33h.01"/>'}[st] || '';
+    const lbl = (x, c, t) => `<text x="${x}" y="70" text-anchor="middle" fill="${c}" font-size="8" font-weight="700" letter-spacing="1.2" font-family="Segoe UI,sans-serif">${t}</text>`;
+    return `<svg viewBox="0 0 168 76" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <g stroke="rgba(255,255,255,.45)" stroke-width="1.6"><rect x="4" y="8" width="52" height="36" rx="4"/><path d="M22 52h16M30 44v8"/></g>
+      <path d="M14 18h20M14 24h28M14 30h14" stroke="rgba(255,255,255,.22)" stroke-width="1.6"/>
+      <g stroke="${col}" stroke-width="1.8"><rect x="112" y="8" width="52" height="36" rx="4" fill="${col}22"/><path d="M130 52h16M138 44v8"/></g>
+      <path class="flow" d="M62 26h38" stroke="rgba(255,255,255,.6)" stroke-width="1.8"/><path d="m98 21 5 5-5 5" stroke="rgba(255,255,255,.6)" stroke-width="1.8"/>
+      ${st === 'move' ? '<g class="lic"><rect x="58" y="21" width="14" height="10" rx="2.5" fill="#fff"/><circle cx="62.5" cy="26" r="1.6" fill="#0e2140"/></g>' : `<g stroke="#fff" stroke-width="2.6">${mark}</g>`}
+      ${lbl(30, 'rgba(255,255,255,.55)', 'OLD PC')}${lbl(138, col, 'THIS PC')}</svg>`;
+  };
+  const hdSide = (st, meter) => `<div class="hd-art">${hdArt(st)}</div>` + (meter ? '<div class="hd-meter"><i></i><i></i><i></i><span>3 resets a month</span></div>' : '');
   const sideHTML = kind => `<img class="nc-logo" src="assests/schemax-anim/mark.png" alt=""><span class="nc-glyph" role="img" aria-label="${{ok: 'Success', err: 'Error', warn: 'Warning', info: 'Information'}[kind]}">${IC[kind]}</span>`;
   const EYE_ON = '<path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6Z"/><circle cx="12" cy="12" r="2.5"/>';
   const EYE_OFF = '<path d="M3 3l18 18M10.6 10.6a2 2 0 0 0 2.8 2.8"/><path d="M9.9 5.2A10.8 10.8 0 0 1 12 5c6.5 0 10 7 10 7a15 15 0 0 1-3.1 3.8M6.2 6.2C3.8 7.8 2 12 2 12s3.5 7 10 7c1 0 1.9-.2 2.7-.5"/>';
@@ -1495,13 +1550,14 @@ input:autofill{background:transparent!important}
     const el = document.createElement('div');
     // "Split welcome" layout: brand/status panel on the left (colour = kind) · message + actions on the right
     el.className = 'ncard split k-' + kind; el.setAttribute('role', 'alertdialog'); el.setAttribute('aria-modal', 'true'); el.setAttribute('aria-labelledby', id);
-    el.innerHTML = `<div class="nc-side">${sideHTML(kind)}<div class="nc-head"></div><h2 id="${id}"></h2></div><div class="nc-main">`
+    el.innerHTML = `<div class="nc-side${o.art ? ' hd-side' : ''}">${o.art ? hdSide(o.art, o.meter) : sideHTML(kind)}<div class="nc-head"></div><h2 id="${id}"></h2></div><div class="nc-main">`
       + (o.lead ? `<h3 class="nc-lead"></h3>` : '') + `<div class="nc-body"></div>`
+      + (o.options ? '<div class="nc-opts" role="group"></div>' : '')
       + (o.tips ? `<ul class="nc-tips">${o.tips.map(([ic, b, t], i) => `<li style="--i:${i}"><i>${IC[ic]}</i><div><b>${b}</b>${t}</div></li>`).join('')}</ul>` : '')
       + (o.input ? `<div class="nc-field"><div class="ctl">${IC.key}<input spellcheck="false" autocomplete="off"></div><div class="nc-err">${IC.alert}<span></span></div></div>` : '')
       + (o.enquiry ? `<p class="nc-enq">For enquiries: <button type="button" class="link">https://w2rsolutions.in/</button></p>` : '')
       + `<div class="nc-btns"></div></div>`;
-    el.querySelector('.nc-head').textContent = o.heading || 'Schemax Solutions';
+    el.querySelector('.nc-head').textContent = o.heading || 'Schemax Schematics';
     el.querySelector('h2').textContent = o.title;
     if (o.lead) el.querySelector('.nc-lead').textContent = o.lead;
     [].concat(o.body || []).forEach(t => { const p = document.createElement('p'); p.textContent = t; el.querySelector('.nc-body').appendChild(p); });
@@ -1527,6 +1583,15 @@ input:autofill{background:transparent!important}
       return e;
     });
     const row = el.querySelector('.nc-btns'); btnEls.forEach(b => row.appendChild(b));
+    // route tiles (HD Reset choice): big clickable options, the suggested one highlighted
+    (o.options || []).forEach(op => {
+      const e = document.createElement('button'); e.type = 'button'; e.className = 'nc-opt' + (op.rec ? ' rec' : '');
+      e.innerHTML = `<span class="oi">${IC[op.ic]}</span><span class="ot"><b></b><small></small></span>${IC.chev}`;
+      e.querySelector('b').textContent = op.t; if (op.rec) e.querySelector('b').insertAdjacentHTML('beforeend', '<em>Suggested</em>');
+      e.querySelector('small').textContent = op.d;
+      e.addEventListener('click', () => { const r = op.on ? op.on(ctl) : undefined; if (r === false || (r && typeof r.then === 'function')) return; if (modal && modal.el === el) ctl.close(); });
+      el.querySelector('.nc-opts').appendChild(e);
+    });
     row.style.gridTemplateColumns = btnEls.length === 1 ? 'minmax(0,1fr) 150px' : 'repeat(2,minmax(0,1fr))';
     if (btnEls.length === 1) btnEls[0].style.gridColumn = '2';
     if (btnEls.length === 3) btnEls[0].style.gridColumn = '1 / -1';     // main action on its own row, the other two below
@@ -1537,7 +1602,7 @@ input:autofill{background:transparent!important}
     }
     const esc = o.buttons.findIndex(b => b.cancel);
     mount(el, () => { const b = btnEls[esc >= 0 ? esc : btnEls.length - 1]; if (!b.disabled) b.click(); });
-    setTimeout(() => (inp || btnEls[0]).focus({preventScroll: true}), 40);
+    setTimeout(() => (inp || el.querySelector('.nc-opt') || btnEls[0]).focus({preventScroll: true}), 40);
     return ctl;
   }
   addEventListener('keydown', e => {
@@ -1606,14 +1671,14 @@ input:autofill{background:transparent!important}
 
   const LOGIN_MSG = {
     other: 'Invalid username or password.',
-    version: 'Version not allowed. This version of Schemax Solutions is no longer supported.',
+    version: 'Version not allowed. This version of Schemax Schematics is no longer supported.',
     nextkey: 'Your plan has ended and your next activation key is ready to start. It begins the next time you sign in.',
     blocked: 'ACCOUNT_BLOCKED: Your account has been blocked. Please contact support.',
     email: 'EMAIL_NOT_VERIFIED: Please verify your email before signing in. Check your inbox for the verification link.',
     hwid: 'Hardware ID mismatch: this account is already activated on another device.',
     free: 'FREE_PLAN_RESTRICTION: Free plan users can\'t use the desktop app. Please upgrade to Premium.',
     notact: 'Account Not Activated. Activate your account with an activation key, or contact support.',
-    expired: 'PLAN_EXPIRED: Your plan has expired. Renew it to keep using Schemax Solutions.',
+    expired: 'PLAN_EXPIRED: Your plan has expired. Renew it to keep using Schemax Schematics.',
   };
   // the server's message text decides which card opens — checked in this exact order (01-login.md, Error routing)
   function routeLoginError(raw) {
@@ -1622,7 +1687,7 @@ input:autofill{background:transparent!important}
     const base = {heading: 'Sign in', after: focusUser};
     const keyBtn = {t: 'Enter Activation Key', k: 'primary', on: () => { keyDialog(); }};
     if (has('version not allowed')) return card({...base, kind: 'info', title: 'Update required', lead: 'A newer version is needed', body: [text, 'Download the latest version to keep signing in.'],
-      buttons: [{t: 'Download update', k: 'primary', on: () => notify('Downloading the latest Schemax Solutions installer…')}, {t: 'Close', k: 'secondary', cancel: true}]});
+      buttons: [{t: 'Download update', k: 'primary', on: () => notify('Downloading the latest Schemax Schematics installer…')}, {t: 'Close', k: 'secondary', cancel: true}]});
     if (has('activation key is ready to start')) return card({...base, kind: 'info', title: 'Your next key is ready', lead: 'Your new plan starts at sign-in', body: [text], buttons: [{t: 'OK', k: 'primary'}]});
     if (has('ACCOUNT_BLOCKED', 'account has been blocked')) return card({...base, kind: 'err', title: 'Account Blocked', lead: 'Access to this account is paused', body: [text], enquiry: true,
       buttons: [{t: 'OK', k: 'secondary', cancel: true}, {t: 'Contact Support on WhatsApp', k: 'primary', on: () => notify(`Opening WhatsApp — a support chat prefilled with "${user.value.trim() || 'your username'}"…`)}]});
@@ -1751,7 +1816,7 @@ input:autofill{background:transparent!important}
   function browserOpen(intent) {
     $('gbPick').hidden = false; $('gbDone').hidden = true;
     $('gbUrl').textContent = 'accounts.google.com/o/oauth2/v2/auth?client_id=schemax-desktop&redirect_uri=http://localhost:53682&response_type=code';
-    $('gbTo').innerHTML = intent === 'reset' ? 'to confirm a <b>hardware ID reset</b> (not a sign-in) for <b>Schemax Solutions</b>' : 'to continue to <b>Schemax Solutions</b>';
+    $('gbTo').innerHTML = intent === 'reset' ? 'to confirm a <b>hardware ID reset</b> (not a sign-in) for <b>Schemax Schematics</b>' : 'to continue to <b>Schemax Schematics</b>';
     gb.hidden = false; gb.style.animation = 'none'; void gb.offsetWidth; gb.style.animation = '';
     setTimeout(() => gb.querySelector('[data-acct]').focus({preventScroll: true}), 60);
   }
@@ -2064,21 +2129,21 @@ input:autofill{background:transparent!important}
   // the app never guesses the route from the form (Remember me may hold someone else's credentials) — it always asks
   function hdStart() {
     const u = user.value.trim(), p = pw.value;
-    const google = {t: 'Continue with Google', on: () => { googleStart('reset'); }};
-    if (u && p) return card({heading: 'Hardware ID Reset', kind: 'info', title: 'Reset which account?', lead: 'Choose the account to release', after: focusUser,
-      body: [`The sign-in boxes hold "${u}". Resetting releases that account from every PC it is signed in on, and spends one of its three resets for this month.`,
-             'If you sign in with Google, that is a different account — choose Continue with Google.'],
-      buttons: [{t: 'Use these credentials', k: 'primary', on: () => { hdRun(); }}, {...google, k: 'secondary'}, {t: 'Cancel', k: 'tertiary', cancel: true}]});
-    card({heading: 'Hardware ID Reset', kind: 'info', title: 'How do you sign in?', lead: 'Prove the account is yours', after: focusUser,
-      body: ['Releasing this licence from its current PC needs proof that the account is yours.',
-             'Signed in with Google? Choose Continue with Google — there is no password to type.',
-             'Otherwise type your username and password on the sign-in screen, then press HD Reset again.'],
-      buttons: [{...google, k: 'primary'}, {t: 'I use a password', k: 'secondary', on: () => {
-        const missUser = !user.value.trim();
-        card({heading: 'Hardware ID Reset', kind: 'warn', title: 'Credentials required', lead: 'One more box to fill',
-          body: [missUser ? 'Enter your username or email as well, then press HD Reset again.' : 'Enter your password as well, then press HD Reset again.'],
-          buttons: [{t: 'OK', k: 'primary'}], after: () => setTimeout(() => (missUser ? user : pw).focus({preventScroll: true}), 30)});
-      }}, {t: 'Cancel', k: 'tertiary', cancel: true}]});
+    const base = {heading: 'Hardware ID Reset', kind: 'info', art: 'move', meter: true, after: focusUser, buttons: [{t: 'Cancel', k: 'tertiary', cancel: true}]};
+    const google = (d, rec) => ({ic: 'g', t: 'Continue with Google', d, rec, on: () => { googleStart('reset'); }});
+    if (u && p) return card({...base, title: 'Reset which account?', lead: 'Choose the account to release',
+      body: [`The sign-in boxes hold "${u}". Resetting releases that account from every PC it is signed in on, and spends one of its three resets for this month.`],
+      options: [{ic: 'user', t: 'Use these credentials', d: `Release "${u}" using the password in the sign-in boxes.`, rec: true, on: () => { hdRun(); }},
+                google('If you sign in with Google, that is a different account — choose Continue with Google.')]});
+    card({...base, title: 'How do you sign in?', lead: 'Prove the account is yours',
+      body: ['Releasing this licence from its current PC needs proof that the account is yours.'],
+      options: [google('Signed in with Google? Choose Continue with Google — there is no password to type.', true),
+                {ic: 'key', t: 'I use a password', d: 'Otherwise type your username and password on the sign-in screen, then press HD Reset again.', on: () => {
+                  const missUser = !user.value.trim();
+                  card({heading: 'Hardware ID Reset', kind: 'warn', art: 'warn', title: 'Credentials required', lead: 'One more box to fill',
+                    body: [missUser ? 'Enter your username or email as well, then press HD Reset again.' : 'Enter your password as well, then press HD Reset again.'],
+                    buttons: [{t: 'OK', k: 'primary'}], after: () => setTimeout(() => (missUser ? user : pw).focus({preventScroll: true}), 30)});
+                }}]});
   }
   $('hdBtn').addEventListener('click', hdStart);
 
@@ -2094,7 +2159,7 @@ input:autofill{background:transparent!important}
   async function hdRun() {
     const el = document.createElement('div');
     el.className = 'hdd'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-label', 'Hardware ID reset');
-    el.innerHTML = `<div class="hd-load" aria-live="polite"><span class="arc" aria-hidden="true"></span><b>Requesting hardware ID reset…</b><span class="hd-sub">Checking your license with the server</span></div><div class="hd-rail" aria-hidden="true"><i></i></div>`;
+    el.innerHTML = `<div class="hd-band">${hdArt('move')}</div><div class="hd-load" aria-live="polite"><b>Requesting hardware ID reset…</b><span class="hd-sub">Checking your license with the server</span></div><div class="hd-rail" aria-hidden="true"><i></i></div>`;
     let alive = true, slowT = 0;
     const close = () => { alive = false; cancel('hd'); clearTimeout(slowT); unmount(el); };   // Esc / close: a late reply is ignored
     mount(el, close);
@@ -2110,14 +2175,15 @@ input:autofill{background:transparent!important}
     const T = ms => (reduce ? 1 : ms);
     await rail.animate([{width: w}, {width: '100%'}], {duration: T(220), easing: 'ease-out', fill: 'forwards'}).finished.catch(() => {});
     if (!alive) return;
-    const load = el.querySelector('.hd-load');
+    const load = el.querySelector('.hd-load'), band = el.querySelector('.hd-band');
+    band.animate([{opacity: 1}, {opacity: 0}], {duration: T(240), fill: 'forwards'});
     await load.animate([{opacity: 1}, {opacity: 0}], {duration: T(240), fill: 'forwards'}).finished.catch(() => {});
     if (!alive) return;
     const h0 = el.offsetHeight;
-    load.remove();
+    load.remove(); band.remove();
     const res = document.createElement('div');
     res.className = 'hd-split k-' + kind;
-    res.innerHTML = `<div class="nc-side">${sideHTML(kind)}<div class="nc-head">Hardware ID reset</div><h2>${{ok: 'Reset complete', err: 'Reset failed', warn: 'Couldn\'t reset'}[kind]}</h2></div>
+    res.innerHTML = `<div class="nc-side hd-side">${hdSide(kind)}<div class="nc-head">Hardware ID reset</div><h2>${{ok: 'Reset complete', err: 'Reset failed', warn: 'Couldn\'t reset'}[kind]}</h2></div>
       <div class="nc-main"><button type="button" class="hd-x" aria-label="Close">${IC.err}</button>
         <h3 class="nc-lead">${{ok: 'Your licence is free', err: 'Check your sign-in details', warn: 'Please try again later'}[kind]}</h3>
         <p class="hd-msg"></p><p class="hd-enq">For enquiries: <button type="button" class="link">https://w2rsolutions.in/</button></p>
@@ -2174,8 +2240,8 @@ input:autofill{background:transparent!important}
 
   /* ---------- 12 · Cinematic brand intro (real logo pieces) ---------- */
   // letter positions/widths in % of the wordmark, measured from assests/SCHEMAX-logo.png (see assests/schemax-anim/meta.json)
-  const LG_WORD = [[0, 9.661], [13.526, 10.72], [28.613, 10.27], [44.362, 8.338], [57.729, 11.99], [73.769, 11.805], [88.195, 11.805]];
-  const LG_SUB = [[0, 2.932], [11.886, 3.803], [24.908, 2.456], [36.45, 3.143], [48.679, 2.932], [60.618, 1.955], [71.58, 3.803], [84.601, 3.302], [97.068, 2.932]];
+  const LG_WORD = [[0, 10.295], [13.248, 11.413], [28.811, 10.375], [44.453, 8.46], [57.622, 12.211], [73.344, 12.45], [88.029, 11.971]];
+  const LG_SUB = [[0, 2.951], [10.902, 3.197], [22.213, 2.951], [33.361, 2.787], [44.18, 3.525], [55.574, 3.525], [66.475, 2.869], [77.131, 0.82], [85.984, 3.197], [97.049, 2.951]];
   const lgImgs = (list, pre) => list.map(([l, w], i) => `<img src="assests/schemax-anim/${pre}${i}.png" data-logo="${pre}${i}.png" alt="" draggable="false" style="left:${l}%;width:${w}%;--i:${i}">`).join('');
   $$('lgWord').innerHTML = lgImgs(LG_WORD, 'w');
   $$('lgSub').innerHTML = lgImgs(LG_SUB, 's');
@@ -2238,7 +2304,7 @@ input:autofill{background:transparent!important}
 
   // after the hand-off the hero logo sits in its finished pose; the cinematic loop resumes a little later
   // The intro plays ONCE (splash → logo flight). On the login page the logo then stays fully visible with a
-  // gentle float — it no longer re-runs its intro loop, which used to blank "SCHEMAX / SOLUTIONS" every few seconds.
+  // gentle float — it no longer re-runs its intro loop, which used to blank "SCHEMAX / SCHEMATICS" every few seconds.
   const settleHero = () => { cine.classList.remove('play', 'out'); cine.classList.add('idle'); };
 
   /* splash → login: shared-element hand-off */
@@ -2297,7 +2363,7 @@ input:autofill{background:transparent!important}
     state = 'closing'; win.inert = true; token++;               // stops the hero animation loop
     await go(win, [{opacity: 1, scale: '1', filter: 'blur(0px)'}, {opacity: 0, scale: '.96', filter: 'blur(2px)'}], 220, SHUT);
     win.style.visibility = 'hidden'; state = 'closed';
-    showPill('Relaunch Schemax Solutions');
+    showPill('Relaunch Schemax Schematics');
   };
   const minimize = async () => {
     if (state !== 'open') return;
@@ -2305,7 +2371,7 @@ input:autofill{background:transparent!important}
     const r = win.getBoundingClientRect(), dy = innerHeight - (r.top + r.height / 2);
     await go(win, [{translate: '0px 0px', scale: '1', opacity: 1}, {translate: `0px ${dy}px`, scale: '.55', opacity: 0}], 320, SHUT);
     win.style.visibility = 'hidden'; state = 'min';
-    showPill('Restore Schemax Solutions');
+    showPill('Restore Schemax Schematics');
   };
   const restore = async () => {
     state = 'restoring'; hidePill();

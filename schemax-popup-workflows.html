@@ -142,6 +142,33 @@ button{font:inherit;color:inherit}
 .hd-sub{margin-top:4px;font-size:12.5px;line-height:17px;color:var(--text-2);max-width:260px}
 .hdd .rail i{width:46%}
 .morph{display:flex;align-items:center;gap:14px;color:var(--text-3);font-size:12px}
+
+/* ---- same updates as the app ---- */
+.nc-glyph{top:22px;width:34px;height:34px;background:#fff;color:#0d847d;box-shadow:0 6px 14px -6px rgba(0,0,0,.55),0 0 0 4px rgba(255,255,255,.12)}
+.nc-glyph svg{width:18px;height:18px;stroke-width:3}
+.k-info .nc-glyph{color:#1d6a8c}.k-warn .nc-glyph{color:#a06e17}.k-err .nc-glyph{color:#b3263a}
+.ghost.tert{background:transparent;color:var(--text);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--text) 24%,transparent)}
+.hd-side{min-height:262px}
+.hd-art{position:absolute;left:16px;right:16px;top:22px}
+.hd-art svg,.hd-band svg{display:block;width:100%;height:auto}
+.flow{stroke-dasharray:4 5;animation:hdFlow .9s linear infinite}
+@keyframes hdFlow{to{stroke-dashoffset:-9}}
+.lic{animation:hdLic 1.8s ease-in-out infinite}
+@keyframes hdLic{0%{transform:translateX(0);opacity:0}15%,80%{opacity:1}100%{transform:translateX(40px);opacity:0}}
+.hd-meter{position:relative;display:flex;align-items:center;gap:5px;margin-bottom:12px;font:600 11px var(--ui);color:rgba(255,255,255,.8)}
+.hd-meter i{width:15px;height:5px;border-radius:3px;background:#5fe3d3}
+.hd-meter span{margin-left:5px}
+.nc-opts{display:grid;gap:10px;margin-top:14px}
+.nc-opt{display:flex;align-items:center;gap:12px;width:100%;padding:12px 14px;border:0;border-radius:11px;text-align:left;color:var(--text);background:var(--glass-btn);box-shadow:inset 0 0 0 1px var(--hair)}
+.nc-opt.rec{background:color-mix(in srgb,var(--accent-2) 9%,var(--glass-btn));box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--accent-2) 60%,transparent)}
+.nc-opt .oi{width:40px;height:40px;flex:none;border-radius:10px;display:grid;place-items:center;color:var(--accent-text);background:color-mix(in srgb,var(--accent-2) 13%,transparent)}
+.nc-opt .oi svg{width:20px;height:20px}
+.nc-opt b{display:flex;align-items:center;gap:8px;font:600 14px var(--ui)}
+.nc-opt b em{font:700 9px var(--ui);font-style:normal;letter-spacing:.08em;text-transform:uppercase;color:#fff;background:var(--accent-grad);padding:2px 7px;border-radius:999px}
+.nc-opt small{display:block;margin-top:2px;font-size:12.5px;line-height:17px;color:var(--text-2)}
+.nc-opt>svg{width:16px;height:16px;margin-left:auto;flex:none;color:var(--text-3)}
+.hd-band{padding:18px 40px 8px;background:linear-gradient(160deg,#0e2140 0%,#14335a 55%,#1d6a8c 100%)}
+.hdd .hd-load{padding:18px 24px 22px}
 @media (prefers-reduced-motion:reduce){*{animation:none!important}}
 @media (max-width:720px){.wrap,.top{padding-left:16px;padding-right:16px}.ncard{grid-template-columns:1fr}.nc-side{min-height:150px}}
 </style>
@@ -174,14 +201,29 @@ button{font:inherit;color:inherit}
     key: SVG('<circle cx="8" cy="15" r="4"/><path d="m11 12 9-9M17 6l3 3M14 9l2 2"/>'),
     board: SVG('<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h6v10M15 4v6h6"/><circle cx="12" cy="15" r="1.4"/>'),
     search: SVG('<circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/>'), hd: SVG('<path d="M4.5 8.5A8 8 0 1 1 4 14"/><path d="M4 4v5h5"/>'),
+    user: SVG('<circle cx="12" cy="8" r="3.5"/><path d="M5 20c.5-4 2.8-6 7-6s6.5 2 7 6"/>'), chev: SVG('<path d="m9 6 6 6-6 6"/>'),
+    g: '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M22.5 12.3c0-.8-.1-1.5-.2-2.3H12v4.3h5.9a5 5 0 0 1-2.2 3.3v2.7h3.6c2-1.9 3.2-4.7 3.2-8Z"/><path fill="#34A853" d="M12 23c3 0 5.5-1 7.3-2.7l-3.6-2.7c-1 .7-2.2 1.1-3.7 1.1-2.9 0-5.3-1.9-6.2-4.5H2.1v2.8A11 11 0 0 0 12 23Z"/><path fill="#FBBC05" d="M5.8 14.2a6.6 6.6 0 0 1 0-4.3V7.1H2.1a11 11 0 0 0 0 9.9l3.7-2.8Z"/><path fill="#EA4335" d="M12 5.4c1.6 0 3.1.6 4.2 1.7l3.2-3.2A11 11 0 0 0 2.1 7.1l3.7 2.8C6.7 7.3 9.1 5.4 12 5.4Z"/></svg>',
   };
+  const hdArt = st => {
+    const col = {move: '#5fe3d3', ok: '#5fe3d3', err: '#ff9eab', warn: '#ffd27a'}[st];
+    const mark = {ok: '<path d="m131 26 5 5 10-10"/>', err: '<path d="m133 21 10 10M143 21l-10 10"/>', warn: '<path d="M138 19v8M138 33h.01"/>'}[st] || '';
+    const lbl = (x, c, t) => `<text x="${x}" y="70" text-anchor="middle" fill="${c}" font-size="8" font-weight="700" letter-spacing="1.2" font-family="Segoe UI,sans-serif">${t}</text>`;
+    return `<svg viewBox="0 0 168 76" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <g stroke="rgba(255,255,255,.45)" stroke-width="1.6"><rect x="4" y="8" width="52" height="36" rx="4"/><path d="M22 52h16M30 44v8"/></g>
+      <path d="M14 18h20M14 24h28M14 30h14" stroke="rgba(255,255,255,.22)" stroke-width="1.6"/>
+      <g stroke="${col}" stroke-width="1.8"><rect x="112" y="8" width="52" height="36" rx="4" fill="${col}22"/><path d="M130 52h16M138 44v8"/></g>
+      <path class="flow" d="M62 26h38" stroke="rgba(255,255,255,.6)" stroke-width="1.8"/><path d="m98 21 5 5-5 5" stroke="rgba(255,255,255,.6)" stroke-width="1.8"/>
+      ${st === 'move' ? '<g class="lic"><rect x="58" y="21" width="14" height="10" rx="2.5" fill="#fff"/><circle cx="62.5" cy="26" r="1.6" fill="#0e2140"/></g>' : `<g stroke="#fff" stroke-width="2.6">${mark}</g>`}
+      ${lbl(30, 'rgba(255,255,255,.55)', 'OLD PC')}${lbl(138, col, 'THIS PC')}</svg>`;
+  };
+  const hdSide = (st, meter) => `<div class="hd-art">${hdArt(st)}</div>` + (meter ? '<div class="hd-meter"><i></i><i></i><i></i><span>3 resets a month</span></div>' : '');
   const KIND = {ok: 'Success', err: 'Error', warn: 'Warning', info: 'Info'};
   const ENQ = true;
   // [label, style, action]   style: p = primary · s = secondary · t = tertiary · d = danger
   const P = [
     /* ---------------- 1 · LOGIN ---------------- */
     {wf: 'Login', name: 'Update required', when: 'Server message contains <code>Version not allowed</code> (rule 1)', kind: 'info', heading: 'Sign in', title: 'Update required', lead: 'A newer version is needed',
-     body: ['Version not allowed. This version of Schemax Solutions is no longer supported.', 'Download the latest version to keep signing in.'],
+     body: ['Version not allowed. This version of Schemax Schematics is no longer supported.', 'Download the latest version to keep signing in.'],
      buttons: [['Download update', 'p', 'Downloads the latest installer'], ['Close', 's', 'Back to Sign In, focus on username']]},
     {wf: 'Login', name: 'Your next key is ready', when: 'Message contains <code>activation key is ready to start</code> (rule 2)', kind: 'info', heading: 'Sign in', title: 'Your next key is ready', lead: 'Your new plan starts at sign-in',
      body: ['Your plan has ended and your next activation key is ready to start. It begins the next time you sign in.'], buttons: [['OK', 'p', 'Back to Sign In']]},
@@ -193,14 +235,14 @@ button{font:inherit;color:inherit}
      buttons: [['OK', 's', 'Back to Sign In'], ['Open w2rsolutions.in', 'p', 'Opens the website in the browser']]},
     {wf: 'Login', name: 'Hardware ID Error', when: '<code>Hardware ID</code> · <code>activated on another device</code> · <code>device limit reached</code> · <code>mismatch</code> (rule 5)', kind: 'err', heading: 'Sign in', title: 'Hardware ID Error', lead: 'This licence is on another PC',
      body: ['Hardware ID mismatch: this account is already activated on another device.'], enq: ENQ,
-     buttons: [['Close', 's', 'Back to Sign In'], ['Reset Hardware ID', 'p', 'HD Reset choice card (#16 or #17)']]},
+     buttons: [['Close', 's', 'Back to Sign In'], ['Reset Hardware ID', 'p', 'HD Reset choice card (#17 or #18)']]},
     {wf: 'Login', name: 'Upgrade Required', when: '<code>Free plan users</code> · <code>upgrade to Premium</code> · <code>FREE_PLAN_RESTRICTION</code> (rule 6)', kind: 'warn', heading: 'Sign in', title: 'Upgrade Required', lead: 'The desktop app needs Premium',
      body: ['Free plan users can\'t use the desktop app. Please upgrade to Premium.'],
      buttons: [['Enter Activation Key', 'p', 'Activation key dialog (#11)'], ['Get Activation Key', 's', 'Website plans page (or WhatsApp)'], ['Close', 't', 'Back to Sign In']]},
     {wf: 'Login', name: 'Account Activation Required', when: 'Message contains <code>Account Not Activated</code> (rule 7)', kind: 'warn', heading: 'Sign in', title: 'Account Activation Required', lead: 'Your account isn\'t active yet',
      body: ['Account Not Activated. Activate your account with an activation key, or contact support.'], buttons: [['OK', 'p', 'Back to Sign In']]},
     {wf: 'Login', name: 'Plan Expired', when: '<code>plan has expired</code> / <code>PLAN_EXPIRED</code> (rule 8)', kind: 'warn', heading: 'Sign in', title: 'Plan Expired', lead: 'Renew to keep working',
-     body: ['Your plan has expired. Renew it to keep using Schemax Solutions.'],
+     body: ['Your plan has expired. Renew it to keep using Schemax Schematics.'],
      buttons: [['Enter Activation Key', 'p', 'Activation key dialog (#11)'], ['Renew Plan', 's', 'Plan renewal on the website'], ['Close', 't', 'Back to Sign In']]},
     {wf: 'Login', name: 'Login Failed', when: 'Any other server message (rule 9) — server text, or "Authentication failed"', kind: 'err', heading: 'Sign in', title: 'Login Failed', lead: 'We couldn\'t sign you in',
      body: ['Invalid username or password.'], buttons: [['OK', 'p', 'Back to Sign In, focus on username']]},
@@ -214,7 +256,7 @@ button{font:inherit;color:inherit}
      buttons: [['Activate', 'p', 'Stays open until a key is typed'], ['Cancel', 's', 'Back to Sign In']]},
     {wf: 'Login', name: 'Key activated', when: 'Activation key accepted', kind: 'ok', heading: 'Activation key', title: 'Key activated', lead: 'You\'re all set',
      body: ['Your plan is active. Press Sign In to continue.'], buttons: [['OK', 'p', 'Back to Sign In, focus on Sign In']]},
-    {wf: 'Login', name: 'Sign-in in progress', when: 'Window close (✕) pressed while signing in', kind: 'warn', heading: 'Schemax Solutions', title: 'Sign-in in progress', lead: 'Closing now cancels sign-in',
+    {wf: 'Login', name: 'Sign-in in progress', when: 'Window close (✕) pressed while signing in', kind: 'warn', heading: 'Schemax Schematics', title: 'Sign-in in progress', lead: 'Closing now cancels sign-in',
      body: ['Sign-in is still working. Close the app anyway?'], buttons: [['Close anyway', 'd', 'Cancels the request and closes the app'], ['Keep waiting', 's', 'Sign-in keeps running (Esc does the same)']]},
     /* ---------------- 2 · REGISTER ---------------- */
     {wf: 'Register', name: 'Account created', when: 'POST /api/auth/signup → 201 · the form swaps back to Sign In first', kind: 'ok', heading: 'Account created', title: 'Welcome, ramprasath', lead: 'You\'re all set',
@@ -225,15 +267,19 @@ button{font:inherit;color:inherit}
     {wf: 'Forgot password', name: 'Password updated', when: 'POST /api/auth/reset succeeded · the form swaps back to Sign In first', kind: 'ok', heading: 'Password reset', title: 'Password updated', lead: 'Your account is secure again',
      body: ['Your password has been reset. Please sign in with your new password.'], buttons: [['OK', 'p', 'Username prefilled, focus on password']]},
     /* ---------------- 4 · HD RESET ---------------- */
-    {wf: 'HD Reset', name: 'Choice — credentials in the boxes', when: 'HD Reset / Reset Hardware ID while username AND password are filled (variant A)', kind: 'info', heading: 'Hardware ID Reset', title: 'Reset which account?', lead: 'Choose the account to release',
-     body: ['The sign-in boxes hold "ramprasath". Resetting releases that account from every PC it is signed in on, and spends one of its three resets for this month.', 'If you sign in with Google, that is a different account — choose Continue with Google.'],
-     buttons: [['Use these credentials', 'p', 'HD Reset loader (#19) → result'], ['Continue with Google', 's', 'Browser Google consent (flagged as a reset)'], ['Cancel', 't', 'Back to Sign In']]},
-    {wf: 'HD Reset', name: 'Choice — boxes empty', when: 'HD Reset while the boxes are empty or only one is filled (variant B)', kind: 'info', heading: 'Hardware ID Reset', title: 'How do you sign in?', lead: 'Prove the account is yours',
-     body: ['Releasing this licence from its current PC needs proof that the account is yours.', 'Signed in with Google? Choose Continue with Google — there is no password to type.', 'Otherwise type your username and password on the sign-in screen, then press HD Reset again.'],
-     buttons: [['Continue with Google', 'p', 'Browser Google consent (flagged as a reset)'], ['I use a password', 's', 'Credentials required (#18)'], ['Cancel', 't', 'Back to Sign In']]},
-    {wf: 'HD Reset', name: 'Credentials required — username missing', when: '"I use a password" with the username box empty', kind: 'warn', heading: 'Hardware ID Reset', title: 'Credentials required', lead: 'One more box to fill',
+    {wf: 'HD Reset', name: 'Choice — credentials in the boxes', when: 'HD Reset / Reset Hardware ID while username AND password are filled (variant A)', kind: 'info', art: 'move', meter: true, heading: 'Hardware ID Reset', title: 'Reset which account?', lead: 'Choose the account to release',
+     body: ['The sign-in boxes hold "ramprasath". Resetting releases that account from every PC it is signed in on, and spends one of its three resets for this month.'],
+     options: [['user', 'Use these credentials', 'Release "ramprasath" using the password in the sign-in boxes.', true, 'HD Reset loader (#21) → result'],
+               ['g', 'Continue with Google', 'If you sign in with Google, that is a different account — choose Continue with Google.', false, 'Browser Google consent (flagged as a reset)']],
+     buttons: [['Cancel', 't', 'Back to Sign In (Esc does the same)']]},
+    {wf: 'HD Reset', name: 'Choice — boxes empty', when: 'HD Reset while the boxes are empty or only one is filled (variant B)', kind: 'info', art: 'move', meter: true, heading: 'Hardware ID Reset', title: 'How do you sign in?', lead: 'Prove the account is yours',
+     body: ['Releasing this licence from its current PC needs proof that the account is yours.'],
+     options: [['g', 'Continue with Google', 'Signed in with Google? Choose Continue with Google — there is no password to type.', true, 'Browser Google consent (flagged as a reset)'],
+               ['key', 'I use a password', 'Otherwise type your username and password on the sign-in screen, then press HD Reset again.', false, 'Credentials required (#19 / #20)']],
+     buttons: [['Cancel', 't', 'Back to Sign In (Esc does the same)']]},
+    {wf: 'HD Reset', name: 'Credentials required — username missing', when: '"I use a password" with the username box empty', kind: 'warn', art: 'warn', heading: 'Hardware ID Reset', title: 'Credentials required', lead: 'One more box to fill',
      body: ['Enter your username or email as well, then press HD Reset again.'], buttons: [['OK', 'p', 'Focus moves to the username box']]},
-    {wf: 'HD Reset', name: 'Credentials required — password missing', when: '"I use a password" with the password box empty', kind: 'warn', heading: 'Hardware ID Reset', title: 'Credentials required', lead: 'One more box to fill',
+    {wf: 'HD Reset', name: 'Credentials required — password missing', when: '"I use a password" with the password box empty', kind: 'warn', art: 'warn', heading: 'Hardware ID Reset', title: 'Credentials required', lead: 'One more box to fill',
      body: ['Enter your password as well, then press HD Reset again.'], buttons: [['OK', 'p', 'Focus moves to the password box']]},
     {wf: 'HD Reset', name: 'Loader', when: 'POST /auth/reset-hwid running (phase 1 · 340 px)', loader: 'Checking your license with the server',
      acts: [['Esc / close', 'Cancels; a late reply is ignored'], ['Rail', 'Trickles toward 90 % over the 30 s timeout, fills on reply']]},
@@ -256,7 +302,8 @@ button{font:inherit;color:inherit}
   ];
 
   const esc = s => String(s).replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));
-  const side = (kind, head, title) => `<div class="nc-side"><img class="nc-logo" src="assests/schemax-anim/mark.png" alt=""><span class="nc-glyph">${IC[kind]}</span><div class="nc-head">${esc(head)}</div><h3>${esc(title)}</h3></div>`;
+  const side = (kind, head, title, art, meter) => `<div class="nc-side${art ? ' hd-side' : ''}">${art ? hdSide(art, meter) : `<img class="nc-logo" src="assests/schemax-anim/mark.png" alt=""><span class="nc-glyph">${IC[kind]}</span>`}<div class="nc-head">${esc(head)}</div><h3>${esc(title)}</h3></div>`;
+  const opts = list => `<div class="nc-opts">${list.map(([ic, t, d, rec]) => `<button type="button" class="nc-opt${rec ? ' rec' : ''}"><span class="oi">${IC[ic]}</span><span><b>${esc(t)}${rec ? '<em>Suggested</em>' : ''}</b><small>${esc(d)}</small></span>${IC.chev}</button>`).join('')}</div>`;
   const btns = list => {
     const cls = {p: 'primary', s: 'ghost', t: 'ghost tert', d: 'primary danger'};
     const cols = list.length === 1 ? 'minmax(0,1fr) 150px' : 'repeat(2,minmax(0,1fr))';
@@ -264,11 +311,11 @@ button{font:inherit;color:inherit}
       `<button type="button" class="${cls[k]}" style="${list.length === 1 ? 'grid-column:2' : list.length === 3 && i === 0 ? 'grid-column:1/-1' : ''}">${esc(t)}</button>`).join('')}</div>`;
   };
   const popup = p => {
-    if (p.loader) return `<div class="morph"><div class="hdd"><div class="hd-load"><span class="arc"></span><b>Requesting hardware ID reset…</b><span class="hd-sub">${esc(p.loader)}</span></div><div class="rail"><i></i></div></div></div>`;
-    if (p.hd) return `<div class="ncard hd k-${p.hd}">${side(p.hd, 'Hardware ID reset', p.side)}<div class="nc-main"><button class="hd-x" aria-label="Close">${IC.err}</button>
+    if (p.loader) return `<div class="morph"><div class="hdd"><div class="hd-band">${hdArt('move')}</div><div class="hd-load"><b>Requesting hardware ID reset…</b><span class="hd-sub">${esc(p.loader)}</span></div><div class="rail"><i></i></div></div></div>`;
+    if (p.hd) return `<div class="ncard hd k-${p.hd}">${side(p.hd, 'Hardware ID reset', p.side, p.hd)}<div class="nc-main"><button class="hd-x" aria-label="Close">${IC.err}</button>
       <h4 class="nc-lead">${esc(p.lead)}</h4><p class="hd-msg">${esc(p.msg)}</p><p class="nc-enq">For enquiries: <button class="link">https://w2rsolutions.in/</button></p>${btns(p.buttons)}</div><div class="rail"><i></i></div></div>`;
-    return `<div class="ncard k-${p.kind}">${side(p.kind, p.heading, p.title)}<div class="nc-main"><h4 class="nc-lead">${esc(p.lead)}</h4>
-      <div class="nc-body">${p.body.map(t => `<p>${esc(t)}</p>`).join('')}</div>
+    return `<div class="ncard k-${p.kind}">${side(p.kind, p.heading, p.title, p.art, p.meter)}<div class="nc-main"><h4 class="nc-lead">${esc(p.lead)}</h4>
+      <div class="nc-body">${p.body.map(t => `<p>${esc(t)}</p>`).join('')}</div>${p.options ? opts(p.options) : ''}
       ${p.tips ? `<ul class="nc-tips">${p.tips.map(([ic, b, t]) => `<li><i>${IC[ic]}</i><div><b>${esc(b)}</b>${esc(t)}</div></li>`).join('')}</ul>` : ''}
       ${p.input ? `<div class="nc-field"><div class="ctl${p.input.err ? ' invalid' : ''}">${IC.key}<span>${esc(p.input.ph)}</span></div>${p.input.err ? `<div class="nc-err">${IC.alert}${esc(p.input.err)}</div>` : ''}</div>` : ''}
       ${p.enq ? `<p class="nc-enq">For enquiries: <button class="link">https://w2rsolutions.in/</button></p>` : ''}
@@ -276,7 +323,7 @@ button{font:inherit;color:inherit}
   };
   const item = (p, n) => {
     const kind = p.kind || p.hd || 'info';
-    const acts = p.buttons ? p.buttons.map(([t, , a]) => [t, a]) : p.acts;
+    const acts = p.buttons ? [...(p.options || []).map(o => [o[1], o[4]]), ...p.buttons.map(([t, , a]) => [t, a])] : p.acts;
     return `<article class="item" data-wf="${p.wf}">
       <div class="meta"><span class="num">${String(n).padStart(2, '0')}</span><div><b>${esc(p.name)}</b><div class="when">${p.when}</div></div>
         <div class="tags"><span class="tag ${p.loader ? 'info' : kind}">${p.loader ? 'Loader' : KIND[kind]}</span></div></div>
