@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sign in ⇄ Register Transitions</title>
+<style>
+:root{
+  --ui:"Segoe UI Variable Text","Segoe UI Variable","Segoe UI",Inter,system-ui,sans-serif;
+  --disp:"Segoe UI Variable Display","Segoe UI Variable","Segoe UI",Inter,system-ui,sans-serif;
+  --spring:cubic-bezier(.34,1.56,.64,1); --ease:cubic-bezier(.2,.8,.2,1); --out:cubic-bezier(.16,1,.3,1); --io:cubic-bezier(.65,0,.2,1);
+}
+:root,[data-theme="dark"]{
+  --page:#06070a; --text:#f3f7ff; --text-2:#a8b7d4; --text-3:#6e7fa0; --hair:rgba(255,255,255,.09); --hair-2:rgba(255,255,255,.16);
+  --win:linear-gradient(160deg,#0f1a2e,#0a1120); --hero:radial-gradient(ellipse at 50% 40%,rgba(18,163,155,.14),transparent 65%),#0c1424;
+  --card:#15223b; --card-2:#1b2a47; --field:#0b1426; --accent-2:#2dd4bf; --accent-text:#5fe3d3;
+  --grad:linear-gradient(110deg,#0a6f6a 0%,#0d847d 52%,#10968e 100%); --btn:rgba(255,255,255,.06);
+  --logo:url(assests/schemax-anim-dark/mark.png); color-scheme:dark;
+}
+[data-theme="light"]{
+  --page:#e7eaf0; --text:#0e2140; --text-2:#46557a; --text-3:#7a87a5; --hair:rgba(20,40,90,.1); --hair-2:rgba(20,40,90,.18);
+  --win:linear-gradient(160deg,#f7f9fc,#eef2f7); --hero:radial-gradient(ellipse at 50% 40%,rgba(18,163,155,.1),transparent 65%),#f2f5f9;
+  --card:#ffffff; --card-2:#f6f8fb; --field:#f1f4f8; --accent-2:#12a39b; --accent-text:#0b7570;
+  --grad:linear-gradient(110deg,#0a6f6a 0%,#0c7f79 52%,#0f938c 100%); --btn:rgba(14,33,64,.05);
+  --logo:url(assests/schemax-anim/mark.png); color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--page);color:var(--text);font:400 14px/20px var(--ui);-webkit-font-smoothing:antialiased;transition:background .3s}
+button{font:inherit;color:inherit;cursor:pointer}
+.top{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:14px 28px;background:color-mix(in srgb,var(--page) 85%,transparent);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);border-bottom:1px solid var(--hair)}
+.top h1{margin:0;font:600 18px var(--disp)}
+.top p{margin:2px 0 0;color:var(--text-3);font-size:12.5px}
+.sp{flex:1}
+.seg{display:flex;gap:2px;padding:3px;border-radius:9px;background:var(--btn);box-shadow:inset 0 0 0 1px var(--hair)}
+.seg button{border:0;background:transparent;padding:5px 12px;border-radius:6px;font-size:12.5px;color:var(--text-2)}
+.seg button[aria-pressed="true"]{background:var(--card);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.allbtn{height:32px;padding:0 14px;border:0;border-radius:8px;color:#fff;font-weight:600;font-size:12.5px;background:var(--grad)}
+.wrap{max-width:1500px;margin:0 auto;padding:20px 28px 70px;display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,600px),1fr));gap:20px}
+.opt{border-radius:16px;overflow:hidden;background:color-mix(in srgb,var(--card) 50%,transparent);box-shadow:inset 0 0 0 1px var(--hair)}
+.meta{display:flex;gap:10px;align-items:flex-start;padding:13px 15px}
+.num{flex:none;font:700 11.5px var(--ui);color:var(--accent-text);background:color-mix(in srgb,var(--accent-2) 12%,transparent);border-radius:6px;padding:3px 7px}
+.meta b{display:block;font:600 14.5px var(--ui)}
+.meta span{font-size:12.5px;line-height:17px;color:var(--text-3)}
+.meta .play{margin-left:auto;flex:none;height:30px;padding:0 13px;border:0;border-radius:8px;font:600 12px var(--ui);color:#fff;background:var(--grad)}
+.stage{display:grid;place-items:center;padding:20px 12px 22px;background:radial-gradient(ellipse at 50% 0%,rgba(18,163,155,.08),transparent 70%)}
+
+/* ---------- mini window (≈ half scale of the app) ---------- */
+.win{position:relative;width:560px;max-width:100%;height:340px;border-radius:12px;overflow:hidden;background:var(--win);box-shadow:0 30px 60px -30px rgba(0,0,0,.7),inset 0 0 0 1px var(--hair);display:grid;grid-template-rows:26px 1fr;isolation:isolate}
+.tb{display:flex;align-items:center;gap:7px;padding-left:10px;font:600 10.5px var(--ui);color:var(--text-2);border-bottom:1px solid var(--hair)}
+.tb i{width:12px;height:12px;border-radius:3px;background:var(--logo) center/contain no-repeat}
+.tb em{font-style:normal;font-weight:400;color:var(--text-3)}
+.tb .cap{margin-left:auto;display:flex}
+.tb .cap s{width:30px;text-align:center;text-decoration:none;color:var(--text-3)}
+.body{position:relative;display:grid;grid-template-columns:minmax(0,1fr) 230px;min-height:0}
+.hero{position:relative;margin:10px 0 10px 10px;border-radius:10px;background:var(--hero);display:grid;place-items:center;overflow:hidden;box-shadow:inset 0 0 0 1px var(--hair)}
+.hero .lk{display:flex;flex-direction:column;align-items:center;gap:8px}
+.hero .mk{width:70px;height:70px;background:var(--logo) center/contain no-repeat}
+.hero b{font:700 20px var(--disp);letter-spacing:.12em}
+.hero small{font:600 7.5px var(--ui);letter-spacing:.6em;color:var(--text-2);margin-left:.6em}
+.area{position:relative;margin:10px;min-height:0}
+.face{position:absolute;inset:0;border-radius:12px;padding:14px 16px;background:var(--card);box-shadow:inset 0 0 0 1px var(--hair-2),0 14px 26px -18px rgba(0,0,0,.6);display:flex;flex-direction:column;overflow:hidden}
+.face h4,.sheet h4{margin:0;font:650 16px/20px var(--disp);letter-spacing:-.01em}
+.face p,.sheet p{margin:2px 0 10px;font-size:10.5px;color:var(--text-2)}
+.brand{display:flex;align-items:center;gap:6px;margin-bottom:10px;font:700 10.5px var(--ui)}
+.brand i{width:18px;height:18px;border-radius:5px;background:#fff var(--logo) center/14px no-repeat}
+[data-theme="dark"] .brand i{background:#fff url(assests/schemax-anim/mark.png) center/14px no-repeat}
+.brand span{color:var(--accent-text)}
+.mf{height:26px;border-radius:7px;margin-bottom:7px;padding:0 9px;display:flex;align-items:center;font-size:10px;color:var(--text-3);background:var(--field);box-shadow:inset 0 0 0 1px var(--hair-2)}
+.lbl{font:600 9px var(--ui);margin-bottom:3px;color:var(--text-2)}
+.mb{height:28px;border:0;border-radius:7px;display:grid;place-items:center;color:#fff;font:600 11px var(--ui);background:var(--grad);margin-top:3px;width:100%}
+.alt{display:flex;justify-content:center;gap:5px;margin-top:auto;font-size:10px;color:var(--text-3)}
+.go{border:0;background:none;padding:0;font:700 10px var(--ui);color:var(--accent-text)}
+.chip{align-self:flex-start;margin:0 0 9px;padding:2px 8px;border-radius:99px;font:600 8.5px var(--ui);color:var(--accent-text);background:color-mix(in srgb,var(--accent-2) 12%,transparent)}
+.g{height:26px;border-radius:7px;display:grid;place-items:center;font:600 10px var(--ui);background:var(--btn);box-shadow:inset 0 0 0 1px var(--hair-2);margin-top:7px}
+.rg{background:var(--card-2)}
+
+/* =============== 1 · 3D flip =============== */
+.t1 .area{perspective:900px}
+.t1 .flip{position:absolute;inset:0;transform-style:preserve-3d;transition:transform .85s var(--io)}
+.t1.reg .flip{transform:rotateY(180deg)}
+.t1 .face{backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.t1 .rg{transform:rotateY(180deg)}
+
+/* =============== 2 · Morph from the button =============== */
+.t2 .rg{clip-path:circle(0 at var(--x,50%) var(--y,90%));transition:clip-path .7s var(--io);z-index:2}
+.t2.reg .rg{clip-path:circle(150% at var(--x,50%) var(--y,90%))}
+.t2 .si{transition:transform .7s var(--io),filter .7s}
+.t2.reg .si{transform:scale(.94);filter:blur(2px)}
+
+/* =============== 3 · Cube =============== */
+.t3 .area{perspective:800px}
+.t3 .cube{position:absolute;inset:0;transform-style:preserve-3d;transform:translateZ(calc(var(--hw) * -1));transition:transform .9s var(--io)}
+.t3.reg .cube{transform:translateZ(calc(var(--hw) * -1)) rotateY(-90deg)}
+.t3 .si{transform:translateZ(var(--hw))}
+.t3 .rg{transform:rotateY(90deg) translateZ(var(--hw))}
+.t3 .face{backface-visibility:hidden}
+
+/* =============== 4 · Deck shuffle =============== */
+.t4 .si{z-index:2}.t4 .rg{z-index:1;transform:translateY(12px) scale(.92);filter:brightness(.8)}
+.t4.go-reg .si{animation:deckBack .8s var(--io) forwards}
+.t4.go-reg .rg{animation:deckFront .8s var(--io) forwards}
+.t4.go-si .si{animation:deckFront .8s var(--io) forwards}
+.t4.go-si .rg{animation:deckBack .8s var(--io) forwards}
+@keyframes deckBack{0%{transform:none;z-index:2;filter:none}50%{transform:translateX(-62%) rotate(-7deg);z-index:2}51%{z-index:1}100%{transform:translateY(12px) scale(.92);z-index:1;filter:brightness(.8)}}
+@keyframes deckFront{0%{transform:translateY(12px) scale(.92);z-index:1;filter:brightness(.8)}50%{transform:translateX(62%) rotate(7deg);z-index:1}51%{z-index:2}100%{transform:none;z-index:2;filter:none}}
+
+/* =============== 5 · Zoom through =============== */
+.t5 .face{transition:transform .7s var(--out),opacity .5s,filter .6s}
+.t5 .rg{transform:scale(1.18);opacity:0;filter:blur(8px);pointer-events:none}
+.t5.reg .si{transform:scale(.82);opacity:0;filter:blur(8px);pointer-events:none}
+.t5.reg .rg{transform:none;opacity:1;filter:none;pointer-events:auto}
+
+/* =============== 6 · Diagonal wipe =============== */
+.t6 .rg{clip-path:polygon(120% 0,120% 0,100% 100%,100% 100%);transition:clip-path .75s var(--io);z-index:2}
+.t6.reg .rg{clip-path:polygon(-20% 0,120% 0,100% 100%,-40% 100%)}
+.t6 .sweep{position:absolute;top:-20%;bottom:-20%;width:40px;left:110%;z-index:3;background:linear-gradient(90deg,transparent,rgba(45,212,191,.7),transparent);transform:skewX(-18deg);pointer-events:none;opacity:0}
+.t6.reg .sweep{animation:sweep .75s var(--io)}
+.t6.back .sweep{animation:sweepB .75s var(--io)}
+@keyframes sweep{0%{left:110%;opacity:1}100%{left:-30%;opacity:1}}
+@keyframes sweepB{0%{left:-30%;opacity:1}100%{left:110%;opacity:1}}
+
+/* =============== 7 · Layout takeover =============== */
+.t7 .body{transition:grid-template-columns .8s var(--io)}
+.t7.reg .body{grid-template-columns:0fr 1fr}
+.t7 .hero{transition:margin .8s var(--io),opacity .5s}
+.t7.reg .hero{margin-right:-10px;opacity:0}
+.t7 .rg{opacity:0;pointer-events:none;transition:opacity .4s}
+.t7.reg .rg{opacity:1;pointer-events:auto;transition-delay:.35s}
+.t7.reg .si{opacity:0;transition:opacity .25s}
+.t7 .rg .cols{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.t7 .rg .wideonly{display:none}
+.t7.reg .rg .wideonly{display:block}
+
+/* =============== 8 · Page turn =============== */
+.t8 .area{perspective:1100px}
+.t8 .si{z-index:2;transform-origin:left center;transition:transform .9s var(--io),box-shadow .9s;backface-visibility:hidden}
+.t8.reg .si{transform:rotateY(-110deg);box-shadow:30px 0 40px -10px rgba(0,0,0,.5)}
+.t8 .rg{z-index:1}
+.t8 .rg::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,0,0,.35),transparent 60%);opacity:1;transition:opacity .9s;pointer-events:none}
+.t8.reg .rg::after{opacity:0}
+
+/* =============== 9 · Bottom sheet =============== */
+.t9 .body{transition:transform .6s var(--out),filter .6s}
+.t9.reg .body{transform:scale(.94);filter:brightness(.6) blur(1px)}
+.t9 .sheet{position:absolute;left:12%;right:12%;bottom:0;height:86%;z-index:5;border-radius:16px 16px 0 0;padding:12px 18px 14px;background:var(--card-2);box-shadow:0 -20px 40px -10px rgba(0,0,0,.5),inset 0 0 0 1px var(--hair-2);transform:translateY(105%);transition:transform .6s var(--out);display:flex;flex-direction:column}
+.t9.reg .sheet{transform:none}
+.t9 .grab{width:36px;height:4px;border-radius:3px;background:var(--hair-2);margin:0 auto 10px}
+.t9 .sheet .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+/* =============== 10 · Tabs carousel =============== */
+.t10 .face{position:absolute}
+.t10 .one{padding:10px 12px}
+.t10 .tabs{position:relative;display:grid;grid-template-columns:1fr 1fr;padding:3px;border-radius:9px;background:var(--btn);box-shadow:inset 0 0 0 1px var(--hair);margin-bottom:12px}
+.t10 .tabs button{position:relative;z-index:1;height:24px;border:0;background:transparent;font:600 10.5px var(--ui);color:var(--text-2)}
+.t10 .ind{position:absolute;top:3px;bottom:3px;left:3px;width:calc(50% - 3px);border-radius:7px;background:var(--grad);transition:transform .5s var(--out)}
+.t10.reg .ind{transform:translateX(100%)}
+.t10 .tabs button.on{color:#fff}
+.t10 .vp{position:relative;flex:1;overflow:hidden}
+.t10 .track{display:flex;width:200%;height:100%;transition:transform .55s var(--io)}
+.t10.reg .track{transform:translateX(-50%)}
+.t10 .pane{width:50%;padding:0 2px;display:flex;flex-direction:column;transition:opacity .4s}
+.t10 .pane:nth-child(2){opacity:.2}.t10.reg .pane:nth-child(1){opacity:.2}.t10.reg .pane:nth-child(2){opacity:1}
+
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{transition-duration:1ms!important;animation-duration:1ms!important}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div><h1>Sign in ⇄ Register — 10 new transitions</h1><p>Click <b>Register</b> / <b>Back to Sign In</b> inside each window, or press Play. Replaces today's left-right card slide.</p></div>
+  <span class="sp"></span>
+  <button class="allbtn" id="all">Play all</button>
+  <div class="seg" role="group" aria-label="Theme"><button data-t="light">Light</button><button data-t="dark">Dark</button></div>
+</header>
+<main class="wrap" id="wrap"></main>
+
+<script>
+(() => {
+  const DEMOS = [
+    ['3D card flip', 'The form card turns over like a real card — Sign in on the front, Register on the back. Strong and instantly understood.'],
+    ['Morph from the button', 'Register grows out of the exact spot you clicked as a teal circle that fills the card (Material "container transform").'],
+    ['Cube rotate', 'The card is one side of a 3D cube that rotates to the next face. Feels like switching rooms.'],
+    ['Deck shuffle', 'Two cards in a deck: the top card swings aside and tucks behind, the next one comes forward. Playful and physical.'],
+    ['Zoom through', 'Sign in falls back into depth while Register zooms forward from the front — like walking through a door.'],
+    ['Diagonal wipe', 'A teal light sweep crosses the card diagonally and reveals Register behind it. Fast and cinematic.'],
+    ['Layout takeover', 'The hero gives way and the form takes the whole window, so Register gets a roomy 2-column layout.'],
+    ['Page turn', 'Sign in turns like a book page on its left hinge and Register is the next page underneath.'],
+    ['Bottom sheet', 'Register rises as a sheet over the window while the sign-in screen shrinks and dims behind — modern app pattern.'],
+    ['Tabs carousel', 'Sign in | Register tabs on top; the content slides inside the card and the teal pill glides along. Simplest to learn.'],
+  ];
+  const SI = `<div class="brand"><i></i><span>Schemax</span>&nbsp;Schematics</div><h4>Welcome back</h4><p>Sign in to open your workspace.</p>
+    <div class="lbl">Username or email</div><div class="mf">Enter your username</div><div class="lbl">Password</div><div class="mf">••••••••</div>
+    <button class="mb">Sign In</button><div class="alt">New here? <button class="go" data-go="reg">Register</button></div>`;
+  const RG = `<h4>Create your account</h4><p>Sign up to start building schematics.</p><span class="chip">Step 1 of 2 · Verify your email</span>
+    <div class="lbl">Email address</div><div class="mf">you@gmail.com</div><button class="mb">Send OTP</button><div class="g">Sign up with Google</div>
+    <div class="alt"><button class="go" data-go="si">← Back to Sign In</button></div>`;
+  const RG7 = `<div class="cols"><div><h4>Create your account</h4><p>Sign up to start building schematics.</p><span class="chip">Step 1 of 2 · Verify your email</span>
+    <div class="lbl">Email address</div><div class="mf">you@gmail.com</div><button class="mb">Send OTP</button></div>
+    <div class="wideonly"><div class="lbl" style="margin-top:6px">Why Schemax?</div><div class="mf">✓ Boardview for every board</div><div class="mf">✓ 2.3M+ schematics</div><div class="g">Sign up with Google</div></div></div>
+    <div class="alt"><button class="go" data-go="si">← Back to Sign In</button></div>`;
+  const hero = '<div class="hero"><div class="lk"><span class="mk"></span><b>SCHEMAX</b><small>SCHEMATICS</small></div></div>';
+  const frame = (n, inner, extra = '') => `<div class="win t${n}" data-n="${n}"><div class="tb"><i></i>Schemax Schematics <em>/ <span data-crumb>Sign in</span></em><span class="cap"><s>–</s><s>□</s><s>✕</s></span></div>
+    <div class="body">${hero}<div class="area">${inner}</div></div>${extra}</div>`;
+  const faces = (si = SI, rg = RG) => `<div class="face si">${si}</div><div class="face rg">${rg}</div>`;
+  const BUILD = {
+    1: () => frame(1, `<div class="flip">${faces()}</div>`),
+    3: () => frame(3, `<div class="cube">${faces()}</div>`),
+    6: () => frame(6, faces() + '<span class="sweep"></span>'),
+    7: () => frame(7, faces(SI, RG7)),
+    9: () => frame(9, `<div class="face si">${SI}</div>`, `<div class="sheet"><div class="grab"></div>${RG}</div>`),
+    10: () => frame(10, `<div class="face one"><div class="tabs"><span class="ind"></span><button class="on" data-go="si">Sign in</button><button data-go="reg">Register</button></div>
+      <div class="vp"><div class="track"><div class="pane">${SI.replace(/<div class="alt">[\s\S]*?<\/div>$/, '')}</div><div class="pane">${RG.replace(/<div class="alt">[\s\S]*?<\/div>$/, '')}</div></div></div></div>`),
+  };
+  document.getElementById('wrap').innerHTML = DEMOS.map(([t, d], i) => `<article class="opt"><div class="meta"><span class="num">${String(i + 1).padStart(2, '0')}</span><div><b>${t}</b><span>${d}</span></div><button class="play" data-play="${i + 1}">Play</button></div>
+    <div class="stage">${(BUILD[i + 1] || (() => frame(i + 1, faces())))()}</div></article>`).join('');
+
+  const setState = (w, reg) => {
+    const n = +w.dataset.n, was = w.classList.contains('reg');
+    if (was === reg) return;
+    if (n === 2 && reg) { const b = w.querySelector('.si [data-go="reg"]'), a = w.querySelector('.area').getBoundingClientRect(), r = b.getBoundingClientRect();
+      w.style.setProperty('--x', (r.left + r.width / 2 - a.left) + 'px'); w.style.setProperty('--y', (r.top + r.height / 2 - a.top) + 'px'); }
+    if (n === 4) { w.classList.remove('go-reg', 'go-si'); void w.offsetWidth; w.classList.add(reg ? 'go-reg' : 'go-si'); }
+    if (n === 6) { w.classList.remove('back'); if (!reg) { void w.offsetWidth; w.classList.add('back'); } }
+    w.classList.toggle('reg', reg);
+    w.querySelector('[data-crumb]').textContent = reg ? 'Create account' : 'Sign in';
+    w.querySelectorAll('.tabs button').forEach(b => b.classList.toggle('on', (b.dataset.go === 'reg') === reg));
+  };
+  document.querySelectorAll('.win').forEach(w => {
+    if (w.dataset.n === '3') { const s = () => w.style.setProperty('--hw', (w.querySelector('.area').offsetWidth / 2) + 'px'); s(); addEventListener('resize', s); }
+    w.addEventListener('click', e => { const g = e.target.closest('[data-go]'); if (g) setState(w, g.dataset.go === 'reg'); });
+  });
+  const play = w => { setState(w, true); setTimeout(() => setState(w, false), 1900); };
+  document.querySelectorAll('[data-play]').forEach(b => b.addEventListener('click', () => play(b.closest('.opt').querySelector('.win'))));
+  document.getElementById('all').addEventListener('click', () => document.querySelectorAll('.win').forEach((w, i) => setTimeout(() => play(w), i * 120)));
+
+  const setTheme = t => { document.documentElement.dataset.theme = t; document.querySelectorAll('[data-t]').forEach(x => x.setAttribute('aria-pressed', x.dataset.t === t)); try { localStorage.setItem('sx-sw-theme', t); } catch (e) {} };
+  let t = matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'; try { t = localStorage.getItem('sx-sw-theme') || t; } catch (e) {}
+  setTheme(t); document.querySelectorAll('[data-t]').forEach(x => x.addEventListener('click', () => setTheme(x.dataset.t)));
+})();
+</script>
+</body>
+</html>

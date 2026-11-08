@@ -1044,7 +1044,7 @@ h1{font:600 28px/36px var(--disp);letter-spacing:-.02em;margin:0}
 .psc h4{margin:5px 0 2px;font:600 18px/23px var(--disp);letter-spacing:-.01em}
 .psc p{margin:0 0 12px;font-size:12.5px;color:var(--text-2)}
 .psc .field{margin-bottom:0}
-.pmeta{display:flex;justify-content:space-between;align-items:center;margin:0 2px 12px;font:600 12px var(--ui);color:var(--text-3)}
+.pmeta{display:flex;justify-content:center;align-items:center;margin:0 2px 12px;font:600 12px var(--ui);color:var(--text-3)}
 .pdots{display:flex;gap:5px}
 .pdots i{width:18px;height:4px;border-radius:3px;background:color-mix(in srgb,var(--text) 15%,transparent);transition:all .3s}
 .pdots i.on{width:28px;background:var(--accent-2)}
@@ -1054,13 +1054,36 @@ h1{font:600 28px/36px var(--disp);letter-spacing:-.02em;margin:0}
 .pnav .primary{grid-column:2}
 .wizard [data-step="2"] .g-banner{margin-bottom:12px}
 
-/* ---- browser autofill: no light-blue box inside the field — saved values keep the glass field look ---- */
-input:-webkit-autofill,input:-webkit-autofill:hover,input:-webkit-autofill:focus,input:-webkit-autofill:active{
-  -webkit-text-fill-color:var(--text);caret-color:var(--text);
-  -webkit-box-shadow:0 0 0 1000px transparent inset;box-shadow:0 0 0 1000px transparent inset;
+
+/* =================== VIEW SWITCH: deck shuffle + morph from the button =================== */
+/* the form column no longer glides left/right; every view is its own card in a small deck */
+:root,[data-theme="dark"]{--deck-bg:linear-gradient(160deg,#15233d 0%,#0f1a2e 100%)}
+[data-theme="light"]{--deck-bg:linear-gradient(160deg,#fbfcfe 0%,#f1f4f9 100%)}
+@media (prefers-color-scheme: light){[data-theme="auto"]{--deck-bg:linear-gradient(160deg,#fbfcfe 0%,#f1f4f9 100%)}}
+.main.alt .form-card,.main.alt .visual{transform:none!important}
+.main.gliding .v-copy,.main.gliding .features{opacity:1}
+.form-card{overflow:visible!important;background:transparent!important;box-shadow:none!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+.form-card::before,.form-card::after{display:none!important}
+.slider{position:relative}
+.main[data-view] .slider>#signinPanel,.main[data-view] .slider>#registerPanel,.main[data-view] .slider>#forgotPanel{transition:none;border-radius:var(--r-card);background:var(--deck-bg);
+  box-shadow:0 26px 60px -28px rgba(0,0,0,.6),inset 0 1px 0 var(--specular),inset 0 0 0 1px var(--hair);
+  visibility:hidden;opacity:1;filter:none;transform:none;pointer-events:none;z-index:0;will-change:transform,clip-path}
+.main[data-view] .slider>#signinPanel.is-active,.main[data-view] .slider>#registerPanel.is-active,.main[data-view] .slider>#forgotPanel.is-active{visibility:visible;pointer-events:auto;z-index:3}
+.main[data-view] .slider>#signinPanel.is-leaving,.main[data-view] .slider>#registerPanel.is-leaving,.main[data-view] .slider>#forgotPanel.is-leaving{visibility:visible;z-index:3}
+.main[data-view] .slider>#signinPanel.is-behind,.main[data-view] .slider>#registerPanel.is-behind,.main[data-view] .slider>#forgotPanel.is-behind{visibility:hidden;z-index:1;transform:translateY(30px) scale(.94);filter:brightness(.72)}
+.main[data-view] .slider>#signinPanel.is-behind>*,.main[data-view] .slider>#registerPanel.is-behind>*,.main[data-view] .slider>#forgotPanel.is-behind>*{visibility:hidden}
+
+.confetti{position:absolute;inset:0;z-index:30;pointer-events:none;overflow:hidden}
+.confetti i{position:absolute;display:block}
+
+/* ---- browser autofill: Chrome/Edge paint a light-blue (or yellow) box on saved values.
+   Newer versions ignore the old "transition delay" trick, so the autofill background is clipped to the
+   text itself (invisible) and the text keeps our own colour — the field keeps its glass look. ---- */
+input:-webkit-autofill,input:-webkit-autofill:hover,input:-webkit-autofill:focus,input:-webkit-autofill:active,input:autofill{
+  -webkit-background-clip:text!important;background-clip:text!important;
+  -webkit-text-fill-color:var(--text)!important;caret-color:var(--text);
+  -webkit-box-shadow:none!important;box-shadow:none!important;
   transition:background-color 600000s 0s,color 600000s 0s;font:400 14px var(--ui)}
-input:autofill{background:transparent!important}
-.ctl input{background-clip:padding-box}
 </style>
 </head>
 <body>
@@ -1126,7 +1149,7 @@ input:autofill{background:transparent!important}
       <div class="panel" id="signinPanel">
         <div class="brand">
           <span class="sx-tile sx-small" aria-hidden="true"><img src="assests/schemax-anim/mark.png" alt=""></span>
-          <div><div class="brand-name"><span>Schemax</span> Schematics</div><div class="brand-tag">WORLD'S FASTEST SCHEMATICS</div></div>
+          <div><div class="brand-name"><span>Schemax</span> Schematics</div></div>
         </div>
         <h1>Welcome back</h1>
         <p class="intro">Sign in to open your schematics workspace.</p>
@@ -1215,7 +1238,7 @@ input:autofill{background:transparent!important}
           </div>
             </div>
           </div>
-          <div class="pmeta"><span id="pCount">Card 1 of 4</span><span class="pdots" id="pDots"><i></i><i></i><i></i><i></i></span></div>
+          <div class="pmeta"><span class="pdots" id="pDots"><i></i><i></i><i></i><i></i></span></div>
           <div class="step-err" id="reg2Err" role="none"><div><div class="se"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg><span></span></div></div></div>
           <div class="pnav"><button class="ghost" type="button" id="pBack">Back</button><button class="primary" type="button" id="pNext"><span class="spin" aria-hidden="true"></span><span class="btxt">Next</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></button>
           <button class="primary" type="button" id="regCreate" hidden><span class="spin" aria-hidden="true"></span><span class="btxt">Create account</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></button></div>
@@ -1674,15 +1697,47 @@ input:autofill{background:transparent!important}
   let view = 'signin', glideT;
   const firstFocus = v => v === 'register' ? (F.regEmail && $('registerPanel').querySelector('.wz-step.on').dataset.step === '2' ? $('regUser') : $('regEmail'))
     : v === 'forgot' ? $('fpId') : (user.value ? pw : user);
+  /* view switch = DECK SHUFFLE + MORPH FROM THE BUTTON
+     The current card swings aside and tucks behind the deck, while the next card opens as a circle
+     growing out of the exact button that was pressed (Register, Forgot password?, Back to Sign In…). */
+  let lastBtn = null, deckAnims = [];
+  document.addEventListener('pointerdown', e => { lastBtn = e.target.closest && e.target.closest('button'); }, true);
+  document.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') lastBtn = document.activeElement; }, true);
+  function deck(fromK, toK, instant) {
+    const from = PANELS[fromK], to = PANELS[toK];
+    deckAnims.forEach(a => a.cancel()); deckAnims = [];
+    Object.values(PANELS).forEach(p => p.classList.remove('is-active', 'is-behind', 'is-leaving'));
+    to.classList.add('is-active');
+    if (!from || from === to) return;
+    if (instant || reduce) { from.classList.add('is-behind'); return; }
+    from.classList.add('is-leaving');
+    // where the circle starts: centre of the pressed button (panels share one position, so its spot maps 1:1)
+    const pr = to.getBoundingClientRect(), k = pr.width / to.offsetWidth || 1, W = to.offsetWidth, H = to.offsetHeight;
+    let x = W / 2, y = H - 70;
+    if (lastBtn && from.contains(lastBtn)) { const r = lastBtn.getBoundingClientRect(); x = (r.left + r.width / 2 - pr.left) / k; y = (r.top + r.height / 2 - pr.top) / k; }
+    const RR = Math.hypot(Math.max(x, W - x), Math.max(y, H - y)) + 24, D = 900, EZ = 'cubic-bezier(.65,0,.2,1)';
+    const out = from.animate([
+      {transform: 'none', filter: 'none', zIndex: 3},
+      {transform: 'translateX(-64%) rotate(-7deg)', filter: 'brightness(.95)', zIndex: 3, offset: .5},
+      {transform: 'translateX(-64%) rotate(-7deg)', zIndex: 1, offset: .501},
+      {transform: 'scale(.92)', filter: 'brightness(.72)', opacity: 0, boxShadow: 'none', zIndex: 1}], {duration: D, easing: EZ});
+    const inn = to.animate([
+      {clipPath: `circle(0px at ${x}px ${y}px)`, transform: 'scale(.94)', zIndex: 2},
+      {clipPath: `circle(${RR * .4}px at ${x}px ${y}px)`, transform: 'scale(.97)', zIndex: 2, offset: .5},
+      {clipPath: `circle(${RR}px at ${x}px ${y}px)`, transform: 'none', zIndex: 4}], {duration: D, easing: EZ});
+    deckAnims = [out, inn];
+    out.finished.then(() => { from.classList.remove('is-leaving'); if (view === toK) from.classList.add('is-behind'); }, () => {});
+  }
   function showView(v, instant) {
     if (v === view && !instant) return;
+    const prev = view;
     view = v; ttHide();
     if (instant) { main.classList.add('snap'); requestAnimationFrame(() => requestAnimationFrame(() => main.classList.remove('snap'))); }
-    else { main.classList.add('gliding'); clearTimeout(glideT); glideT = setTimeout(() => main.classList.remove('gliding'), reduce ? 0 : 850); }
-    main.dataset.view = v; main.classList.toggle('alt', v !== 'signin');
+    main.dataset.view = v;
     Object.entries(PANELS).forEach(([k, p]) => { p.inert = k !== v; });
+    deck(prev, v, instant);
     crumb.textContent = CRUMB[v];
-    if (!instant) setTimeout(() => { if (view === v && !modal) firstFocus(v).focus({preventScroll: true}); }, reduce ? 0 : 750);
+    if (!instant) setTimeout(() => { if (view === v && !modal) firstFocus(v).focus({preventScroll: true}); }, reduce ? 0 : 820);
   }
   function goBack() {
     if (gPending && gPending.intent === 'signup') cancelGoogle();
@@ -2047,7 +2102,6 @@ input:autofill{background:transparent!important}
   const pLay = (focus = true) => {
     pCards.forEach((c, k) => { const d = k - pIdx;
       c.classList.toggle('gone', d < 0); c.classList.toggle('behind', d > 0); c.style.setProperty('--d', Math.max(0, d)); c.inert = d !== 0; });
-    $('pCount').textContent = `Card ${pIdx + 1} of 4`;
     [...$('pDots').children].forEach((d, k) => { d.className = k < pIdx ? 'done' : k === pIdx ? 'on' : ''; });
     $('pBack').style.visibility = pIdx ? 'visible' : 'hidden';
     $('pNext').hidden = pIdx === 3; $('regCreate').hidden = pIdx !== 3;
@@ -2085,10 +2139,34 @@ input:autofill{background:transparent!important}
     if (scn('reg') === 'usertaken') { stepErr('reg2Err', 'This username is already taken. Please choose another one.'); pGo(0); return; }
     if (gmode) { showView('signin'); googleFinish(name); return; } // Google sign-up signs in automatically ("already registered" counts as success)
     showView('signin'); F.username.reset(name); F.password.reset(''); gLogin.update();   // creating the account does not sign in
+    setTimeout(() => confetti(), reduce ? 0 : 900);
     setTimeout(() => card({heading: 'Account created', kind: 'ok', title: `Welcome, ${name}`, lead: 'You\'re all set', body: ['Please sign in to continue. A few things you\'ll use:'],
       tips: [['board', 'Boardview', 'Pin-accurate layouts for every board.'], ['search', '2.3M+ schematics', 'Search by model, part or net name.'], ['hd', 'HWID Reset', 'Move your licence to a new PC, 3 times a month.']],
       buttons: [{t: 'Sign in', k: 'primary'}], after: () => pw.focus({preventScroll: true})}), reduce ? 0 : 650);
   });
+
+  /* confetti burst over the "Account created" popup (brand colours, ~1.6 s, cleans itself up) */
+  function confetti() {
+    if (reduce) return;
+    const box = document.createElement('div'); box.className = 'confetti'; box.setAttribute('aria-hidden', 'true');
+    layer.appendChild(box);
+    const W = layer.offsetWidth, H = layer.offsetHeight, cx = W / 2, cy = H / 2 - 40;
+    const COLS = ['#12a39b', '#2dd4bf', '#5fe3d3', '#0e2140', '#ffffff', '#f2b33d', '#7fb1ff'];
+    const anims = [];
+    for (let i = 0; i < 90; i++) {
+      const p = document.createElement('i'), a = Math.random() * Math.PI * 2, v = 160 + Math.random() * 260;
+      const w = 6 + Math.random() * 6, h = Math.random() < .3 ? w : 4 + Math.random() * 10;
+      p.style.cssText = `left:${cx}px;top:${cy}px;width:${w}px;height:${h}px;background:${COLS[i % COLS.length]};border-radius:${Math.random() < .25 ? '50%' : '2px'}`;
+      box.appendChild(p);
+      const dx = Math.cos(a) * v, dy = Math.sin(a) * v * .75 - 120, rot = (Math.random() * 2 - 1) * 900;
+      anims.push(p.animate([
+        {transform: 'translate(-50%,-50%) scale(.4)', opacity: 1},
+        {transform: `translate(calc(-50% + ${dx * .7}px), calc(-50% + ${dy * .7}px)) rotate(${rot * .5}deg) scale(1)`, opacity: 1, offset: .35},
+        {transform: `translate(calc(-50% + ${dx}px), calc(-50% + ${dy + 260}px)) rotate(${rot}deg) scale(.9)`, opacity: 0}],
+        {duration: 1500 + Math.random() * 700, delay: Math.random() * 120, easing: 'cubic-bezier(.15,.7,.35,1)', fill: 'forwards'}));
+    }
+    Promise.all(anims.map(x => x.finished.catch(() => {}))).then(() => box.remove());
+  }
 
   function resetRegister() {
     cancel('reg'); gmode = false;
