@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Connection Check Concepts</title>
+<style>
+:root{
+  --ui:"Segoe UI Variable Text","Segoe UI Variable","Segoe UI",Inter,system-ui,sans-serif;
+  --disp:"Segoe UI Variable Display","Segoe UI Variable","Segoe UI",Inter,system-ui,sans-serif;
+  --mono:"Cascadia Mono",Consolas,ui-monospace,monospace;
+  --spring:cubic-bezier(.34,1.56,.64,1); --ease:cubic-bezier(.2,.8,.2,1); --out:cubic-bezier(.16,1,.3,1);
+}
+:root,[data-theme="dark"]{
+  --page:#06070a; --text:#f3f7ff; --text-2:#a8b7d4; --text-3:#6e7fa0; --hair:rgba(255,255,255,.09); --hair-2:rgba(255,255,255,.16);
+  --win:linear-gradient(160deg,#111b2f,#0a1120); --panel:#141f36; --panel-2:#192743; --field:#0a1324; --btn:rgba(255,255,255,.06); --btn-h:rgba(255,255,255,.11);
+  --accent:#16a69d; --accent-2:#2dd4bf; --accent-text:#5fe3d3; --focus:rgba(45,212,191,.26);
+  --ok:#34d399; --ok-bg:rgba(52,211,153,.12); --warn:#ffcf5c; --warn-bg:rgba(255,207,92,.13); --bad:#ff8a94; --bad-bg:rgba(255,80,96,.13);
+  --grad:linear-gradient(110deg,#0a6f6a 0%,#0d847d 52%,#10968e 100%); color-scheme:dark;
+}
+[data-theme="light"]{
+  --page:#e7eaf0; --text:#0e2140; --text-2:#46557a; --text-3:#7a87a5; --hair:rgba(20,40,90,.1); --hair-2:rgba(20,40,90,.18);
+  --win:linear-gradient(160deg,#fbfcfe,#f1f4f9); --panel:#ffffff; --panel-2:#f5f7fb; --field:#f1f4f8; --btn:rgba(14,33,64,.05); --btn-h:rgba(14,33,64,.09);
+  --accent:#0f8f88; --accent-2:#12a39b; --accent-text:#0b7570; --focus:rgba(18,163,155,.2);
+  --ok:#0f8a5f; --ok-bg:rgba(15,138,95,.1); --warn:#a86a00; --warn-bg:rgba(220,150,20,.12); --bad:#c4283a; --bad-bg:rgba(220,40,60,.09);
+  --grad:linear-gradient(110deg,#0a6f6a 0%,#0c7f79 52%,#0f938c 100%); color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--page);color:var(--text);font:400 14px/20px var(--ui);-webkit-font-smoothing:antialiased;transition:background .3s}
+button{font:inherit;color:inherit;cursor:pointer}
+[hidden]{display:none!important}
+.top{position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:14px 28px;background:color-mix(in srgb,var(--page) 85%,transparent);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);border-bottom:1px solid var(--hair)}
+.top h1{margin:0;font:600 18px var(--disp)}.top p{margin:2px 0 0;color:var(--text-3);font-size:12.5px}
+.sp{flex:1}
+.seg{display:flex;gap:2px;padding:3px;border-radius:9px;background:var(--btn);box-shadow:inset 0 0 0 1px var(--hair)}
+.seg button{border:0;background:transparent;padding:5px 11px;border-radius:6px;font-size:12px;color:var(--text-2)}
+.seg button[aria-pressed="true"]{background:var(--panel);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.seg.sc button[aria-pressed="true"]{background:var(--grad);color:#fff}
+.wrap{max-width:1500px;margin:0 auto;padding:20px 24px 70px;display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,720px),1fr));gap:22px}
+.opt{border-radius:16px;overflow:hidden;background:color-mix(in srgb,var(--panel) 45%,transparent);box-shadow:inset 0 0 0 1px var(--hair)}
+.meta{display:flex;gap:10px;align-items:flex-start;flex-wrap:wrap;padding:13px 15px}
+.num{flex:none;font:700 11.5px var(--ui);color:var(--accent-text);background:color-mix(in srgb,var(--accent-2) 12%,transparent);border-radius:6px;padding:3px 7px}
+.meta .txt{flex:1;min-width:260px}.meta b{display:block;font:600 14.5px var(--ui)}.meta .txt span{font-size:12.5px;line-height:17px;color:var(--text-3)}
+.stage{display:grid;place-items:center;padding:20px 12px 26px;background:radial-gradient(ellipse at 50% 0%,rgba(18,163,155,.09),transparent 70%)}
+
+/* ---------- shared dialog ---------- */
+.dlg{position:relative;width:680px;max-width:100%;height:560px;border-radius:14px;overflow:hidden;color:var(--text);background:var(--win);
+  box-shadow:0 40px 80px -36px rgba(0,0,0,.7),inset 0 0 0 1px var(--hair);display:flex;flex-direction:column}
+.dlg svg,.meta svg{fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.tb{flex:none;display:flex;align-items:center;gap:9px;height:40px;padding-left:14px;font:600 13px var(--ui);border-bottom:1px solid var(--hair)}
+.tb .tile{width:20px;height:20px;border-radius:6px;background:#fff url(assests/schemax-anim/mark.png) center/15px no-repeat;box-shadow:0 0 0 1px var(--hair)}
+.tb .x{margin-left:auto;width:46px;height:40px;border:0;background:transparent;display:grid;place-items:center;color:var(--text-2)}
+.tb .x:hover{background:#c42b1c;color:#fff}.tb .x svg{width:12px;height:12px}
+.bd{flex:1;min-height:0;display:flex;flex-direction:column;padding:16px 20px 0}
+.ft{flex:none;display:flex;gap:8px;padding:14px 20px 16px}
+.btn{height:38px;border:0;border-radius:9px;padding:0 16px;display:inline-flex;align-items:center;gap:7px;font:600 13px var(--ui);background:var(--btn);box-shadow:inset 0 0 0 1px var(--hair-2)}
+.btn svg{width:15px;height:15px}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.pr{margin-left:auto;color:#fff;background:var(--grad);box-shadow:0 12px 24px -12px rgba(13,132,125,.9)}
+.btn.wa svg{color:#25d366}
+.pill{display:inline-flex;align-items:center;height:20px;padding:0 8px;border-radius:99px;font:700 9.5px var(--ui);letter-spacing:.06em;flex:none}
+.pill.ok{color:var(--ok);background:var(--ok-bg)}.pill.warn{color:var(--warn);background:var(--warn-bg)}.pill.fail{color:var(--bad);background:var(--bad-bg)}.pill.info{color:var(--text-3);background:var(--btn)}
+.spin{display:inline-block;width:14px;height:14px;border-radius:50%;border:2px solid var(--hair-2);border-top-color:var(--accent-2);animation:spin .8s linear infinite;flex:none}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes up{from{opacity:0;transform:translateY(8px)}}
+@keyframes pop{from{opacity:0;transform:scale(.6)}}
+.advice{display:flex;gap:8px;margin-top:6px;padding:8px 10px;border-radius:8px;font-size:12px;line-height:17px;color:var(--text-2);background:var(--warn-bg)}
+.advice.fail{background:var(--bad-bg)}
+.advice svg{width:14px;height:14px;flex:none;margin-top:1px;color:var(--warn)}.advice.fail svg{color:var(--bad)}
+.toast{position:absolute;left:50%;bottom:74px;transform:translate(-50%,10px);padding:9px 14px;border-radius:10px;font:500 12.5px var(--ui);color:#fff;background:#0e2140;box-shadow:0 14px 30px -12px rgba(0,0,0,.6);opacity:0;transition:.25s var(--ease);pointer-events:none;white-space:nowrap;z-index:5}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+
+/* ===== C1 · Route map ===== */
+.c1 .hd b{display:block;font:650 18px var(--disp)}.c1 .hd span{font-size:12.5px;color:var(--text-2)}
+.c1 .route{display:flex;align-items:flex-start;margin:22px 4px 18px}
+.c1 .node{width:74px;flex:none;display:flex;flex-direction:column;align-items:center;text-align:center;gap:7px;font:600 11px/14px var(--ui);color:var(--text-3)}
+.c1 .node i{position:relative;width:46px;height:46px;border-radius:14px;display:grid;place-items:center;background:var(--panel);box-shadow:inset 0 0 0 1.5px var(--hair-2);color:var(--text-3);transition:.3s var(--ease)}
+.c1 .node i svg{width:20px;height:20px}
+.c1 .node.run i{color:var(--accent-text);box-shadow:inset 0 0 0 1.5px var(--accent-2),0 0 0 5px var(--focus)}
+.c1 .node.run i::after{content:"";position:absolute;inset:-6px;border-radius:18px;border:2px solid var(--accent-2);animation:ping 1.2s ease-out infinite}
+@keyframes ping{from{opacity:.7;transform:scale(.9)}to{opacity:0;transform:scale(1.25)}}
+.c1 .node.ok i{color:#fff;background:var(--accent);box-shadow:none}
+.c1 .node.warn i{color:#3a2600;background:#f2b33d;box-shadow:none}
+.c1 .node.fail i{color:#fff;background:#d23a4a;box-shadow:0 0 0 5px var(--bad-bg)}
+.c1 .node.ok,.c1 .node.warn,.c1 .node.fail,.c1 .node.run{color:var(--text)}
+.c1 .link{flex:1;height:3px;margin-top:22px;border-radius:2px;background:var(--hair-2);position:relative;overflow:hidden}
+.c1 .link::after{content:"";position:absolute;inset:0;background:var(--accent-2);transform:scaleX(0);transform-origin:left;transition:transform .45s var(--ease)}
+.c1 .link.on::after{transform:none}
+.c1 .link.cut{background:repeating-linear-gradient(90deg,var(--bad) 0 6px,transparent 6px 11px)}
+.c1 .link.cut::after{display:none}
+.c1 .find{flex:1;min-height:0;overflow:auto;border-radius:12px;padding:12px 14px;background:var(--panel);box-shadow:inset 0 0 0 1px var(--hair)}
+.c1 .find h4{margin:0 0 8px;font:700 10.5px var(--ui);letter-spacing:.12em;text-transform:uppercase;color:var(--text-3)}
+.c1 .fi{display:flex;gap:10px;align-items:flex-start;padding:7px 0;border-bottom:1px solid var(--hair);font-size:12.5px;animation:up .3s var(--out)}
+.c1 .fi:last-child{border:0}
+.c1 .fi>div{flex:1}
+
+/* ===== C2 · Health tiles ===== */
+.c2 .hd{display:flex;align-items:center;gap:12px}
+.c2 .hd b{display:block;font:650 17px var(--disp)}.c2 .hd span{font-size:12.5px;color:var(--text-2)}
+.c2 .hd .cnt{margin-left:auto;font:700 22px var(--disp)}.c2 .hd .cnt small{font-size:12px;color:var(--text-3);font-weight:500}
+.c2 .tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-top:16px}
+.c2 .tile2{position:relative;display:flex;flex-direction:column;gap:8px;padding:12px;border:0;border-radius:12px;text-align:left;background:var(--panel);box-shadow:inset 0 0 0 1px var(--hair);transition:.2s var(--ease)}
+.c2 .tile2:hover{transform:translateY(-2px)}
+.c2 .tile2 .ic{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;color:var(--accent-text);background:color-mix(in srgb,var(--accent-2) 12%,transparent)}
+.c2 .tile2 .ic svg{width:15px;height:15px}
+.c2 .tile2 b{font:600 12px/15px var(--ui)}
+.c2 .tile2 .st{position:absolute;right:10px;top:12px}
+.c2 .tile2.ok{box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--ok) 40%,transparent)}
+.c2 .tile2.warn{box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--warn) 60%,transparent);background:var(--warn-bg)}
+.c2 .tile2.fail{box-shadow:inset 0 0 0 1.5px var(--bad);background:var(--bad-bg)}
+.c2 .tile2.sel{outline:2px solid var(--accent-2);outline-offset:2px}
+.c2 .tile2.wait{opacity:.5}
+.c2 .det{flex:1;min-height:0;overflow:auto;margin-top:12px;padding:12px 14px;border-radius:12px;background:var(--panel);box-shadow:inset 0 0 0 1px var(--hair);font-size:12.5px}
+.c2 .det h4{margin:0 0 6px;font:650 14px var(--disp)}
+.c2 .det .it{display:flex;gap:9px;align-items:flex-start;padding:5px 0}
+.c2 .det .it>div{flex:1}
+
+/* ===== C3 · Score ring + live feed ===== */
+.c3 .bd{flex-direction:row;gap:20px}
+.c3 .left{width:200px;flex:none;display:flex;flex-direction:column;align-items:center;text-align:center;padding-top:8px}
+.c3 .ring{position:relative;width:170px;height:170px}
+.c3 .ring svg{position:absolute;inset:0;transform:rotate(-90deg)}
+.c3 .ring circle{fill:none;stroke-width:10}
+.c3 .ring .bg{stroke:var(--hair-2)}
+.c3 .ring .seg2{stroke-linecap:butt;transition:stroke .3s}
+.c3 .ring .mid{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.c3 .ring .mid b{font:700 38px/1 var(--disp)}.c3 .ring .mid small{margin-top:4px;font:600 11px var(--ui);color:var(--text-3);letter-spacing:.08em;text-transform:uppercase}
+.c3 .left .vd{margin-top:16px;font:650 15px/20px var(--disp)}
+.c3 .left .vs{margin-top:4px;font-size:12px;line-height:17px;color:var(--text-2)}
+.c3 .fpanel{flex:1;min-width:0;display:flex;flex-direction:column;border-radius:14px;background:var(--panel);box-shadow:inset 0 0 0 1px var(--hair);overflow:hidden;margin-bottom:2px}
+.c3 .fhead{flex:none;display:flex;align-items:center;gap:10px;padding:11px 14px 10px;border-bottom:1px solid var(--hair);position:relative}
+.c3 .live{display:inline-flex;align-items:center;gap:7px;font:700 10.5px var(--ui);letter-spacing:.12em;text-transform:uppercase;color:var(--text-2)}
+.c3 .live i{width:7px;height:7px;border-radius:50%;background:var(--accent-2);box-shadow:0 0 0 0 var(--focus);animation:pulse 1.2s infinite}
+.c3 .fpanel.fin .live i{animation:none;background:var(--text-3)}
+.c3 .fcount{margin-left:auto;font:600 11.5px var(--mono);color:var(--text-3)}
+.c3 .fbar{position:absolute;left:0;right:0;bottom:-1px;height:2px;background:transparent}
+.c3 .fbar i{display:block;height:100%;width:0;background:var(--accent-2);border-radius:0 2px 2px 0;transition:width .4s var(--ease)}
+.c3 .fpanel.fin .fbar i{opacity:0;transition:opacity .6s .4s}
+.c3 .ffilt{display:none;gap:2px;padding:2px;border-radius:8px;background:var(--btn);box-shadow:inset 0 0 0 1px var(--hair)}
+.c3 .fpanel.fin .ffilt{display:flex;animation:up .3s var(--out)}
+.c3 .fpanel.fin .fcount{display:none}
+.c3 .ffilt button{border:0;background:transparent;padding:3px 9px;border-radius:6px;font:600 11px var(--ui);color:var(--text-3)}
+.c3 .ffilt button[aria-pressed="true"]{background:var(--panel);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.15)}
+.c3 .ffilt button b{margin-left:4px;font-weight:700;color:var(--bad)}
+.c3 .feed{position:relative;flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;padding:12px 10px 14px 14px;scroll-behavior:smooth;overscroll-behavior:contain;
+  -webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 14px,#000 calc(100% - 22px),transparent 100%);mask-image:linear-gradient(to bottom,transparent 0,#000 14px,#000 calc(100% - 22px),transparent 100%);
+  scrollbar-width:thin;scrollbar-color:color-mix(in srgb,var(--accent-2) 45%,transparent) transparent}
+.c3 .feed::-webkit-scrollbar{width:10px}
+.c3 .feed::-webkit-scrollbar-track{background:transparent;margin:8px 0}
+.c3 .feed::-webkit-scrollbar-thumb{border-radius:99px;border:3px solid transparent;background:color-mix(in srgb,var(--accent-2) 35%,transparent) padding-box}
+.c3 .feed:hover::-webkit-scrollbar-thumb{background:color-mix(in srgb,var(--accent-2) 65%,transparent) padding-box}
+.c3 .feed::-webkit-scrollbar-thumb:active{background:var(--accent-2) padding-box}
+.c3 .feed .ev{padding:7px 10px 9px;margin:0 0 4px;border-radius:10px;transition:background .2s}
+.c3 .feed .ev::before{left:16px;top:24px;bottom:-6px}
+.c3 .feed .ev:hover{background:var(--panel-2)}
+.c3 .feed .ev.ok p{display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden;cursor:pointer}
+.c3 .feed .ev.ok.open p{-webkit-line-clamp:unset}
+.c3 .feed .ev.warn,.c3 .feed .ev.fail{background:color-mix(in srgb,var(--panel-2) 70%,transparent)}
+.c3 .feed .ev.flash{animation:flash 1.2s var(--ease)}
+@keyframes flash{30%{box-shadow:inset 0 0 0 2px var(--accent-2)}}
+.c3 .feed.only-bad .ev.ok{display:none}
+.c3 .feed.only-bad .ev::before{display:none}
+.c3 .ev{position:relative;display:flex;gap:12px;padding:0 0 14px;animation:up .35s var(--out)}
+.c3 .ev::before{content:"";position:absolute;left:6px;top:16px;bottom:0;width:2px;background:var(--hair-2)}
+.c3 .ev:last-child::before{display:none}
+.c3 .ev .dt{width:14px;height:14px;border-radius:50%;flex:none;margin-top:3px;background:var(--hair-2);position:relative;z-index:1}
+.c3 .ev.ok .dt{background:var(--ok)}.c3 .ev.warn .dt{background:#f2b33d}.c3 .ev.fail .dt{background:#d23a4a;box-shadow:0 0 0 4px var(--bad-bg)}.c3 .ev.run .dt{background:var(--accent-2);animation:pulse 1s infinite}
+@keyframes pulse{50%{box-shadow:0 0 0 6px var(--focus)}}
+.c3 .ev>div{flex:1;min-width:0}
+.c3 .ev b{font:600 13px var(--ui)}.c3 .ev em{float:right;font:500 11px var(--mono);font-style:normal;color:var(--text-3)}
+.c3 .ev p{margin:2px 0 0;font-size:12px;line-height:17px;color:var(--text-2)}
+
+/* ===== C4 · Terminal ===== */
+.c4{background:#060d18;color:#cfe7ff}
+.c4 .tb{border-color:rgba(95,227,211,.12);color:#cfe7ff}
+.c4 .con{flex:1;min-height:0;display:flex;flex-direction:column;border-radius:10px;background:#040912;box-shadow:inset 0 0 0 1px rgba(95,227,211,.14);overflow:hidden}
+.c4 .chead{display:flex;align-items:center;gap:10px;padding:8px 12px;border-bottom:1px solid rgba(95,227,211,.1);font:500 11.5px var(--mono);color:#6f86a8}
+.c4 .chead .bar{flex:1;font-family:var(--mono);color:#2dd4bf;letter-spacing:-.5px;white-space:nowrap;overflow:hidden}
+.c4 .out{flex:1;min-height:0;overflow:auto;padding:10px 12px;font:12px/19px var(--mono)}
+.c4 .out div{white-space:pre-wrap;animation:up .2s var(--out)}
+.c4 .h{color:#5fe3d3;font-weight:700;margin-top:6px}
+.c4 .k{display:inline-block;width:52px}.c4 .k.ok{color:#34d399}.c4 .k.warn{color:#ffcf5c}.c4 .k.fail{color:#ff8a94}.c4 .k.info{color:#6f86a8}
+.c4 .adv{color:#ffcf5c;padding-left:52px}.c4 .adv.fail{color:#ff8a94}
+.c4 .sum{padding:10px 12px;border-top:1px solid rgba(95,227,211,.12);font:600 12.5px var(--mono)}
+.c4 .sum.ok{color:#34d399}.c4 .sum.bad{color:#ff8a94}
+.c4 .btn{background:rgba(255,255,255,.06);box-shadow:inset 0 0 0 1px rgba(255,255,255,.14);color:#cfe7ff}
+.c4 .btn.pr{color:#fff;background:var(--grad);box-shadow:none}
+.c4 .caret{display:inline-block;width:8px;height:14px;background:#5fe3d3;vertical-align:-2px;animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+
+/* ===== C5 · Verdict first ===== */
+.c5 .scan{display:flex;flex-direction:column;align-items:center;text-align:center;padding-top:26px}
+.c5 .radar{position:relative;width:130px;height:130px;border-radius:50%;background:radial-gradient(circle,color-mix(in srgb,var(--accent-2) 14%,transparent),transparent 70%);display:grid;place-items:center}
+.c5 .radar::before,.c5 .radar::after{content:"";position:absolute;inset:0;border-radius:50%;border:2px solid var(--accent-2);animation:ping 1.8s ease-out infinite}
+.c5 .radar::after{animation-delay:.9s}
+.c5 .radar span{width:56px;height:56px;border-radius:16px;background:#fff url(assests/schemax-anim/mark.png) center/40px no-repeat;box-shadow:0 10px 24px -10px rgba(0,0,0,.4)}
+.c5 .scan b{margin-top:18px;font:650 18px var(--disp)}.c5 .scan .st{margin-top:4px;font-size:13px;color:var(--text-2)}
+.c5 .sdots{display:flex;gap:6px;margin-top:14px}
+.c5 .sdots i{width:8px;height:8px;border-radius:50%;background:var(--hair-2);transition:.3s}
+.c5 .sdots i.ok{background:var(--accent-2)}.c5 .sdots i.warn{background:#f2b33d}.c5 .sdots i.fail{background:#d23a4a}.c5 .sdots i.run{background:var(--accent-2);transform:scale(1.4)}
+.c5 .verdict{display:flex;gap:14px;align-items:center;padding:16px;border-radius:14px;animation:up .4s var(--out)}
+.c5 .verdict.ok{background:linear-gradient(120deg,var(--ok-bg),transparent);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--ok) 35%,transparent)}
+.c5 .verdict.bad{background:linear-gradient(120deg,var(--bad-bg),transparent);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--bad) 40%,transparent)}
+.c5 .verdict .bg2{width:50px;height:50px;border-radius:15px;flex:none;display:grid;place-items:center;color:#fff;animation:pop .45s var(--spring)}
+.c5 .verdict.ok .bg2{background:var(--ok)}.c5 .verdict.bad .bg2{background:#d23a4a}
+.c5 .verdict .bg2 svg{width:24px;height:24px;stroke-width:2.6}
+.c5 .verdict b{display:block;font:650 17px/22px var(--disp)}.c5 .verdict span{font-size:12.5px;line-height:17px;color:var(--text-2)}
+.c5 .fixes{display:grid;gap:8px;margin-top:12px}
+.c5 .fix{display:flex;gap:12px;align-items:flex-start;padding:11px 12px;border-radius:12px;background:var(--panel);box-shadow:inset 0 0 0 1px var(--hair);animation:up .4s var(--out) both}
+.c5 .fix .n{width:24px;height:24px;border-radius:7px;flex:none;display:grid;place-items:center;font:700 11.5px var(--ui);color:#fff;background:#d23a4a}
+.c5 .fix.warn .n{background:#f2b33d;color:#3a2600}
+.c5 .fix b{display:block;font:600 12.5px/17px var(--ui)}.c5 .fix span{display:block;margin-top:2px;font-size:12px;line-height:17px;color:var(--text-2)}
+.c5 .acc{margin-top:12px;border-radius:12px;background:var(--panel);box-shadow:inset 0 0 0 1px var(--hair);overflow:hidden}
+.c5 .acc>button{width:100%;display:flex;align-items:center;gap:8px;padding:10px 12px;border:0;background:transparent;font:600 12.5px var(--ui)}
+.c5 .acc>button svg{width:14px;height:14px;margin-left:auto;transition:transform .2s}
+.c5 .acc.open>button svg{transform:rotate(180deg)}
+.c5 .acc .rows{display:none;padding:0 12px 8px}.c5 .acc.open .rows{display:block}
+.c5 .acc .r{display:flex;align-items:center;gap:10px;padding:6px 0;border-top:1px solid var(--hair);font-size:12.5px}
+.c5 .acc .r span:first-child{flex:1}
+.c5 .scroll{flex:1;min-height:0;overflow:auto;padding-bottom:6px}
+</style>
+</head>
+<body>
+<header class="top">
+  <div><h1>Connection check — 5 new designs</h1><p>Real checks and wording from networkcheckdialog.cpp / networkdiagnostic.cpp. Each one runs live — switch "All good" / "Problem found", then Run again.</p></div>
+  <span class="sp"></span>
+  <div class="seg" role="group" aria-label="Theme"><button data-t="light">Light</button><button data-t="dark">Dark</button></div>
+</header>
+<main class="wrap" id="wrap"></main>
+
+<script>
+(() => {
+  const SV = p => `<svg viewBox="0 0 24 24">${p}</svg>`;
+  const IC = {
+    pc: '<rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/>', clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+    proxy: '<circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="6" r="2.5"/><circle cx="18" cy="18" r="2.5"/><path d="M8.3 11 15.7 7M8.3 13l7.4 4"/>',
+    dns: '<circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/>', link: '<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>',
+    lock: '<rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>', server: '<rect x="4" y="4" width="16" height="7" rx="1.5"/><rect x="4" y="13" width="16" height="7" rx="1.5"/><path d="M8 7.5h.01M8 16.5h.01"/>',
+    down: '<path d="M12 3v12M7 10l5 5 5-5M5 21h14"/>', tick: '<path d="m5 12 5 5 9-10"/>', x: '<path d="M7 7l10 10M17 7 7 17"/>', bang: '<path d="M12 7v6M12 17h.01"/>',
+    copy: '<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/>', wa: '<path d="M4 20l1.3-4A8 8 0 1 1 8 18.7z"/><path d="M9 9.5c.5 2 2 3.6 4 4.5l1.2-1.2 2 .8-.4 1.7c-3.5.4-7.5-3.4-7.3-7l1.7-.4.8 2z"/>',
+    redo: '<path d="M4.5 8.5A8 8 0 1 1 4 14"/><path d="M4 4v5h5"/>', chev: '<path d="m6 9 6 6 6-6"/>', alert: '<circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/>',
+  };
+  /* -------- the real sections + messages (networkdiagnostic.cpp) -------- */
+  const S = (h, ic, good, bad) => ({h, ic, good, bad: bad || good});
+  const P = (t, adv) => ({s: 'ok', t, adv}), W = (t, adv) => ({s: 'warn', t, adv}), F = (t, adv) => ({s: 'fail', t, adv}), I = t => ({s: 'info', t});
+  const SECTIONS = [
+    S('This PC', 'pc', [I('Details of this PC recorded for support.')]),
+    S('Clock', 'clock', [P('This PC\'s clock matches the server (within 2 seconds).')],
+      [W('This PC\'s clock is 7 minutes out from the server.', 'Set the date, time and time zone automatically, then restart the app.')]),
+    S('Proxy settings', 'proxy', [P('No proxy is configured for this connection.')]),
+    S('Finding the server', 'dns', [P('Found the sign-in and boards server.'), P('Found the activation server.'), P('Found the website and updates server.')]),
+    S('Opening the connection', 'link', [P('Connected to the sign-in and boards server.'), P('Connected to the activation server.'), P('Connected to the website and updates server.')]),
+    S('Security certificates', 'lock', [I('The app only accepts the server\'s own certificate authorities.'), P('The sign-in and boards server\'s certificate is genuine.'), P('The activation server\'s certificate is genuine.')],
+      [I('The app only accepts the server\'s own certificate authorities.'), F('Something on this PC or network is replacing the sign-in and boards server\'s certificate.', 'Turn off HTTPS scanning / SSL scanning / encrypted connection scanning in your antivirus, then run the check again.'), P('The activation server\'s certificate is genuine.')]),
+    S('Talking to the server', 'server', [P('The sign-in and boards server answered.'), P('The activation server answered.')],
+      [F('The app refused the sign-in and boards server\'s certificate.', 'This is the same problem as above: something is inspecting HTTPS on this network.'), P('The activation server answered.')]),
+    S('Downloading a file', 'down', [I('Files do not come from the sign-in server. They are fetched from a delivery network.'), P('Downloading works from this PC.')]),
+  ];
+  const worst = items => items.some(i => i.s === 'fail') ? 'fail' : items.some(i => i.s === 'warn') ? 'warn' : items.some(i => i.s === 'ok') ? 'ok' : 'info';
+  const LBL = {ok: 'OK', warn: 'CHECK', fail: 'FAIL', info: 'INFO'};
+  const pill = s => `<span class="pill ${s}">${LBL[s]}</span>`;
+  const TITLE = 'Checking this PC\'s connection to Schemax';
+  const RUNNING = 'The check is running. This takes a few seconds, longer if the connection is blocked.';
+  const verdict = res => { const n = res.flat().filter(i => i.s === 'fail' || i.s === 'warn').length;
+    return n ? {ok: false, head: `${n} problem${n > 1 ? 's' : ''} found.`, text: `${n} problem${n > 1 ? 's' : ''} found. Send this report to support - it names what to change.`}
+             : {ok: true, head: 'Nothing on this PC is blocking the app.', text: 'Nothing on this PC is blocking the app. If it still will not work, send this report to support.'}; };
+
+  const chrome = (body, cls) => `<div class="dlg ${cls}"><div class="tb"><span class="tile"></span>Connection check<button class="x" data-close aria-label="Close">${SV(IC.x)}</button></div>
+    <div class="bd">${body}</div><div class="ft"><button class="btn" data-copy disabled>${SV(IC.copy)}Copy report</button><button class="btn wa" data-wa disabled>${SV(IC.wa)}Send on WhatsApp</button><button class="btn pr" data-close>Close</button></div><div class="toast" data-toast></div></div>`;
+
+  /* -------- 5 designs: each = markup + start/step/done renderers -------- */
+  const NODES = [['This PC', 'pc', [0, 1, 2]], ['Name lookup', 'dns', [3]], ['Connection', 'link', [4]], ['Security', 'lock', [5]], ['Server', 'server', [6]], ['Downloads', 'down', [7]]];
+  const D = [
+    {k: 'c1', name: 'Route map', desc: 'Shows the actual path from this PC to Schemax as a route: each stop lights up as it passes; a problem turns its stop red and cuts the line exactly where the connection breaks. Findings list below.',
+      body: `<div class="hd"><b>${TITLE}</b><span data-st>Starting...</span></div>
+        <div class="route" data-route>${NODES.map(([n, ic], i) => `${i ? '<span class="link"></span>' : ''}<div class="node"><i>${SV(IC[ic])}</i>${n}</div>`).join('')}</div>
+        <div class="find" data-find><h4>Findings</h4><div class="fi"><span class="spin"></span><div>${RUNNING}</div></div></div>`,
+      start(w) { w.querySelectorAll('.node').forEach(n => n.className = 'node'); w.querySelectorAll('.link').forEach(l => l.className = 'link'); w.querySelector('[data-find]').innerHTML = `<h4>Findings</h4><div class="fi"><span class="spin"></span><div>${RUNNING}</div></div>`; },
+      step(w, i, res) {
+        const nodes = [...w.querySelectorAll('.node')], links = [...w.querySelectorAll('.link')], ni = NODES.findIndex(n => n[2].includes(i));
+        const done = NODES[ni][2].every(j => res[j]);
+        if (res[i] === null) { nodes[ni].className = 'node run'; return; }
+        if (done) { const s = worst(NODES[ni][2].flatMap(j => res[j])); nodes[ni].className = 'node ' + (s === 'info' ? 'ok' : s);
+          if (ni > 0) links[ni - 1].className = 'link ' + (s === 'fail' ? 'cut' : 'on'); }
+      },
+      done(w, res, v) {
+        const items = res.flatMap((r, i) => r.map(x => ({...x, h: SECTIONS[i].h}))).filter(x => x.s === 'fail' || x.s === 'warn');
+        w.querySelector('[data-find]').innerHTML = `<h4>Findings</h4>` + (items.length ? items.map(x => `<div class="fi">${pill(x.s)}<div><b>${x.h}</b> — ${x.t}${x.adv ? `<div class="advice ${x.s}">${SV(IC.alert)}<span>${x.adv}</span></div>` : ''}</div></div>`).join('')
+          : `<div class="fi">${pill('ok')}<div>All ${SECTIONS.length} checks passed — every stop from this PC to the Schemax servers is open.</div></div>`);
+      }},
+    {k: 'c2', name: 'Health tiles', desc: 'A dashboard: one tile per check (8 tiles) that fills in as it runs, with a big pass counter. Click any tile to see its details and the fix — the first problem opens by itself.',
+      body: `<div class="hd"><div><b>${TITLE}</b><span data-st>Starting...</span></div><div class="cnt" data-cnt>0<small>/8 passed</small></div></div>
+        <div class="tiles" data-tiles>${SECTIONS.map((s, i) => `<button class="tile2 wait" data-i="${i}"><span class="ic">${SV(IC[s.ic])}</span><b>${s.h}</b><span class="st"></span></button>`).join('')}</div>
+        <div class="det" data-det><h4>Details</h4>${RUNNING}</div>`,
+      start(w) { w.querySelectorAll('.tile2').forEach(t => { t.className = 'tile2 wait'; t.querySelector('.st').innerHTML = ''; }); w.querySelector('[data-cnt]').innerHTML = '0<small>/8 passed</small>'; w.querySelector('[data-det]').innerHTML = `<h4>Details</h4>${RUNNING}`; },
+      step(w, i, res) {
+        const t = w.querySelector(`.tile2[data-i="${i}"]`);
+        if (res[i] === null) { t.className = 'tile2'; t.querySelector('.st').innerHTML = '<span class="spin"></span>'; return; }
+        const s = worst(res[i]); t.className = 'tile2 ' + (s === 'info' ? 'ok' : s); t.querySelector('.st').innerHTML = pill(s === 'info' ? 'ok' : s);
+        w.querySelector('[data-cnt]').innerHTML = res.filter(r => r && !['fail', 'warn'].includes(worst(r))).length + '<small>/8 passed</small>';
+      },
+      done(w, res) { const k = res.findIndex(r => ['fail', 'warn'].includes(worst(r))); this.show(w, res, k < 0 ? 0 : k); },
+      show(w, res, i) { w.querySelectorAll('.tile2').forEach(t => t.classList.toggle('sel', +t.dataset.i === i));
+        w.querySelector('[data-det]').innerHTML = `<h4>${SECTIONS[i].h}</h4>` + res[i].map(x => `<div class="it">${pill(x.s)}<div>${x.t}${x.adv ? `<div class="advice ${x.s}">${SV(IC.alert)}<span>${x.adv}</span></div>` : ''}</div></div>`).join(''); }},
+    {k: 'c3', name: 'Score ring + live feed', desc: 'A segmented ring scores the PC (8 segments, one per check) with the verdict under it, while a live timeline on the right streams each check as it finishes, with timings.',
+      body: `<div class="left"><div class="ring"><svg viewBox="0 0 170 170"><circle class="bg" cx="85" cy="85" r="74"/>${SECTIONS.map((_, i) => `<circle class="seg2" data-g="${i}" cx="85" cy="85" r="74" pathLength="100" stroke-dasharray="11.5 88.5" stroke-dashoffset="${-i * 12.5}" stroke="transparent"/>`).join('')}</svg>
+          <div class="mid"><b data-score>0</b><small>of 8 OK</small></div></div><div class="vd" data-vd>Checking…</div><div class="vs" data-st>Starting...</div></div>
+        <div class="fpanel" data-fp><div class="fhead"><span class="live"><i></i><span data-fl>Live feed</span></span><span class="fcount" data-fc>0 / 8</span>
+          <div class="ffilt" data-ff><button data-fv="all" aria-pressed="true">All 8</button><button data-fv="bad" aria-pressed="false">Problems<b data-fn>0</b></button></div><div class="fbar"><i data-fb></i></div></div>
+          <div class="feed" data-feed></div></div>`,
+      start(w) { w.querySelectorAll('[data-g]').forEach(c => c.setAttribute('stroke', 'transparent')); w.querySelector('[data-score]').textContent = '0'; w.querySelector('[data-vd]').textContent = 'Checking…'; w.querySelector('[data-vd]').style.color = '';
+        const feed = w.querySelector('[data-feed]'); feed.innerHTML = ''; feed.classList.remove('only-bad'); this.t0 = performance.now();
+        const fp = w.querySelector('[data-fp]'); fp.classList.remove('fin'); w.querySelector('[data-fl]').textContent = 'Live feed'; w.querySelector('[data-fc]').textContent = '0 / 8'; w.querySelector('[data-fb]').style.width = '0';
+        w.querySelectorAll('[data-fv]').forEach(b => b.setAttribute('aria-pressed', b.dataset.fv === 'all'));
+        if (!fp._wired) { fp._wired = 1;
+          fp.addEventListener('click', e => {
+            const f = e.target.closest('[data-fv]');
+            if (f) { w.querySelectorAll('[data-fv]').forEach(b => b.setAttribute('aria-pressed', b === f)); feed.classList.toggle('only-bad', f.dataset.fv === 'bad'); feed.scrollTop = 0; return; }
+            const ev = e.target.closest('.ev.ok'); if (ev) ev.classList.toggle('open'); }); } },
+      step(w, i, res) {
+        const feed = w.querySelector('[data-feed]'); let ev = feed.querySelector(`[data-e="${i}"]`);
+        if (res[i] === null) { feed.insertAdjacentHTML('beforeend', `<div class="ev run" data-e="${i}"><span class="dt"></span><div><b>${SECTIONS[i].h}</b><em></em><p>Checking…</p></div></div>`); feed.scrollTop = 1e5; return; }
+        const s = worst(res[i]), sv = s === 'info' ? 'ok' : s;
+        ev.className = 'ev ' + sv; ev.querySelector('em').textContent = ((performance.now() - this.t0) / 1000).toFixed(1) + 's';
+        ev.querySelector('p').innerHTML = res[i].filter(x => x.s !== 'info').map(x => x.t).join(' ') || res[i][0].t;
+        const adv = res[i].find(x => x.adv); if (adv) ev.querySelector('div').insertAdjacentHTML('beforeend', `<div class="advice ${adv.s}">${SV(IC.alert)}<span>${adv.adv}</span></div>`);
+        w.querySelector(`[data-g="${i}"]`).setAttribute('stroke', {ok: 'var(--accent-2)', warn: '#f2b33d', fail: '#d23a4a'}[sv]);
+        w.querySelector('[data-score]').textContent = res.filter(r => r && !['fail', 'warn'].includes(worst(r))).length;
+        const n = res.filter(r => r).length; w.querySelector('[data-fc]').textContent = `${n} / 8`; w.querySelector('[data-fb]').style.width = n / 8 * 100 + '%';
+        feed.scrollTo({top: feed.scrollHeight, behavior: 'smooth'});
+      },
+      done(w, res, v) { w.querySelector('[data-vd]').textContent = v.head; w.querySelector('[data-vd]').style.color = v.ok ? 'var(--ok)' : 'var(--bad)';
+        const fp = w.querySelector('[data-fp]'), feed = w.querySelector('[data-feed]'), bad = feed.querySelectorAll('.ev.warn,.ev.fail');
+        fp.classList.add('fin'); w.querySelector('[data-fl]').textContent = `Finished · ${((performance.now() - this.t0) / 1000).toFixed(1)}s`; w.querySelector('[data-fn]').textContent = bad.length;
+        w.querySelector('[data-fv="bad"]').disabled = !bad.length;
+        if (bad.length) { feed.scrollTo({top: bad[0].offsetTop - 10, behavior: 'smooth'}); bad[0].classList.add('flash'); } else feed.scrollTo({top: 0, behavior: 'smooth'}); }},
+    {k: 'c4', name: 'Technician console', desc: 'For repair pros: the check runs like a command-line tool — an ASCII progress bar, section headers and [ OK ] / [ !! ] / [FAIL] lines with the fix printed right under each problem.',
+      body: `<div class="con"><div class="chead"><span>schemax netcheck</span><span class="bar" data-bar>[....................]</span><span data-pct>0%</span></div><div class="out" data-out></div><div class="sum" data-sum><span class="caret"></span></div></div>`,
+      start(w) { w.querySelector('[data-out]').innerHTML = `<div style="color:#6f86a8">$ schemax --network-check</div><div style="color:#6f86a8">${RUNNING}</div>`; w.querySelector('[data-sum]').className = 'sum'; w.querySelector('[data-sum]').innerHTML = '<span class="caret"></span>'; this.bar(w, 0); },
+      bar(w, f) { const n = Math.round(f * 20); w.querySelector('[data-bar]').textContent = '[' + '#'.repeat(n) + '.'.repeat(20 - n) + ']'; w.querySelector('[data-pct]').textContent = Math.round(f * 100) + '%'; },
+      step(w, i, res) {
+        const out = w.querySelector('[data-out]'), tag = {ok: '[ OK ]', warn: '[ !! ]', fail: '[FAIL]', info: '[ -- ]'};
+        if (res[i] === null) { out.insertAdjacentHTML('beforeend', `<div class="h">▸ ${SECTIONS[i].h}</div>`); out.scrollTop = 1e5; return; }
+        out.insertAdjacentHTML('beforeend', res[i].map(x => `<div><span class="k ${x.s}">${tag[x.s]}</span>${x.t}</div>${x.adv ? `<div class="adv ${x.s}">→ ${x.adv}</div>` : ''}`).join(''));
+        out.scrollTop = 1e5; this.bar(w, (i + 1) / SECTIONS.length);
+      },
+      done(w, res, v) { const s = w.querySelector('[data-sum]'); s.className = 'sum ' + (v.ok ? 'ok' : 'bad'); s.textContent = (v.ok ? '✓ ' : '✕ ') + v.text; }},
+    {k: 'c5', name: 'Verdict first', desc: 'The friendliest: a calm radar scan while it runs, then the answer first — a big green "all clear" or the problems as numbered fix cards. All 8 checks stay one click away.',
+      body: `<div class="scan" data-scan><div class="radar"><span></span></div><b>${TITLE}</b><div class="st" data-st>Starting...</div><div class="sdots" data-dots>${SECTIONS.map(() => '<i></i>').join('')}</div></div>
+        <div class="scroll" data-res hidden></div>`,
+      start(w) { w.querySelector('[data-scan]').hidden = false; w.querySelector('[data-res]').hidden = true; w.querySelectorAll('[data-dots] i').forEach(d => d.className = ''); },
+      step(w, i, res) { const d = w.querySelectorAll('[data-dots] i')[i]; if (res[i] === null) { d.className = 'run'; return; } const s = worst(res[i]); d.className = s === 'info' ? 'ok' : s; },
+      done(w, res, v) {
+        const items = res.flatMap((r, i) => r.map(x => ({...x, h: SECTIONS[i].h}))).filter(x => x.s === 'fail' || x.s === 'warn');
+        const r = w.querySelector('[data-res]');
+        r.innerHTML = `<div class="verdict ${v.ok ? 'ok' : 'bad'}"><span class="bg2">${SV(v.ok ? IC.tick : IC.x)}</span><div><b>${v.head}</b><span>${v.ok ? 'If it still will not work, send this report to support.' : 'Send this report to support - it names what to change.'}</span></div></div>`
+          + (items.length ? `<div class="fixes">${items.map((x, k) => `<div class="fix ${x.s}" style="animation-delay:${k * 90}ms"><span class="n">${k + 1}</span><div><b>${x.t}</b>${x.adv ? `<span>${x.adv}</span>` : ''}</div></div>`).join('')}</div>` : '')
+          + `<div class="acc"><button type="button">Show all ${SECTIONS.length} checks ${SV(IC.chev)}</button><div class="rows">${res.map((rr, i) => { const s = worst(rr); return `<div class="r"><span>${SECTIONS[i].h}</span>${pill(s === 'info' ? 'ok' : s)}</div>`; }).join('')}</div></div>`;
+        r.querySelector('.acc>button').onclick = e => e.currentTarget.parentElement.classList.toggle('open');
+        w.querySelector('[data-scan]').hidden = true; r.hidden = false;
+      }},
+  ];
+
+  document.getElementById('wrap').innerHTML = D.map((d, i) => `<article class="opt"><div class="meta"><span class="num">${String(i + 1).padStart(2, '0')}</span><div class="txt"><b>${d.name}</b><span>${d.desc}</span></div>
+    <div class="seg sc" role="group" aria-label="Scenario"><button data-sc="good" aria-pressed="true">All good</button><button data-sc="bad" aria-pressed="false">Problem found</button></div>
+    <button class="btn" data-run style="height:30px;font-size:12px">${SV(IC.redo)}Run again</button></div><div class="stage">${chrome(d.body, d.k)}</div></article>`).join('');
+
+  /* -------- engine: same timing for every design -------- */
+  document.querySelectorAll('.opt').forEach((opt, di) => {
+    const d = D[di], w = opt.querySelector('.dlg'); let sc = 'good', timers = [];
+    const toast = m => { const t = w.querySelector('[data-toast]'); t.textContent = m; t.classList.add('on'); clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove('on'), 2400); };
+    const run = () => {
+      timers.forEach(clearTimeout); timers = [];
+      const res = SECTIONS.map(() => undefined), st = w.querySelector('[data-st]');
+      w.querySelectorAll('[data-copy],[data-wa]').forEach(b => b.disabled = true);
+      if (st) st.textContent = 'Starting...';
+      d.start(w);
+      let t = 350;
+      SECTIONS.forEach((s, i) => {
+        timers.push(setTimeout(() => { res[i] = null; if (st) st.textContent = 'Checking: ' + s.h; d.step(w, i, res); }, t));
+        t += 380 + (i === 5 || i === 6 ? 380 : 0);
+        timers.push(setTimeout(() => { res[i] = sc === 'bad' ? s.bad : s.good; d.step(w, i, res); }, t));
+        t += 90;
+      });
+      timers.push(setTimeout(() => { const v = verdict(res); if (st) st.textContent = v.text; d.done(w, res, v); w.querySelectorAll('[data-copy],[data-wa]').forEach(b => b.disabled = false); w._res = res; }, t + 150));
+    };
+    opt.querySelectorAll('[data-sc]').forEach(b => b.addEventListener('click', () => { sc = b.dataset.sc; opt.querySelectorAll('[data-sc]').forEach(x => x.setAttribute('aria-pressed', x === b)); run(); }));
+    opt.querySelector('[data-run]').addEventListener('click', run);
+    w.querySelector('[data-copy]').addEventListener('click', () => toast('Report copied — paste it into your message to Schemax support.'));
+    w.querySelector('[data-wa]').addEventListener('click', () => toast('WhatsApp is opening — press Ctrl+V to paste the report.'));
+    w.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', () => toast('Closed (preview) — press Run again to restart.')));
+    if (d.show) w.addEventListener('click', e => { const t = e.target.closest('.tile2'); if (t && w._res && w._res[+t.dataset.i]) d.show(w, w._res, +t.dataset.i); });
+    run();
+  });
+
+  const setTheme = t => { document.documentElement.dataset.theme = t; document.querySelectorAll('[data-t]').forEach(x => x.setAttribute('aria-pressed', x.dataset.t === t)); try { localStorage.setItem('sx-nc-theme', t); } catch (e) {} };
+  let t = 'light'; try { t = localStorage.getItem('sx-nc-theme') || t; } catch (e) {}
+  setTheme(t); document.querySelectorAll('[data-t]').forEach(x => x.addEventListener('click', () => setTheme(x.dataset.t)));
+})();
+</script>
+</body>
+</html>

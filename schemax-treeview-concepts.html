@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>File Tree Concepts</title>
+<style>
+:root{
+  --ui:"Segoe UI Variable Text","Segoe UI Variable","Segoe UI",Inter,system-ui,sans-serif;
+  --disp:"Segoe UI Variable Display","Segoe UI Variable","Segoe UI",Inter,system-ui,sans-serif;
+  --mono:"Cascadia Mono",Consolas,ui-monospace,monospace;
+  --spring:cubic-bezier(.34,1.56,.64,1); --ease:cubic-bezier(.2,.8,.2,1); --out:cubic-bezier(.16,1,.3,1);
+}
+:root,[data-theme="dark"]{
+  --page:#06070a; --text:#f3f7ff; --text-2:#a8b7d4; --text-3:#7586a6; --hair:rgba(255,255,255,.08); --hair-2:rgba(255,255,255,.15);
+  --app:#0c1424; --side:#0f1a2e; --tree:#111d33; --panel:#152139; --panel-2:#1a2846; --field:#0a1324; --btn:rgba(255,255,255,.06);
+  --accent:#16a69d; --accent-2:#2dd4bf; --accent-text:#5fe3d3; --focus:rgba(45,212,191,.3);
+  --sel:rgba(45,212,191,.16); --sel-strong:rgba(45,212,191,.26); --hov:rgba(255,255,255,.05);
+  --line:#3a4a68; --line-2:#56688c; --box-bg:#111d33; --box-st:#6b7fa3; --box-ic:#c7d3ea;
+  --mark:rgba(255,207,92,.3); --grad:linear-gradient(110deg,#0a6f6a,#0d847d 52%,#10968e); --dot:#22c55e; color-scheme:dark;
+}
+[data-theme="light"]{
+  --page:#e7eaf0; --text:#0e2140; --text-2:#46557a; --text-3:#6b7896; --hair:rgba(20,40,90,.09); --hair-2:rgba(20,40,90,.17);
+  --app:#ffffff; --side:#f5f7fb; --tree:#ffffff; --panel:#ffffff; --panel-2:#f1f4f9; --field:#eef1f6; --btn:rgba(14,33,64,.05);
+  --accent:#0f8f88; --accent-2:#12a39b; --accent-text:#0b7570; --focus:rgba(18,163,155,.28);
+  --sel:rgba(18,163,155,.12); --sel-strong:rgba(18,163,155,.2); --hov:rgba(14,33,64,.045);
+  --line:#c9d1df; --line-2:#9aa7bd; --box-bg:#ffffff; --box-st:#8a97ae; --box-ic:#33425f;
+  --mark:rgba(255,196,0,.38); --grad:linear-gradient(110deg,#0a6f6a,#0c7f79 52%,#0f938c); --dot:#16a34a; color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--page);color:var(--text);font:400 13px/18px var(--ui);-webkit-font-smoothing:antialiased;transition:background .3s}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none;padding:0}
+mark{background:var(--mark);color:inherit;border-radius:3px;padding:0 1px;font-weight:600}
+.top{position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:14px 28px;background:color-mix(in srgb,var(--page) 85%,transparent);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);border-bottom:1px solid var(--hair)}
+.top h1{margin:0;font:600 18px var(--disp)}.top p{margin:2px 0 0;color:var(--text-3);font-size:12.5px;max-width:900px}
+.grow{flex:1}
+.seg{display:flex;gap:2px;padding:3px;border-radius:9px;background:var(--btn);box-shadow:inset 0 0 0 1px var(--hair)}
+.seg button{padding:5px 11px;border-radius:6px;font-size:12px;color:var(--text-2)}
+.seg button[aria-pressed="true"]{background:var(--panel);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.wrap{max-width:1560px;margin:0 auto;padding:20px 24px 70px;display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,740px),1fr));gap:22px}
+.opt{border-radius:16px;overflow:hidden;background:color-mix(in srgb,var(--panel) 45%,transparent);box-shadow:inset 0 0 0 1px var(--hair)}
+.meta{display:flex;gap:10px;align-items:flex-start;padding:13px 15px}
+.num{flex:none;font:700 11.5px var(--ui);color:var(--accent-text);background:color-mix(in srgb,var(--accent-2) 12%,transparent);border-radius:6px;padding:3px 7px}
+.meta b{display:block;font:600 14.5px var(--ui)}.meta span{font-size:12.5px;line-height:17px;color:var(--text-3)}
+.stage{display:grid;place-items:center;padding:18px 12px 24px;background:radial-gradient(ellipse at 50% 0%,rgba(18,163,155,.09),transparent 70%)}
+.keys{display:flex;flex-wrap:wrap;gap:6px 14px;padding:0 15px 14px;font-size:11.5px;color:var(--text-3)}
+.keys kbd{font:600 10px var(--mono);padding:1px 5px;border-radius:4px;box-shadow:inset 0 0 0 1px var(--hair-2);color:var(--text-2)}
+
+/* ---------- app frame ---------- */
+.app{width:720px;max-width:100%;height:620px;display:grid;grid-template-columns:370px 1fr;border-radius:14px;overflow:hidden;background:var(--app);box-shadow:0 40px 80px -36px rgba(0,0,0,.6),inset 0 0 0 1px var(--hair)}
+.side{display:flex;flex-direction:column;min-height:0;background:var(--side);border-right:1px solid var(--hair);padding:12px 10px 10px}
+.hd{flex:none;display:flex;align-items:center;gap:6px;padding:0 2px 10px}
+.hd .ttl{font:650 13.5px var(--disp)}
+.hd .sub{font-size:11.5px;color:var(--text-3)}
+.hd .tools{margin-left:auto;display:flex;gap:2px}
+.ib{width:28px;height:28px;border-radius:7px;display:grid;place-items:center;color:var(--text-2);transition:.15s}
+.ib:hover{background:var(--btn);color:var(--text)}
+.ib:focus-visible{outline:2px solid var(--accent-2);outline-offset:1px}
+.ib svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.ib.txt{width:auto;padding:0 7px;font:700 11.5px var(--ui)}
+.ib[aria-pressed="true"]{background:var(--sel-strong);color:var(--accent-text)}
+.srch{flex:none;position:relative;margin-bottom:8px}
+.srch svg{position:absolute;left:10px;top:9px;width:15px;height:15px;fill:none;stroke:var(--text-3);stroke-width:2;stroke-linecap:round}
+.srch input{width:100%;height:34px;border:0;outline:0;border-radius:9px;padding:0 34px 0 33px;font:13px var(--ui);color:var(--text);background:var(--tree);box-shadow:inset 0 0 0 1px var(--hair-2);transition:.15s}
+.srch input::placeholder{color:var(--text-3)}
+.srch input:focus{box-shadow:inset 0 0 0 1.5px var(--accent-2),0 0 0 4px var(--focus)}
+.srch .clr{position:absolute;right:6px;top:6px;width:22px;height:22px;border-radius:6px;display:none;place-items:center;color:var(--text-3)}
+.srch .clr.on{display:grid}.srch .clr:hover{background:var(--btn);color:var(--text)}
+.srch .clr svg{position:static;width:12px;height:12px;stroke:currentColor}
+.srch .hits{position:absolute;right:34px;top:9px;font:600 10.5px var(--mono);color:var(--text-3)}
+
+.tree{position:relative;flex:1;min-height:0;overflow:auto;outline:none;border-radius:11px;background:var(--tree);box-shadow:inset 0 0 0 1px var(--hair);padding:5px 4px;user-select:none;
+  scrollbar-width:thin;scrollbar-color:color-mix(in srgb,var(--text-3) 45%,transparent) transparent}
+.tree::-webkit-scrollbar{width:10px;height:10px}
+.tree::-webkit-scrollbar-thumb{border-radius:99px;border:3px solid transparent;background:color-mix(in srgb,var(--text-3) 35%,transparent) padding-box}
+.tree:hover::-webkit-scrollbar-thumb{background:color-mix(in srgb,var(--text-3) 60%,transparent) padding-box}
+.tree:focus-visible{box-shadow:inset 0 0 0 1px var(--hair),0 0 0 3px var(--focus)}
+.rows{width:100%}
+
+.row{position:relative;display:flex;align-items:stretch;height:var(--rh);cursor:default}
+.row .g{flex:none;display:block;overflow:visible}
+.row .g .ln{stroke:var(--line);fill:none;stroke-width:var(--lw);stroke-dasharray:var(--dash)}
+.row .g .ln.hot{stroke:var(--accent-2);stroke-width:2;stroke-dasharray:none}
+.row .g .bx{cursor:pointer}
+.row .g .bb{fill:var(--box-bg);stroke:var(--box-st);stroke-width:1}
+.row .g .bi{stroke:var(--box-ic);stroke-width:1.4;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.row .g .bx:hover .bb{stroke:var(--accent-2)}
+.row .g .bx.o .bb.fill{fill:var(--accent);stroke:var(--accent)}
+.row .g .bx.o .bi.fill{stroke:#fff}
+.item{flex:1;min-width:0;display:flex;align-items:center;gap:7px;padding:0 10px 0 5px;margin:1px 0;border-radius:7px;white-space:nowrap;font-size:var(--fs);transition:background .12s}
+.row:hover .item{background:var(--hov)}
+.row.sel .item{background:var(--sel);box-shadow:inset 3px 0 0 var(--accent-2)}
+.tree:focus .row.sel .item{background:var(--sel-strong)}
+.tree:focus-visible .row.act .item{outline:2px solid var(--accent-2);outline-offset:-2px}
+.ico{flex:none;width:var(--is);height:var(--is)}
+.name{min-width:0;overflow:hidden;text-overflow:ellipsis;color:var(--text)}
+.row.root .name{font-weight:600}
+.row.sel .name{font-weight:600}
+.dot{flex:none;width:7px;height:7px;border-radius:50%;background:var(--dot);box-shadow:0 0 0 3px color-mix(in srgb,var(--dot) 20%,transparent)}
+.cnt{flex:none;margin-left:auto;padding-left:8px;font:600 10.5px var(--mono);color:var(--text-3)}
+.typ{flex:none;margin-left:auto;padding-left:10px;font:600 10.5px var(--ui);color:var(--text-3)}
+.row.dim .name{color:var(--text-3)}
+@keyframes rin{from{opacity:0;transform:translateY(-3px)}}
+.row.in{animation:rin .22s var(--out) both;animation-delay:calc(var(--k) * 18ms)}
+.row .g .pad{fill:var(--line)}.row .g .pad.end{fill:var(--box-bg);stroke:var(--line);stroke-width:1.4}
+.row .g .tri{fill:var(--text-3);transition:transform .2s var(--spring)}.row .g .bx:hover .tri{fill:var(--accent-2)}
+.row .g .bx .hit{fill:transparent}.row .g .bx:hover .hit{fill:var(--btn)}
+.chip{flex:none;margin-left:auto;padding:1px 5px;border-radius:4px;font:700 9px/14px var(--mono);color:var(--kc);background:color-mix(in srgb,var(--kc) 13%,transparent)}
+.chip.k-pcb{--kc:#2563eb}.chip.k-pdf{--kc:#dc2626}.chip.k-hs{--kc:#16a34a}.chip.k-img{--kc:#8b5cf6}
+[data-theme="dark"] .chip.k-pcb{--kc:#7aa7ff}[data-theme="dark"] .chip.k-pdf{--kc:#ff8a8a}
+.v6 .badge{min-width:20px;height:20px;border-radius:6px;font-size:10px}
+.v7 .tree{padding:0}.v7 .row .item{margin:0;border-radius:0}.v7 .rows>.row:nth-child(even){background:color-mix(in srgb,var(--text-3) 7%,transparent)}
+.v7 .row.sel .item{box-shadow:inset 2px 0 0 var(--accent-2)}
+.v8 .tile{flex:none;width:24px;height:24px;border-radius:7px;display:grid;place-items:center;background:var(--panel-2);box-shadow:inset 0 0 0 1px var(--hair)}
+.v8 .row .item{margin:2px 0;border-radius:8px}
+.v8 .row.sel .item,.v8 .tree:focus .row.sel .item{background:var(--accent);box-shadow:0 6px 14px -8px rgba(13,132,125,.9)}
+.v8 .row.sel .name{color:#fff}.v8 .row.sel .tile{background:rgba(255,255,255,.92)}
+.v9 .row .g .ln.hot{stroke-width:2.4;filter:drop-shadow(0 0 3px var(--accent-2))}
+.v9 .row .g .bx .bb.fill{fill:var(--box-bg);stroke:var(--line-2)}.v9 .row .g .bx.o .bb.fill{fill:var(--accent);stroke:var(--accent)}
+.v9 .row .g .bi.fill{stroke:var(--box-ic)}.v9 .row .g .bx.o .bi.fill{stroke:#fff}
+.v10 .row .g .ln{transition:stroke .15s}.v10 .row .g .bi{stroke:var(--text-3)}.v10 .row .g .bx:hover .bi{stroke:var(--text)}
+.v10 .row.sel .item{box-shadow:none;background:var(--sel)}
+.empty{padding:28px 14px;text-align:center;color:var(--text-3);font-size:12.5px}
+.foot{flex:none;display:flex;align-items:center;gap:8px;padding:9px 4px 0;font-size:11.5px;color:var(--text-3);white-space:nowrap;overflow:hidden}
+.foot b{color:var(--text-2);font-weight:600;overflow:hidden;text-overflow:ellipsis}
+.crumb{flex:none;display:flex;align-items:center;gap:3px;flex-wrap:wrap;min-height:24px;padding:0 4px 8px;font-size:11.5px;color:var(--text-3)}
+.crumb button{padding:2px 6px;border-radius:5px}
+.crumb button:hover{background:var(--btn);color:var(--text)}
+.crumb button:last-child{color:var(--accent-text);font-weight:600}
+.crumb i{font-style:normal;opacity:.5}
+
+/* cards variant */
+.v4 .tree{background:transparent;box-shadow:none;padding:0 2px}
+.card{border-radius:12px;background:var(--tree);box-shadow:inset 0 0 0 1px var(--hair),0 1px 2px rgba(0,0,0,.04);margin-bottom:7px;overflow:hidden}
+.card.o{box-shadow:inset 0 0 0 1px var(--hair-2),0 12px 24px -20px rgba(0,0,0,.5)}
+.card>.row.root .item{margin:0;border-radius:0;padding:0 12px 0 6px}
+.card>.row.root{height:calc(var(--rh) + 10px)}
+.card .kids{padding:0 0 5px}
+.badge{display:inline-grid;place-items:center;min-width:22px;height:22px;padding:0 5px;border-radius:7px;font:700 10.5px var(--ui);color:#fff;background:var(--c);flex:none}
+
+/* viewer */
+.view{display:flex;flex-direction:column;min-width:0;background:var(--app)}
+.tabs{flex:none;display:flex;gap:2px;padding:8px 8px 0;border-bottom:1px solid var(--hair);min-height:41px}
+.tab{display:flex;align-items:center;gap:7px;max-width:100%;padding:7px 12px;border-radius:8px 8px 0 0;font-size:12px;background:var(--side);box-shadow:inset 0 0 0 1px var(--hair);border-bottom:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tab svg{width:14px;height:14px;flex:none}
+.vb{flex:1;display:grid;place-items:center;text-align:center;padding:24px;color:var(--text-3);font-size:12.5px}
+.vb .big{width:72px;height:90px;margin:0 auto 12px;animation:pop .4s var(--spring)}
+.vb h3{margin:0 0 4px;font:650 15px var(--disp);color:var(--text)}
+@keyframes pop{from{opacity:0;transform:scale(.85)}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="pdfBg" x1="0" y1="0" x2="0.5" y2="1"><stop offset="0%" stop-color="#EF4444"/><stop offset="100%" stop-color="#B91C1C"/></linearGradient>
+    <linearGradient id="pdfFold" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#FCA5A5"/><stop offset="100%" stop-color="#F87171"/></linearGradient>
+    <linearGradient id="pcbBg" x1="0" y1="0" x2="0.5" y2="1"><stop offset="0%" stop-color="#1E40AF"/><stop offset="100%" stop-color="#1E3A8A"/></linearGradient>
+    <linearGradient id="pcbFold" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#60A5FA"/><stop offset="100%" stop-color="#3B82F6"/></linearGradient>
+  </defs>
+  <!-- tree/pdf.svg -->
+  <symbol id="i-pdf" viewBox="0 0 64 80">
+    <path d="M4 4 L42 4 L60 20 L60 72 Q60 76 56 76 L8 76 Q4 76 4 72 Z" fill="url(#pdfBg)"/>
+    <path d="M42 4 L42 16 Q42 20 46 20 L60 20 Z" fill="url(#pdfFold)"/>
+    <path d="M42 4 L42 16 Q42 20 46 20 L60 20 Z" fill="white" opacity="0.12"/>
+    <g transform="translate(7, 21) scale(2.1)"><path fill="white" d="M23.63 15.3c-.71-.745-2.166-1.17-4.224-1.17-1.1 0-2.377.106-3.761.354a19.443 19.443 0 0 1-2.307-2.661c-.532-.71-.994-1.49-1.42-2.236.817-2.484 1.207-4.507 1.207-5.962 0-1.632-.603-3.336-2.342-3.336-.532 0-1.065.32-1.349.781-.78 1.384-.425 4.4.923 7.381a60.277 60.277 0 0 1-1.703 4.507c-.568 1.349-1.207 2.733-1.917 4.01C2.834 18.53.314 20.34.03 21.758c-.106.533.071 1.03.462 1.42.142.107.639.533 1.49.533 2.59 0 5.323-4.188 6.707-6.707 1.065-.355 2.13-.71 3.194-.994a34.963 34.963 0 0 1 3.407-.745c2.732 2.448 5.145 2.839 6.352 2.839 1.49 0 2.023-.604 2.2-1.1.32-.64.106-1.349-.213-1.704zm-1.42 1.03c-.107.532-.64.887-1.384.887-.213 0-.39-.036-.604-.071-1.348-.32-2.626-.994-3.903-2.059a17.717 17.717 0 0 1 2.98-.248c.746 0 1.385.035 1.81.142.497.106 1.278.426 1.1 1.348zm-7.524-1.668a38.01 38.01 0 0 0-2.945.674 39.68 39.68 0 0 0-2.52.745 40.05 40.05 0 0 0 1.207-2.555c.426-.994.78-2.023 1.136-2.981.354.603.745 1.207 1.135 1.739a50.127 50.127 0 0 0 1.987 2.378zM10.038 1.46a.768.768 0 0 1 .674-.425c.745 0 .887.851.887 1.526 0 1.135-.355 2.874-.958 4.861-1.03-2.768-1.1-5.074-.603-5.962zM6.134 17.997c-1.81 2.981-3.549 4.826-4.613 4.826a.872.872 0 0 1-.532-.177c-.213-.213-.32-.461-.249-.745.213-1.065 2.271-2.555 5.394-3.904Z"/></g>
+  </symbol>
+  <!-- tree/pcb.svg (board files: pcb xzz xzzpcb brd brd2 cad bvr w2r w2s w2re pro) -->
+  <symbol id="i-pcb" viewBox="0 0 64 80">
+    <path d="M4 4 L42 4 L60 20 L60 72 Q60 76 56 76 L8 76 Q4 76 4 72 Z" fill="url(#pcbBg)"/>
+    <path d="M42 4 L42 16 Q42 20 46 20 L60 20 Z" fill="url(#pcbFold)"/>
+    <path d="M42 4 L42 16 Q42 20 46 20 L60 20 Z" fill="white" opacity="0.15"/>
+    <rect x="20" y="30" width="24" height="24" rx="3" fill="white" stroke="white" stroke-width="1"/>
+    <rect x="26" y="36" width="12" height="12" rx="2" fill="#2563EB"/>
+    <rect x="9" y="36" width="11" height="5" rx="2" fill="white"/><rect x="9" y="43" width="11" height="5" rx="2" fill="white"/>
+    <rect x="44" y="36" width="11" height="5" rx="2" fill="white"/><rect x="44" y="43" width="11" height="5" rx="2" fill="white"/>
+    <rect x="25" y="21" width="5" height="9" rx="2" fill="white"/><rect x="34" y="21" width="5" height="9" rx="2" fill="white"/>
+    <rect x="25" y="54" width="5" height="9" rx="2" fill="white"/><rect x="34" y="54" width="5" height="9" rx="2" fill="white"/>
+  </symbol>
+  <!-- tree/hardware.svg (.w2re named "...HS...") -->
+  <symbol id="i-hw" viewBox="0 0 24 24">
+    <circle cx="12" cy="12" r="12" fill="#22C55E"/>
+    <text x="12" y="17" font-family="Arial,sans-serif" font-size="14" font-weight="bold" fill="white" text-anchor="middle">H</text>
+  </symbol>
+  <!-- painted folder (MainApplication folder icon, 24-unit box) -->
+  <symbol id="i-folder" viewBox="0 0 24 24">
+    <rect x="2.5" y="6.5" width="19" height="13.5" rx="2.4" fill="#D97706"/><rect x="2.5" y="4.3" width="8.4" height="3.6" rx="1.6" fill="#D97706"/>
+    <rect x="2.5" y="8.6" width="19" height="11.4" rx="2.4" fill="#F59E0B"/>
+  </symbol>
+  <symbol id="i-folder-open" viewBox="0 0 24 24">
+    <rect x="2.5" y="6.5" width="19" height="13.5" rx="2.4" fill="#D97706"/><rect x="2.5" y="4.3" width="8.4" height="3.6" rx="1.6" fill="#D97706"/>
+    <path d="M2.7 9.8 L21.3 9.8 L18.4 20 L5.6 20 Z" fill="#FBBF24"/>
+  </symbol>
+  <!-- beginner_folder_closed.svg -->
+  <symbol id="i-beg" viewBox="0 0 512 512">
+    <path fill="#16a34a" d="M64 448l384 0c35.3 0 64-28.7 64-64l0-240c0-35.3-28.7-64-64-64L298.7 80c-6.9 0-13.7-2.2-19.2-6.4L241.1 44.8C230 36.5 216.5 32 202.7 32L64 32C28.7 32 0 60.7 0 96L0 384c0 35.3 28.7 64 64 64z"/>
+    <path fill="#22c55e" d="M48 440l416 0c30 0 48-22 48-52l0-224c0-30-18-52-48-52L290 112c-6 0-12-2-17-5.6L237 78C227 70 215 66 202 66L48 66C22 66 8 86 8 112L8 388c0 30 18 52 40 52z"/>
+    <circle cx="230" cy="280" r="70" fill="#FDDCB5"/><ellipse cx="161" cy="278" rx="13" ry="17" fill="#FDDCB5"/><ellipse cx="299" cy="278" rx="13" ry="17" fill="#FDDCB5"/>
+    <path d="M190 218 Q210 185 230 200 Q250 185 270 218" fill="#8B6914"/>
+    <circle cx="198" cy="298" r="14" fill="#FF9999" opacity="0.35"/><circle cx="262" cy="298" r="14" fill="#FF9999" opacity="0.35"/>
+    <ellipse cx="210" cy="270" rx="12" ry="13" fill="#ffffff"/><circle cx="212" cy="272" r="8" fill="#3a2518"/><circle cx="214" cy="269" r="3.5" fill="#ffffff"/>
+    <ellipse cx="250" cy="270" rx="12" ry="13" fill="#ffffff"/><circle cx="248" cy="272" r="8" fill="#3a2518"/><circle cx="250" cy="269" r="3.5" fill="#ffffff"/>
+    <ellipse cx="230" cy="290" rx="4" ry="3" fill="#E8B090"/><path d="M214 308 Q230 324 246 308" stroke="#D45A6A" stroke-width="5" fill="none" stroke-linecap="round"/>
+    <circle cx="338" cy="316" r="16" fill="#FDDCB5"/><rect x="334" y="230" width="6" height="78" rx="3" fill="#C49A6C" transform="rotate(8,337,270)"/>
+    <circle cx="340" cy="218" r="32" fill="#FF5A92"/><circle cx="340" cy="218" r="22" fill="#FF78A8"/><circle cx="340" cy="218" r="13" fill="#FF5A92"/><circle cx="330" cy="208" r="8" fill="#ffffff" opacity="0.4"/>
+  </symbol>
+  <!-- beginner_folder_open.svg -->
+  <symbol id="i-beg-open" viewBox="0 0 576 512">
+    <path fill="#16a34a" d="M32.4 96c0-35.3 28.7-64 64-64l138.7 0c13.8 0 27.3 4.5 38.4 12.8l38.4 28.8c5.5 4.2 12.3 6.4 19.2 6.4l117.3 0c35.3 0 64 28.7 64 64l0 16-365.4 0c-41.3 0-78 26.4-91.1 65.6z"/>
+    <path fill="#22c55e" d="M477.8 448L99 448c-32.8 0-55.9-32.1-45.5-63.2l48-144C108 221.2 126.4 208 147 208l378.8 0c32.8 0 55.9 32.1 45.5 63.2l-48 144c-6.5 19.6-24.9 32.8-45.5 32.8z"/>
+    <circle cx="290" cy="340" r="58" fill="#FDDCB5"/><ellipse cx="233" cy="338" rx="11" ry="15" fill="#FDDCB5"/><ellipse cx="347" cy="338" rx="11" ry="15" fill="#FDDCB5"/>
+    <path d="M258 288 Q274 258 290 272 Q306 258 322 288" fill="#8B6914"/>
+    <circle cx="263" cy="355" r="12" fill="#FF9999" opacity="0.35"/><circle cx="317" cy="355" r="12" fill="#FF9999" opacity="0.35"/>
+    <path d="M270 330 Q280 318 290 330" stroke="#3a2518" stroke-width="5" fill="none" stroke-linecap="round"/><path d="M296 330 Q306 318 316 330" stroke="#3a2518" stroke-width="5" fill="none" stroke-linecap="round"/>
+    <ellipse cx="290" cy="348" rx="4" ry="3" fill="#E8B090"/><rect x="295" y="365" width="90" height="6" rx="3" fill="#C49A6C"/>
+    <ellipse cx="290" cy="370" rx="16" ry="12" fill="#6A1525"/><ellipse cx="290" cy="376" rx="10" ry="4" fill="#E06878"/>
+    <circle cx="295" cy="368" r="20" fill="#FF5A92"/><circle cx="295" cy="368" r="14" fill="#FF78A8"/><circle cx="295" cy="368" r="8" fill="#FF5A92"/><circle cx="288" cy="360" r="6" fill="#ffffff" opacity="0.4"/>
+    <path d="M274 360 Q284 352 295 354 Q306 352 316 360" fill="#D45A6A"/><path d="M274 378 Q284 386 295 384 Q306 386 316 378" fill="#D45A6A"/>
+  </symbol>
+  <!-- Qt standard file icon (SP_FileIcon) stand-in for other file types -->
+  <symbol id="i-file" viewBox="0 0 16 16">
+    <path d="M3.5 1.5h6l3 3v10h-9z" fill="#fff" stroke="#8A8F98"/><path d="M9.5 1.5v3h3" fill="#E5E7EB" stroke="#8A8F98"/>
+  </symbol>
+  <symbol id="i-img" viewBox="0 0 64 80">
+    <path d="M4 4 L42 4 L60 20 L60 72 Q60 76 56 76 L8 76 Q4 76 4 72 Z" fill="#8B5CF6"/><path d="M42 4 L42 16 Q42 20 46 20 L60 20 Z" fill="#C4B5FD"/>
+    <circle cx="24" cy="38" r="6" fill="#fff"/><path d="M12 64 L28 46 L38 56 L44 50 L54 64 Z" fill="#fff"/>
+  </symbol>
+</svg>
+<header class="top">
+  <div><h1>File tree — 10 structured designs</h1><p>Same structure as your tree: branch lines, +/− expand boxes, real folder / PCB / PDF / HS icons, same sort rules and green hardware-solution dot. Fully keyboard accessible. Double-click or Enter opens a file in the viewer.</p></div>
+  <span class="grow"></span>
+  <div class="seg" role="group" aria-label="Theme"><button data-t="light">Light</button><button data-t="dark">Dark</button></div>
+</header>
+<main class="wrap" id="wrap"></main>
+
+<script>
+(() => {
+  /* ---------------- library (same as treeview.html) ---------------- */
+  const F = (name, children) => ({name, children}), f = name => ({name});
+  const LIB = [
+    F('1. Apple', [
+      F('iPhone 12_12Pro', [F('Hardware Solutions', [f('iPhone 12 HS No Power.w2re'), f('iPhone 12 HS No Charging.w2re')]),
+        f('iPhone 12_12Pro.pcb'), f('iPhone 12_12Pro.bvr'), f('iPhone 12_12Pro Schematic.pdf'), f('readme.txt')]),
+      F('iPhone 13mini', [f('iPhone 13mini.pcb'), f('iPhone 13mini Schematic.pdf')]),
+      F('iPhone 13ProMAX', [F('Hardware Solutions', [f('iPhone 13ProMAX HS Backlight.w2re')]),
+        f('iPhone 13ProMAX.pcb'), f('iPhone 13ProMAX Schematic.pdf'), f('iPhone 13ProMAX Block Diagram.pdf')]),
+      F('iPhone 15_15 Plus', [f('iPhone 15_15 Plus.xzz'), f('iPhone 15_15 Plus Schematic.pdf')]),
+      F('iPhone 16pro_Max', [f('iPhone 16pro_Max.pcb'), f('iPhone 16pro_Max Schematic.pdf'), f('iPhone 16pro_Max Board Photo.jpg')]),
+    ]),
+    F('2. Samsung', [F('Galaxy A15 5G', [f('SM-A156B.brd'), f('SM-A156B Schematic.pdf')]), F('Galaxy S23 Ultra', [f('SM-S918B.pcb'), f('SM-S918B Schematic.pdf'), f('notes.txt')])]),
+    F('3. Xiaomi', [F('Redmi Note 13', [f('Redmi Note 13.cad'), f('Redmi Note 13 Schematic.pdf')])]),
+    F('4. OnePlus', [F('OnePlus 12', [f('OnePlus 12.bvr'), f('OnePlus 12 Schematic.pdf')])]),
+    F('5. Oppo', [F('Reno 11', [f('Reno 11.pcb')])]),
+    F('6. Vivo', [F('V30', [f('V30 Schematic.pdf')])]),
+    F('7. Realme', [F('Realme 12 Pro', [f('Realme 12 Pro.pcb'), f('Realme 12 Pro Schematic.pdf')])]),
+    F('8. Motorola', [F('Moto G84', [f('Moto G84.brd2')])]),
+    F('9. Google', [F('Pixel 8', [f('Pixel 8.pcb'), f('Pixel 8 Schematic.pdf')])]),
+    F('10. Honor', [F('Honor X9b', [f('Honor X9b.xzzpcb'), f('Honor X9b Schematic.pdf')])]),
+    F('[Beginner] Mobile Repair Basics', [f('Multimeter Basics.pdf'), f('Reading a Schematic.pdf'), f('Practice Board.pcb')]),
+    F('Free - Trail Users', [F('iPhone 7', [f('iPhone 7.pcb'), f('iPhone 7 Schematic.pdf')])]),
+  ];
+  const BOARD = ['pcb','xzz','xzzpcb','brd','brd2','cad','bvr','w2r','w2s','w2re','pro'];
+  const ext = n => { const i = n.lastIndexOf('.'); return i > 0 ? n.slice(i + 1).toLowerCase() : ''; };
+  const base = n => { const i = n.lastIndexOf('.'); return i > 0 ? n.slice(0, i) : n; };
+  const isFolder = n => !!n.children, isBeginner = n => isFolder(n) && /\[beginner\]/i.test(n.name);
+  const isHsFile = n => !isFolder(n) && ext(n.name) === 'w2re' && /HS/.test(base(n.name));
+  const visible = kids => kids.filter(k => isFolder(k) || ext(k.name) !== 'txt');
+  const hasDot = n => isHsFile(n) || (isFolder(n) && n.children.some(c => (isFolder(c) && /hardware solution/i.test(c.name)) || ext(c.name) === 'txt' || isHsFile(c)));
+  const prio = n => isBeginner(n) ? -1 : isFolder(n) ? 0 : ext(n.name) === 'pdf' ? 2 : 1;
+  const coll = new Intl.Collator(undefined, {numeric: true, sensitivity: 'base'});
+  const sortKids = kids => [...kids].sort((a, b) => prio(a) - prio(b) || coll.compare(a.name, b.name));
+  const sortRoot = kids => [...kids].sort((a, b) => { const ta = /^free - trail users$/i.test(a.name) ? -1 : 0, tb = /^free - trail users$/i.test(b.name) ? -1 : 0;
+    return ta - tb || prio(a) - prio(b) || coll.compare(a.name, b.name); });
+
+  let ID = 0; const ALL = new Map();
+  const wrapN = (n, parent, depth) => { const w = {n, parent, depth, id: ++ID}; ALL.set(w.id, w);
+    w.kids = isFolder(n) ? sortKids(visible(n.children)).map(c => wrapN(c, w, depth + 1)) : null; return w; };
+  const ROOTS = sortRoot(LIB).map(n => wrapN(n, null, 0));
+  const find = name => [...ALL.values()].find(w => w.n.name === name);
+  const label = w => w.kids ? w.n.name : base(w.n.name);
+  const rootOf = w => { while (w.parent) w = w.parent; return w; };
+  const sibs = w => w.parent ? w.parent.kids : ROOTS;
+  const iconOf = (w, open) => { const n = w.n; if (w.kids) return isBeginner(n) ? (open ? 'i-beg-open' : 'i-beg') : (open ? 'i-folder-open' : 'i-folder');
+    if (isHsFile(n)) return 'i-hw'; const e = ext(n.name); return e === 'pdf' ? 'i-pdf' : BOARD.includes(e) ? 'i-pcb' : /^(jpe?g|png)$/.test(e) ? 'i-img' : 'i-file'; };
+  const typeOf = w => { const e = ext(w.n.name); return isHsFile(w.n) ? 'Hardware fix' : e === 'pdf' ? 'Schematic' : BOARD.includes(e) ? 'Board · ' + e.toUpperCase() : /^(jpe?g|png)$/.test(e) ? 'Photo' : 'File'; };
+  const BRAND = {Apple:'#8b95a7', Samsung:'#2f6fe4', Xiaomi:'#ff6a00', OnePlus:'#e8323c', Oppo:'#1a9f68', Vivo:'#4a5cf0', Realme:'#d9a400', Motorola:'#6a4fd8', Google:'#2f86f0', Honor:'#0aa2c0'};
+  const rootNum = w => { const m = w.n.name.match(/^(\d+)\./); return m ? m[1] : isBeginner(w.n) ? 'B' : 'F'; };
+  const rootColor = w => BRAND[w.n.name.replace(/^\d+\.\s*/, '')] || (isBeginner(w.n) ? '#16a34a' : '#12a39b');
+  const esc = s => s.replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));
+  const hl = (t, q) => { q = (q || '').trim(); const i = q ? t.toLowerCase().indexOf(q.toLowerCase()) : -1;
+    return i < 0 ? esc(t) : esc(t.slice(0, i)) + '<mark>' + esc(t.slice(i, i + q.length)) + '</mark>' + esc(t.slice(i + q.length)); };
+  const countFiles = w => w.kids ? w.kids.reduce((a, k) => a + (k.kids ? countFiles(k) : 1), 0) : 0;
+  const TOTAL = ROOTS.reduce((a, r) => a + countFiles(r), 0);
+  const SV = p => `<svg viewBox="0 0 24 24">${p}</svg>`;
+  const IC = {search: '<svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>', x: SV('<path d="M6 6l12 12M18 6 6 18"/>'),
+    exp: SV('<path d="M7 9l5-5 5 5M7 15l5 5 5-5"/>'), col: SV('<path d="M7 4l5 5 5-5M7 20l5-5 5 5"/>'), aa: 'A', con: SV('<circle cx="12" cy="12" r="9"/><path d="M12 3v18" /><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/>')};
+
+  /* ---------------- 5 variants: same structure, different finish ---------------- */
+  const V = [
+    {k: 'v1', name: 'Refined classic', box: 'sq', curve: 0, rh: 26, cw: 20, fs: 13, is: 16, lw: 1, dash: 'none', cnt: true,
+      desc: 'Your exact tree, done properly: straight branch lines, small square +/− boxes and the real app icons — but softer line colour, rounded selection with a teal edge, file counts on folders, and a status line. The safest upgrade.'},
+    {k: 'v2', name: 'Rounded branches', box: 'circle', curve: 7, rh: 28, cw: 22, fs: 13, is: 17, lw: 1.5, dash: 'none', typ: true,
+      desc: 'The same structure with smooth curved corners on the last branch and round toggles that fill teal when open. File type written on the right (Board · PCB / Schematic / Hardware fix) so you never guess what a file is.'},
+    {k: 'v3', name: 'Path highlight', box: 'chev', curve: 0, rh: 26, cw: 20, fs: 13, is: 16, lw: 1, dash: '2 3', hot: true, crumb: true,
+      desc: 'Light dotted branch lines, and the line from the brand down to the selected file lights up teal — you always see exactly where you are. A breadcrumb on top shows the full path and each part is clickable.'},
+    {k: 'v4', name: 'Brand cards', box: 'sq', curve: 6, rh: 27, cw: 20, fs: 13, is: 16, lw: 1, dash: 'none', cards: true, cnt: true,
+      desc: 'Each brand sits in its own card with a coloured number badge, and inside it is the normal branch-line tree. Much easier to scan a long library; open cards get a soft shadow.'},
+    {k: 'v5', name: 'Comfort (accessible)', box: 'big', curve: 0, rh: 34, cw: 24, fs: 14.5, is: 19, lw: 1.5, dash: 'none', typ: true, comfort: true,
+      desc: 'Built for readability: big rows and text, strong lines, large +/− boxes that are easy to hit, file type labels, A− / A+ text size and a high-contrast switch right in the panel header.'},
+    {k: 'v6', name: 'Brand-colour lines', box: 'circle', curve: 8, rh: 28, cw: 22, fs: 13, is: 17, lw: 1.6, dash: 'none', brandLines: true, badge: true, cnt: true,
+      desc: 'Every brand draws its branches in its own colour — Samsung blue, Xiaomi orange, OnePlus red — with matching round toggles and a numbered colour badge on the brand row. You can tell which brand you are in from any depth.'},
+    {k: 'v7', name: 'Pro list (zebra + format chips)', box: 'sq', curve: 0, rh: 24, cw: 18, fs: 12.5, is: 15, lw: 1, dash: 'none', zebra: true, chips: true, cnt: true,
+      desc: 'Dense and precise like a pro tool: soft zebra striping keeps long rows readable, files show a small format chip (PCB · BVR · XZZ · PDF · HS) on the right, and folders show their file count. Fits the most rows on screen.'},
+    {k: 'v8', name: 'Finder style', box: 'tri', curve: 0, rh: 30, cw: 20, fs: 13, is: 15, lw: 1, dash: 'none', tile: true,
+      desc: 'Desktop-app feel: solid triangle arrows that rotate open, icons sitting on soft rounded tiles, and a solid teal selection bar with white text — the clearest "this is selected" of all ten.'},
+    {k: 'v9', name: 'Circuit traces', box: 'diamond', curve: 0, chamfer: true, rh: 27, cw: 21, fs: 13, is: 16, lw: 1.6, dash: 'none', pads: true, hot: true, chips: true,
+      desc: 'Made for a schematics app: branches drawn like PCB traces with 45° corners, solder-pad dots at every junction and at each file, diamond toggles, and the trace to the selected file glows teal.'},
+    {k: 'v10', name: 'Focus guides', box: 'bare', curve: 0, rh: 28, cw: 20, fs: 13, is: 16, lw: 1, dash: 'none', vonly: true, hoverFocus: true, typ: true,
+      desc: 'Modern and calm: only vertical guide lines and bare chevrons (no boxes). Hover any row and the guide of its folder lights up so you see exactly which group it belongs to; everything else stays quiet.'},
+  ];
+
+  /* gutter: one SVG per row, drawn like the app's ClassicTreeStyle */
+  function gutter(cfg, R, P) {
+    const {w, last, flags, open} = R, W = cfg.cw, H = cfg.rh, cy = H / 2, sh = cfg.cards ? 1 : 0, d = w.depth - sh;
+    const cx = j => j * W + Math.floor(W / 2) + .5, Y = Math.round(cy) + .5;
+    const onPath = P.indexOf(w.id) >= 0;
+    const pIdxAt = (anc) => { const k = P.indexOf(anc.id); return k >= 0 && P[k + 1] ? sibs(ALL.get(P[k + 1])).indexOf(ALL.get(P[k + 1])) : -1; };
+    let s = '';
+    const ln = (dd, hot, own) => s += `<path class="ln a${own}${cfg.hot && hot ? ' hot' : ''}" d="${dd}"/>`;
+    const pad = (x, y, own) => { if (cfg.pads) s += `<circle class="pad a${own}" cx="${x}" cy="${y}" r="2.2"/>`; };
+    // ancestor pass-through lines
+    for (let j = 0; j < d - 1; j++) if (!flags[j + 1 + sh]) {
+      let x = w; while (x.depth > j + 1 + sh) x = x.parent; const A = x.parent, pidx = pIdxAt(A);
+      ln(`M${cx(j)} 0V${H}`, pidx >= 0 && sibs(x).indexOf(x) < pidx, A.id); }
+    // own branch
+    if (d >= 1) { const x0 = cx(d - 1), x1 = d * W, idx = sibs(w).indexOf(w), pidx = pIdxAt(w.parent), o = w.parent.id;
+      if (cfg.vonly) ln(`M${x0} 0V${H}`, pidx >= 0 && idx <= pidx, o);
+      else if (last) { const r = cfg.curve;
+        ln(cfg.chamfer ? `M${x0} 0V${Y - 6}L${x0 + 6} ${Y}H${x1}` : r ? `M${x0} 0V${Y - r}Q${x0} ${Y} ${x0 + r} ${Y}H${x1}` : `M${x0} 0V${Y}H${x1}`, onPath, o); }
+      else { ln(`M${x0} 0V${Y}`, pidx >= 0 && idx <= pidx, o); ln(`M${x0} ${Y}V${H}`, pidx >= 0 && idx < pidx, o); ln(`M${x0} ${Y}H${x1}`, onPath, o); pad(x0, Y, o); } }
+    // toggle cell
+    const bx = cx(d), bs = {big: 8, circle: 7, chev: 7, diamond: 6, tri: 4, bare: 5}[cfg.box] || 5;
+    if (w.kids) {
+      if (d >= 1 && !cfg.vonly) ln(`M${d * W} ${Y}H${bx - bs}`, onPath, w.parent.id);
+      if (open && w.kids.length && !cfg.vonly) ln(`M${bx} ${Y + bs}V${H}`, onPath && P[P.indexOf(w.id) + 1], w.id);
+      const o = open ? ' o' : '', minus = `M${bx - 2.5} ${Y}H${bx + 2.5}`, plus = `M${bx} ${Y - 2.5}V${Y + 2.5}`;
+      if (cfg.box === 'sq') s += `<g class="bx${o}" data-tog><rect class="bb" x="${bx - 4.5}" y="${Y - 4.5}" width="9" height="9" rx="2"/><path class="bi" d="${minus}${open ? '' : plus}"/></g>`;
+      if (cfg.box === 'circle') s += `<g class="bx${o}" data-tog><circle class="bb fill" cx="${bx}" cy="${Y}" r="6.5"/><path class="bi fill" d="${minus}${open ? '' : plus}"/></g>`;
+      if (cfg.box === 'chev') s += `<g class="bx${o}" data-tog><rect class="bb" x="${bx - 6.5}" y="${Y - 6.5}" width="13" height="13" rx="4"/><path class="bi" d="${open ? `M${bx - 2.5} ${Y - 1.2}l2.5 2.5 2.5-2.5` : `M${bx - 1.2} ${Y - 2.5}l2.5 2.5-2.5 2.5`}"/></g>`;
+      if (cfg.box === 'big') { const m = `M${bx - 3.5} ${Y}H${bx + 3.5}`, p = `M${bx} ${Y - 3.5}V${Y + 3.5}`;
+        s += `<g class="bx${o}" data-tog><rect class="bb" x="${bx - 7.5}" y="${Y - 7.5}" width="15" height="15" rx="4" style="stroke-width:1.5"/><path class="bi" style="stroke-width:1.8" d="${m}${open ? '' : p}"/></g>`; }
+      if (cfg.box === 'diamond') s += `<g class="bx${o}" data-tog><rect class="bb fill" x="${bx - 4.6}" y="${Y - 4.6}" width="9.2" height="9.2" rx="1.5" transform="rotate(45 ${bx} ${Y})"/><path class="bi fill" d="M${bx - 2} ${Y}H${bx + 2}${open ? '' : `M${bx} ${Y - 2}V${Y + 2}`}"/></g>`;
+      if (cfg.box === 'tri') s += `<g class="bx${o}" data-tog><rect x="${bx - 8}" y="${Y - 8}" width="16" height="16" fill="transparent"/><path class="tri" d="M${bx - 2.5} ${Y - 4}L${bx + 3} ${Y}L${bx - 2.5} ${Y + 4}Z" style="transform:rotate(${open ? 90 : 0}deg);transform-origin:${bx}px ${Y}px"/></g>`;
+      if (cfg.box === 'bare') s += `<g class="bx${o}" data-tog><rect x="${bx - 8}" y="${Y - 8}" width="16" height="16" rx="4" class="hit"/><path class="bi" style="stroke-width:1.8" d="${open ? `M${bx - 3.5} ${Y - 1.5}l3.5 3.5 3.5-3.5` : `M${bx - 1.5} ${Y - 3.5}l3.5 3.5-3.5 3.5`}"/></g>`;
+    } else if (d >= 1 && !cfg.vonly) { ln(`M${d * W} ${Y}H${d * W + W - 3}`, onPath, w.parent.id); if (cfg.pads) s += `<circle class="pad end a${w.parent.id}" cx="${d * W + W - 3}" cy="${Y}" r="2.6"/>`; }
+    const lc = cfg.brandLines ? ` style="--line:color-mix(in srgb,${rootColor(rootOf(w))} 55%,transparent);--accent:${rootColor(rootOf(w))};--box-st:${rootColor(rootOf(w))}"` : '';
+    return `<svg class="g" width="${(d + 1) * W}" height="${H}"${lc}>${s}</svg>`;
+  }
+
+  function scope(st) {
+    const q = st.q.trim().toLowerCase(); if (!q) return null;
+    const show = new Set(), open = new Set(); let hits = 0;
+    ALL.forEach(w => { if (label(w).toLowerCase().includes(q)) { hits++; show.add(w.id); if (w.kids) w.kids.forEach(k => show.add(k.id));
+      for (let p = w.parent; p; p = p.parent) { show.add(p.id); open.add(p.id); } } });
+    return {show, open, hits};
+  }
+  function rows(st, sc) {
+    const out = [];
+    const walk = (list, flags) => { if (sc) list = list.filter(w => sc.show.has(w.id));
+      list.forEach((w, i) => { const last = i === list.length - 1, open = !!w.kids && (sc ? sc.open.has(w.id) || st.open.has(w.id) : st.open.has(w.id));
+        out.push({w, last, flags, open}); if (open) walk(w.kids, [...flags, last]); }); };
+    walk(ROOTS, []); return out;
+  }
+
+  function rowHtml(cfg, st, R, P, k) {
+    const {w, open} = R, sel = st.sel === w.id, root = w.depth === 0;
+    const anim = st.anim && w.parent && w.parent.id === st.anim ? ` in" style="--k:${k}` : '';
+    let right = '';
+    if (hasDot(w.n)) right += `<span class="dot" title="Hardware solution available"></span>`;
+    if (w.kids && cfg.cnt) right += `<span class="cnt">${countFiles(w)}</span>`;
+    if (!w.kids && cfg.typ) right += `<span class="typ">${typeOf(w)}</span>`;
+    if (!w.kids && cfg.chips) { const e = ext(w.n.name), k = isHsFile(w.n) ? 'hs' : e === 'pdf' ? 'pdf' : BOARD.includes(e) ? 'pcb' : 'img'; right += `<span class="chip k-${k}">${k === 'hs' ? 'HS' : e.toUpperCase()}</span>`; }
+    const ico = `<svg class="ico"><use href="#${iconOf(w, open)}"/></svg>`;
+    const lead = cfg.badge && root ? `<span class="badge" style="--c:${rootColor(w)}">${rootNum(w)}</span>${ico}` : cfg.tile ? `<span class="tile">${ico}</span>` : cfg.cards && root ? `<span class="badge" style="--c:${rootColor(w)}">${rootNum(w)}</span>` : `<svg class="ico"><use href="#${iconOf(w, open)}"/></svg>`;
+    const txt = cfg.cards && root ? w.n.name.replace(/^\d+\.\s*/, '').replace(/^\[Beginner\]\s*/, '').replace(/^Free - Trail Users$/, 'Free - Trail Users') : label(w);
+    return `<div class="row${root ? ' root' : ''}${sel ? ' sel' : ''}${st.act === w.id ? ' act' : ''}${anim}" role="treeitem" id="${cfg.k}-n${w.id}" data-id="${w.id}" aria-level="${w.depth + 1}" aria-selected="${sel}"${w.kids ? ` aria-expanded="${open}"` : ''} title="${esc(label(w))}">` +
+      (cfg.cards && root ? '' : gutter(cfg, R, P)) + `<span class="item">${lead}<span class="name">${hl(txt, st.q)}</span>${right}</span></div>`;
+  }
+
+  function render(cfg, st, el) {
+    const sc = scope(st), R = rows(st, sc), s = st.sel && ALL.get(st.sel), P = [];
+    for (let a = s; a; a = a.parent) P.unshift(a.id);
+    st.flat = R.map(r => r.w.id);
+    let html = '', k = 0;
+    if (!R.length) html = `<div class="empty">Nothing matches “${esc(st.q)}”.<br>Try a model number like 13 or A15.</div>`;
+    else if (cfg.cards) {
+      let i = 0;
+      while (i < R.length) { const r = R[i], kids = []; i++;
+        while (i < R.length && R[i].w.depth > 0) kids.push(R[i++]);
+        html += `<div class="card${r.open ? ' o' : ''}">${rowHtml(cfg, st, r, P, k++)}${kids.length ? `<div class="kids">${kids.map(x => rowHtml(cfg, st, x, P, k++)).join('')}</div>` : ''}</div>`; }
+    } else html = R.map(r => rowHtml(cfg, st, r, P, k++)).join('');
+    el.tree.querySelector('.rows').innerHTML = html;
+    el.tree.setAttribute('aria-activedescendant', st.act ? `${cfg.k}-n${st.act}` : '');
+    el.hits.textContent = sc ? `${sc.hits}` : '';
+    el.clr.classList.toggle('on', !!st.q);
+    if (el.crumb) el.crumb.innerHTML = s ? P.map((id, i) => `${i ? '<i>›</i>' : ''}<button data-go="${id}">${esc(label(ALL.get(id)))}</button>`).join('') : '<span>Nothing selected</span>';
+    el.foot.innerHTML = s ? `<span>Selected</span><b>${esc(label(s))}</b>` : `<span>${TOTAL} files · ${ROOTS.length} folders</span>`;
+    st.anim = null;
+  }
+
+  function viewer(st) {
+    const w = st.opened && ALL.get(st.opened);
+    if (!w) return `<div class="tabs"></div><div class="vb"><div>Double-click a file, or select it and press <b>Enter</b>, to open it here.</div></div>`;
+    const ic = iconOf(w);
+    return `<div class="tabs"><span class="tab"><svg><use href="#${ic}"/></svg>${esc(w.n.name)}</span></div><div class="vb"><div><svg class="big"><use href="#${ic}"/></svg><h3>${esc(label(w))}</h3>${typeOf(w)} · opened from ${esc(label(w.parent))}</div></div>`;
+  }
+
+  /* ---------------- mount ---------------- */
+  document.getElementById('wrap').innerHTML = V.map((c, i) => `<article class="opt"><div class="meta"><span class="num">${String(i + 1).padStart(2, '0')}</span><div><b>${c.name}</b><span>${c.desc}</span></div></div>
+    <div class="stage"><div class="app ${c.k}" style="--rh:${c.rh}px;--fs:${c.fs}px;--is:${c.is}px;--lw:${c.lw};--dash:${c.dash}">
+      <aside class="side"><div class="hd"><span class="ttl">Library</span><span class="sub">${TOTAL} files</span><span class="tools">
+        ${c.comfort ? `<button class="ib txt" data-fz="-1" aria-label="Smaller text">A−</button><button class="ib txt" data-fz="1" aria-label="Larger text">A+</button><button class="ib" data-hc aria-pressed="false" aria-label="High contrast" title="High contrast">${IC.con}</button>` : ''}
+        <button class="ib" data-all="1" aria-label="Expand all" title="Expand all">${IC.exp}</button><button class="ib" data-all="0" aria-label="Collapse all" title="Collapse all">${IC.col}</button></span></div>
+        <div class="srch">${IC.search}<input data-q placeholder="Search models and files…" aria-label="Search the library" spellcheck="false"><span class="hits" data-hits></span><button class="clr" data-clr aria-label="Clear search">${IC.x}</button></div>
+        ${c.crumb ? '<nav class="crumb" data-crumb aria-label="Path"></nav>' : ''}
+        <div class="tree" role="tree" aria-label="Schematics library" tabindex="0"><div class="rows"></div></div>
+        <div class="foot" data-foot aria-live="polite"></div></aside>
+      <section class="view" data-view></section></div></div>
+    <div class="keys"><span><kbd>↑</kbd><kbd>↓</kbd> move</span><span><kbd>→</kbd> open / into</span><span><kbd>←</kbd> close / up</span><span><kbd>Enter</kbd> open file</span><span><kbd>Home</kbd><kbd>End</kbd></span><span>type a letter to jump</span><span><kbd>Ctrl</kbd>+<kbd>F</kbd> search</span></div></article>`).join('');
+
+  document.querySelectorAll('.app').forEach((app, i) => {
+    const cfg = {...V[i]}, el = {tree: app.querySelector('.tree'), hits: app.querySelector('[data-hits]'), clr: app.querySelector('[data-clr]'), crumb: app.querySelector('[data-crumb]'), foot: app.querySelector('[data-foot]')};
+    const q = app.querySelector('[data-q]'), view = app.querySelector('[data-view]');
+    const sel0 = find('iPhone 12_12Pro Schematic.pdf');
+    const st = {open: new Set(['1. Apple', 'iPhone 12_12Pro', 'Free - Trail Users'].map(n => find(n).id)), sel: sel0.id, act: sel0.id, q: '', opened: null, flat: []};
+    const draw = () => render(cfg, st, el);
+    const toggle = (id, v) => { const on = v === undefined ? !st.open.has(id) : v; if (on && !st.open.has(id)) { st.open.add(id); st.anim = id; } else if (!on) st.open.delete(id); };
+    const select = (id, scroll) => { st.sel = st.act = id; draw(); if (scroll) { const r = el.tree.querySelector(`[data-id="${id}"]`); r && r.scrollIntoView({block: 'nearest'}); } };
+    const openFile = w => { if (w.kids) { toggle(w.id); draw(); } else { st.opened = w.id; view.innerHTML = viewer(st); } };
+    view.innerHTML = viewer(st);
+
+    el.tree.addEventListener('click', e => { const r = e.target.closest('.row'); if (!r) return; const w = ALL.get(+r.dataset.id);
+      el.tree.focus({preventScroll: true});
+      const onBox = e.target.closest('[data-tog]') || (w.kids && cfg.cards && w.depth === 0);
+      if (onBox) { toggle(w.id); st.act = w.id; if (cfg.cards && w.depth === 0) st.sel = w.id; draw(); return; }
+      select(w.id); });
+    if (cfg.hoverFocus) { const hs = document.createElement('style'); app.appendChild(hs); let cur = 0;
+      const setH = id => { if (id === cur) return; cur = id; hs.textContent = id ? `.${cfg.k} .g .a${id}{stroke:var(--accent-2);stroke-width:2;stroke-dasharray:none}` : ''; };
+      el.tree.addEventListener('mouseover', e => { const r = e.target.closest('.row'); if (!r) return; const w = ALL.get(+r.dataset.id); setH(w.kids && st.open.has(w.id) ? w.id : w.parent ? w.parent.id : 0); });
+      el.tree.addEventListener('mouseleave', () => { const w = st.sel && ALL.get(st.sel); setH(w && w.parent ? w.parent.id : 0); }); }
+    el.tree.addEventListener('dblclick', e => { const r = e.target.closest('.row'); if (r && !e.target.closest('[data-tog]')) openFile(ALL.get(+r.dataset.id)); });
+    let ta = '', taT = 0;
+    el.tree.addEventListener('keydown', e => {
+      const f = st.flat, i0 = f.indexOf(st.act), w = ALL.get(st.act);
+      const mv = j => { if (f[j] !== undefined) { e.preventDefault(); select(f[j], true); } };
+      if (e.key === 'ArrowDown') mv(i0 < 0 ? 0 : Math.min(f.length - 1, i0 + 1));
+      else if (e.key === 'ArrowUp') mv(i0 < 0 ? 0 : Math.max(0, i0 - 1));
+      else if (e.key === 'Home') mv(0);
+      else if (e.key === 'End') mv(f.length - 1);
+      else if (e.key === 'ArrowRight' && w) { e.preventDefault(); if (w.kids && !st.open.has(w.id) && !st.q) { toggle(w.id, true); draw(); } else if (w.kids) mv(i0 + 1); }
+      else if (e.key === 'ArrowLeft' && w) { e.preventDefault(); if (w.kids && st.open.has(w.id)) { toggle(w.id, false); draw(); } else if (w.parent) select(w.parent.id, true); }
+      else if ((e.key === 'Enter' || e.key === ' ') && w) { e.preventDefault(); openFile(w); }
+      else if (e.key.length === 1 && /\S/.test(e.key) && !e.ctrlKey) {
+        clearTimeout(taT); ta += e.key.toLowerCase(); taT = setTimeout(() => ta = '', 700);
+        const n = f.length, hit = [...Array(n).keys()].map(k => f[(i0 + (ta.length > 1 ? 0 : 1) + k) % n]).find(id => label(ALL.get(id)).toLowerCase().startsWith(ta));
+        if (hit) { e.preventDefault(); select(hit, true); } }
+    });
+    q.addEventListener('input', () => { st.q = q.value; draw(); el.tree.scrollTop = 0; });
+    q.addEventListener('keydown', e => { if (e.key === 'Escape') { q.value = ''; st.q = ''; draw(); } if (e.key === 'ArrowDown' || e.key === 'Enter') { e.preventDefault(); if (st.flat.length) { el.tree.focus(); const m = st.flat.find(id => st.q && label(ALL.get(id)).toLowerCase().includes(st.q.toLowerCase())) || st.flat[0]; select(m, true); } } });
+    el.clr.addEventListener('click', () => { q.value = ''; st.q = ''; draw(); q.focus(); });
+    app.addEventListener('keydown', e => { if (e.ctrlKey && e.key.toLowerCase() === 'f') { e.preventDefault(); q.focus(); q.select(); } });
+    app.addEventListener('click', e => {
+      const a = e.target.closest('[data-all]'); if (a) { if (a.dataset.all === '1') ALL.forEach(w => w.kids && st.open.add(w.id)); else st.open.clear(); draw(); return; }
+      const g = e.target.closest('[data-go]'); if (g) { select(+g.dataset.go, true); el.tree.focus(); return; }
+      const z = e.target.closest('[data-fz]'); if (z) { cfg.fs = Math.max(12, Math.min(19, cfg.fs + +z.dataset.fz)); cfg.rh = Math.round(cfg.fs * 2.35); cfg.is = Math.round(cfg.fs * 1.3);
+        app.style.setProperty('--fs', cfg.fs + 'px'); app.style.setProperty('--rh', cfg.rh + 'px'); app.style.setProperty('--is', cfg.is + 'px'); draw(); return; }
+      const h = e.target.closest('[data-hc]'); if (h) { const on = h.getAttribute('aria-pressed') !== 'true'; h.setAttribute('aria-pressed', on);
+        ['--line', '--box-st', '--text-3'].forEach(v => app.style.setProperty(v, on ? 'var(--text-2)' : '')); app.style.setProperty('--lw', on ? 2 : cfg.lw); app.style.setProperty('--sel', on ? 'var(--sel-strong)' : ''); draw(); }
+    });
+    draw();
+  });
+
+  const setTheme = t => { document.documentElement.dataset.theme = t; document.querySelectorAll('[data-t]').forEach(x => x.setAttribute('aria-pressed', x.dataset.t === t)); try { localStorage.setItem('sx-tv-theme', t); } catch (e) {} };
+  let t = 'light'; try { t = localStorage.getItem('sx-tv-theme') || t; } catch (e) {}
+  setTheme(t); document.querySelectorAll('[data-t]').forEach(x => x.addEventListener('click', () => setTheme(x.dataset.t)));
+})();
+</script>
+</body>
+</html>
