@@ -1,0 +1,1215 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Schemax Setup</title>
+<!--
+  Schemax Schematics — installer UI, full flow (design prototype).
+  Same design language as index.html (the glass login): tokens, fonts, teal brand accent, glass
+  window, deck-style panels. Texts are the real installer's (tool-script/src/installer/*Page.cpp).
+  Assets: assests/schemax-anim/ (light) and assests/schemax-anim-dark/ (dark), like index.html.
+
+  Flows:  Install   welcome > license > system > destination > tasks > ready > installing > finished
+          Update    update > readyUpdate > updating > updated
+          Uninstall choose > confirmUninstall > uninstalling > uninstalled
+          Problems  system check blocked (Smart App Control), "Setup could not finish", cancel confirm
+  The preview bar above the window is for review only — it is not part of the installer.
+-->
+<style>
+:root{
+  --ui:"Segoe UI Variable Text","Segoe UI Variable","Segoe UI",Inter,system-ui,sans-serif;
+  --disp:"Segoe UI Variable Display","Segoe UI Variable","Segoe UI",Inter,system-ui,sans-serif;
+  --mono:"JetBrains Mono","Cascadia Mono",Consolas,ui-monospace,monospace;
+  --r-win:14px; --r-card:16px; --r-ctl:8px;
+  --ease:cubic-bezier(.2,.8,.2,1); --glideE:cubic-bezier(.65,0,.2,1); --spring:cubic-bezier(.34,1.56,.64,1);
+  --sx-teal:#12a39b;
+}
+/* LIGHT (index.html effective light tokens) */
+:root,[data-theme="light"]{
+  --base:#f3f4f6; --win:#f8f9fa;
+  --glass-card:rgba(255,255,255,.46); --glass-field:rgba(255,255,255,.62); --glass-field-hover:rgba(255,255,255,.78);
+  --glass-btn:rgba(255,255,255,.55); --glass-btn-hover:rgba(255,255,255,.82);
+  --edge-a:rgba(255,255,255,.95); --edge-b:rgba(255,255,255,.35); --edge-c:rgba(120,160,255,.45);
+  --hair:rgba(20,40,90,.09); --specular:rgba(255,255,255,.9);
+  --text:#0e2140; --text-2:#46557a; --text-3:#7a87a5;
+  --accent:#0f8f88; --accent-2:#12a39b; --accent-text:#0b7570;
+  --accent-grad:linear-gradient(110deg,#0a6f6a 0%,#0c7f79 52%,#0f938c 100%);
+  --focus:rgba(18,163,155,.2);
+  --danger:#c4283a; --danger-bg:rgba(220,40,60,.08); --danger-line:rgba(220,40,60,.28);
+  --warn:#9d5d00; --warn-bg:rgba(242,179,61,.14); --warn-line:rgba(157,93,0,.30);
+  --ok:#0f8a5f; --ok-bg:rgba(15,138,95,.10);
+  --info-bg:rgba(18,163,155,.10); --info-line:rgba(18,163,155,.34);
+  --cap-hover:rgba(0,0,0,.06);
+  --deck-bg:linear-gradient(160deg,#fbfcfe 0%,#f1f4f9 100%);
+  --rail-bg:linear-gradient(170deg,#eef2f8 0%,#e7ecf4 100%);
+  --win-tint:radial-gradient(ellipse 60% 70% at 12% 8%,rgba(18,163,155,.10),transparent 60%),radial-gradient(ellipse 60% 70% at 92% 96%,rgba(14,33,64,.07),transparent 62%);
+  --shadow:0 50px 110px -35px rgba(28,52,120,.42),0 16px 36px -18px rgba(28,52,120,.30);
+  --noise-op:.04; color-scheme:light;
+}
+/* DARK */
+[data-theme="dark"]{
+  --base:#0b0c0f; --win:#0b111b;
+  --glass-card:rgba(18,30,56,.40); --glass-field:rgba(4,10,24,.42); --glass-field-hover:rgba(8,16,34,.52);
+  --glass-btn:rgba(255,255,255,.055); --glass-btn-hover:rgba(255,255,255,.10);
+  --edge-a:rgba(255,255,255,.34); --edge-b:rgba(120,180,255,.10); --edge-c:rgba(90,200,255,.30);
+  --hair:rgba(255,255,255,.09); --specular:rgba(255,255,255,.16);
+  --text:#f3f7ff; --text-2:#a8b7d4; --text-3:#6e7fa0;
+  --accent:#16a69d; --accent-2:#2dd4bf; --accent-text:#5fe3d3;
+  --accent-grad:linear-gradient(110deg,#0a6f6a 0%,#0d847d 52%,#10968e 100%);
+  --focus:rgba(45,212,191,.26);
+  --danger:#ff8a94; --danger-bg:rgba(255,80,96,.12); --danger-line:rgba(255,120,130,.35);
+  --warn:#ffd36b; --warn-bg:rgba(255,211,107,.10); --warn-line:rgba(255,211,107,.30);
+  --ok:#34d399; --ok-bg:rgba(52,211,153,.12);
+  --info-bg:rgba(18,163,155,.10); --info-line:rgba(18,163,155,.34);
+  --cap-hover:rgba(255,255,255,.09);
+  --deck-bg:linear-gradient(160deg,#15233d 0%,#0f1a2e 100%);
+  --rail-bg:linear-gradient(170deg,#101c31 0%,#0c1526 100%);
+  --win-tint:radial-gradient(ellipse 60% 70% at 12% 8%,rgba(18,163,155,.13),transparent 60%),radial-gradient(ellipse 60% 70% at 92% 96%,rgba(59,92,150,.16),transparent 62%);
+  --shadow:0 50px 120px -30px rgba(0,0,0,.75),0 18px 40px -18px rgba(0,0,0,.6);
+  --noise-op:.06; color-scheme:dark;
+}
+@media (prefers-color-scheme:dark){
+  [data-theme="auto"]{
+    --base:#0b0c0f; --win:#0b111b;
+    --glass-card:rgba(18,30,56,.40); --glass-field:rgba(4,10,24,.42); --glass-field-hover:rgba(8,16,34,.52);
+    --glass-btn:rgba(255,255,255,.055); --glass-btn-hover:rgba(255,255,255,.10);
+    --edge-a:rgba(255,255,255,.34); --edge-b:rgba(120,180,255,.10); --edge-c:rgba(90,200,255,.30);
+    --hair:rgba(255,255,255,.09); --specular:rgba(255,255,255,.16);
+    --text:#f3f7ff; --text-2:#a8b7d4; --text-3:#6e7fa0;
+    --accent:#16a69d; --accent-2:#2dd4bf; --accent-text:#5fe3d3;
+    --accent-grad:linear-gradient(110deg,#0a6f6a 0%,#0d847d 52%,#10968e 100%);
+    --focus:rgba(45,212,191,.26);
+    --danger:#ff8a94; --danger-bg:rgba(255,80,96,.12); --danger-line:rgba(255,120,130,.35);
+    --warn:#ffd36b; --warn-bg:rgba(255,211,107,.10); --warn-line:rgba(255,211,107,.30);
+    --ok:#34d399; --ok-bg:rgba(52,211,153,.12);
+    --cap-hover:rgba(255,255,255,.09);
+    --deck-bg:linear-gradient(160deg,#15233d 0%,#0f1a2e 100%);
+    --rail-bg:linear-gradient(170deg,#101c31 0%,#0c1526 100%);
+    --win-tint:radial-gradient(ellipse 60% 70% at 12% 8%,rgba(18,163,155,.13),transparent 60%),radial-gradient(ellipse 60% 70% at 92% 96%,rgba(59,92,150,.16),transparent 62%);
+    --shadow:0 50px 120px -30px rgba(0,0,0,.75),0 18px 40px -18px rgba(0,0,0,.6);
+    --noise-op:.06; color-scheme:dark;
+  }
+}
+*{box-sizing:border-box;margin:0;padding:0}
+[hidden]{display:none!important}
+html,body{height:100%}
+body{background:var(--base);color:var(--text);font:400 14px/20px var(--ui);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:20px 16px;min-height:100vh;-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
+button:focus-visible,.radio:focus-visible,.toggle:focus-visible{outline:2px solid var(--text);outline-offset:2px;border-radius:6px}
+::selection{background:var(--accent);color:#fff}
+
+/* ---------- preview bar (review only) ---------- */
+.pv{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:center;max-width:860px;width:100%;font:500 12.5px/16px var(--ui);color:var(--text-2)}
+.pv .seg{display:flex;gap:2px;padding:3px;border-radius:9px;background:var(--glass-field);box-shadow:inset 0 0 0 1px var(--hair)}
+.pv .seg button{padding:5px 10px;border-radius:6px;color:var(--text-3);transition:.2s var(--ease)}
+.pv .seg button:hover{color:var(--text)}
+.pv .seg button[aria-pressed="true"]{background:var(--glass-btn-hover);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.18),inset 0 1px 0 var(--specular)}
+.pv b{font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:.12em;font-size:10.5px;margin-right:2px}
+
+/* ---------- window ---------- */
+.win{position:relative;width:860px;max-width:100%;height:580px;border-radius:var(--r-win);background:var(--win);background-image:var(--win-tint);box-shadow:var(--shadow),inset 0 1px 0 var(--specular),inset 0 0 0 1px var(--hair);display:grid;grid-template-rows:40px minmax(0,1fr);grid-template-columns:minmax(0,1fr);overflow:hidden;isolation:isolate}
+.win::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;background:linear-gradient(140deg,var(--edge-a) 0%,var(--edge-b) 30%,transparent 55%,var(--edge-c) 100%);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none;z-index:5}
+.win::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:var(--noise-op);mix-blend-mode:overlay;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");z-index:4}
+
+/* title bar */
+.tb{display:flex;align-items:center;gap:10px;padding-left:14px;border-bottom:1px solid var(--hair);user-select:none;font:400 12px/1 var(--ui);color:var(--text-2)}
+.tile{display:grid;place-items:center;background:#fff;border-radius:6px;width:20px;height:20px;padding:2px;box-shadow:0 0 0 1px rgba(14,32,61,.08)}
+.tile img{width:100%;height:100%;object-fit:contain}
+.tb b{font-weight:600;color:var(--text)}
+.tb i{font-style:normal;color:var(--text-3)}
+.tb .grow{flex:1}
+.cap{width:46px;height:40px;display:grid;place-items:center;transition:background .12s}
+.cap:hover{background:var(--cap-hover)}
+.cap.x:hover{background:#c42b1c;color:#fff}
+.cap svg{width:10px;height:10px;stroke:currentColor;stroke-width:1;fill:none}
+
+/* body: rail | pane */
+.body{display:grid;grid-template-columns:248px minmax(0,1fr);min-height:0}
+.rail{position:relative;background:var(--rail-bg);border-right:1px solid var(--hair);display:flex;flex-direction:column;align-items:center;padding:26px 22px 16px;overflow:hidden}
+.rail::before{content:"";position:absolute;width:300px;height:300px;border-radius:50%;border:26px solid color-mix(in srgb,var(--accent-2) 7%,transparent);top:-150px;right:-170px}
+.lock{display:flex;flex-direction:column;align-items:center;margin-top:6px}
+.mark{width:84px;aspect-ratio:520/513;position:relative}
+.mark img{width:100%;height:100%;object-fit:contain;-webkit-mask:conic-gradient(#000 var(--sweep,400deg),transparent 0);mask:conic-gradient(#000 var(--sweep,400deg),transparent 0)}
+.mark.intro img{animation:lgSweep 1.3s var(--glideE) .2s both,lgSpin 1.6s var(--glideE) .2s both}
+@property --sweep{syntax:'<angle>';inherits:false;initial-value:400deg}
+@keyframes lgSweep{from{--sweep:0deg}to{--sweep:400deg}}   /* ends past 360° → no 1px seam where the conic mask closes */
+@keyframes lgSpin{from{transform:rotate(-45deg) scale(.85)}to{transform:none}}
+.mark.breath{animation:cwBreath 6s ease-in-out infinite}
+@keyframes cwBreath{50%{transform:translateY(-4px)}}
+.brand{margin-top:14px;font:700 19px/1.1 var(--disp);letter-spacing:-.02em;text-align:center}
+.brand span{color:var(--accent-text)}
+[data-theme="dark"] .brand span{color:var(--accent-2)}
+.meta{margin-top:7px;font:500 12px/16px var(--mono);color:var(--text-3)}
+/* rail progress (install / update / uninstall steps) */
+.steps{list-style:none;margin:18px 0 14px;width:100%;display:flex;flex-direction:column;gap:1px}
+.steps li{display:flex;align-items:center;gap:10px;padding:5px 10px;border-radius:8px;font:500 12.5px/16px var(--ui);color:var(--text-3);transition:.3s var(--ease)}
+.steps li i{width:18px;height:18px;border-radius:50%;flex:none;display:grid;place-items:center;box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--text) 22%,transparent);transition:.3s var(--ease)}
+.steps li i svg{width:10px;height:10px;stroke:#fff;stroke-width:3;fill:none;opacity:0}
+.steps li.done{color:var(--text-2)}
+.steps li.done i{background:var(--accent-grad);box-shadow:none}
+.steps li.done i svg{opacity:1}
+.steps li.on{color:var(--text);background:var(--glass-btn);box-shadow:inset 0 0 0 1px var(--hair),inset 0 1px 0 var(--specular)}
+.steps li.on i{box-shadow:inset 0 0 0 1.5px var(--accent-2),0 0 0 3px var(--focus)}
+.foot{margin-top:auto;text-align:center;font:400 11.5px/16px var(--ui);color:var(--text-3)}
+
+/* pane */
+.pane{display:grid;grid-template-rows:minmax(0,1fr) 68px;grid-template-columns:minmax(0,1fr);min-width:0;min-height:0}
+.view{position:relative;overflow:hidden}
+.page{position:absolute;inset:0;padding:30px 34px 18px;overflow-y:auto;scrollbar-width:none;display:none;flex-direction:column}
+.page::-webkit-scrollbar{display:none}
+.page.on{display:flex;animation:stepIn .5s var(--ease) both}
+.page.back.on{animation-name:stepBack}
+@keyframes stepIn{from{opacity:0;transform:translateX(18px)}}
+@keyframes stepBack{from{opacity:0;transform:translateX(-18px)}}
+.kicker{font:700 10.5px/14px var(--ui);letter-spacing:.16em;text-transform:uppercase;color:var(--accent-text);margin-bottom:8px}
+h1{font:600 24px/31px var(--disp);letter-spacing:-.02em}
+.lead{color:var(--text-2);margin-top:6px;max-width:520px;white-space:pre-line}
+.mt{margin-top:20px}
+
+/* footer bar */
+.fbar{display:flex;align-items:center;gap:8px;padding:0 20px 0 24px;border-top:1px solid var(--hair);background:color-mix(in srgb,var(--base) 30%,transparent)}
+.fbar .btn{flex:none}
+.fbar .hint{flex:1 1 0;font:400 13px/18px var(--ui);color:var(--text-3);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fbar .hint.ok{color:var(--ok)}
+.fbar .hint.bad{color:var(--danger)}
+.btn{height:40px;min-width:96px;padding:0 18px;border-radius:var(--r-ctl);font:500 13.5px/1 var(--ui);display:inline-flex;align-items:center;justify-content:center;gap:9px;transition:.18s var(--ease);white-space:nowrap}
+.btn.ghost{background:var(--glass-btn);box-shadow:inset 0 0 0 1px var(--hair),inset 0 1px 0 var(--specular)}
+.btn.ghost:hover{background:var(--glass-btn-hover)}
+.btn.primary{position:relative;overflow:hidden;min-width:120px;color:#fff;font-weight:600;font-size:14px;background:var(--accent-grad);box-shadow:0 12px 26px -12px rgba(13,132,125,.85),inset 0 1px 0 rgba(255,255,255,.28),inset 0 -1px 0 rgba(0,0,0,.18)}
+.btn.primary:hover{filter:brightness(1.07);box-shadow:0 16px 32px -12px rgba(13,132,125,.95),inset 0 1px 0 rgba(255,255,255,.32)}
+.btn.primary::after{content:"";position:absolute;top:0;bottom:0;width:40%;left:-60%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.35),transparent);transform:skewX(-20deg)}
+.btn.primary:hover::after{left:120%;transition:left .6s var(--ease)}
+.btn.primary svg.arr{width:16px;height:16px;stroke:currentColor;stroke-width:2.2;fill:none;transition:transform .2s}
+.btn.primary:hover svg.arr{transform:translateX(3px)}
+.btn.danger{color:#fff;font-weight:600;background:linear-gradient(110deg,#a8231a,#c42b1c);box-shadow:0 10px 22px -12px rgba(196,43,28,.9),inset 0 1px 0 rgba(255,255,255,.25)}
+.btn.danger:hover{filter:brightness(1.07)}
+.btn:active{transform:translateY(1px)}
+.btn[disabled]{filter:saturate(.2) brightness(.92);opacity:.55;box-shadow:none;cursor:not-allowed;transform:none}
+.btn[disabled]::after{display:none}
+.btn.busy .spin{display:inline-block}
+.shield{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2}
+
+/* shared bits */
+.card{background:var(--deck-bg);border-radius:12px;box-shadow:inset 0 0 0 1px var(--hair),inset 0 1px 0 var(--specular)}
+.chip{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:9px;background:var(--glass-btn);box-shadow:inset 0 0 0 1px var(--hair),inset 0 1px 0 var(--specular);font:400 13.5px/18px var(--mono);color:var(--text-2)}
+.chip b{font-weight:700;color:var(--text)}
+.chip.ok{color:var(--ok);background:var(--ok-bg);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--ok) 30%,transparent);font-family:var(--ui);font-weight:600;font-size:12.5px}
+.vers{display:flex;align-items:center;gap:12px;margin-top:20px;flex-wrap:wrap}
+.vers .arrow{color:var(--text-3)}
+.feats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.feat{display:flex;gap:11px;align-items:center;padding:12px 14px;border-radius:12px;background:var(--glass-card);box-shadow:inset 0 0 0 1px var(--hair),inset 0 1px 0 var(--specular);transition:.2s var(--ease)}
+.feat:hover{transform:translateY(-2px);background:var(--glass-btn-hover)}
+.feat i,.ico{width:34px;height:34px;border-radius:9px;display:grid;place-items:center;flex:none;background:color-mix(in srgb,var(--accent-2) 10%,transparent);box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--accent-2) 40%,transparent);color:var(--accent-text)}
+.feat i svg,.ico svg{width:17px;height:17px;stroke:currentColor;stroke-width:1.7;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.feat b{display:block;font:600 13.5px/18px var(--ui)}
+.feat span{display:block;font:400 11.5px/15px var(--ui);color:var(--text-3)}
+.pub{display:inline-flex;align-items:center;gap:8px;margin-top:16px;font:400 12.5px/16px var(--ui);color:var(--text-3)}
+.pub svg{width:14px;height:14px;stroke:var(--accent-text);stroke-width:2;fill:none}
+
+/* license */
+.lic{margin-top:16px;flex:1;min-height:150px;padding:14px 16px;overflow:auto;font:400 12.5px/19px var(--mono);color:var(--text-2);white-space:pre-wrap;background:var(--glass-field);border-radius:10px;box-shadow:inset 0 0 0 1px var(--hair),inset 0 -1px 0 color-mix(in srgb,var(--text) 18%,transparent)}
+.radios{display:flex;flex-direction:column;gap:8px;margin-top:14px}
+.radio{display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:10px;cursor:pointer;background:var(--glass-btn);box-shadow:inset 0 0 0 1px var(--hair);transition:.18s var(--ease);user-select:none}
+.radio:hover{background:var(--glass-btn-hover)}
+.radio .dot{width:18px;height:18px;border-radius:50%;flex:none;background:var(--glass-field);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--text) 35%,transparent);display:grid;place-items:center;transition:.15s}
+.radio .dot::after{content:"";width:8px;height:8px;border-radius:50%;background:#fff;transform:scale(0);transition:.2s var(--spring)}
+.radio.sel{box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--accent-2) 60%,transparent);background:color-mix(in srgb,var(--accent-2) 9%,var(--glass-btn))}
+.radio.sel .dot{background:var(--accent-grad);box-shadow:0 2px 8px -2px var(--accent)}
+.radio.sel .dot::after{transform:scale(1)}
+.radio .t{font:500 13.5px/18px var(--ui)}
+.radio .d{font:400 12.5px/17px var(--ui);color:var(--text-2)}
+.radio.big{padding:14px 16px;gap:14px}
+.radio.big .ico{margin-left:2px}
+.radio.disabled{opacity:.5;pointer-events:none}
+
+/* system check */
+.checks{margin-top:18px;display:flex;flex-direction:column;gap:6px}
+.row{display:grid;grid-template-columns:30px 1fr auto;align-items:center;gap:12px;padding:9px 12px;border-radius:10px;background:var(--glass-btn);box-shadow:inset 0 0 0 1px var(--hair);opacity:.45;transition:opacity .3s,background .3s}
+.row.live{opacity:1}
+.row .st{width:22px;height:22px;border-radius:50%;display:grid;place-items:center}
+.row .st .spin{display:block}
+.row .st svg{width:12px;height:12px;stroke:#fff;stroke-width:3;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.row.ok .st{background:var(--ok)}
+.row.warn .st{background:#f2b33d}
+.row.warn .st svg{stroke:#3a2600}
+.row.bad .st{background:#c42b3c}
+.row.bad{background:var(--danger-bg);box-shadow:inset 0 0 0 1px var(--danger-line)}
+.row .n{font:600 13px/17px var(--ui)}
+.row .v{font:400 12.5px/16px var(--ui);color:var(--text-2)}
+.row .tag{font:600 11px/14px var(--ui);padding:3px 8px;border-radius:6px;background:var(--ok-bg);color:var(--ok);opacity:0;transition:.3s}
+.row.ok .tag,.row.warn .tag,.row.bad .tag{opacity:1}
+.row.warn .tag{background:var(--warn-bg);color:var(--warn)}
+.row.bad .tag{background:var(--danger-bg);color:var(--danger)}
+.callout{margin-top:14px;display:flex;gap:10px;padding:10px 12px;border-radius:10px;font:500 12.5px/17px var(--ui)}
+.callout svg{width:16px;height:16px;flex:none;margin-top:1px;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round}
+.callout.err{color:var(--danger);background:var(--danger-bg);box-shadow:inset 0 0 0 1px var(--danger-line)}
+.callout.warn{color:var(--warn);background:var(--warn-bg);box-shadow:inset 0 0 0 1px var(--warn-line)}
+.callout.info{color:var(--text-2);background:var(--info-bg);box-shadow:inset 0 0 0 1px var(--info-line)}
+.callout a{color:inherit;font-weight:600}
+
+/* destination */
+.lbl{font:700 10.5px/14px var(--ui);letter-spacing:.16em;text-transform:uppercase;color:var(--text-3);margin:22px 0 8px}
+.pathrow{display:flex;gap:8px}
+.ctl{flex:1;height:42px;display:flex;align-items:center;gap:10px;padding:0 13px;border-radius:var(--r-ctl);background:var(--glass-field);box-shadow:inset 0 0 0 1px var(--hair),inset 0 -1px 0 color-mix(in srgb,var(--text) 22%,transparent);transition:.18s}
+.ctl:focus-within{background:var(--glass-field-hover);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--accent) 60%,transparent),inset 0 -2px 0 var(--accent),0 0 0 4px var(--focus)}
+.ctl svg{width:16px;height:16px;stroke:var(--text-3);stroke-width:1.8;fill:none;flex:none}
+.ctl:focus-within svg{stroke:var(--accent-text)}
+.ctl input{flex:1;min-width:0;border:0;outline:0;background:none;color:var(--text);font:400 13.5px/1 var(--mono)}
+.space{margin-top:14px;display:grid;gap:8px}
+.space .bar{height:8px;border-radius:5px;background:color-mix(in srgb,var(--text) 8%,transparent);overflow:hidden;display:flex}
+.space .bar i{display:block;height:100%}
+.space .bar i:nth-child(1){background:color-mix(in srgb,var(--text) 22%,transparent);width:62%}
+.space .bar i:nth-child(2){background:var(--accent-grad);width:2.2%;min-width:6px}
+.space .legend{display:flex;gap:16px;font:400 12px/16px var(--ui);color:var(--text-3);flex-wrap:wrap}
+.space .legend b{color:var(--text-2);font-weight:600}
+.space .legend i{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:6px;vertical-align:0}
+
+/* toggles (tasks / finish) */
+.toggle{display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:12px;cursor:pointer;background:var(--glass-btn);box-shadow:inset 0 0 0 1px var(--hair),inset 0 1px 0 var(--specular);user-select:none;transition:.18s}
+.toggle:hover{background:var(--glass-btn-hover)}
+.toggle .sw{margin-left:auto;width:40px;height:22px;border-radius:11px;flex:none;position:relative;background:color-mix(in srgb,var(--text) 18%,transparent);transition:.25s var(--ease)}
+.toggle .sw::after{content:"";position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.3);transition:.3s var(--spring)}
+.toggle.on .sw{background:var(--accent-grad);box-shadow:0 2px 8px -2px var(--accent)}
+.toggle.on .sw::after{left:21px}
+.toggle .t{font:600 13.5px/18px var(--ui)}
+.toggle .d{font:400 12.5px/17px var(--ui);color:var(--text-2)}
+.stack{display:flex;flex-direction:column;gap:8px;margin-top:20px}
+
+/* ready summary */
+.sum{margin-top:18px;padding:4px 16px}
+.sum div{display:grid;grid-template-columns:150px 1fr;gap:12px;padding:11px 0;border-bottom:1px solid var(--hair);font:400 13px/18px var(--ui)}
+.sum div:last-child{border-bottom:0}
+.sum dt{color:var(--text-3)}
+.sum dd{color:var(--text);word-break:break-all}
+.sum dd.mono{font-family:var(--mono);font-size:12.5px}
+
+/* progress */
+.prog{margin-top:22px}
+.prog .top{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:10px}
+.prog .pct{font:600 30px/1 var(--disp);letter-spacing:-.02em}
+.prog .pct small{font-size:15px;color:var(--text-3);margin-left:2px}
+.prog .eta{font:400 12.5px/16px var(--ui);color:var(--text-3)}
+.track{height:8px;border-radius:5px;background:color-mix(in srgb,var(--text) 8%,transparent);overflow:hidden;position:relative}
+.track i{position:absolute;inset:0 auto 0 0;width:0;border-radius:inherit;background:linear-gradient(90deg,var(--accent),var(--accent-2));box-shadow:0 0 12px var(--sx-teal);transition:width .45s var(--glideE)}
+.track i::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.45),transparent);background-size:60px 100%;animation:shimmer 1.2s linear infinite}
+@keyframes shimmer{from{background-position:-60px 0}to{background-position:400px 0}}
+.file{margin-top:10px;font:400 12px/16px var(--mono);color:var(--text-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tasks{margin-top:18px;list-style:none;display:flex;flex-direction:column;gap:2px}
+.tasks li{display:flex;align-items:center;gap:12px;padding:8px 4px;font:500 13px/17px var(--ui);color:var(--text-3);transition:.3s}
+.tasks li .st{width:20px;height:20px;border-radius:50%;flex:none;display:grid;place-items:center;box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--text) 20%,transparent)}
+.tasks li .st svg{width:11px;height:11px;stroke:#fff;stroke-width:3;fill:none;opacity:0}
+.tasks li.run{color:var(--text)}
+.tasks li.run .st{box-shadow:none}
+.tasks li.run .st .spin{display:block}
+.tasks li.done{color:var(--text-2)}
+.tasks li.done .st{background:var(--ok);box-shadow:none}
+.tasks li.done .st svg{opacity:1}
+.tasks li em{margin-left:auto;font:400 11.5px/14px var(--mono);font-style:normal;color:var(--text-3)}
+.spin{display:none;width:16px;height:16px;border-radius:50%;border:2px solid color-mix(in srgb,var(--text) 15%,transparent);border-top-color:var(--accent-2);animation:spin .8s linear infinite}
+.btn .spin{border-color:rgba(255,255,255,.35);border-top-color:#fff}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* finished / complete */
+.done-hero{display:flex;flex-direction:column;align-items:flex-start}
+.badge{width:64px;height:64px;border-radius:20px;display:grid;place-items:center;background:var(--accent-grad);box-shadow:0 18px 36px -14px rgba(13,132,125,.9),inset 0 1px 0 rgba(255,255,255,.3);margin-bottom:18px;animation:avPop .55s var(--spring) both}
+.badge svg{width:30px;height:30px;stroke:#fff;stroke-width:3;fill:none;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:40;stroke-dashoffset:40;animation:draw .5s var(--ease) .35s forwards}
+.badge.bye{background:linear-gradient(110deg,#33496a,#0e2140)}
+.badge.err{background:linear-gradient(110deg,#a8231a,#c42b1c);box-shadow:0 18px 36px -14px rgba(196,43,28,.9)}
+@keyframes avPop{from{opacity:0;transform:scale(.6)}}
+@keyframes draw{to{stroke-dashoffset:0}}
+.rise{animation:rise .5s var(--ease) both}
+.rise.d1{animation-delay:.12s}.rise.d2{animation-delay:.2s}.rise.d3{animation-delay:.28s}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}}
+.news{margin-top:18px;padding:14px 16px;display:flex;flex-direction:column;gap:10px}
+.news h3{font:700 10.5px/14px var(--ui);letter-spacing:.16em;text-transform:uppercase;color:var(--accent-text)}
+.news li{list-style:none;display:flex;gap:10px;font:400 13px/18px var(--ui);color:var(--text-2)}
+.news li::before{content:"";width:6px;height:6px;border-radius:50%;margin-top:6px;flex:none;background:var(--accent-2);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent-2) 20%,transparent)}
+.news b{color:var(--text);font-weight:600}
+
+/* modal (cancel confirm) */
+.layer{position:absolute;inset:40px 0 0;display:none;place-items:center;z-index:6;background:color-mix(in srgb,var(--base) 42%,transparent);backdrop-filter:blur(6px) saturate(120%);animation:fade .22s both}
+.layer.on{display:grid}
+@keyframes fade{from{opacity:0}}
+.ncard{width:440px;max-width:calc(100% - 48px);display:grid;grid-template-columns:150px 1fr;border-radius:14px;overflow:hidden;background:color-mix(in srgb,var(--base) 86%,transparent);box-shadow:0 40px 90px -30px rgba(0,0,0,.6),0 12px 30px -14px rgba(0,0,0,.4),inset 0 1px 0 var(--specular),inset 0 0 0 1px var(--hair);animation:ncIn .34s var(--spring) both}
+@keyframes ncIn{from{opacity:0;transform:translateY(10px) scale(.95)}}
+.nc-side{position:relative;padding:18px;color:#fff;display:flex;flex-direction:column;justify-content:flex-end;gap:4px;min-height:200px;overflow:hidden;background:linear-gradient(160deg,#0e2140,#3f3518 58%,#a06e17)}
+.nc-side::before{content:"";position:absolute;width:150px;height:150px;border-radius:50%;border:18px solid rgba(255,255,255,.06);right:-50px;top:-36px}
+.nc-side .lt{position:absolute;top:16px;left:16px;width:36px;height:36px;border-radius:10px;background:#fff;padding:4px;box-shadow:0 8px 18px -8px rgba(0,0,0,.5)}
+.nc-side .lt img{width:100%;height:100%;object-fit:contain}
+.nc-side small{font:700 10px/12px var(--ui);letter-spacing:.16em;text-transform:uppercase;color:#ffd27a}
+.nc-side h2{font:600 19px/23px var(--disp)}
+.nc-main{padding:20px;display:flex;flex-direction:column;gap:8px}
+.nc-main b{font:600 16px/21px var(--disp)}
+.nc-main p{font:400 13px/19px var(--ui);color:var(--text-2)}
+.nc-main .btns{margin-top:auto;padding-top:14px;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.nc-main .btns .btn{min-width:0;padding:0 10px}
+
+/* confetti */
+.confetti{position:absolute;inset:0;pointer-events:none;z-index:7;overflow:hidden}
+.confetti i{position:absolute;left:50%;top:45%}
+
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+@media (max-width:760px){
+  .win{height:auto;min-height:640px}
+  .body{grid-template-columns:1fr}
+  .rail{flex-direction:row;padding:14px 16px;gap:12px;align-items:center;border-right:0;border-bottom:1px solid var(--hair)}
+  .rail .lock{flex-direction:row;margin:0;gap:12px}
+  .mark{width:44px}.brand{margin:0;font-size:16px;text-align:left}.meta,.steps,.foot{display:none}
+  .page{position:relative;inset:auto;padding:22px 18px}
+  .view{min-height:440px}
+  .feats{grid-template-columns:1fr}
+  .sum div{grid-template-columns:1fr;gap:2px}
+}
+
+/* =================== UPDATE flow (redesigned) =================== */
+.up-path{display:grid;grid-template-columns:minmax(0,1fr) 84px minmax(0,1fr);align-items:center;margin-top:22px}
+.up-ver{position:relative;padding:16px 18px;border-radius:14px;background:var(--glass-card);box-shadow:inset 0 0 0 1px var(--hair),inset 0 1px 0 var(--specular)}
+.up-ver small{display:block;font:700 10px/14px var(--ui);letter-spacing:.14em;text-transform:uppercase;color:var(--text-3)}
+.up-ver b{display:block;margin-top:6px;font:650 34px/1 var(--mono);letter-spacing:-.02em}
+.up-ver span{display:block;margin-top:8px;font:400 12px/16px var(--ui);color:var(--text-3)}
+.up-ver.old b{color:var(--text-3)}
+.up-ver.new{background:linear-gradient(150deg,color-mix(in srgb,var(--accent-2) 16%,transparent),transparent 70%),var(--glass-card);
+  box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--accent-2) 55%,transparent),0 18px 36px -20px var(--accent);animation:upGlow 2.6s ease-in-out infinite}
+@keyframes upGlow{50%{box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--accent-2) 80%,transparent),0 18px 40px -16px var(--accent)}}
+.up-ver.new b{color:var(--accent-text)}
+.up-ver em{position:absolute;right:12px;top:12px;padding:3px 8px;border-radius:99px;font:700 9px/12px var(--ui);font-style:normal;letter-spacing:.08em;text-transform:uppercase;color:#fff;background:var(--accent-grad)}
+.up-beam{position:relative;height:2px;margin:0 10px;border-radius:2px;background:color-mix(in srgb,var(--text) 14%,transparent)}
+.up-beam i{position:absolute;top:-2px;left:0;width:22px;height:6px;border-radius:3px;background:var(--accent-2);box-shadow:0 0 10px var(--accent-2);animation:upBeam 1.6s ease-in-out infinite}
+@keyframes upBeam{0%{left:0;opacity:0}20%,80%{opacity:1}100%{left:calc(100% - 22px);opacity:0}}
+.up-beam svg{position:absolute;right:-9px;top:-7px;width:16px;height:16px;stroke:color-mix(in srgb,var(--text) 35%,transparent);stroke-width:2.2;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.up-head{margin-top:auto;padding-top:16px;font:700 10.5px/14px var(--ui);letter-spacing:.14em;text-transform:uppercase;color:var(--text-3)}
+.up-news{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:10px}
+.up-n{display:flex;flex-direction:column;gap:10px;padding:14px;border-radius:12px;background:var(--glass-card);box-shadow:inset 0 0 0 1px var(--hair),inset 0 1px 0 var(--specular);transition:transform .2s var(--ease)}
+.up-n:hover{transform:translateY(-2px)}
+.up-n b{display:block;font:600 13px/17px var(--ui)}
+.up-n span:not(.ico){display:block;margin-top:3px;font:400 11.5px/16px var(--ui);color:var(--text-3)}
+.up-plan{position:relative;display:grid;grid-template-columns:repeat(4,1fr);margin-top:22px}
+.up-plan::before{content:"";position:absolute;left:12.5%;right:12.5%;top:20px;height:2px;border-radius:2px;background:linear-gradient(90deg,var(--accent-2),color-mix(in srgb,var(--accent-2) 25%,transparent));opacity:.7}
+.up-plan>div{position:relative;display:flex;flex-direction:column;align-items:center;gap:7px;text-align:center;font:600 12.5px/16px var(--ui)}
+.up-plan .ico{width:42px;height:42px;border-radius:50%;background:var(--deck-bg);box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--accent-2) 55%,transparent),0 0 0 5px var(--win)}
+.up-plan small{font:400 11px/14px var(--ui);color:var(--text-3)}
+.up-run{display:flex;align-items:center;gap:30px;margin-top:24px}
+.up-ring{position:relative;width:170px;height:170px;flex:none}
+.up-ring svg{position:absolute;inset:0;transform:rotate(-90deg)}
+.up-ring circle{fill:none;stroke-width:8;stroke-linecap:round}
+.up-ring .bg{stroke:color-mix(in srgb,var(--text) 10%,transparent)}
+.up-ring .fg{stroke:var(--accent-2);stroke-dasharray:1;stroke-dashoffset:1;filter:drop-shadow(0 0 6px color-mix(in srgb,var(--accent-2) 60%,transparent))}
+.up-mid{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.up-mid b{font:650 34px/1 var(--disp);letter-spacing:-.02em}
+.up-mid span{margin-top:7px;padding:3px 10px;border-radius:99px;font:600 12.5px/16px var(--mono);color:var(--text-3);background:var(--glass-btn)}
+.up-mid span.new{color:var(--accent-text);background:color-mix(in srgb,var(--accent-2) 14%,transparent);animation:upFlip .5s var(--spring)}
+@keyframes upFlip{from{transform:translateY(10px) scale(.7);opacity:0}}
+.up-side{flex:1;min-width:0}
+.up-step{font:600 16px/21px var(--ui)}
+.up-eta{margin-top:3px;font:400 12.5px/17px var(--ui);color:var(--text-3)}
+.up-chips{list-style:none;margin:16px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:6px}
+.up-chips li{display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border-radius:99px;font:500 11.5px/15px var(--ui);color:var(--text-3);box-shadow:inset 0 0 0 1px var(--hair);transition:.25s var(--ease)}
+.up-chips li svg{width:12px;height:12px;stroke:currentColor;stroke-width:2.6;fill:none;display:none}
+.up-chips li.run{color:var(--text);box-shadow:inset 0 0 0 1.5px var(--accent-2)}
+.up-chips li.done{color:var(--ok);background:var(--ok-bg);box-shadow:none}
+.up-chips li.done svg{display:block}
+.up-file{margin-top:14px;font:400 11.5px/15px var(--mono);color:var(--text-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.up-swap{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:14px;font:650 22px/1 var(--mono)}
+.up-swap .old{color:var(--text-3);text-decoration:line-through;text-decoration-thickness:2px}
+.up-swap .new{color:var(--accent-text)}
+.up-swap svg{width:20px;height:20px;stroke:var(--text-3);stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.up-kept{display:flex;justify-content:center;flex-wrap:wrap;gap:8px;margin-top:14px}
+.up-kept span{display:inline-flex;align-items:center;gap:6px;padding:6px 11px;border-radius:99px;font:600 12px/15px var(--ui);color:var(--ok);background:var(--ok-bg)}
+.up-kept svg{width:13px;height:13px;stroke:currentColor;stroke-width:2.6;fill:none;stroke-linecap:round;stroke-linejoin:round}
+
+/* =================== UNINSTALL flow (redesigned) =================== */
+.un-status{display:flex;align-items:center;gap:9px;margin-top:16px;padding:10px 12px;border-radius:10px;font:500 12.5px/17px var(--ui);color:var(--text-2);background:var(--info-bg);box-shadow:inset 0 0 0 1px var(--info-line)}
+.un-status svg{width:16px;height:16px;flex:none;stroke:var(--accent-text);stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.un-status em{margin-left:auto;font:400 11.5px var(--mono);font-style:normal;color:var(--text-3);white-space:nowrap}
+.un-tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:18px}
+.un-tile{position:relative;display:flex;flex-direction:column;gap:8px;padding:18px 16px 16px;border-radius:14px;cursor:pointer;background:var(--glass-card);
+  box-shadow:inset 0 0 0 1px var(--hair),inset 0 1px 0 var(--specular);transition:transform .2s var(--ease),box-shadow .2s}
+.un-tile:hover{transform:translateY(-3px)}
+.un-tile .ico{width:44px;height:44px;border-radius:12px}
+.un-tile .ico svg{width:20px;height:20px}
+.un-tile b{margin-top:4px;font:650 16px/20px var(--disp)}
+.un-tile .d{font:400 12px/16px var(--ui);color:var(--text-3)}
+.un-tile.sel{background:linear-gradient(160deg,color-mix(in srgb,var(--accent-2) 14%,transparent),transparent 70%),var(--glass-card);box-shadow:inset 0 0 0 1.5px var(--accent-2),0 16px 30px -18px var(--accent)}
+.un-tile.dz .ico{color:var(--danger);background:var(--danger-bg);box-shadow:inset 0 0 0 1.5px var(--danger-line)}
+.un-tile.dz.sel{background:linear-gradient(160deg,var(--danger-bg),transparent 70%),var(--glass-card);box-shadow:inset 0 0 0 1.5px var(--danger),0 16px 30px -18px var(--danger)}
+.un-chk{position:absolute;right:12px;top:12px;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;box-shadow:inset 0 0 0 1.5px var(--hair-2,rgba(128,128,128,.4))}
+.un-chk svg{width:12px;height:12px;stroke:#fff;stroke-width:3;fill:none;opacity:0}
+.un-tile.sel .un-chk{background:var(--accent-grad);box-shadow:none}.un-tile.sel .un-chk svg{opacity:1}
+.un-tile.dz.sel .un-chk{background:var(--danger)}
+.un-tile em{position:absolute;right:42px;top:14px;padding:2px 8px;border-radius:99px;font:700 10px/14px var(--mono);font-style:normal;color:var(--accent-text);background:color-mix(in srgb,var(--accent-2) 14%,transparent)}
+.un-split{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px}
+.un-col{padding:14px 16px;border-radius:12px;background:var(--glass-card);box-shadow:inset 0 0 0 1px var(--hair)}
+.un-col.rm{box-shadow:inset 0 0 0 1px var(--danger-line)}
+.un-col.kp{box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--ok) 35%,transparent)}
+.un-ch{display:flex;align-items:center;gap:7px;font:700 11px/14px var(--ui);letter-spacing:.1em;text-transform:uppercase}
+.un-ch svg{width:14px;height:14px;stroke:currentColor;stroke-width:2.6;fill:none;stroke-linecap:round}
+.un-col.rm .un-ch{color:var(--danger)}.un-col.kp .un-ch{color:var(--ok)}
+.un-col ul{list-style:none;margin:10px 0 0;padding:0;display:flex;flex-direction:column;gap:7px}
+.un-col li{position:relative;padding-left:16px;font:400 12.5px/17px var(--ui);color:var(--text-2);animation:unIn .3s var(--ease)}
+.un-col li::before{content:"";position:absolute;left:2px;top:6px;width:6px;height:6px;border-radius:50%;background:currentColor;opacity:.5}
+.un-col.rm li::before{background:var(--danger);opacity:.8}.un-col.kp li::before{background:var(--ok);opacity:.8}
+@keyframes unIn{from{opacity:0;transform:translateX(-6px)}}
+.un-ring .fg{stroke:var(--danger);filter:drop-shadow(0 0 6px color-mix(in srgb,var(--danger) 50%,transparent))}
+.un-logo{width:56px;height:56px;margin-bottom:6px;background:url(assests/schemax-anim/mark.png) center/contain no-repeat;transition:opacity .2s,filter .2s}
+:root[data-theme="dark"] .un-logo{background-image:url(assests/schemax-anim-dark/mark.png)}
+@media (prefers-color-scheme: dark){:root[data-theme="auto"] .un-logo{background-image:url(assests/schemax-anim-dark/mark.png)}}
+.un-ring .up-mid b{font-size:22px}
+.un-keptfor{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-top:18px}
+.un-keptfor .lbl2{font:700 10.5px/14px var(--ui);letter-spacing:.12em;text-transform:uppercase;color:var(--text-3);margin-right:4px}
+.un-keptfor span:not(.lbl2){display:inline-flex;align-items:center;gap:6px;padding:6px 11px;border-radius:99px;font:600 12px/15px var(--ui);color:var(--ok);background:var(--ok-bg)}
+.un-keptfor svg{width:13px;height:13px;stroke:currentColor;stroke-width:2.6;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.un-back{display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:12px;background:var(--glass-card);box-shadow:inset 0 0 0 1px var(--hair),inset 0 1px 0 var(--specular)}
+.un-back b{font:600 13.5px/18px var(--ui)}.un-back span:not(.ico){display:block;margin-top:2px;font:400 12.5px/17px var(--ui);color:var(--text-2)}
+.un-back span b{font-size:12.5px;color:var(--text)}
+
+/* =================== SETUP FAILED (redesigned) =================== */
+.fl-banner{display:flex;align-items:center;gap:16px;padding:18px;border-radius:14px;background:linear-gradient(120deg,var(--danger-bg),transparent 80%);box-shadow:inset 0 0 0 1px var(--danger-line)}
+.fl-banner h1{margin:0;font-size:22px;line-height:28px}
+.fl-banner .lead{margin-top:3px}
+.fl-ic{width:52px;height:52px;border-radius:15px;flex:none;display:grid;place-items:center;color:#fff;background:#d23a4a;box-shadow:0 12px 24px -12px #d23a4a;animation:flShake .5s .3s}
+.fl-ic svg{width:24px;height:24px;stroke:currentColor;stroke-width:2.6;fill:none;stroke-linecap:round}
+@keyframes flShake{20%{transform:translateX(-5px) rotate(-4deg)}40%{transform:translateX(5px) rotate(4deg)}60%{transform:translateX(-3px)}80%{transform:translateX(2px)}}
+.fl-banner em{margin-left:auto;align-self:flex-start;padding:4px 10px;border-radius:99px;font:600 11px/14px var(--mono);font-style:normal;color:var(--danger);background:var(--danger-bg);white-space:nowrap}
+.fl-safe{display:flex;align-items:center;gap:9px;margin-top:12px;padding:10px 12px;border-radius:10px;font:500 12.5px/17px var(--ui);color:var(--text-2);background:var(--ok-bg)}
+.fl-safe svg{width:15px;height:15px;flex:none;stroke:var(--ok);stroke-width:2.6;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.fl-head{margin-top:18px;font:700 10.5px/14px var(--ui);letter-spacing:.14em;text-transform:uppercase;color:var(--text-3)}
+.fl-steps{list-style:none;margin:10px 0 0;padding:0;display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.fl-steps li{display:flex;flex-direction:column;gap:10px;padding:13px;border-radius:12px;font:500 12.5px/17px var(--ui);color:var(--text-2);background:var(--glass-card);box-shadow:inset 0 0 0 1px var(--hair),inset 0 1px 0 var(--specular)}
+.fl-steps b{width:26px;height:26px;border-radius:8px;display:grid;place-items:center;font:700 12px var(--ui);color:var(--accent-text);background:color-mix(in srgb,var(--accent-2) 12%,transparent)}
+.fl-steps li:last-child b{color:var(--danger);background:var(--danger-bg)}
+.fl-log{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:12px;background:var(--glass-card);box-shadow:inset 0 0 0 1px var(--hair)}
+.fl-log>svg{width:20px;height:20px;flex:none;stroke:var(--text-3);stroke-width:1.8;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.fl-log div{flex:1;min-width:0}
+.fl-log small{display:block;font:700 10px/13px var(--ui);letter-spacing:.12em;text-transform:uppercase;color:var(--text-3)}
+.fl-log .mono{display:block;margin-top:2px;font:400 12px/16px var(--mono);color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fl-log .btn{height:34px}
+
+/* update: version odometer (last digit rolls 4 → 5) */
+.up-odo{display:flex;align-items:center;gap:28px;margin-top:22px;padding:18px 24px;border-radius:16px;
+  background:linear-gradient(115deg,color-mix(in srgb,var(--accent-2) 11%,transparent),transparent 60%),var(--glass-card);box-shadow:inset 0 0 0 1px var(--hair),inset 0 1px 0 var(--specular)}
+.up-odo-num{display:flex;align-items:center;font:700 62px/1 var(--mono);letter-spacing:-.03em;color:var(--text)}
+.up-odo-num i{font-style:normal;color:var(--text-3);margin:0 1px}
+.up-odo-num .roll{position:relative;display:inline-block;height:72px;margin-left:4px;padding:0 8px;overflow:hidden;border-radius:12px;color:var(--accent-text);
+  background:color-mix(in srgb,var(--accent-2) 12%,transparent);box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--accent-2) 50%,transparent),0 12px 26px -14px var(--accent),inset 0 12px 14px -12px rgba(0,0,0,.35),inset 0 -12px 14px -12px rgba(0,0,0,.35)}
+.up-odo-num .strip{display:flex;flex-direction:column;animation:upRoll 4.2s cubic-bezier(.65,0,.2,1) infinite}
+.up-odo-num .strip b{display:block;height:72px;line-height:72px;font-weight:700}
+@keyframes upRoll{0%,22%{transform:translateY(0);opacity:1}42%,88%{transform:translateY(-72px);opacity:1}96%{transform:translateY(-72px);opacity:0}97%{transform:translateY(0);opacity:0}100%{transform:translateY(0);opacity:1}}
+.up-odo-side{flex:1;min-width:0}
+.up-odo-side small{display:block;font:700 10px/14px var(--ui);letter-spacing:.14em;text-transform:uppercase;color:var(--text-3)}
+.up-odo-side>b{display:block;margin-top:3px;font:650 18px/23px var(--disp)}
+.up-odo-chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.up-odo-chips span{padding:4px 10px;border-radius:99px;font:500 12px/16px var(--ui);color:var(--text-3);background:var(--glass-btn);box-shadow:inset 0 0 0 1px var(--hair)}
+.up-odo-chips b{font-family:var(--mono);color:var(--text-2)}
+.up-odo-chips .new{color:var(--accent-text);background:color-mix(in srgb,var(--accent-2) 12%,transparent);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--accent-2) 40%,transparent)}
+.up-odo-chips .new b{color:var(--accent-text)}
+.up-odo-time{margin-top:8px;font:400 12px/16px var(--ui);color:var(--text-3)}
+@media (prefers-reduced-motion:reduce){.up-odo-num .strip{animation:none;transform:translateY(-72px)}}
+</style>
+</head>
+<body>
+
+<!-- ======================= preview bar (review only) ======================= -->
+<div class="pv" role="toolbar" aria-label="Preview controls">
+  <b>Flow</b>
+  <div class="seg" id="flowSeg">
+    <button data-flow="install" aria-pressed="true">Install</button>
+    <button data-flow="update" aria-pressed="false">Update</button>
+    <button data-flow="uninstall" aria-pressed="false">Uninstall</button>
+    <button data-flow="blocked" aria-pressed="false">Blocked check</button>
+    <button data-flow="error" aria-pressed="false">Setup failed</button>
+  </div>
+  <b>Theme</b>
+  <div class="seg" id="themeSeg">
+    <button data-theme="light" aria-pressed="false">Light</button>
+    <button data-theme="dark" aria-pressed="false">Dark</button>
+    <button data-theme="auto" aria-pressed="true">Auto</button>
+  </div>
+</div>
+
+<!-- ======================= installer window ======================= -->
+<div class="win" id="win" role="dialog" aria-label="Schemax Schematics setup">
+  <div class="tb">
+    <span class="tile" aria-hidden="true"><img src="assests/schemax-anim/mark.png" alt=""></span>
+    <b id="tbTitle">Schemax Schematics setup</b>
+    <i>/</i><span id="crumb">Welcome</span>
+    <span class="grow"></span>
+    <button class="cap" aria-label="Minimize"><svg viewBox="0 0 10 10"><path d="M0 5h10"/></svg></button>
+    <button class="cap x" id="capClose" aria-label="Close"><svg viewBox="0 0 10 10"><path d="M0 0l10 10M10 0 0 10"/></svg></button>
+  </div>
+
+  <div class="body">
+    <!-- rail -->
+    <aside class="rail">
+      <div class="lock">
+        <div class="mark intro" id="mark"><img data-logo src="assests/schemax-anim/mark.png" alt="Schemax"></div>
+        <div class="brand"><span>Schemax</span> Schematics</div>
+        <div class="meta" id="meta">1.7.5 · 220 MB</div>
+      </div>
+      <div class="foot">© 2026 Schemax Team<br>Proprietary and confidential</div>
+    </aside>
+
+    <!-- pane -->
+    <section class="pane">
+      <div class="view" id="view">
+
+        <!-- ===== INSTALL ===== -->
+        <div class="page" data-page="welcome">
+          <div class="kicker">Setup wizard</div>
+          <h1>Welcome to the Schemax Schematics Setup Wizard</h1>
+          <p class="lead">Setup will install Schemax Schematics version 1.7.5 on this computer.</p>
+          <div class="pub"><svg viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="m9 12 2 2 4-4"/></svg>Publisher: Schemax Team · schemaxsolutions.com</div>
+          <div class="feats mt" style="margin-top:auto">
+            <div class="feat"><i><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h6v10M15 4v6h6"/><circle cx="12" cy="15" r="1.4"/></svg></i><div><b>Boardview</b><span>Pin-accurate layouts</span></div></div>
+            <div class="feat"><i><svg viewBox="0 0 24 24"><path d="M3 12h4l2-5 3 10 2-5h7"/></svg></i><div><b>Schematics</b><span>2.3M+ searchable files</span></div></div>
+            <div class="feat"><i><svg viewBox="0 0 24 24"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.4-.6-.6-2.4z"/></svg></i><div><b>Repair tools</b><span>Rails, nets &amp; faults</span></div></div>
+          </div>
+        </div>
+
+        <div class="page" data-page="license">
+          <h1>License Agreement</h1>
+          <p class="lead">Please read the following important information before continuing.</p>
+          <div class="lic" tabindex="0" id="licText">Schemax Schematics — License Agreement
+
+© 2026 Schemax Team. All rights reserved.
+
+1. GRANT OF LICENSE. Schemax Team grants you a personal, non-transferable licence to install and use Schemax Schematics on computers you own or control, subject to an active plan.
+
+2. RESTRICTIONS. You may not copy, redistribute, resell, reverse-engineer, decompile or disassemble the software or the schematic, boardview and repair data it provides, except where the law expressly permits it.
+
+3. ACCOUNT AND HARDWARE ID. Each licence is bound to one PC at a time. You can release it from an old PC with HWID Reset up to three times a month.
+
+4. DATA. Schematic and boardview files are provided for repair and diagnosis only. They remain the property of their respective owners.
+
+5. UPDATES. The software may download updates. Settings and files are kept across updates.
+
+6. NO WARRANTY. The software is provided "as is", without warranty of any kind. Schemax Team is not liable for damage arising from its use.
+
+7. TERMINATION. This licence ends automatically if you break its terms. On termination you must uninstall the software.</div>
+          <div class="radios" role="radiogroup" aria-label="License choice">
+            <div class="radio" role="radio" tabindex="0" aria-checked="false" data-lic="yes"><span class="dot"></span><span class="t">I accept the license agreement</span></div>
+            <div class="radio sel" role="radio" tabindex="0" aria-checked="true" data-lic="no"><span class="dot"></span><span class="t">I do not accept the agreement</span></div>
+          </div>
+        </div>
+
+        <div class="page" data-page="system">
+          <h1>Checking your system</h1>
+          <p class="lead">Verifying the requirements so you don't have to read them.</p>
+          <div class="callout err" style="margin-top:16px" id="sacCallout" hidden>
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>
+            <span>Smart App Control will block Schemax Schematics from starting. Turn it off in <a href="#" onclick="return false">Windows Security › App &amp; browser control</a>, restart, then run setup again.</span>
+          </div>
+          <div class="checks" id="checks"></div>        </div>
+
+        <div class="page" data-page="destination">
+          <h1>Select Destination Location</h1>
+          <p class="lead">Setup will install Schemax Schematics into the following folder.</p>
+          <div class="lbl">Install to</div>
+          <div class="pathrow">
+            <label class="ctl"><svg viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg><input id="path" value="C:\Program Files\Schemax Schematics" spellcheck="false" aria-label="Install location"></label>
+            <button class="btn ghost" id="browse">Browse…</button>
+          </div>
+          <div class="space">
+            <div class="bar" aria-hidden="true"><i></i><i></i></div>
+            <div class="legend"><span><i style="background:color-mix(in srgb,var(--text) 22%,transparent)"></i>Used <b>198 GB</b></span><span><i style="background:var(--accent-2)"></i>Schemax <b>220 MB</b></span><span>Free on C: <b>312 GB</b></span></div>
+          </div>
+          <div class="callout info mt"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg><span>Your boardview and schematic library downloads to your user folder, not here — this location only holds the app.</span></div>
+        </div>
+
+        <div class="page" data-page="tasks">
+          <h1>Select Additional Tasks</h1>
+          <p class="lead">Which additional task should be performed while installing Schemax Schematics?</p>
+          <div class="stack">
+            <div class="toggle on" role="switch" tabindex="0" aria-checked="true" data-task="desktop">
+              <span class="ico"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg></span>
+              <span><span class="t">Create a desktop shortcut</span><br><span class="d">Open Schemax from your desktop.</span></span>
+              <span class="sw"></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="page" data-page="ready">
+          <h1>Ready to Install</h1>
+          <p class="lead">Setup is now ready to begin installing Schemax Schematics on your computer.</p>
+          <dl class="card sum">
+            <div><dt>Destination</dt><dd class="mono" id="sumPath">C:\Program Files\Schemax Schematics</dd></div>
+            <div><dt>Additional tasks</dt><dd id="sumTasks">Create a desktop shortcut</dd></div>
+            <div><dt>Includes</dt><dd>WebView2 Runtime (missing — will install)</dd></div>
+            <div><dt>Space required</dt><dd>220 MB</dd></div>
+          </dl>
+          <div class="callout info mt"><svg viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/></svg><span>Windows will ask for permission — setup needs administrator rights to install for all users.</span></div>
+        </div>
+
+        <div class="page" data-page="installing">
+          <h1 id="runTitle">Installing Schemax Schematics</h1>
+          <p class="lead" id="runLead">Roughly a minute. You can keep using your PC.</p>
+          <div class="prog">
+            <div class="top"><div class="pct" id="pct">0<small>%</small></div><div class="eta" id="eta">This may take a few minutes.</div></div>
+            <div class="track"><i id="bar"></i></div>
+            <div class="file" id="file">C:\Program Files\Schemax Schematics\</div>
+          </div>
+          <ul class="tasks" id="runTasks"></ul>
+        </div>
+
+        <div class="page" data-page="finished">
+          <div class="done-hero">
+            <div class="badge"><svg viewBox="0 0 24 24"><path d="m5 12 5 5 9-10"/></svg></div>
+            <h1 class="rise">Schemax Schematics is installed</h1>
+            <p class="lead rise d1" id="finLead">Installed to C:\Program Files\Schemax Schematics.
+A shortcut is on your desktop.</p>
+            <div class="vers rise d2"><span class="chip ok" id="finTime">Finished in 51 seconds</span><span class="chip">Version <b>1.7.5</b></span></div>
+          </div>
+          <div class="stack rise d3" style="margin-top:auto">
+            <div class="toggle on" role="switch" tabindex="0" aria-checked="true" data-task="launch">
+              <span class="ico"><svg viewBox="0 0 24 24"><path d="M7 4v16l13-8z"/></svg></span>
+              <span><span class="t">Open Schemax Schematics</span><br><span class="d">Sign in and pick up where you left off.</span></span>
+              <span class="sw"></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== UPDATE (redesigned: upgrade path · plan · version ring · kept badges) ===== -->
+        <div class="page" data-page="update">
+          <div class="kicker">Update</div>
+          <h1>Update Available for Schemax Schematics</h1>
+          <p class="lead">A newer version is ready to install.
+Your settings and files will be kept.</p>
+          <div class="up-odo" aria-label="Installed 1.7.4, latest 1.7.5">
+            <div class="up-odo-num" aria-hidden="true"><span>1</span><i>.</i><span>7</span><i>.</i><span class="roll"><span class="strip"><b>4</b><b>5</b></span></span></div>
+            <div class="up-odo-side">
+              <small>Version</small>
+              <b>One update behind</b>
+              <div class="up-odo-chips"><span>Installed <b>1.7.4</b></span><span class="new">Latest <b>1.7.5</b></span></div>
+              <div class="up-odo-time">About a minute to update · Recommended</div>
+            </div>
+          </div>
+          <div class="up-head">What's new in 1.7.5</div>
+          <div class="up-news">
+            <div class="up-n"><span class="ico"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h6v10M15 4v6h6"/><circle cx="12" cy="15" r="1.4"/></svg></span><div><b>Faster boardview</b><span>Large boards open and pan more smoothly.</span></div></div>
+            <div class="up-n"><span class="ico"><svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 9h6M9 13h6M9 17h3"/></svg></span><div><b>New sign-in screen</b><span>A cleaner, quicker way in.</span></div></div>
+            <div class="up-n"><span class="ico"><svg viewBox="0 0 24 24"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.4-.6-.6-2.4z"/></svg></span><div><b>Fixes</b><span>PDF viewer stability and connection-check improvements.</span></div></div>
+          </div>
+        </div>
+
+        <div class="page" data-page="readyUpdate">
+          <h1>Ready to Update</h1>
+          <p class="lead">Setup will update Schemax Schematics to version 1.7.5.</p>
+          <div class="up-plan" aria-label="What setup will do">
+            <div><span class="ico"><svg viewBox="0 0 24 24"><path d="M7 7l10 10M17 7 7 17"/></svg></span>Close Schemax<small>if it is open</small></div>
+            <div><span class="ico"><svg viewBox="0 0 24 24"><path d="M5 4h11l3 3v13H5z"/><path d="M8 4v5h7V4M8 20v-6h8v6"/></svg></span>Back up settings<small>kept safe</small></div>
+            <div><span class="ico"><svg viewBox="0 0 24 24"><path d="M21 8 12 3 3 8v8l9 5 9-5z"/><path d="M3 8l9 5 9-5M12 13v8"/></svg></span>Replace files<small>1.7.4 → 1.7.5</small></div>
+            <div><span class="ico"><svg viewBox="0 0 24 24"><path d="M7 4v16l13-8z"/></svg></span>Reopen Schemax<small>right where you were</small></div>
+          </div>
+          <dl class="card sum">
+            <div><dt>Installed in</dt><dd class="mono">C:\Program Files\Schemax Schematics</dd></div>
+            <div><dt>Version</dt><dd>1.7.4 → <b style="color:var(--accent-text)">1.7.5</b></dd></div>
+            <div><dt>Your settings</dt><dd>Kept — backed up before the update</dd></div>
+          </dl>
+          <div class="callout warn mt"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg><span>Schemax Schematics is running. Setup will close it for you and reopen it afterwards.</span></div>
+        </div>
+
+        <div class="page" data-page="updating">
+          <h1>Updating Schemax Schematics</h1>
+          <p class="lead">Roughly a minute. You can keep using your PC.</p>
+          <div class="up-run">
+            <div class="up-ring"><svg viewBox="0 0 170 170" aria-hidden="true"><circle class="bg" cx="85" cy="85" r="76"/><circle class="fg" id="upRing" pathLength="1" cx="85" cy="85" r="76"/></svg>
+              <div class="up-mid"><b id="upPct">0%</b><span id="upVer">1.7.4</span></div></div>
+            <div class="up-side">
+              <div class="up-step" id="upStep">Stopping Schemax Schematics</div>
+              <div class="up-eta" id="upEta">This may take a minute.</div>
+              <ul class="up-chips" id="upChips"></ul>
+              <div class="up-file" id="upFile">C:\Program Files\Schemax Schematics\</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="page" data-page="updated">
+          <div class="done-hero">
+            <div class="badge"><svg viewBox="0 0 24 24"><path d="m5 12 5 5 9-10"/></svg></div>
+            <h1 class="rise">Schemax Schematics has been updated</h1>
+            <p class="lead rise d1">Now running version 1.7.5.
+Your settings were preserved.</p>
+            <div class="up-swap rise d2"><span class="old">1.7.4</span><svg viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></svg><span class="new">1.7.5</span></div>
+            <div class="up-kept rise d2"><span><svg viewBox="0 0 24 24"><path d="m5 12 5 5 9-10"/></svg>Settings kept</span><span><svg viewBox="0 0 24 24"><path d="m5 12 5 5 9-10"/></svg>Library kept</span><span><svg viewBox="0 0 24 24"><path d="m5 12 5 5 9-10"/></svg>Still signed in</span></div>
+            <div class="vers rise d2" style="justify-content:center"><span class="chip ok">Updated in 38 seconds</span></div>
+          </div>
+          <div class="stack rise d3" style="margin-top:auto">
+            <div class="toggle on" role="switch" tabindex="0" aria-checked="true" data-task="launch2">
+              <span class="ico"><svg viewBox="0 0 24 24"><path d="M7 4v16l13-8z"/></svg></span>
+              <span><span class="t">Open Schemax Schematics</span><br><span class="d">Your session and library are ready.</span></span>
+              <span class="sw"></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== MAINTENANCE / UNINSTALL (redesigned: action tiles · removed-vs-kept · dissolving logo · kept badges) ===== -->
+        <div class="page" data-page="choose">
+          <h1>What would you like to do?</h1>
+          <p class="lead">Choose an action for Schemax Schematics.</p>
+          <div class="un-status"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8.5 12 2.5 2.5 4.5-5"/></svg><span>Schemax Schematics 1.7.4 is installed on this computer.</span><em>C:\Program Files\Schemax Schematics</em></div>
+          <div class="un-tiles" role="radiogroup" aria-label="Action">
+            <div class="un-tile" role="radio" tabindex="0" aria-checked="false" data-act="install"><span class="un-chk"><svg viewBox="0 0 24 24"><path d="m5 12 5 5 9-10"/></svg></span><span class="ico"><svg viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg></span><b>Install</b><span class="d">Set up Schemax Schematics on this computer</span></div>
+            <div class="un-tile sel" role="radio" tabindex="0" aria-checked="true" data-act="update"><em>1.7.5</em><span class="un-chk"><svg viewBox="0 0 24 24"><path d="m5 12 5 5 9-10"/></svg></span><span class="ico"><svg viewBox="0 0 24 24"><path d="M4.5 8.5A8 8 0 1 1 4 14"/><path d="M4 4v5h5"/></svg></span><b>Update</b><span class="d">Refresh the installed copy to version 1.7.5</span></div>
+            <div class="un-tile dz" role="radio" tabindex="0" aria-checked="false" data-act="uninstall"><span class="un-chk"><svg viewBox="0 0 24 24"><path d="m5 12 5 5 9-10"/></svg></span><span class="ico"><svg viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg></span><b>Uninstall</b><span class="d">Remove Schemax Schematics from this computer</span></div>
+          </div>
+        </div>
+
+        <div class="page" data-page="confirmUninstall">
+          <h1>Uninstall Schemax Schematics</h1>
+          <p class="lead">This will remove Schemax Schematics from your computer.</p>
+          <div class="un-split">
+            <div class="un-col rm"><div class="un-ch"><svg viewBox="0 0 24 24"><path d="M7 7l10 10M17 7 7 17"/></svg>Will be removed</div>
+              <ul id="unRemoved"><li>The Schemax Schematics app</li><li>Start menu &amp; desktop shortcuts</li><li class="pg-pref" hidden>Preferences, themes &amp; library cache</li></ul></div>
+            <div class="un-col kp"><div class="un-ch"><svg viewBox="0 0 24 24"><path d="m5 12 5 5 9-10"/></svg>Stays on your PC</div>
+              <ul id="unKept"><li>Your project files</li><li>Your account &amp; plan</li><li class="pg-pref">Preferences, themes &amp; library cache</li></ul></div>
+          </div>
+          <div class="callout warn mt"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg><span>This cannot be undone. Your project files will not be deleted.</span></div>
+          <div class="stack">
+            <div class="toggle" role="switch" tabindex="0" aria-checked="false" data-task="purge">
+              <span class="ico" style="color:var(--danger);background:var(--danger-bg);box-shadow:inset 0 0 0 1.5px var(--danger-line)"><svg viewBox="0 0 24 24"><path d="M4 7h16M6 7l1 13h10l1-13M9 7V4h6v3"/></svg></span>
+              <span><span class="t">Also delete my preferences and cached data</span><br><span class="d">Settings, themes and the downloaded library cache.</span></span>
+              <span class="sw"></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="page" data-page="uninstalling">
+          <h1>Removing Schemax Schematics</h1>
+          <p class="lead">Removing Schemax Schematics from your computer.</p>
+          <div class="up-run">
+            <div class="up-ring un-ring"><svg viewBox="0 0 170 170" aria-hidden="true"><circle class="bg" cx="85" cy="85" r="76"/><circle class="fg" id="unRing" pathLength="1" cx="85" cy="85" r="76"/></svg>
+              <div class="up-mid"><span class="un-logo" id="unLogo"></span><b id="unPct">0%</b></div></div>
+            <div class="up-side">
+              <div class="up-step" id="unStep">Stopping Schemax Schematics</div>
+              <div class="up-eta" id="unEta">This only takes a moment.</div>
+              <ul class="up-chips" id="unChips"></ul>
+              <div class="up-file" id="unFile">C:\Program Files\Schemax Schematics\</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="page" data-page="uninstalled">
+          <div class="done-hero">
+            <div class="badge bye"><svg viewBox="0 0 24 24"><path d="m5 12 5 5 9-10"/></svg></div>
+            <h1 class="rise">See You Later!</h1>
+            <p class="lead rise d1" id="byeLead">Schemax Schematics has been removed from your computer.</p>
+            <div class="vers rise d2"><span class="chip ok">Uninstalled in 24 seconds</span></div>
+          </div>
+          <div class="un-keptfor rise d2"><span class="lbl2">Kept for you</span>
+            <span><svg viewBox="0 0 24 24"><path d="m5 12 5 5 9-10"/></svg>Project files</span><span><svg viewBox="0 0 24 24"><path d="m5 12 5 5 9-10"/></svg>Account</span><span><svg viewBox="0 0 24 24"><path d="m5 12 5 5 9-10"/></svg>Active plan</span><span id="keptPrefs"><svg viewBox="0 0 24 24"><path d="m5 12 5 5 9-10"/></svg>Preferences</span></div>
+          <div class="un-back rise d3" style="margin-top:auto">
+            <span class="ico"><svg viewBox="0 0 24 24"><path d="M4.5 8.5A8 8 0 1 1 4 14"/><path d="M4 4v5h5"/></svg></span>
+            <div><b>Coming back?</b><span>Your account and plan stay active. Reinstall any time from <b>schemaxsolutions.com</b> and sign in.</span></div>
+          </div>
+        </div>
+
+        <!-- ===== FAILURE (redesigned: diagnostic banner · numbered fixes · log row) ===== -->
+        <div class="page" data-page="failed">
+          <div class="fl-banner rise">
+            <span class="fl-ic"><svg viewBox="0 0 24 24"><path d="M7 7l10 10M17 7 7 17"/></svg></span>
+            <div><h1>Setup could not finish</h1><p class="lead">A fatal error occurred during installation. (exit code 2)</p></div>
+            <em>Exit code 2</em>
+          </div>
+          <div class="fl-safe rise d1"><svg viewBox="0 0 24 24"><path d="m5 12 5 5 9-10"/></svg><span>Setup did not complete. Nothing was changed on your computer.</span></div>
+          <div class="fl-head rise d2">What to try</div>
+          <ol class="fl-steps rise d2">
+            <li><b>1</b><span>Close Schemax if it is open</span></li>
+            <li><b>2</b><span>Restart your PC</span></li>
+            <li><b>3</b><span>Run setup again</span></li>
+            <li><b>4</b><span>Still failing? Send the log to support.</span></li>
+          </ol>
+          <div class="fl-log rise d3" style="margin-top:auto"><svg viewBox="0 0 24 24"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h5"/></svg>
+            <div><small>Log</small><span class="mono">%TEMP%\Setup Log 2026-11-09 #001.txt</span></div><button class="btn ghost" id="flCopy">Copy path</button></div>
+        </div>
+
+      </div>
+
+      <!-- footer bar -->
+      <div class="fbar">
+        <div class="hint" id="hint"></div>
+        <button class="btn ghost" id="bBack">Back</button>
+        <button class="btn ghost" id="bAlt">Cancel</button>
+        <button class="btn primary" id="bNext"><span class="spin"></span><span id="bNextText">Next</span><svg class="arr" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></button>
+      </div>
+    </section>
+  </div>
+
+  <!-- cancel confirm -->
+  <div class="layer" id="layer" role="alertdialog" aria-modal="true" aria-labelledby="ncTitle">
+    <div class="ncard">
+      <div class="nc-side"><span class="lt"><img src="assests/schemax-anim/mark.png" alt=""></span><small>Setup</small><h2 id="ncTitle">Cancel setup?</h2></div>
+      <div class="nc-main">
+        <b>Schemax Schematics isn't installed yet</b>
+        <p>If you stop now, nothing is installed. You can run setup again any time.</p>
+        <div class="btns"><button class="btn ghost" id="ncKeep">Keep going</button><button class="btn danger" id="ncStop">Cancel setup</button></div>
+      </div>
+    </div>
+  </div>
+  <div class="confetti" id="confetti"></div>
+</div>
+
+<script>
+(() => {
+  const $ = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+  const root = document.documentElement;
+
+  /* ---------------- theme (preview) + logo folder ---------------- */
+  const darkMq = matchMedia('(prefers-color-scheme: dark)');
+  const isDark = () => root.dataset.theme === 'dark' || (root.dataset.theme === 'auto' && darkMq.matches);
+  function syncLogos() {
+    const dir = isDark() ? 'assests/schemax-anim-dark/' : 'assests/schemax-anim/';
+    $$('img[data-logo]').forEach(i => i.src = dir + 'mark.png');
+  }
+  $$('#themeSeg button').forEach(b => b.onclick = () => {
+    root.dataset.theme = b.dataset.theme;
+    $$('#themeSeg button').forEach(x => x.setAttribute('aria-pressed', x === b));
+    syncLogos();
+  });
+  darkMq.addEventListener('change', syncLogos);
+  syncLogos();
+
+  /* ---------------- flows ---------------- */
+  // Each page: crumb, hint, buttons. next/alt/back: label or null (hidden).
+  const P = {
+    welcome:     { crumb: 'Welcome', step: 0, hint: "Close other apps before you continue.", next: 'Next', alt: 'Cancel' },
+    license:     { crumb: 'License', step: 1, hint: 'Read the license before continuing', next: 'Next', alt: 'Cancel', back: true },
+    system:      { crumb: 'System check', step: 2, hint: '', next: 'Next', alt: 'Cancel', back: true },
+    destination: { crumb: 'Location', step: 3, hint: 'Choose where Schemax Schematics lives', next: 'Next', alt: 'Cancel', back: true },
+    tasks:       { crumb: 'Options', step: 4, hint: 'Optional — safe to skip', next: 'Next', alt: 'Cancel', back: true },
+    ready:       { crumb: 'Ready', step: 5, hint: 'Review before you install', next: 'Install', shield: true, alt: 'Cancel', back: true },
+    installing:  { crumb: 'Installing', step: 6, hint: 'Do not turn off your PC', next: 'Install', busy: true, alt: 'Cancel' },
+    finished:    { crumb: 'Finished', step: 7, hint: 'Finished in 51 seconds', hintCls: 'ok', next: 'Finish', confetti: true },
+
+    update:      { crumb: 'Update available', step: 0, hint: 'Recommended — includes performance fixes', next: 'Update Now', alt: 'Skip' },
+    readyUpdate: { crumb: 'Ready', step: 1, hint: 'Review before you update', next: 'Update', shield: true, alt: 'Cancel', back: true },
+    updating:    { crumb: 'Updating', step: 2, hint: 'Do not turn off your PC', next: 'Update', busy: true, alt: 'Cancel' },
+    updated:     { crumb: 'Updated', step: 3, hint: 'Updated in 38 seconds', hintCls: 'ok', next: 'Finish', confetti: true },
+
+    choose:      { crumb: 'Maintenance', step: 0, hint: 'Schemax Schematics 1.7.4 is installed', next: 'Next', alt: 'Cancel' },
+    confirmUninstall: { crumb: 'Uninstall', step: 1, hint: 'Your project files are kept', next: 'Uninstall', danger: true, alt: 'Cancel', back: true },
+    uninstalling:{ crumb: 'Uninstalling', step: 2, hint: 'Do not turn off your PC.', next: 'Uninstall', busy: true, danger: true },
+    uninstalled: { crumb: 'Removed', step: 3, hint: 'Uninstalled in 24 seconds', hintCls: 'ok', next: 'Close' },
+
+    failed:      { crumb: 'Setup failed', step: -1, hint: 'Setup did not complete.', hintCls: 'bad', next: 'Close', alt: 'Copy log path' },
+  };
+  const FLOWS = {
+    install:   { title: 'Schemax Schematics setup', meta: '1.7.5 · 220 MB', steps: ['Welcome', 'License', 'System check', 'Location', 'Options', 'Ready', 'Install', 'Finish'],
+                 pages: ['welcome', 'license', 'system', 'destination', 'tasks', 'ready', 'installing', 'finished'] },
+    update:    { title: 'Schemax Schematics setup', meta: '1.7.4 → 1.7.5', steps: ['Update', 'Ready', 'Updating', 'Done'],
+                 pages: ['update', 'readyUpdate', 'updating', 'updated'] },
+    uninstall: { title: 'Schemax Schematics uninstall', meta: '1.7.4 · installed', steps: ['Choose', 'Confirm', 'Uninstall', 'Done'],
+                 pages: ['choose', 'confirmUninstall', 'uninstalling', 'uninstalled'] },
+    blocked:   null, error: null,
+  };
+  // Run steps for the progress pages (the installer's real step names).
+  const RUN = {
+    installing: { title: 'Installing Schemax Schematics', lead: 'Roughly a minute. You can keep using your PC.', time: 5200,
+      tasks: ['Extracting application files', 'Installing WebView2 Runtime', 'Creating shortcuts', 'Finishing up…'],
+      files: ['Schemax.exe', 'Qt6Core.dll', 'Qt6Gui.dll', 'Qt6Widgets.dll', 'pdfium.dll', 'libEGL.dll', 'glew32.dll', 'glfw3.dll', 'symbols\\ieee.lib', 'config\\pcb_themes_builtin.json', 'MicrosoftEdgeWebView2Setup.exe', 'Schemax Schematics.lnk'] },
+    updating: { title: 'Updating Schemax Schematics', lead: 'Roughly a minute. You can keep using your PC.', time: 4200,
+      tasks: ['Stopping Schemax Schematics', 'Backing up your settings', 'Replacing application files', 'Migrating configuration', 'Restarting services'],
+      files: ['settings.ini', 'Schemax.exe', 'Qt6Core.dll', 'pdfium.dll', 'config\\pcb_themes_builtin.json', 'themes.json'] },
+    uninstalling: { title: 'Removing Schemax Schematics', lead: 'Removing Schemax Schematics from your computer.', time: 3600,
+      tasks: ['Stopping Schemax Schematics', 'Removing application files', 'Removing shortcuts', 'Removing user data'],
+      files: ['Schemax.exe', 'Qt6Core.dll', 'pdfium.dll', 'Schemax Schematics.lnk', '%APPDATA%\\Schemax'] },
+  };
+  const SYSTEM = [
+    { n: 'Operating system', v: 'Windows 11 Pro · 64-bit', s: 'ok', tag: 'OK', icon: 'win' },
+    { n: 'Processor', v: 'Intel Core i7-10700 · 2.9 GHz', s: 'ok', tag: 'OK', icon: 'cpu' },
+    { n: 'Memory', v: '16 GB', s: 'ok', tag: 'OK', icon: 'mem' },
+    { n: 'Disk space', v: '220 MB required · 312 GB free on C:', s: 'ok', tag: 'OK', icon: 'disk' },
+    { n: 'Graphics · display', v: '1920 × 1080 · 60 Hz', s: 'ok', tag: 'OK', icon: 'gpu' },
+    { n: 'WebView2 Runtime', v: 'Missing — will install', s: 'warn', tag: 'Will install', icon: 'web' },
+    { n: 'Visual C++ Runtime', v: 'Installed · 14.40', s: 'ok', tag: 'OK', icon: 'pkg' },
+    { n: 'Smart App Control', v: 'Off', s: 'ok', tag: 'OK', icon: 'shield' },
+  ];
+  const ICON = {
+    win: '<path d="M3 5.5 10.5 4.5v7H3zM12 4.3 21 3v8.5h-9zM3 12.5h7.5v7L3 18.5zM12 12.5h9V21l-9-1.3z"/>',
+    cpu: '<rect x="6" y="6" width="12" height="12" rx="2"/><path d="M9 2v4M15 2v4M9 18v4M15 18v4M2 9h4M2 15h4M18 9h4M18 15h4"/>',
+    mem: '<rect x="3" y="7" width="18" height="10" rx="2"/><path d="M7 7v10M11 7v10M15 7v10M3 20h18"/>',
+    disk: '<ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6"/><path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/>',
+    gpu: '<rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/>',
+    web: '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/>',
+    pkg: '<path d="M21 8 12 3 3 8v8l9 5 9-5z"/><path d="M3 8l9 5 9-5M12 13v8"/>',
+    shield: '<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/>',
+  };
+  const TICK = '<svg viewBox="0 0 24 24"><path d="m5 12 5 5 9-10"/></svg>';
+  const BANG = '<svg viewBox="0 0 24 24"><path d="M12 6v8M12 18h.01"/></svg>';
+  const CROSS = '<svg viewBox="0 0 24 24"><path d="M7 7l10 10M17 7 7 17"/></svg>';
+
+  let flowKey = 'install', flow = FLOWS.install, idx = 0, page = 'welcome';
+  let blocked = false, licOk = false, runTimer = null, checkTimer = null;
+
+  function setFlow(key) {
+    clearTimers();
+    blocked = key === 'blocked';
+    flowKey = key;
+    $$('#flowSeg button').forEach(b => b.setAttribute('aria-pressed', b.dataset.flow === key));
+    if (key === 'error') { flow = FLOWS.install; $('#tbTitle').textContent = flow.title; $('#meta').textContent = flow.meta; renderSteps(); go('failed', 1, true); return; }
+    flow = FLOWS[blocked ? 'install' : key];
+    $('#tbTitle').textContent = flow.title;
+    $('#meta').textContent = flow.meta;
+    renderSteps();
+    licOk = blocked; setLic(blocked);
+    go(blocked ? 'system' : flow.pages[0], 1, true);
+  }
+  function renderSteps() {
+    const st = $('#steps'); if (st) st.innerHTML = flow.steps.map(s => `<li><i>${TICK}</i>${s}</li>`).join('');
+  }
+  function clearTimers() { clearTimeout(runTimer); clearTimeout(checkTimer); runTimer = checkTimer = null; }
+
+  function go(id, dir = 1, instant = false) {
+    clearTimers();
+    page = id;
+    const cfg = P[id];
+    idx = flow.pages.indexOf(id);
+    $$('.page').forEach(p => { p.classList.remove('on', 'back'); });
+    const el = $(`.page[data-page="${id}"]`) || $('.page[data-page="installing"]');
+    if (dir < 0) el.classList.add('back');
+    void el.offsetWidth;
+    el.classList.add('on');
+    $('#crumb').textContent = cfg.crumb;
+    $$('#steps li').forEach((li, i) => { li.classList.toggle('done', cfg.step > i); li.classList.toggle('on', cfg.step === i); });
+    // footer
+    const hint = $('#hint');
+    hint.textContent = cfg.hint; hint.className = 'hint ' + (cfg.hintCls || '');
+    $('#bBack').hidden = !cfg.back;
+    $('#bAlt').hidden = !cfg.alt; $('#bAlt').textContent = cfg.alt || '';
+    $('#bAlt').disabled = !!cfg.busy && id === 'uninstalling';
+    const nb = $('#bNext');
+    nb.className = 'btn ' + (cfg.danger ? 'danger' : 'primary') + (cfg.busy ? ' busy' : '');
+    $('#bNextText').textContent = cfg.next;
+    nb.querySelector('.arr').style.display = (cfg.next === 'Next' || cfg.next === 'Update Now') ? '' : 'none';
+    nb.querySelector('.spin').style.display = cfg.busy ? 'inline-block' : '';
+    nb.innerHTML = nb.innerHTML.replace(/<svg class="shield"[\s\S]*?<\/svg>/, '');
+    if (cfg.shield) nb.insertAdjacentHTML('afterbegin', '<svg class="shield" viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/></svg>');
+    nb.disabled = !!cfg.busy || (id === 'license' && !licOk);
+    // page work
+    if (id === 'system') runSystem();
+    if (id === 'updating') runUpdate(); else if (id === 'uninstalling') runUninstall(); else if (RUN[id]) runProgress(id);
+    if (id === 'confirmUninstall') syncPurge();
+    if (id === 'ready') {
+      $('#sumPath').textContent = $('#path').value;
+      $('#sumTasks').textContent = $$('#view [data-page="tasks"] .toggle.on .t').map(t => t.textContent).join(' · ') || '(none)';
+    }
+    if (cfg.confetti && !instant) confetti();
+    if (id === 'uninstalled') $('#keptPrefs').hidden = purge;
+    if (id === 'uninstalled') $('#byeLead').textContent = purge ? 'Schemax Schematics and your preferences have been removed.' : 'Schemax Schematics has been removed from your computer.';
+    $('#mark').classList.toggle('breath', true);
+  }
+
+  /* ---------------- license ---------------- */
+  function setLic(yes) {
+    licOk = yes;
+    $$('[data-lic]').forEach(r => { const on = (r.dataset.lic === 'yes') === yes; r.classList.toggle('sel', on); r.setAttribute('aria-checked', on); });
+    if (page === 'license') $('#bNext').disabled = !yes;
+  }
+  $$('[data-lic]').forEach(r => { r.onclick = () => setLic(r.dataset.lic === 'yes'); r.onkeydown = e => { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); r.click(); } }; });
+
+  /* ---------------- system check: rows resolve one by one ---------------- */
+  function runSystem() {
+    const rows = SYSTEM.map(r => ({ ...r }));
+    if (blocked) Object.assign(rows[7], { v: 'On — blocks the app', s: 'bad', tag: 'Blocks the app' });
+    $('#checks').innerHTML = rows.map((r, i) => `<div class="row" data-i="${i}"><span class="ico" style="width:30px;height:30px"><svg viewBox="0 0 24 24">${ICON[r.icon]}</svg></span><div><div class="n">${r.n}</div><div class="v">Checking…</div></div><div style="display:flex;align-items:center;gap:8px"><span class="tag">${r.tag}</span><span class="st"><span class="spin"></span></span></div></div>`).join('');
+    $('#sacCallout').hidden = true;
+    $('#bNext').disabled = true;
+    $('#hint').textContent = 'Checking requirements…'; $('#hint').className = 'hint';
+    let i = 0;
+    const step = () => {
+      const row = $(`#checks .row[data-i="${i}"]`); if (!row) return;
+      row.classList.add('live');
+      checkTimer = setTimeout(() => {
+        const r = rows[i];
+        row.classList.add(r.s);
+        row.querySelector('.v').textContent = r.v;
+        row.querySelector('.st').innerHTML = r.s === 'ok' ? TICK : r.s === 'warn' ? BANG : CROSS;
+        i++;
+        if (i < rows.length) step();
+        else {
+          const bad = rows.some(r => r.s === 'bad');
+          $('#sacCallout').hidden = !bad;
+          $('#bNext').disabled = bad;
+          $('#hint').textContent = bad ? 'Turn off Smart App Control, then run setup again' : `${rows.length} requirements checked`;
+          $('#hint').className = 'hint ' + (bad ? 'bad' : 'ok');
+          if (bad) $('#bNextText').textContent = 'Next';
+        }
+      }, 260 + Math.random() * 220);
+    };
+    step();
+  }
+
+  /* ---------------- progress pages ---------------- */
+  function runProgress(id) {
+    const R = RUN[id];
+    $('#runTitle').textContent = R.title;
+    $('#runLead').textContent = R.lead;
+    $('#runTasks').innerHTML = R.tasks.map(t => `<li><span class="st"><span class="spin"></span>${TICK}</span>${t}<em></em></li>`).join('');
+    const base = id === 'installing' ? $('#path').value.replace(/\\?$/, '\\') : 'C:\\Program Files\\Schemax Schematics\\';
+    const t0 = performance.now();
+    const tick = () => {
+      const p = Math.min(1, (performance.now() - t0) / R.time);
+      const eased = 1 - Math.pow(1 - p, 1.6);
+      const pct = Math.round(eased * 100);
+      $('#pct').innerHTML = pct + '<small>%</small>';
+      $('#bar').style.width = pct + '%';
+      const ti = Math.min(R.tasks.length - 1, Math.floor(eased * R.tasks.length));
+      $$('#runTasks li').forEach((li, k) => {
+        li.classList.toggle('done', k < ti || p >= 1);
+        li.classList.toggle('run', k === ti && p < 1);
+        li.querySelector('em').textContent = (k < ti || p >= 1) ? 'done' : '';
+      });
+      const f = R.files[Math.min(R.files.length - 1, Math.floor(eased * R.files.length))];
+      $('#file').textContent = (f.includes(':') || f.startsWith('%') || f.startsWith('HK') ? '' : base) + f;
+      $('#eta').textContent = p < 1 ? `About ${Math.max(1, Math.ceil((1 - p) * R.time / 1000 * 10))} seconds left` : 'Done';
+      if (p < 1) runTimer = setTimeout(tick, 60);
+      else runTimer = setTimeout(() => go(flow.pages[idx + 1]), 600);
+    };
+    tick();
+  }
+
+  /* ---------------- update progress: ring + version flip + task chips ---------------- */
+  function runUpdate() {
+    const R = RUN.updating, ver = $('#upVer');
+    ver.textContent = '1.7.4'; ver.classList.remove('new');
+    $('#upChips').innerHTML = R.tasks.map(t => `<li>${TICK}${t}</li>`).join('');
+    const t0 = performance.now(); let flipped = false;
+    const tick = () => {
+      const p = Math.min(1, (performance.now() - t0) / R.time), e = 1 - Math.pow(1 - p, 1.6), pct = Math.round(e * 100);
+      $('#upPct').textContent = pct + '%';
+      $('#upRing').style.strokeDashoffset = 1 - e;
+      const ti = Math.min(R.tasks.length - 1, Math.floor(e * R.tasks.length));
+      $$('#upChips li').forEach((li, k) => { li.classList.toggle('done', k < ti || p >= 1); li.classList.toggle('run', k === ti && p < 1); });
+      $('#upStep').textContent = p < 1 ? R.tasks[ti] : 'Update complete';
+      if (!flipped && e >= .6) { flipped = true; ver.textContent = '1.7.5'; ver.classList.add('new'); }   // the version flips once the new files are in
+      const f = R.files[Math.min(R.files.length - 1, Math.floor(e * R.files.length))];
+      $('#upFile').textContent = 'C:\\Program Files\\Schemax Schematics\\' + f;
+      $('#upEta').textContent = p < 1 ? `About ${Math.max(1, Math.ceil((1 - p) * R.time / 1000 * 10))} seconds left` : 'Done';
+      if (p < 1) runTimer = setTimeout(tick, 60);
+      else runTimer = setTimeout(() => go(flow.pages[idx + 1]), 700);
+    };
+    tick();
+  }
+
+  /* ---------------- uninstall progress: ring + dissolving logo + task chips ---------------- */
+  function runUninstall() {
+    const R = RUN.uninstalling, logo = $('#unLogo');
+    $('#unChips').innerHTML = R.tasks.filter(t => purge || t !== 'Removing user data').map(t => `<li>${TICK}${t}</li>`).join('');
+    const chips = $$('#unChips li'), t0 = performance.now();
+    const tick = () => {
+      const p = Math.min(1, (performance.now() - t0) / R.time), e = 1 - Math.pow(1 - p, 1.6), pct = Math.round(e * 100);
+      $('#unPct').textContent = pct + '%';
+      $('#unRing').style.strokeDashoffset = 1 - e;
+      logo.style.opacity = String(1 - e * .85); logo.style.filter = `grayscale(${e}) blur(${e * 2}px)`;   // the app dissolves as it is removed
+      const ti = Math.min(chips.length - 1, Math.floor(e * chips.length));
+      chips.forEach((li, k) => { li.classList.toggle('done', k < ti || p >= 1); li.classList.toggle('run', k === ti && p < 1); });
+      $('#unStep').textContent = p < 1 ? chips[ti].textContent : 'Removed';
+      const f = R.files[Math.min(R.files.length - 1, Math.floor(e * R.files.length))];
+      $('#unFile').textContent = (f.startsWith('%') ? '' : 'C:\\Program Files\\Schemax Schematics\\') + f;
+      $('#unEta').textContent = p < 1 ? `About ${Math.max(1, Math.ceil((1 - p) * R.time / 1000 * 10))} seconds left` : 'Done';
+      if (p < 1) runTimer = setTimeout(tick, 60);
+      else runTimer = setTimeout(() => go(flow.pages[idx + 1]), 700);
+    };
+    tick();
+  }
+  /* removed-vs-kept lists follow the "delete my preferences" toggle */
+  function syncPurge() {
+    const rm = $('#unRemoved .pg-pref'), kp = $('#unKept .pg-pref');
+    if (!rm) return;
+    rm.hidden = !purge; kp.hidden = purge;
+  }
+
+  /* ---------------- toggles ---------------- */
+  let purge = false;
+  $$('.toggle').forEach(t => {
+    const flip = () => {
+      t.classList.toggle('on'); t.setAttribute('aria-checked', t.classList.contains('on'));
+      if (t.dataset.task === 'purge') { purge = t.classList.contains('on'); syncPurge(); }
+    };
+    t.onclick = flip; t.onkeydown = e => { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); flip(); } };
+  });
+
+  /* ---------------- maintenance choice ---------------- */
+  let action = 'update';
+  $$('[data-act]').forEach(r => {
+    r.onclick = () => { action = r.dataset.act; $$('[data-act]').forEach(x => { x.classList.toggle('sel', x === r); x.setAttribute('aria-checked', x === r); }); };
+    r.onkeydown = e => { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); r.click(); } };
+  });
+
+  /* ---------------- buttons ---------------- */
+  $('#bNext').onclick = () => {
+    if ($('#bNext').disabled) return;
+    if (page === 'choose') {
+      if (action === 'uninstall') return go('confirmUninstall');
+      flow = FLOWS[action === 'update' ? 'update' : 'install']; renderSteps();
+      $('#tbTitle').textContent = flow.title; $('#meta').textContent = flow.meta;
+      return go(flow.pages[0]);
+    }
+    if (['finished', 'updated', 'uninstalled', 'failed'].includes(page)) return restart();
+    const nextId = flow.pages[idx + 1];
+    if (nextId) go(nextId, 1);
+  };
+  $('#bBack').onclick = () => { const prev = flow.pages[idx - 1]; if (prev) go(prev, -1); };
+  $('#bAlt').onclick = () => {
+    if (page === 'update') return restart();                    // Skip
+    if (page === 'failed') { $('#flCopy').textContent = 'Copied ✓'; $('#hint').textContent = 'Log path copied'; $('#hint').className = 'hint ok'; return; }
+    openCancel();
+  };
+  $('#capClose').onclick = () => { if (['finished', 'updated', 'uninstalled', 'failed'].includes(page)) restart(); else openCancel(); };
+  $('#flCopy').onclick = () => { $('#flCopy').textContent = 'Copied ✓'; $('#hint').textContent = 'Log path copied'; $('#hint').className = 'hint ok'; };
+  $('#browse').onclick = () => { const v = prompt('Install location', $('#path').value); if (v) $('#path').value = v; };
+
+  /* ---------------- cancel confirm ---------------- */
+  let paused = null;
+  function openCancel() {
+    if (page === 'uninstalling') return;
+    $('#layer').classList.add('on');
+    setTimeout(() => $('#ncKeep').focus(), 40);
+  }
+  function closeCancel() { $('#layer').classList.remove('on'); }
+  $('#ncKeep').onclick = closeCancel;
+  $('#ncStop').onclick = () => { closeCancel(); restart(); };
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') { if ($('#layer').classList.contains('on')) closeCancel(); else if (P[page] && P[page].alt === 'Cancel') openCancel(); }
+  });
+
+  function restart() {
+    const m = $('#mark'); m.classList.remove('intro', 'breath'); void m.offsetWidth; m.classList.add('intro');
+    setFlow(flowKey);
+  }
+
+  /* ---------------- confetti (index.html §4.14) ---------------- */
+  function confetti() {
+    const box = $('#confetti'); box.innerHTML = '';
+    const cols = ['#12a39b', '#2dd4bf', '#5fe3d3', '#0e2140', '#ffffff', '#f2b33d', '#7fb1ff'];
+    for (let i = 0; i < 90; i++) {
+      const p = document.createElement('i');
+      const w = 6 + Math.random() * 6, h = Math.random() < .3 ? w : 4 + Math.random() * 10;
+      Object.assign(p.style, { width: w + 'px', height: h + 'px', background: cols[i % 7], borderRadius: Math.random() < .25 ? '50%' : '2px' });
+      const a = Math.random() * Math.PI * 2, v = 160 + Math.random() * 260;
+      const dx = Math.cos(a) * v, dy = Math.sin(a) * v * .75 - 120, r = (Math.random() * 1800 - 900);
+      box.appendChild(p);
+      p.animate([
+        { transform: 'translate(-50%,-50%) scale(.4)', opacity: 1 },
+        { transform: `translate(calc(-50% + ${dx * .7}px), calc(-50% + ${dy * .7}px)) rotate(${r * .5}deg) scale(1)`, opacity: 1, offset: .35 },
+        { transform: `translate(calc(-50% + ${dx}px), calc(-50% + ${dy + 260}px)) rotate(${r}deg) scale(.9)`, opacity: 0 }
+      ], { duration: 1500 + Math.random() * 700, delay: Math.random() * 120, easing: 'cubic-bezier(.15,.7,.35,1)', fill: 'forwards' });
+    }
+    setTimeout(() => box.innerHTML = '', 2600);
+  }
+
+  $$('#flowSeg button').forEach(b => b.onclick = () => { const m = $('#mark'); m.classList.remove('intro'); void m.offsetWidth; m.classList.add('intro'); setFlow(b.dataset.flow); });
+
+  /* Review shortcuts: installer.html#theme=dark&flow=update&page=updating */
+  const hp = new URLSearchParams(location.hash.slice(1));
+  if (hp.get('theme')) { const b = $(`#themeSeg button[data-theme="${hp.get('theme')}"]`); if (b) b.click(); }
+  setFlow(FLOWS[hp.get('flow')] !== undefined ? hp.get('flow') : 'install');
+  if (hp.get('page') && P[hp.get('page')]) {
+    if (hp.get('page') === 'license') setLic(true);
+    if (hp.get('page') === 'confirmUninstall') { flow = FLOWS.uninstall; renderSteps(); }
+    go(hp.get('page'), 1, true);
+  }
+})();
+</script>
+</body>
+</html>

@@ -422,7 +422,7 @@ h1{font:600 28px/36px var(--disp);letter-spacing:-.02em;margin:0}
    Sliced into transparent pieces by assests/schemax-anim — pixel colours untouched.
    Shown on a frosted white plate so the navy artwork reads the same in light and dark themes.
    Proportions below come from the artwork (meta.json): mark = 31.23% of word width, gaps 7.99% / 4.63%. */
-@property --sweep{syntax:'<angle>';inherits:false;initial-value:360deg}
+@property --sweep{syntax:'<angle>';inherits:false;initial-value:400deg}
 .sx-tile{display:inline-grid;place-items:center;flex:none;background:#fff;box-shadow:0 0 0 1px rgba(14,32,61,.08)}
 .sx-tile img{width:100%;height:100%;display:block}
 .sx-tiny{width:20px;height:20px;padding:2px;border-radius:6px}
@@ -443,7 +443,7 @@ h1{font:600 28px/36px var(--disp);letter-spacing:-.02em;margin:0}
 .cine.play .lg{animation:lgIn 1s var(--glideE) both,cwBreath 6s ease-in-out 4.2s infinite}
 @keyframes lgIn{from{opacity:0;transform:scale(.9);filter:blur(10px)}}
 .cine.play .lg-mark img{animation:lgSweep 1.4s var(--glideE) .35s both,lgSpin 1.7s var(--glideE) .35s both}
-@keyframes lgSweep{from{--sweep:0deg}to{--sweep:360deg}}
+@keyframes lgSweep{from{--sweep:0deg}to{--sweep:400deg}}   /* ends past 360° → no 1px seam where the conic mask closes */
 @keyframes lgSpin{from{transform:rotate(-45deg) scale(.85)}}
 .cine.play .lg-mark{animation:lgGlow 1.6s ease-out 1.6s both}
 @keyframes lgGlow{0%,100%{filter:none}40%{filter:drop-shadow(0 0 16px rgba(18,163,155,.8))}}
