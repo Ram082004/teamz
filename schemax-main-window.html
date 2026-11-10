@@ -129,17 +129,30 @@ body.gon .app{right:398px}
 @keyframes ind{from{transform:translateX(-100%)}to{transform:translateX(340%)}}
 .sres{display:none;align-items:center;gap:8px;margin:6px 12px 0;padding:6px 8px 6px 10px;border-radius:8px;background:var(--accent-soft);color:var(--accent-text);font-size:11.5px;font-weight:600}
 .sres.on{display:flex}.sres span{flex:1}.sres button{font-size:11.5px;text-decoration:underline}
-.tree{flex:1;overflow:auto;padding:6px 6px 10px;outline:0;--tfs:13px;--rh:calc(var(--tfs) + 13px)}
+.tree{flex:1;overflow:auto;padding:6px 6px 10px;outline:0;--tfs:13px;--rh:calc(var(--tfs) + 15px)}
 .tree::-webkit-scrollbar{width:10px}.tree::-webkit-scrollbar-thumb{background:var(--hair-2);border-radius:9px;border:3px solid var(--panel)}
 .row{display:flex;align-items:center;height:var(--rh);border-radius:7px;padding-right:8px;cursor:default;white-space:nowrap;font-size:var(--tfs);position:relative}
-.row:hover{background:var(--hover)}
-.row.sel{background:var(--sel)}
-.tree:focus-visible .row.sel{box-shadow:inset 0 0 0 1.5px var(--accent-2)}
+.row .it{display:flex;align-items:center;min-width:0;height:calc(var(--rh) - 4px);padding:0 10px 0 5px;margin-left:-2px;border-radius:999px;transition:background .15s}
+.row:hover .it{background:var(--hover)}
 .row .g{flex:none;overflow:visible}
-.row .g .ln{stroke:var(--line);stroke-width:1;fill:none;shape-rendering:crispEdges}
-.row .g .bb{fill:var(--panel);stroke:var(--line);stroke-width:1}
-.row .g .bi{stroke:var(--text-2);stroke-width:1.3;fill:none}
-.row .g .bx{cursor:pointer}.row .g .bx:hover .bb{stroke:var(--accent-2)}.row .g .bx:hover .bi{stroke:var(--accent-text)}
+.row .g .ln{stroke:color-mix(in srgb,var(--bc,var(--line)) 55%,transparent);stroke-width:1.6;fill:none;stroke-linecap:round}
+.row .g .bb{fill:var(--panel);stroke:var(--bc,var(--line));stroke-width:1.2;transition:fill .18s,stroke .18s}
+.row .g .bi{stroke:var(--bc,var(--text-2));stroke-width:1.5;fill:none;stroke-linecap:round;transition:stroke .18s}
+.row .g .bx{cursor:pointer}.row .g .bx:hover .bb{fill:color-mix(in srgb,var(--bc) 14%,var(--panel))}
+.row .g .bx.o .bb{fill:var(--bc);stroke:var(--bc)}.row .g .bx.o .bi{stroke:#fff}
+.row.root .nm{font-weight:600}
+/* selection: lit trace from the top folder + glowing capsule */
+.row .g .ln.hot{stroke:var(--bc);stroke-width:2.3}
+.row .g .nd{fill:var(--bc);transform-box:fill-box;transform-origin:center;animation:ndp 1.8s ease-in-out infinite}
+@keyframes ndp{50%{transform:scale(1.7);opacity:.55}}
+.row.sel .it,.row.sel:hover .it{background:linear-gradient(90deg,color-mix(in srgb,var(--bc) 24%,var(--panel)),color-mix(in srgb,var(--bc) 7%,var(--panel)));box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--bc) 50%,transparent),0 6px 14px -8px var(--bc)}
+.row.sel .nm{font-weight:650;color:color-mix(in srgb,var(--bc) 45%,var(--text))}
+.row.sel.nw .it{animation:selin .32s cubic-bezier(.2,1.4,.4,1) both}
+@keyframes selin{from{transform:translateX(-8px) scaleX(.94);opacity:.3}}
+.row .ent{flex:none;margin-left:8px;font:600 9.5px var(--mono,monospace);padding:1px 5px;border-radius:5px;color:var(--bc);background:var(--panel);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--bc) 45%,transparent)}
+.tree:focus-visible .row.sel .it{outline:1.5px solid var(--accent-2);outline-offset:1px}
+@keyframes rin{from{opacity:0;transform:translateY(-3px)}}
+.row.in{animation:rin .22s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--k) * 18ms)}
 .row .ico{width:calc(var(--tfs) + 3px);height:calc(var(--tfs) + 3px);flex:none;margin-right:7px}
 .row .nm{overflow:hidden;text-overflow:ellipsis}
 .row .nm mark{background:none;color:#4d74f8;font-weight:700}
@@ -382,10 +395,70 @@ body.gon .app{right:398px}
 .modal p{margin:0;color:var(--text-2);font-size:13px}
 .modal .mf{display:flex;gap:8px;justify-content:flex-end;padding:16px 22px 18px;flex-wrap:wrap}
 .modal .mf.col{flex-direction:column;align-items:stretch}
-.loader .bar{height:6px;border-radius:9px;background:var(--panel-3);overflow:hidden;margin:14px 0 6px}
-.loader .bar i{display:block;height:100%;width:0;background:var(--c);border-radius:9px;transition:width .12s linear}
-.loader .meta{display:flex;justify-content:space-between;font:600 11px var(--mono);color:var(--text-3)}
-.loader .tag{float:right;font:700 10px var(--mono);padding:3px 7px;border-radius:6px;background:var(--panel-2);color:var(--text-2)}
+.ldx{position:relative;width:440px;max-width:calc(100% - 32px);display:grid;grid-template-columns:132px 1fr;gap:22px;align-items:center;padding:22px 22px 20px;border-radius:26px;
+  background:color-mix(in srgb,var(--panel) 88%,transparent);backdrop-filter:blur(18px) saturate(1.4);
+  box-shadow:0 40px 80px -30px rgba(0,0,0,.55),inset 0 0 0 1px var(--hair-2),inset 0 1px 0 rgba(255,255,255,.12);overflow:hidden;animation:ldin .45s cubic-bezier(.2,1.3,.4,1) both}
+.ldx::before{content:"";position:absolute;inset:-40% auto auto -20%;width:260px;height:260px;border-radius:50%;background:radial-gradient(closest-side,color-mix(in srgb,var(--c) 30%,transparent),transparent);filter:blur(10px);animation:ldglow 3s ease-in-out infinite alternate;pointer-events:none}
+@keyframes ldin{from{opacity:0;transform:translateY(14px) scale(.94)}}
+@keyframes ldglow{to{transform:translate(40px,30px) scale(1.15)}}
+.ldx.out{animation:ldout .32s ease-in both}@keyframes ldout{to{opacity:0;transform:scale(.96) translateY(-6px)}}
+.ldx .core{position:relative;width:132px;height:132px}
+.ldx .core svg.rg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.ldx .trk{fill:none;stroke:var(--panel-3);stroke-width:5}
+.ldx .prg{fill:none;stroke:var(--c);stroke-width:5;stroke-linecap:round;stroke-dasharray:100;stroke-dashoffset:100;transition:stroke-dashoffset .18s linear;filter:drop-shadow(0 0 6px color-mix(in srgb,var(--c) 70%,transparent))}
+.ldx .run{fill:none;stroke:#fff;stroke-width:5;stroke-linecap:round;stroke-dasharray:4 96;opacity:.75;animation:ldrun 1.4s linear infinite}
+@keyframes ldrun{to{stroke-dashoffset:-100}}
+.ldx .tr path{fill:none;stroke:var(--hair-2);stroke-width:1.6;stroke-linecap:round;transition:stroke .3s}
+.ldx .tr circle{fill:var(--panel);stroke:var(--hair-2);stroke-width:1.6;transition:.3s}
+.ldx .tr g.on path{stroke:var(--c)}.ldx .tr g.on circle{fill:var(--c);stroke:var(--c);filter:drop-shadow(0 0 4px var(--c))}
+.ldx .chipc{position:absolute;inset:30px;border-radius:24px;display:grid;place-items:center;background:color-mix(in srgb,var(--c) 11%,var(--panel));box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--c) 35%,transparent);overflow:hidden}
+.ldx .chipc>svg{width:34px;height:34px;animation:ldbob 2.4s ease-in-out infinite}
+@keyframes ldbob{50%{transform:translateY(-3px)}}
+.ldx .chipc::after{content:"";position:absolute;left:0;right:0;height:40%;top:-40%;background:linear-gradient(180deg,transparent,color-mix(in srgb,var(--c) 30%,transparent),transparent);animation:ldscan 1.6s linear infinite}
+@keyframes ldscan{to{top:100%}}
+.ldx.done .chipc::after,.ldx.done .run{display:none}
+.ldx .chk{position:absolute;inset:0;display:grid;place-items:center;background:var(--c);opacity:0;transform:scale(.4);transition:.35s cubic-bezier(.2,1.5,.4,1)}
+.ldx .chk svg{width:30px;height:30px;stroke:#fff;stroke-width:3;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.ldx.done .chk{opacity:1;transform:none}
+.ldx .info{position:relative;min-width:0}
+.ldx .eb{padding-right:30px;white-space:nowrap;overflow:hidden;display:flex;align-items:center;gap:7px;font:700 9.5px var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--c)}
+.ldx .eb i{flex:none;width:7px;height:7px;border-radius:50%;background:var(--c);animation:ldping 1.4s infinite}
+@keyframes ldping{0%{box-shadow:0 0 0 0 var(--c)}70%,100%{box-shadow:0 0 0 7px transparent}}
+.ldx h3{margin:6px 0 2px;padding-right:58px;font:700 19px/1.2 var(--disp,inherit);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ldx .pct{font:800 34px/1 var(--disp,inherit);letter-spacing:-.03em;font-variant-numeric:tabular-nums;margin:8px 0 10px}
+.ldx .pct small{font-size:15px;font-weight:700;color:var(--text-3);margin-left:2px}
+.ldx .steps{display:flex;gap:4px}
+.ldx .steps span{flex:1;min-width:0}
+.ldx .steps b{display:block;height:4px;border-radius:9px;background:var(--panel-3);overflow:hidden;position:relative}
+.ldx .steps b::after{content:"";position:absolute;inset:0;width:var(--f,0%);background:var(--c);border-radius:9px;transition:width .18s linear}
+.ldx .steps em{display:block;margin-top:5px;font:600 9.5px var(--mono);font-style:normal;color:var(--text-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:color .2s}
+.ldx .steps span.cur em{color:var(--text)}.ldx .steps span.ok em{color:var(--c)}
+.ldx .ft{display:flex;justify-content:space-between;gap:8px;margin-top:12px;font:600 10.5px var(--mono);color:var(--text-3);font-variant-numeric:tabular-nums}
+.ldx .x{position:absolute;top:12px;right:12px;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;color:var(--text-3);transition:.15s;z-index:2}
+.ldx .x:hover{background:var(--hover);color:var(--red);transform:rotate(90deg)}
+.ldx .x svg{width:14px;height:14px;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round}
+.ldx .q{margin-right:8px;font:700 9.5px var(--mono);padding:2px 6px;border-radius:99px;background:var(--panel-2);color:var(--text-3);z-index:2}
+/* professional pass */
+.ldx{grid-template-columns:112px 1fr;gap:20px;padding:20px;border-radius:16px;background:var(--panel);backdrop-filter:none;box-shadow:0 1px 2px rgba(0,0,0,.06),0 24px 48px -20px rgba(8,20,40,.35),0 0 0 1px var(--hair-2);animation:ldpin .3s cubic-bezier(.2,.8,.2,1) both}
+@keyframes ldpin{from{opacity:0;transform:translateY(8px)}}
+.ldx.out{animation:ldpout .25s ease-in both}@keyframes ldpout{to{opacity:0;transform:translateY(-4px)}}
+.ldx::before,.ldx .run,.ldx .chipc::after{display:none}
+.ldx .core{width:112px;height:112px}
+.ldx .trk{stroke-width:4}.ldx .prg{stroke-width:4;filter:none}
+.ldx .tr path{stroke-width:1.4}.ldx .tr circle{r:2.6;stroke-width:1.4}.ldx .tr g.on circle{filter:none}
+.ldx .chipc{inset:28px;border-radius:18px;background:var(--panel-2);box-shadow:inset 0 0 0 1px var(--hair)}
+.ldx .chipc>svg{width:28px;height:28px;animation:none}
+.ldx .eb{padding-right:0;font:600 11px var(--ui);letter-spacing:.01em;text-transform:none;color:var(--text-2);gap:8px}
+.ldx .eb i{width:6px;height:6px;animation:none;box-shadow:0 0 0 3px color-mix(in srgb,var(--c) 18%,transparent)}
+.ldx .eb .kd{color:var(--c);font-weight:700}
+.ldx h3{font:650 17px/1.25 var(--disp);margin:6px 0 0;padding-right:0}
+.ldx .pct{font:700 28px/1 var(--ui);letter-spacing:-.02em;margin:10px 0 12px}.ldx .pct small{font-size:13px;font-weight:600}
+.ldx .steps b{height:3px}.ldx .steps em{font:500 10.5px var(--ui)}
+.ldx .ft{align-items:center;margin-top:12px;padding-top:12px;border-top:1px solid var(--hair);font:500 11.5px var(--ui)}
+.ldx .ft .cn{padding:5px 12px;border-radius:7px;font:600 12px var(--ui);color:var(--text-2);box-shadow:inset 0 0 0 1px var(--hair-2)}
+.ldx .ft .cn:hover{background:var(--hover);color:var(--text)}
+.ldx.done .ft .cn{visibility:hidden}
+@media (max-width:520px){.ldx{grid-template-columns:1fr;justify-items:center;text-align:center}.ldx .eb{justify-content:center}.ldx .info{width:100%}}
 .settings{width:min(780px,94vw);height:min(560px,86vh);background:var(--panel);border-radius:16px;box-shadow:var(--pop);display:grid;grid-template-columns:200px 1fr;overflow:hidden;transform:translateY(8px) scale(.98);transition:transform .25s var(--spring)}
 .scrim.on .settings{transform:none}
 .settings nav{background:var(--panel-2);border-right:1px solid var(--hair);padding:16px 10px;display:flex;flex-direction:column;gap:2px}
@@ -498,12 +571,12 @@ body.gon .app{right:398px}
   </symbol>
   <!-- painted folder (MainApplication folder icon, 24-unit box) -->
   <symbol id="i-folder" viewBox="0 0 24 24">
-    <rect x="2.5" y="6.5" width="19" height="13.5" rx="2.4" fill="#D97706"/><rect x="2.5" y="4.3" width="8.4" height="3.6" rx="1.6" fill="#D97706"/>
-    <rect x="2.5" y="8.6" width="19" height="11.4" rx="2.4" fill="#F59E0B"/>
+    <rect x="2.5" y="6.5" width="19" height="13.5" rx="2.4" style="fill:var(--fb,#D97706)"/><rect x="2.5" y="4.3" width="8.4" height="3.6" rx="1.6" style="fill:var(--fb,#D97706)"/>
+    <rect x="2.5" y="8.6" width="19" height="11.4" rx="2.4" style="fill:var(--ff,#F59E0B)"/>
   </symbol>
   <symbol id="i-folder-open" viewBox="0 0 24 24">
-    <rect x="2.5" y="6.5" width="19" height="13.5" rx="2.4" fill="#D97706"/><rect x="2.5" y="4.3" width="8.4" height="3.6" rx="1.6" fill="#D97706"/>
-    <path d="M2.7 9.8 L21.3 9.8 L18.4 20 L5.6 20 Z" fill="#FBBF24"/>
+    <rect x="2.5" y="6.5" width="19" height="13.5" rx="2.4" style="fill:var(--fb,#D97706)"/><rect x="2.5" y="4.3" width="8.4" height="3.6" rx="1.6" style="fill:var(--fb,#D97706)"/>
+    <path d="M2.7 9.8 L21.3 9.8 L18.4 20 L5.6 20 Z" style="fill:var(--fo,#FBBF24)"/>
   </symbol>
   <!-- beginner_folder_closed.svg -->
   <symbol id="i-beg" viewBox="0 0 512 512">
@@ -747,28 +820,29 @@ const restricted = () => !!A().trial;
 /* =============================== library =============================== */
 const F = (name, children) => ({name, children}), f = name => ({name});
 const LIB = [
-  F('1. Mobile Phones', [
-    F('[Beginner] Mobile Repair Basics', [f('Multimeter Basics.pdf'), f('Reading a Schematic.pdf'), f('Practice Board.pcb')]),
-    F('1. Apple', [
-      F('iPhone 12_12Pro', [F('Hardware Solutions', [f('iPhone 12 HS No Power.w2re'), f('iPhone 12 HS No Charging.w2re')]), f('iPhone 12_12Pro.pcb'), f('iPhone 12_12Pro.bvr'), f('iPhone 12_12Pro Schematic.pdf'), f('readme.txt')]),
-      F('iPhone 13ProMAX', [F('Hardware Solutions', [f('iPhone 13ProMAX HS Backlight.w2re')]), f('iPhone 13ProMAX.pcb'), f('iPhone 13ProMAX Schematic.pdf'), f('iPhone 13ProMAX Block Diagram.pdf')]),
-      F('iPhone 15_15 Plus', [f('iPhone 15_15 Plus.xzz'), f('iPhone 15_15 Plus Schematic.pdf')]),
-      F('iPhone 16pro_Max', [f('iPhone 16pro_Max.pcb'), f('iPhone 16pro_Max Schematic.pdf')])]),
-    F('2. Samsung', [F('Galaxy A15 5G', [f('SM-A156B.brd'), f('SM-A156B Schematic.pdf')]), F('Galaxy S23 Ultra', [f('SM-S918B.pcb'), f('SM-S918B Schematic.pdf'), f('notes.txt')])]),
-    F('3. Xiaomi', [F('Redmi Note 13', [f('Redmi Note 13.cad'), f('Redmi Note 13 Schematic.pdf')])]),
-    F('4. OnePlus', [F('OnePlus 12', [f('OnePlus 12.bvr'), f('OnePlus 12 Schematic.pdf')])]),
-    F('5. Google', [F('Pixel 8', [f('Pixel 8.pcb'), f('Pixel 8 Schematic.pdf')])])]),
-  F('2. Ipad and Tablet', [F('iPad Air 5', [f('iPad Air 5.pcb'), f('iPad Air 5 Schematic.pdf')]), F('Galaxy Tab S9', [f('SM-X710.brd'), f('SM-X710 Schematic.pdf')])]),
-  F('3. Apple Macbook', [F('MacBook Air M2 A2681', [f('820-02536.bvr'), f('820-02536 Schematic.pdf')]), F('MacBook Pro 14 A2442', [f('820-02098.bvr')])]),
-  F('4. Laptop and Desktop', [F('Dell Latitude 5420', [f('LA-K491P.brd'), f('LA-K491P Schematic.pdf')]), F('Lenovo ThinkPad T14', [f('NM-D351.cad'), f('NM-D351 Schematic.pdf')])]),
-  F('5. Graphics Card', [F('RTX 3060', [f('PG190.pcb'), f('RTX 3060 Schematic.pdf')])]),
-  F('6. Gaming Consoles', [F('PS5', [f('EDM-010.pcb'), f('PS5 Schematic.pdf')])]),
-  F('7. Drone', [F('DJI Mini 3', [f('DJI Mini 3.pcb')])]),
-  F('8. Smart Watch', [F('Apple Watch S8', [f('Watch S8 Schematic.pdf')])]),
-  F('9. Other Electronic Items', [F('Power Banks', [f('PB-20K Schematic.pdf')])]),
-  F('10. IC DataSheet', [f('PM8350.pdf'), f('SN2611.pdf'), f('TPS65987.pdf')]),
-  F('11. Testing', [F('Hardware Solutions', [f('Test HS Board.w2re')]), f('Test Board.pcb')]),
-  F('Free - Trail Users', [F('iPhone 7', [f('iPhone 7.pcb'), f('iPhone 7 Schematic.pdf')]), F('Redmi 9', [f('Redmi 9.pcb'), f('Redmi 9 Schematic.pdf')])]),
+  F('Free - Trail Users', [F('iPhone 7', [f('iPhone 7.pcb'), f('iPhone 7 Schematic.pdf')]), F('Redmi 9', [f('Redmi 9.pcb'), f('Redmi 9 Schematic.pdf')]), F('Galaxy A10', [f('SM-A105F.brd'), f('SM-A105F Schematic.pdf')])]),
+  F('[Beginner] Mobile Repair Basics', [f('Multimeter Basics.pdf'), f('Reading a Schematic.pdf'), f('Diode Mode Values.pdf'), f('Practice Board.pcb')]),
+  F('1. Apple', [
+    F('iPhone 11', [f('iPhone 11.pcb'), f('iPhone 11 Schematic.pdf')]),
+    F('iPhone 12_12Pro', [F('Hardware Solutions', [f('iPhone 12 HS No Power.w2re'), f('iPhone 12 HS No Charging.w2re')]), f('iPhone 12_12Pro.pcb'), f('iPhone 12_12Pro.bvr'), f('iPhone 12_12Pro Schematic.pdf'), f('readme.txt')]),
+    F('iPhone 13mini', [f('iPhone 13mini.pcb'), f('iPhone 13mini Schematic.pdf')]),
+    F('iPhone 13ProMAX', [F('Hardware Solutions', [f('iPhone 13ProMAX HS Backlight.w2re')]), f('iPhone 13ProMAX.pcb'), f('iPhone 13ProMAX Schematic.pdf'), f('iPhone 13ProMAX Block Diagram.pdf')]),
+    F('iPhone 14 Pro', [f('iPhone 14 Pro.xzz'), f('iPhone 14 Pro Schematic.pdf')]),
+    F('iPhone 15_15 Plus', [f('iPhone 15_15 Plus.xzz'), f('iPhone 15_15 Plus Schematic.pdf')]),
+    F('iPhone 16pro_Max', [f('iPhone 16pro_Max.pcb'), f('iPhone 16pro_Max Schematic.pdf')])]),
+  F('2. Samsung', [
+    F('Galaxy A15 5G', [f('SM-A156B.brd'), f('SM-A156B Schematic.pdf')]),
+    F('Galaxy A55', [f('SM-A556E.pcb'), f('SM-A556E Schematic.pdf')]),
+    F('Galaxy S23 Ultra', [F('Hardware Solutions', [f('S23 Ultra HS No Display.w2re')]), f('SM-S918B.pcb'), f('SM-S918B Schematic.pdf'), f('notes.txt')]),
+    F('Galaxy S24', [f('SM-S921B.pcb'), f('SM-S921B Schematic.pdf')])]),
+  F('3. Xiaomi', [F('Redmi Note 12', [f('Redmi Note 12.cad'), f('Redmi Note 12 Schematic.pdf')]), F('Redmi Note 13', [f('Redmi Note 13.cad'), f('Redmi Note 13 Schematic.pdf')]), F('Poco X6 Pro', [f('Poco X6 Pro.pcb')])]),
+  F('4. OnePlus', [F('OnePlus 11R', [f('OnePlus 11R.bvr'), f('OnePlus 11R Schematic.pdf')]), F('OnePlus 12', [f('OnePlus 12.bvr'), f('OnePlus 12 Schematic.pdf')]), F('Nord CE 3', [f('Nord CE 3.pcb')])]),
+  F('5. Oppo', [F('Reno 11', [f('Reno 11.pcb'), f('Reno 11 Schematic.pdf')]), F('A78 5G', [f('A78 5G.pcb')])]),
+  F('6. Vivo', [F('V30', [f('V30.pcb'), f('V30 Schematic.pdf')]), F('Y36', [f('Y36 Schematic.pdf')])]),
+  F('7. Realme', [F('Realme 12 Pro', [f('Realme 12 Pro.pcb'), f('Realme 12 Pro Schematic.pdf')]), F('Narzo 60', [f('Narzo 60.pcb')])]),
+  F('8. Motorola', [F('Moto G84', [f('Moto G84.brd2'), f('Moto G84 Schematic.pdf')]), F('Edge 40', [f('Edge 40.pcb')])]),
+  F('9. Google', [F('Pixel 7a', [f('Pixel 7a.pcb'), f('Pixel 7a Schematic.pdf')]), F('Pixel 8', [F('Hardware Solutions', [f('Pixel 8 HS Boot Loop.w2re')]), f('Pixel 8.pcb'), f('Pixel 8 Schematic.pdf')])]),
+  F('10. Honor', [F('Honor X9b', [f('Honor X9b.xzzpcb'), f('Honor X9b Schematic.pdf')]), F('Honor 90', [f('Honor 90.pcb')])]),
 ];
 const BOARD = ['pcb','xzz','xzzpcb','brd','brd2','cad','bvr','bdv','w2r','w2s','w2re','pro'];
 const ext = n => { const i = n.lastIndexOf('.'); return i > 0 ? n.slice(i + 1).toLowerCase() : ''; };
@@ -788,53 +862,61 @@ let nid = 0; const ALL = new Map();
 const wrap = (n, parent, depth) => { const w = {n, parent, depth, id: ++nid}; ALL.set(w.id, w);
   w.kids = n.children ? n.children.filter(c => c.children || ext(c.name) !== 'txt').sort((a, b) => prio(a) - prio(b) || coll.compare(a.name, b.name)).map(c => wrap(c, w, depth + 1)) : null; return w; };
 const ROOTS0 = LIB.map(n => wrap(n, null, 0));
-const roots = () => { const r = [...ROOTS0].sort((a, b) => coll.compare(a.n.name, b.n.name));
-  return restricted() ? [...r.filter(w => isFreeRoot(w.n)), ...r.filter(w => !isFreeRoot(w.n))] : r; };
+const rk = n => isFreeRoot(n) ? 0 : isBeg(n) ? 1 : 2;   // order: Free → Beginner → 1, 2 … 10
+const ROOTS1 = [...ROOTS0].sort((a, b) => rk(a.n) - rk(b.n) || coll.compare(a.n.name, b.n.name));
+const roots = () => ROOTS1;
 const rootOf = w => { while (w.parent) w = w.parent; return w; };
 const locked = w => restricted() && !isFreeRoot(rootOf(w).n);
 const sibs = w => w.parent ? w.parent.kids : roots();
+const CAT = {Apple:'#8b95a7', Samsung:'#2f6fe4', Xiaomi:'#ff6a00', OnePlus:'#e8323c', Oppo:'#1a9f68', Vivo:'#4a5cf0', Realme:'#d9a400', Motorola:'#6a4fd8', Google:'#2f86f0', Honor:'#0aa2c0'};
+const colorOf = w => { const n = rootOf(w).n; return isBeg(n) ? '#16a34a' : isFreeRoot(n) ? '#12a39b' : CAT[n.name.replace(/^\d+\.\s*/, '')] || '#12a39b'; };
 const pathOf = w => { const p = []; let x = w.parent; while (x) { p.unshift(x.n.name.replace(/^\d+\.\s*/, '')); x = x.parent; } return p.join(' › '); };
 $('#libCount').textContent = `${[...ALL.values()].filter(w => !w.kids).length} files`;
 
-const T = {open: new Set(), sel: null, hits: null, term: '', tfs: 13};
+const T = {open: new Set(), sel: null, hits: null, term: '', tfs: 13, anim: null};
 const treeEl = $('#tree');
 
-function gutter(w, last, flags) {
-  const W = Math.round(T.tfs * 20 / 13), H = T.tfs + 13, d = w.depth, Y = Math.round(H / 2) + .5, cx = j => j * W + Math.floor(W / 2) + .5;
-  let s = '';
-  for (let j = 0; j < d; j++) if (j < d - 1 ? !flags[j + 1] : true) {
-    const x = cx(j);
-    if (j < d - 1) s += `<path class="ln" d="M${x} 0V${H}"/>`;
-    else s += last ? `<path class="ln" d="M${x} 0V${Y}H${(j + 1) * W}"/>` : `<path class="ln" d="M${x} 0V${H}M${x} ${Y}H${(j + 1) * W}"/>`;
-  }
+function gutter(w, last, flags) {   // design 6: brand-colour lines, round toggles, curved last branch; path to the selection lights up
+  const W = Math.round(T.tfs * 22 / 13), H = T.tfs + 15, d = w.depth, Y = Math.round(H / 2) + .5, cx = j => j * W + Math.floor(W / 2) + .5;
+  const rr = Math.round(T.tfs * 13 / 13) / 2, cv = Math.round(T.tfs * 8 / 13), k = Math.max(2.5, rr - 3.5);
+  const on = x => T.path.has(x.id), pIdx = A => A.kids.findIndex(on), ix = x => x.parent.kids.indexOf(x);
+  let s = '', top = '';
+  const ln = (dd, hot) => hot ? top += `<path class="ln hot" d="${dd}"/>` : s += `<path class="ln" d="${dd}"/>`;
+  for (let j = 0; j < d - 1; j++) if (!flags[j + 1]) { let x = w; while (x.depth > j + 1) x = x.parent; ln(`M${cx(j)} 0V${H}`, pIdx(x.parent) > ix(x)); }
+  if (d >= 1) { const x0 = cx(d - 1), x1 = d * W, i = ix(w), pi = pIdx(w.parent);
+    if (last) ln(`M${x0} 0V${Y - cv}Q${x0} ${Y} ${x0 + cv} ${Y}H${x1}`, on(w));
+    else { ln(`M${x0} 0V${Y}`, pi >= i); ln(`M${x0} ${Y}V${H}`, pi > i); ln(`M${x0} ${Y}H${x1}`, on(w)); } }
   const bx = cx(d);
   if (w.kids) { const o = T.open.has(w.id);
-    if (d > 0) s += `<path class="ln" d="M${d * W} ${Y}H${bx - 4.5}"/>`;
-    if (o && w.kids.length) s += `<path class="ln" d="M${bx} ${Y + 4.5}V${H}"/>`;
-    s += `<g class="bx" data-tog><rect x="${bx - 8}" y="${Y - 8}" width="16" height="16" fill="transparent"/><rect class="bb" x="${bx - 4.5}" y="${Y - 4.5}" width="9" height="9" rx="2"/><path class="bi" d="M${bx - 2.5} ${Y}H${bx + 2.5}${o ? '' : `M${bx} ${Y - 2.5}V${Y + 2.5}`}"/></g>`;
-  } else if (d > 0) s += `<path class="ln" d="M${d * W} ${Y}H${d * W + W - 4}"/>`;
-  return `<svg class="g" width="${(d + 1) * W}" height="${H}">${s}</svg>`;
+    if (d > 0) ln(`M${d * W} ${Y}H${bx - rr}`, on(w));
+    if (o && w.kids.length) ln(`M${bx} ${Y + rr}V${H}`, on(w) && T.sel !== w.id);
+    top += `<g class="bx${o ? ' o' : ''}" data-tog><circle cx="${bx}" cy="${Y}" r="${rr + 2}" fill="transparent"/><circle class="bb" cx="${bx}" cy="${Y}" r="${rr}"/><path class="bi" d="M${bx - k} ${Y}H${bx + k}${o ? '' : `M${bx} ${Y - k}V${Y + k}`}"/></g>`;
+  } else if (d > 0) { ln(`M${d * W} ${Y}H${d * W + W - 4}`, on(w)); if (T.sel === w.id) top += `<circle class="nd" cx="${d * W + W - 4}" cy="${Y}" r="2.6"/>`; }
+  return `<svg class="g" width="${(d + 1) * W}" height="${H}">${s}${top}</svg>`;
 }
 const mark = t => { if (!T.term) return esc(t); const i = t.toLowerCase().indexOf(T.term.toLowerCase());
   return i < 0 ? esc(t) : esc(t.slice(0, i)) + '<mark>' + esc(t.slice(i, i + T.term.length)) + '</mark>' + esc(t.slice(i + T.term.length)); };
 function rowHtml(w, last, flags, flat) {
   const o = T.open.has(w.id), nm = w.kids ? w.n.name : base(w.n.name);
-  const g = flat ? `<span style="width:8px;flex:none"></span>` : gutter(w, last, flags);
-  return `<div class="row${T.sel === w.id ? ' sel' : ''}" role="treeitem" id="tr${w.id}" data-id="${w.id}" aria-level="${w.depth + 1}"${w.kids ? ` aria-expanded="${o}"` : ''} aria-selected="${T.sel === w.id}" title="${esc(nm)}">${g}<svg class="ico"><use href="#${iconOf(w, o)}"/></svg><span class="nm">${mark(nm)}</span>${hasDot(w.n) ? '<i class="hd" title="Hardware solution available"></i>' : ''}${flat ? `<span class="pth">${esc(pathOf(w))}</span>` : (!w.kids && locked(w) ? `<span class="lk" title="Premium">${U('u-lock')}</span>` : '')}</div>`;
+  const g = flat ? `<span style="width:8px;flex:none"></span>` : gutter(w, last, flags), c = colorOf(w);
+  const fc = w.kids ? ` style="--ff:${c};--fo:color-mix(in srgb,${c} 75%,#fff);--fb:color-mix(in srgb,${c} 65%,#000)"` : '';
+  const an = !flat && T.anim && w.parent && w.parent.id === T.anim ? ` in" style="--bc:${c};--k:${T.k++}` : `" style="--bc:${c}`;
+  return `<div class="row${w.depth === 0 ? ' root' : ''}${T.sel === w.id ? ' sel' + (T.nw ? ' nw' : '') : ''}${an}" role="treeitem" id="tr${w.id}" data-id="${w.id}" aria-level="${w.depth + 1}"${w.kids ? ` aria-expanded="${o}"` : ''} aria-selected="${T.sel === w.id}" title="${esc(nm)}">${g}<span class="it"><svg class="ico"${fc}><use href="#${iconOf(w, o)}"/></svg><span class="nm">${mark(nm)}</span>${hasDot(w.n) ? '<i class="hd" title="Hardware solution available"></i>' : ''}${T.sel === w.id && !w.kids ? '<span class="ent" title="Press Enter to open">↵ Open</span>' : ''}</span>${flat ? `<span class="pth">${esc(pathOf(w))}</span>` : (!w.kids && locked(w) ? `<span class="lk" title="Premium">${U('u-lock')}</span>` : '')}</div>`;
 }
 let VIS = [];
 function renderTree() {
   treeEl.style.setProperty('--tfs', T.tfs + 'px');
-  let h = ''; VIS = [];
+  let h = ''; VIS = []; T.k = 0; T.path = new Set(); for (let a = T.sel && ALL.get(T.sel); a; a = a.parent) T.path.add(a.id);
+  T.nw = T.sel !== T.prevSel; T.prevSel = T.sel;
   if (T.hits) { T.hits.forEach(w => { VIS.push(w); h += rowHtml(w, 0, 0, true); }); }
   else { const walk = (list, flags) => list.forEach((w, i) => { const last = i === list.length - 1; VIS.push(w); h += rowHtml(w, last, flags);
       if (w.kids && T.open.has(w.id)) walk(w.kids, [...flags, last]); }); walk(roots(), []); }
-  treeEl.innerHTML = h;
+  treeEl.innerHTML = h; T.anim = null;
   if (T.sel) treeEl.setAttribute('aria-activedescendant', 'tr' + T.sel);
 }
 function toggle(w, force) {
   const o = force !== undefined ? force : !T.open.has(w.id);
-  if (o) { sibs(w).forEach(s => { if (s !== w) closeDeep(s); }); T.open.add(w.id); } else closeDeep(w);   // accordion: one branch per level
+  if (o) { sibs(w).forEach(s => { if (s !== w) closeDeep(s); }); T.open.add(w.id); T.anim = w.id; } else closeDeep(w);   // accordion: one branch per level
   renderTree();
 }
 function closeDeep(w) { T.open.delete(w.id); if (w.kids) w.kids.forEach(closeDeep); }
@@ -972,22 +1054,44 @@ function openFile(w) {
   loader(w, k, () => { const t = {id: 't' + w.id, key: w.id, kind: k, name: base(w.n.name), w}; S.tabs.push(t); activate(t.id); placeGuide();
     if (acct !== 'premium' && A().trial.today > 0) { A().trial.today--; applyAcct(); } });
 }
-function loader(w, k, done) {
-  const meta = {pdf: ['Schematic · Fetching', 'var(--red)'], pcb: ['Boardview · Fetching', 'var(--copper)'], hs: ['Hardware Solution · Fetching', 'var(--ok)']}[k];
-  const size = (2 + (w.id * 7919 % 140) / 10).toFixed(1);
+function loader(w, k, done) {   // chip-core loader: squircle progress ring, circuit traces light up, 4 live stages
+  const meta = {pdf: ['Schematic', 'var(--red)', 'i-pdf'], pcb: ['Boardview', 'var(--copper)', 'i-pcb'], hs: ['Hardware Solution', 'var(--ok)', 'i-hw']}[k];
+  const size = +(2 + (w.id * 7919 % 140) / 10).toFixed(1);
+  const ST = ['Connect', 'Download', 'Verify', 'Open'], CUT = [0, 8, 86, 96, 100];
+  const TR = [[66, 10, 66, -6], [111, 21, 124, 8], [122, 66, 138, 66], [111, 111, 124, 124], [66, 122, 66, 138], [21, 111, 8, 124], [10, 66, -6, 66], [21, 21, 8, 8]];
+  const trc = TR.map(([x0, y0, x1, y1]) => `<g><path d="M${x0} ${y0}L${x1} ${y1}"/><circle cx="${x1}" cy="${y1}" r="3.2"/></g>`).join('');
   const sc = document.createElement('div'); sc.className = 'scrim local on'; sc.style.zIndex = 20;
-  sc.innerHTML = `<div class="modal loader" style="--c:${meta[1]};width:380px"><div class="mh"><span class="tag">1 of 1</span><div class="eb">${meta[0]}</div><h3>${esc(base(w.n.name))}</h3>
-    <div class="bar"><i></i></div><div class="meta"><span class="st">Connecting…</span><span class="pc">0%</span></div></div>
-    <div class="mf"><button class="btn ghost">Cancel</button></div></div>`;
+  sc.innerHTML = `<div class="ldx" style="--c:${meta[1]}" role="dialog" aria-label="Loading ${esc(base(w.n.name))}">
+    
+    <div class="core"><svg class="rg" viewBox="0 0 132 132"><g class="tr">${trc}</g>
+        <rect class="trk" x="10" y="10" width="112" height="112" rx="38"/><rect class="prg" x="10" y="10" width="112" height="112" rx="38" pathLength="100"/><rect class="run" x="10" y="10" width="112" height="112" rx="38" pathLength="100"/></svg>
+      <div class="chipc"><svg><use href="#${meta[2]}"/></svg><div class="chk"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div></div></div>
+    <div class="info"><div class="eb"><i></i><span class="sl">${meta[0]} · Connecting</span></div><h3 title="${esc(w.n.name)}">${esc(base(w.n.name))}</h3>
+      <div class="pct"><span class="n">0</span><small>%</small></div>
+      <div class="steps">${ST.map(t => `<span><b></b><em>${t}</em></span>`).join('')}</div>
+      <div class="ft"><span><span class="mb">0.0 / ${size} MB</span> · <span class="sp">— MB/s</span></span><button class="cn" title="Cancel · Esc">Cancel</button></div></div></div>`;
   stage.appendChild(sc);
+  const card = $('.ldx', sc), steps = [...card.querySelectorAll('.steps span')], gs = [...card.querySelectorAll('.tr g')];
   $('#sbDl').classList.add('on'); $('#sbDlT').textContent = 'Fetching ' + base(w.n.name);
   let p = 0, dead = false;
-  const iv = setInterval(() => { p = Math.min(100, p + 7 + Math.random() * 12);
-    $('.bar i', sc).style.width = p + '%'; $('.pc', sc).textContent = Math.round(p) + '%'; $('#sbDlM').style.width = p + '%';
-    $('.st', sc).textContent = `${(size * p / 100).toFixed(1)} MB of ${size} MB`;
-    if (p >= 100) { clearInterval(iv); setTimeout(fin, 180); } }, 90);
-  const fin = () => { if (dead) return; dead = true; sc.remove(); $('#sbDl').classList.remove('on'); $('#sbDlM').style.width = 0; done(); };
-  $('.btn', sc).onclick = () => { dead = true; clearInterval(iv); sc.remove(); $('#sbDl').classList.remove('on'); toast('Loading cancelled', 'u-x'); };
+  const paint = () => {
+    $('.prg', card).style.strokeDashoffset = 100 - p; $('.n', card).textContent = Math.round(p); $('#sbDlM').style.width = p + '%';
+    const si = Math.max(0, Math.min(3, CUT.findIndex((c, i) => i < 4 && p < CUT[i + 1])));
+    steps.forEach((el, i) => { const f = Math.max(0, Math.min(1, (p - CUT[i]) / (CUT[i + 1] - CUT[i]))); el.style.setProperty('--f', f * 100 + '%');
+      el.classList.toggle('ok', f >= 1); el.classList.toggle('cur', i === si && f < 1); });
+    gs.forEach((g, i) => g.classList.toggle('on', p >= (i + 1) * 12));
+    $('.sl', card).innerHTML = `<span class="kd">${meta[0]}</span> · ${p >= 100 ? 'Ready' : ['Connecting', 'Downloading', 'Verifying', 'Opening'][si]}`;
+    $('.mb', card).textContent = `${(size * p / 100).toFixed(1)} / ${size} MB`;
+    if (p > 8 && p < 100) $('.sp', card).textContent = `${(6 + Math.random() * 9).toFixed(1)} MB/s`;
+  };
+  const iv = setInterval(() => { p = Math.min(100, p + (p < 8 ? 3 : 5 + Math.random() * 9)); paint();
+    if (p >= 100) { clearInterval(iv); card.classList.add('done'); $('.sp', card).textContent = 'Done'; setTimeout(fin, 520); } }, 90);
+  const onKey = e => { if (e.key === 'Escape') { e.stopPropagation(); cancel(); } };
+  const close = () => { document.removeEventListener('keydown', onKey, true); card.classList.add('out'); setTimeout(() => sc.remove(), 300); $('#sbDl').classList.remove('on'); $('#sbDlM').style.width = 0; };
+  const fin = () => { if (dead) return; dead = true; close(); done(); };
+  const cancel = () => { if (dead) return; dead = true; clearInterval(iv); close(); toast('Loading cancelled', 'u-x'); };
+  document.addEventListener('keydown', onKey, true);
+  $('.cn', card).onclick = cancel;
 }
 
 /* =============================== panes =============================== */

@@ -184,12 +184,12 @@ mark{background:var(--mark);color:inherit;border-radius:3px;padding:0 1px;font-w
   </symbol>
   <!-- painted folder (MainApplication folder icon, 24-unit box) -->
   <symbol id="i-folder" viewBox="0 0 24 24">
-    <rect x="2.5" y="6.5" width="19" height="13.5" rx="2.4" fill="#D97706"/><rect x="2.5" y="4.3" width="8.4" height="3.6" rx="1.6" fill="#D97706"/>
-    <rect x="2.5" y="8.6" width="19" height="11.4" rx="2.4" fill="#F59E0B"/>
+    <rect x="2.5" y="6.5" width="19" height="13.5" rx="2.4" style="fill:var(--fb,#D97706)"/><rect x="2.5" y="4.3" width="8.4" height="3.6" rx="1.6" style="fill:var(--fb,#D97706)"/>
+    <rect x="2.5" y="8.6" width="19" height="11.4" rx="2.4" style="fill:var(--ff,#F59E0B)"/>
   </symbol>
   <symbol id="i-folder-open" viewBox="0 0 24 24">
-    <rect x="2.5" y="6.5" width="19" height="13.5" rx="2.4" fill="#D97706"/><rect x="2.5" y="4.3" width="8.4" height="3.6" rx="1.6" fill="#D97706"/>
-    <path d="M2.7 9.8 L21.3 9.8 L18.4 20 L5.6 20 Z" fill="#FBBF24"/>
+    <rect x="2.5" y="6.5" width="19" height="13.5" rx="2.4" style="fill:var(--fb,#D97706)"/><rect x="2.5" y="4.3" width="8.4" height="3.6" rx="1.6" style="fill:var(--fb,#D97706)"/>
+    <path d="M2.7 9.8 L21.3 9.8 L18.4 20 L5.6 20 Z" style="fill:var(--fo,#FBBF24)"/>
   </symbol>
   <!-- beginner_folder_closed.svg -->
   <symbol id="i-beg" viewBox="0 0 512 512">
@@ -307,8 +307,8 @@ mark{background:var(--mark);color:inherit;border-radius:3px;padding:0 1px;font-w
       desc: 'Each brand sits in its own card with a coloured number badge, and inside it is the normal branch-line tree. Much easier to scan a long library; open cards get a soft shadow.'},
     {k: 'v5', name: 'Comfort (accessible)', box: 'big', curve: 0, rh: 34, cw: 24, fs: 14.5, is: 19, lw: 1.5, dash: 'none', typ: true, comfort: true,
       desc: 'Built for readability: big rows and text, strong lines, large +/− boxes that are easy to hit, file type labels, A− / A+ text size and a high-contrast switch right in the panel header.'},
-    {k: 'v6', name: 'Brand-colour lines', box: 'circle', curve: 8, rh: 28, cw: 22, fs: 13, is: 17, lw: 1.6, dash: 'none', brandLines: true, badge: true, cnt: true,
-      desc: 'Every brand draws its branches in its own colour — Samsung blue, Xiaomi orange, OnePlus red — with matching round toggles and a numbered colour badge on the brand row. You can tell which brand you are in from any depth.'},
+    {k: 'v6', name: 'Brand-colour lines', box: 'circle', curve: 8, rh: 28, cw: 22, fs: 13, is: 17, lw: 1.6, dash: 'none', brandLines: true, tint: true,
+      desc: 'Every brand draws its branches in its own colour — Samsung blue, Xiaomi orange, OnePlus red — with matching round toggles, and every folder is painted in its brand colour. You can tell which brand you are in from any depth.'},
     {k: 'v7', name: 'Pro list (zebra + format chips)', box: 'sq', curve: 0, rh: 24, cw: 18, fs: 12.5, is: 15, lw: 1, dash: 'none', zebra: true, chips: true, cnt: true,
       desc: 'Dense and precise like a pro tool: soft zebra striping keeps long rows readable, files show a small format chip (PCB · BVR · XZZ · PDF · HS) on the right, and folders show their file count. Fits the most rows on screen.'},
     {k: 'v8', name: 'Finder style', box: 'tri', curve: 0, rh: 30, cw: 20, fs: 13, is: 15, lw: 1, dash: 'none', tile: true,
@@ -380,8 +380,9 @@ mark{background:var(--mark);color:inherit;border-radius:3px;padding:0 1px;font-w
     if (w.kids && cfg.cnt) right += `<span class="cnt">${countFiles(w)}</span>`;
     if (!w.kids && cfg.typ) right += `<span class="typ">${typeOf(w)}</span>`;
     if (!w.kids && cfg.chips) { const e = ext(w.n.name), k = isHsFile(w.n) ? 'hs' : e === 'pdf' ? 'pdf' : BOARD.includes(e) ? 'pcb' : 'img'; right += `<span class="chip k-${k}">${k === 'hs' ? 'HS' : e.toUpperCase()}</span>`; }
-    const ico = `<svg class="ico"><use href="#${iconOf(w, open)}"/></svg>`;
-    const lead = cfg.badge && root ? `<span class="badge" style="--c:${rootColor(w)}">${rootNum(w)}</span>${ico}` : cfg.tile ? `<span class="tile">${ico}</span>` : cfg.cards && root ? `<span class="badge" style="--c:${rootColor(w)}">${rootNum(w)}</span>` : `<svg class="ico"><use href="#${iconOf(w, open)}"/></svg>`;
+    const tc = cfg.tint && w.kids ? rootColor(rootOf(w)) : '';
+    const ico = `<svg class="ico"${tc ? ` style="--ff:${tc};--fo:color-mix(in srgb,${tc} 75%,#fff);--fb:color-mix(in srgb,${tc} 65%,#000)"` : ''}><use href="#${iconOf(w, open)}"/></svg>`;
+    const lead = cfg.badge && root ? `<span class="badge" style="--c:${rootColor(w)}">${rootNum(w)}</span>${ico}` : cfg.tile ? `<span class="tile">${ico}</span>` : cfg.cards && root ? `<span class="badge" style="--c:${rootColor(w)}">${rootNum(w)}</span>` : ico;
     const txt = cfg.cards && root ? w.n.name.replace(/^\d+\.\s*/, '').replace(/^\[Beginner\]\s*/, '').replace(/^Free - Trail Users$/, 'Free - Trail Users') : label(w);
     return `<div class="row${root ? ' root' : ''}${sel ? ' sel' : ''}${st.act === w.id ? ' act' : ''}${anim}" role="treeitem" id="${cfg.k}-n${w.id}" data-id="${w.id}" aria-level="${w.depth + 1}" aria-selected="${sel}"${w.kids ? ` aria-expanded="${open}"` : ''} title="${esc(label(w))}">` +
       (cfg.cards && root ? '' : gutter(cfg, R, P)) + `<span class="item">${lead}<span class="name">${hl(txt, st.q)}</span>${right}</span></div>`;
