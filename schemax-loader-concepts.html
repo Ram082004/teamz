@@ -810,6 +810,21 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .k .pg{fill:none;stroke:color-mix(in srgb,var(--c) 55%,var(--hair-2));stroke-width:1.5;stroke-linejoin:round}
 .k .vx{fill:var(--panel);stroke:var(--hair-2);stroke-width:1.4;transition:.25s}.k .vx.on{fill:var(--c);stroke:var(--c)}
 
+/* single "Downloading…" line (Comet) */
+.o1 .one{margin-top:2px}
+.o1 .ol{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:8px;font:600 12.5px var(--ui);color:var(--text)}
+.o1 .ol .om{font:500 11.5px var(--ui);color:var(--text-3);font-variant-numeric:tabular-nums}
+.o1 .dts{display:inline-block;width:14px;text-align:left;font-style:normal}
+.o1 .dts::after{content:"";animation:dts 1.2s steps(4) infinite}
+@keyframes dts{0%{content:""}25%{content:"."}50%{content:".."}75%{content:"..."}}
+.o1.done .dts{display:none}
+.o1 .obar{position:relative;height:6px;border-radius:6px;background:var(--panel-3);overflow:visible}
+.o1 .obar i{position:relative;display:block;height:100%;width:0;border-radius:6px;background:linear-gradient(90deg,color-mix(in srgb,var(--c) 35%,transparent),var(--c));transition:width .18s linear;overflow:hidden}
+.o1 .obar i::before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.55),transparent);width:40%;transform:translateX(-120%);animation:obsh 1.3s ease-in-out infinite}
+@keyframes obsh{to{transform:translateX(320%)}}
+.o1 .obar::after{content:"";position:absolute;top:50%;left:var(--x,0%);width:12px;height:12px;margin:-6px 0 0 -6px;border-radius:50%;background:var(--panel);box-shadow:0 0 0 3px var(--c),0 0 12px 2px color-mix(in srgb,var(--c) 60%,transparent);transition:left .18s linear}
+.o1.done .obar i::before{display:none}.o1.done .obar::after{box-shadow:0 0 0 3px var(--c)}
+
 @media (max-width:560px){.d1{grid-template-columns:1fr;justify-items:center;text-align:center}.d1 .eb{justify-content:center}.d1 .info{width:100%}.stg{height:440px}}
 </style>
 </head>
@@ -862,7 +877,7 @@ const gear = (cx, cy, n, ro, ri) => { const P = 2 * Math.PI / n; let d = ''; for
   [[ri, a], [ro, a + .18 * P], [ro, a + .45 * P], [ri, a + .62 * P]].forEach(([q, t], j) => d += (i || j ? 'L' : 'M') + (cx + Math.cos(t) * q).toFixed(1) + ' ' + (cy + Math.sin(t) * q).toFixed(1)); } return d + 'Z'; };
 const o1 = (k, cls, vis, o = {}) => `<div class="o1 ${cls}">${o.extra || ''}<div class="vis ${o.v || ''}">${vis}${o.ic === false ? '' : `<span class="ic${o.sm ? ' sm' : ''}">${use(k.i)}<span class="chk">${TICK}</span></span>`}${o.ic === false ? `<span class="vk">${TICK}</span>` : ''}</div>
   <div class="oi"><div class="eb"><i></i><span class="sl"></span></div>${o.v24 ? `<div class="tr"><h3>${k.n}</h3><div class="pct"><span class="n">0</span><small>%</small></div></div><div class="bar"><i></i></div>` : `<h3>${k.n}</h3><div class="pct"><span class="n">0</span><small>%</small></div>`}
-  <div class="steps">${['Connect', 'Download', 'Verify', 'Open'].map(t => `<span><b></b><em>${t}</em></span>`).join('')}</div>
+  ${o.one ? `<div class="one"><div class="ol"><span class="ot">Downloading<i class="dts"></i></span><span class="om"></span></div><div class="obar"><i></i></div></div>` : `<div class="steps">${['Connect', 'Download', 'Verify', 'Open'].map(t => `<span><b></b><em>${t}</em></span>`).join('')}</div>`}
   <div class="pfoot"><span><span class="mb"></span> · <span class="sp"></span></span><button class="cn" data-x>Cancel</button></div></div></div>`;
 const o1set = (el, s) => { $$('.oi .n', el).forEach(n => n.textContent = Math.round(s.p)); if (0) $('.n', el).textContent = Math.round(s.p); $('.sl', el).innerHTML = lab(s); $('.mb', el).textContent = `${s.mb} / ${s.k.mb} MB`; $('.sp', el).textContent = s.sp;
   $$('.steps span', el).forEach((x, i) => { const f = Math.max(0, Math.min(1, (s.p - CUT[i]) / (CUT[i + 1] - CUT[i]))); x.style.setProperty('--f', f * 100 + '%'); x.classList.toggle('ok', f >= 1); x.classList.toggle('cur', i === s.si && f < 1); }); };
@@ -912,11 +927,13 @@ const D = [
       <g><animateTransform attributeName="transform" type="rotate" from="0 62 62" to="360 62 62" dur="5s" repeatCount="indefinite"/><circle class="dot" cx="62" cy="10" r="4.5"/></g></svg>`, {sm: true}); },
   set: (el, s) => { kset(el, s); $$('.rgp', el).forEach(x => x.style.strokeDashoffset = 100 - s.p); }},
 
- {name: 'Comet', desc: 'Two comets with glowing tails race around the icon in opposite directions while the progress ring fills behind them.',
+ {name: 'Comet', desc: 'Two comets with glowing tails race around the icon in opposite directions. No step labels — just "Downloading…" with one clean progress line and a glowing head.',
   html: k => { const comet = (rr, d, rev) => `<g><animateTransform attributeName="transform" type="rotate" from="${rev ? 360 : 0} 62 62" to="${rev ? 0 : 360} 62 62" dur="${d}" repeatCount="indefinite"/>
       ${Array.from({length: 11}, (_, j) => { const a = (rev ? j : -j) * 5 * Math.PI / 180 - Math.PI / 2; return `<circle class="dot" cx="${(62 + Math.cos(a) * rr).toFixed(1)}" cy="${(62 + Math.sin(a) * rr).toFixed(1)}" r="${(4.6 * (1 - j / 13)).toFixed(2)}" opacity="${(1 - j / 11).toFixed(2)}"/>`; }).join('')}</g>`;
-    return o1(k, 'k', `<svg viewBox="0 0 124 124">${PA(50)}<circle class="ln" cx="62" cy="62" r="36"/>${comet(50, '1.8s')}${comet(36, '2.6s', 1)}</svg>`, {sm: true}); },
-  set: kset},
+    return o1(k, 'k', `<svg viewBox="0 0 124 124">${PA(50)}<circle class="ln" cx="62" cy="62" r="36"/>${comet(50, '1.8s')}${comet(36, '2.6s', 1)}</svg>`, {sm: true, one: true}); },
+  set: (el, s) => { kset(el, s); const q = s.p + '%'; $('.obar i', el).style.width = q; $('.obar', el).style.setProperty('--x', q);
+    $('.sl', el).innerHTML = `<span class="kd">${s.k.l}</span>`; $('.ot', el).firstChild.textContent = s.p >= 100 ? 'Downloaded' : 'Downloading';
+    $('.om', el).textContent = s.p >= 100 ? 'Opening…' : `${s.mb} / ${s.k.mb} MB`; $('.pfoot .mb', el).textContent = s.p >= 100 ? 'Done' : `${s.eta} left`; }},
 
  {name: 'Stopwatch', desc: 'A stopwatch face: 60 ticks fill as the file loads while a sweep hand runs around the dial, with a crown on top.',
   html: k => { let t = ''; for (let i = 0; i < 60; i++) { const a = i / 60 * 6.2832 - 1.5708, mj = i % 5 === 0, r0 = mj ? 47 : 51;

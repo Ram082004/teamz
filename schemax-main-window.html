@@ -106,9 +106,26 @@ body.gon .app{right:398px}
 .rail hr{width:24px;border:0;border-top:1px solid var(--hair-2);margin:6px 0}
 .rail .grow{flex:1}
 .rail .rb .st{position:absolute;right:7px;bottom:7px;width:8px;height:8px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 2px var(--panel)}
-.tip{position:fixed;z-index:90;pointer-events:none;padding:6px 9px;border-radius:8px;background:#0e2140;color:#fff;font-size:12px;box-shadow:var(--pop);opacity:0;transform:translateX(-4px);transition:opacity .12s,transform .12s;max-width:280px}
-.tip.on{opacity:1;transform:none}.tip small{display:block;color:#9fb3c8;font-size:11px;margin-top:2px}
-[data-theme="dark"] .tip{background:#e6edf6;color:#0e2140}[data-theme="dark"] .tip small{color:#4b5d73}
+.tip{position:fixed;z-index:90;pointer-events:none;max-width:300px;padding:9px 12px 10px;border-radius:12px;background:rgba(14,33,64,.94);color:#fff;font-size:12px;line-height:1.35;
+  backdrop-filter:blur(12px) saturate(1.4);box-shadow:0 16px 36px -14px rgba(8,20,40,.6),inset 0 0 0 1px rgba(255,255,255,.09),inset 0 1px 0 rgba(255,255,255,.08);
+  opacity:0;transform:scale(.94) translate(var(--tx,0),var(--ty,4px));transform-origin:var(--to,50% 0);transition:opacity .14s,transform .24s var(--spring)}
+.tip.on{opacity:1;transform:none}
+.tip::after{content:"";position:absolute;width:10px;height:10px;border-radius:2px;background:rgba(14,33,64,.94);transform:rotate(45deg)}
+.tip.b::after{top:-4px;left:var(--ax,50%);margin-left:-5px}.tip.t::after{bottom:-4px;left:var(--ax,50%);margin-left:-5px}.tip.r::after{left:-4px;top:var(--ay,50%);margin-top:-5px}
+.tip .tt{display:flex;align-items:center;gap:8px;font-weight:650;white-space:nowrap}
+.tip .tt::before{content:"";flex:none;width:6px;height:6px;border-radius:50%;background:#2dd4bf;box-shadow:0 0 0 3px rgba(45,212,191,.22)}
+.tip small{display:block;color:#a9bdd3;font-size:11.5px;margin-top:3px;padding-left:14px}
+.tip .ks{display:flex;flex-wrap:wrap;gap:4px;margin-top:7px;padding-left:14px}
+.tip kbd{font:600 10px var(--mono);padding:2px 6px;border-radius:5px;background:rgba(255,255,255,.1);color:#fff;box-shadow:inset 0 -1px 0 rgba(255,255,255,.14)}
+.tip .mt{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:6px;padding-left:14px;font-size:11px;color:#a9bdd3}
+.tip .bg{padding:1px 7px;border-radius:99px;font-weight:650;background:color-mix(in srgb,var(--bc,#2dd4bf) 28%,transparent);color:#fff}
+.tip .tt.fl::before{background:var(--bc,#2dd4bf);box-shadow:0 0 0 3px color-mix(in srgb,var(--bc,#2dd4bf) 30%,transparent)}
+.tip .hn{display:flex;align-items:center;gap:6px;margin-top:7px;padding:6px 0 0 14px;border-top:1px solid rgba(255,255,255,.1);font-size:11px;color:#cfdced}
+[data-theme="dark"] .tip,[data-theme="dark"] .tip::after{background:rgba(236,242,249,.96)}
+[data-theme="dark"] .tip{color:#0e2140;box-shadow:0 16px 36px -14px rgba(0,0,0,.8),inset 0 0 0 1px rgba(14,33,64,.08)}
+[data-theme="dark"] .tip small,[data-theme="dark"] .tip .mt{color:#4b5d73}[data-theme="dark"] .tip .hn{color:#33475f;border-color:rgba(14,33,64,.1)}
+[data-theme="dark"] .tip kbd{background:rgba(14,33,64,.08);color:#0e2140;box-shadow:inset 0 -1px 0 rgba(14,33,64,.12)}
+[data-theme="dark"] .tip .bg{color:#0e2140}
 
 /* ---- sidebar / library ---- */
 .side{grid-row:2;grid-column:2;width:var(--sw,300px);position:relative;display:flex;flex-direction:column;background:var(--panel);border-right:1px solid var(--hair);transition:width .24s var(--ease);min-width:0}
@@ -175,9 +192,69 @@ body.gon .app{right:398px}
 .allow .m{height:6px;border-radius:9px;background:var(--panel-3);overflow:hidden;margin-bottom:8px}.allow .m i{display:block;height:100%;border-radius:9px;background:var(--c,var(--ok))}
 .allow .up{width:100%;height:28px;border-radius:8px;background:var(--accent);color:#fff;font-weight:650;font-size:12px;margin-top:2px}
 .grip{position:absolute;top:0;right:-5px;width:10px;height:100%;cursor:ew-resize;z-index:3}
-.blade{position:absolute;top:50%;right:-6px;width:12px;height:40px;margin-top:-20px;border-radius:6px;background:var(--panel);box-shadow:0 0 0 1px var(--hair-2),var(--shadow);display:grid;place-items:center;color:var(--text-3);opacity:0;transition:opacity .15s;z-index:4}
-.side:hover .blade,.side.coll .blade{opacity:1}.blade:hover{color:var(--accent-text)}
-.blade svg{width:10px;height:10px}
+.grip::after{content:"";position:absolute;top:0;bottom:0;left:4px;width:2px;border-radius:2px;background:transparent;transition:background .2s}
+.grip:hover::after,.side.drag .grip::after{background:linear-gradient(180deg,transparent,var(--accent-2) 20%,var(--accent-2) 80%,transparent)}
+.blade{position:absolute;top:50%;right:-5px;width:10px;height:92px;margin-top:-46px;border-radius:99px;background:var(--panel);color:var(--text-3);
+  box-shadow:0 0 0 1px var(--hair-2),0 8px 18px -10px rgba(8,20,40,.45);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;overflow:hidden;
+  opacity:0;transition:width .32s var(--spring),right .32s var(--spring),height .32s var(--spring),margin .32s var(--spring),background .2s,color .2s,opacity .2s,box-shadow .2s;z-index:4}
+.side:hover .blade,.side.coll .blade,.blade:focus-visible{opacity:1}
+.blade .gd{display:flex;flex-direction:column;gap:4px}.blade .gd i{width:3px;height:3px;border-radius:50%;background:currentColor;opacity:.7}
+.blade svg{width:11px;height:11px;display:none;flex:none}
+.blade .vl{display:none;writing-mode:vertical-rl;transform:rotate(180deg);font:700 9px var(--mono);letter-spacing:.2em;text-transform:uppercase}
+.blade:hover{width:22px;right:-11px;height:104px;margin-top:-52px;color:#fff;background:linear-gradient(180deg,#12a39b,#0e2140);box-shadow:0 10px 22px -8px rgba(13,132,125,.75)}
+.blade:hover .gd{display:none}.blade:hover svg{display:block}
+.side.coll .blade{right:-11px;width:22px;height:128px;margin-top:-64px;gap:8px;color:var(--text-2)}
+.side.coll .blade .gd{display:none}.side.coll .blade svg{display:block;transform:rotate(180deg)}.side.coll .blade .vl{display:block}
+.side.coll .blade:hover{height:140px;margin-top:-70px;color:#fff}
+.tree::-webkit-scrollbar-thumb{background:transparent!important}.tree:hover::-webkit-scrollbar-thumb{background:var(--hair-2)!important}
+.tree::-webkit-scrollbar{width:9px!important}
+
+/* ---- search revealed by the icon ---- */
+.side:not(.srch) .sfield,.side:not(.srch) .shint,.side:not(.srch) .sprog{display:none}
+.side.srch .sfield{animation:srin .28s var(--spring)}
+@keyframes srin{from{opacity:0;transform:translateY(-6px)}}
+#srchBtn[aria-pressed="true"]{color:var(--accent-text);background:var(--accent-soft)}
+/* ---- removed: rail wifi + library text-size footer (text size stays in Settings and Ctrl + wheel) ---- */
+#netBtn{display:none!important}
+.side>.sfoot{display:none}
+/* ---- collapsed library: no strip, handle docked flush to the rail ---- */
+.side{z-index:4}
+.side.coll{width:0;border-right:0}
+.side.coll .grip{display:none}
+.side.coll .blade{right:-24px;width:24px;height:132px;margin-top:-66px;border-radius:0 14px 14px 0;background:var(--panel);color:var(--text-2);opacity:1;
+  box-shadow:1px 0 0 var(--hair),0 1px 0 var(--hair),0 -1px 0 var(--hair),10px 0 22px -14px rgba(8,20,40,.45)}
+.side.coll .blade::before{content:"";position:absolute;left:-1px;top:0;bottom:0;width:1px;background:var(--panel)}
+.side.coll .blade:hover{right:-28px;width:28px;height:144px;margin-top:-72px;color:#fff;background:linear-gradient(180deg,#12a39b,#0e2140)}
+.side.coll .blade:hover::before{background:transparent}
+
+/* ---- glow seam + docked tab that appears only on hover ---- */
+.side::after{content:"";position:absolute;top:0;bottom:0;right:-1px;width:2px;pointer-events:none;opacity:0;transition:opacity .25s;
+  background:linear-gradient(180deg,transparent,var(--accent-2) 22%,#0e2140 78%,transparent);z-index:3}
+[data-theme="dark"] .side::after{background:linear-gradient(180deg,transparent,var(--accent-2) 22%,#5b7fb5 78%,transparent)}
+.side:has(.grip:hover)::after,.side:has(.blade:hover)::after,.side.drag::after,.side.coll::after{opacity:1}
+.side.coll::after{right:-3px;width:3px}
+.grip:hover::after,.side.drag .grip::after{background:transparent}
+/* the docked tab: hidden until the edge is hovered (open and closed) */
+.blade,.side.coll .blade{right:-24px;width:24px;height:132px;margin-top:-66px;border-radius:0 14px 14px 0;background:var(--panel);color:var(--text-2);gap:8px;
+  box-shadow:1px 0 0 var(--hair),0 1px 0 var(--hair),0 -1px 0 var(--hair),10px 0 22px -14px rgba(8,20,40,.45);
+  opacity:0;transform:translateX(-10px);pointer-events:none;transition:opacity .2s,transform .32s var(--spring),width .3s var(--spring),right .3s var(--spring),background .2s,color .2s}
+.blade .gd{display:none!important}.blade svg,.blade .vl{display:block!important}
+.side:not(.coll) .blade svg{transform:none}.side.coll .blade svg{transform:rotate(180deg)}
+.side:hover .blade{opacity:0}
+.side:has(.grip:hover) .blade,.blade:hover,.blade:focus-visible{opacity:1!important;transform:none;pointer-events:auto}
+.blade:hover,.side.coll .blade:hover{right:-28px;width:28px;height:132px;margin-top:-66px;color:#fff;background:linear-gradient(180deg,#12a39b,#0e2140)}
+.side.coll .blade::before{display:none}
+/* hover zone along the edge: wider so the tab is easy to reach; when collapsed it only reveals (no resize) */
+.grip{right:-8px;width:16px}
+.side.coll .grip{display:block;right:-16px;width:16px;cursor:pointer}
+
+/* ---- stable peek: JS adds .peek on edge/tab enter, removes after a grace delay; no geometry change on hover ---- */
+.side::after{opacity:0}
+.side.peek::after,.side.drag::after,.side.coll::after{opacity:1}
+.side:not(.peek) .blade:not(:focus-visible){opacity:0!important;transform:translateX(-8px)!important;pointer-events:none!important}
+.side.peek .blade,.side .blade:focus-visible{opacity:1!important;transform:none!important;pointer-events:auto!important}
+.blade:hover,.side.coll .blade:hover{right:-24px;width:24px;height:132px;margin-top:-66px}
+.blade{transition:opacity .18s ease,transform .28s cubic-bezier(.2,.8,.2,1),background .2s,color .2s!important}
 
 /* ---- main column ---- */
 .main{grid-row:2;grid-column:3;display:flex;flex-direction:column;min-width:0;min-height:0}
@@ -198,6 +275,46 @@ body.gon .app{right:398px}
 .tab:hover .tx,.tab.on .tx{opacity:1}.tab .tx:hover{background:var(--press);color:var(--text)}
 .tab.home{padding:0 11px;min-width:0;flex:none}
 .tab .tx svg.i{width:12px;height:12px}
+/* ===== title bar: ping + plan pill (animated border, person icon) ===== */
+.tnet{display:flex;align-items:center;gap:6px;padding:0 8px;font:600 11px var(--mono);color:var(--text-3);cursor:pointer}
+.tnet i{width:6px;height:6px;border-radius:50%;background:var(--ok);animation:tnp 1.8s infinite}
+@keyframes tnp{0%{box-shadow:0 0 0 0 rgba(22,163,74,.45)}100%{box-shadow:0 0 0 7px rgba(22,163,74,0)}}
+@property --pang{syntax:"<angle>";inherits:false;initial-value:0deg}
+.plan{position:relative;isolation:isolate;height:32px;padding:0 4px 0 3px;background:var(--panel);box-shadow:none;overflow:visible}
+.plan::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1.5px;background:conic-gradient(from var(--pang),#2dd4bf,#3b82f6,#f59e0b,#2dd4bf);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;animation:pspin 4s linear infinite;z-index:-1}
+@keyframes pspin{to{--pang:360deg}}
+.plan:hover{box-shadow:none}.plan:hover::before{animation-duration:1.6s}
+.plan .pu{width:24px;height:24px;margin-right:2px;border-radius:50%;display:grid;place-items:center;padding:0;background:linear-gradient(135deg,#0e2140,#12a39b);color:#fff;flex:none}
+.plan .pu svg.i{width:14px;height:14px;stroke-width:2}
+.plan>span+span{border-left:0}
+.plan>.days{padding:0 8px 0 4px;gap:7px}.plan>.days b{font-weight:650;color:var(--text)}.plan>.days small{font-weight:500;color:var(--text-3);margin-left:-2px}
+.plan>.use{border-left:1px solid var(--hair-2)!important}
+
+/* ===== tab bar: dark floating island ===== */
+.wbar{height:52px;align-items:center;background:var(--panel-2)}
+.tabs{flex:0 1 auto;height:36px;align-items:center;gap:3px;margin:0 auto 0 2px;padding:0 4px;border-radius:999px;background:#0b1622;color:#cfe0ee;
+  box-shadow:0 12px 30px -12px rgba(0,0,0,.6),inset 0 0 0 1px rgba(255,255,255,.08);max-width:calc(100% - 330px)}
+[data-theme="dark"] .tabs{background:#e6edf6;color:#0e2140;box-shadow:0 12px 30px -14px rgba(0,0,0,.8)}
+.tabs .tab{height:28px;min-width:0;max-width:170px;color:inherit;opacity:.72;border-radius:999px;padding:0 5px 0 10px;flex:0 1 auto}
+.tabs .tab:hover{background:rgba(255,255,255,.08);opacity:1}
+[data-theme="dark"] .tabs .tab:hover{background:rgba(14,33,64,.07)}
+.tabs .tab.on{opacity:1;color:inherit;background:rgba(45,212,191,.2);box-shadow:none}
+[data-theme="dark"] .tabs .tab.on{background:rgba(18,163,155,.18)}
+.tabs .tab.on::after{display:none}
+.tabs .tab.inpane:not(.on){background:rgba(255,255,255,.05);opacity:.9}
+[data-theme="dark"] .tabs .tab.inpane:not(.on){background:rgba(14,33,64,.05)}
+.tabs .tab.home{width:28px;padding:0;justify-content:center;background:rgba(45,212,191,.16);opacity:1}
+.tabs .tab.home.on{background:rgba(45,212,191,.32)}
+.tabs .tab .tx{color:inherit;opacity:0}.tabs .tab:hover .tx,.tabs .tab.on .tx{opacity:.7}
+.tabs .tab .tx:hover{background:rgba(255,255,255,.14);opacity:1}
+[data-theme="dark"] .tabs .tab .tx:hover{background:rgba(14,33,64,.1)}
+.tabs .lane{height:28px;padding:0 4px 0 8px;color:inherit;opacity:.8}
+.tabs .lane i{background:rgba(255,255,255,.12);color:inherit}
+[data-theme="dark"] .tabs .lane i{background:rgba(14,33,64,.1)}
+.tabs .lane.pdf b{color:#f87171}.tabs .lane.pcb b{color:#7aa7ff}.tabs .lane.tool b{color:#5fe3d3}
+[data-theme="dark"] .tabs .lane.pdf b{color:#d92d2d}[data-theme="dark"] .tabs .lane.pcb b{color:#2563eb}[data-theme="dark"] .tabs .lane.tool b{color:#0b7570}
+
 .wtools{display:flex;align-items:center;gap:6px;height:100%;flex:none}
 .vsw{display:flex;padding:2px;border-radius:9px;background:var(--panel);box-shadow:inset 0 0 0 1px var(--hair)}
 .vsw button{display:flex;align-items:center;gap:6px;height:26px;padding:0 10px;border-radius:7px;font-size:11.5px;font-weight:600;color:var(--text-2)}
@@ -652,6 +769,7 @@ body.gon .app{right:398px}
   <symbol id="u-yt" viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="4"/><path d="m10.5 9.5 4 2.5-4 2.5z" fill="currentColor"/></symbol>
   <symbol id="u-ig" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="5"/><circle cx="12" cy="12" r="3.6"/><circle cx="16.8" cy="7.2" r=".8" fill="currentColor"/></symbol>
   <symbol id="u-pin" viewBox="0 0 24 24"><path d="M12 21s-6.5-6-6.5-11a6.5 6.5 0 0 1 13 0c0 5-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/></symbol>
+  <symbol id="u-user" viewBox="0 0 24 24"><circle cx="12" cy="8.2" r="3.8"/><path d="M4.5 20.2c.9-3.8 3.9-5.9 7.5-5.9s6.6 2.1 7.5 5.9"/></symbol>
   <symbol id="u-down" viewBox="0 0 24 24"><path d="M12 4v12M6.5 11 12 16.5 17.5 11M5 20h14"/></symbol>
 </svg>
 
@@ -660,7 +778,7 @@ body.gon .app{right:398px}
   <b>Schemax Schematics — main window</b><span>· full layout with every option placed</span>
   <span class="sp"></span>
   <span class="lbl">Account</span>
-  <div class="seg" id="acctSeg"><button data-acct="premium" aria-pressed="true">Premium</button><button data-acct="trial" aria-pressed="false">Trial</button><button data-acct="free" aria-pressed="false">Free</button></div>
+  <div class="seg" id="acctSeg"><button data-acct="premium" aria-pressed="true">Pro</button><button data-acct="trial" aria-pressed="false">Trial</button><button data-acct="free" aria-pressed="false">Free</button></div>
   <button class="dbtn" id="guideBtn" aria-pressed="false"><svg class="i"><use href="#u-pin"/></svg>Placement guide</button>
 </div>
 
@@ -669,18 +787,19 @@ body.gon .app{right:398px}
   <header class="tb">
     <div class="brand" data-g="1">
       <img class="lt" src="assests/schemax-anim/mark.png" alt=""><img class="dk" src="assests/schemax-anim-dark/mark.png" alt="">
-      <div class="wm"><b>Schemax <span>Schematics</span></b><small>WORLD'S FASTEST SCHEMATICS</small></div>
+      <div class="wm"><b>Schemax <span>Schematics</span></b></div>
     </div>
     <div class="drag"></div>
     <button class="cmd" id="cmdBtn" data-g="2"><svg class="i"><use href="#u-search"/></svg><span>Search files, tools &amp; settings…</span><kbd>Ctrl K</kbd></button>
     <div class="drag"></div>
     <div class="tbr">
+      <span class="tnet" id="tbNet" title="Connection · click to check"><i></i>46 ms</span>
       <button class="plan" id="planBtn" data-g="3" aria-label="Plan status"></button>
       <span class="vsep"></span>
       <button class="ib" id="helpBtn" data-g="4" data-tip="Help|About, website, connection check, shortcuts" aria-haspopup="menu" aria-expanded="false"><svg class="i"><use href="#u-help"/></svg></button>
       <button class="ib" id="setBtn" data-g="5" data-tip="Settings|All preferences in one place" aria-haspopup="dialog"><svg class="i"><use href="#u-gear"/></svg></button>
       <button class="ib" id="themeBtn" data-g="6" data-tip="Toggle theme|Light / dark"><svg class="i"><use href="#u-sun"/></svg></button>
-      <button class="chip" id="chipBtn" data-g="7" aria-haspopup="dialog" aria-expanded="false"><span class="av" id="avL">B</span><span class="t"><b id="unL">buddies400</b><small id="plL">PREMIUM</small></span></button>
+      <button class="chip" id="chipBtn" hidden style="display:none" aria-haspopup="dialog" aria-expanded="false"><span class="av" id="avL">B</span><span class="t"><b id="unL">buddies400</b><small id="plL">PRO</small></span></button>
     </div>
     <div class="wc" data-g="8">
       <button data-tip="Minimize" aria-label="Minimize"><svg width="10" height="10"><path d="M0 5.5h10" stroke="currentColor"/></svg></button>
@@ -703,6 +822,7 @@ body.gon .app{right:398px}
 
   <aside class="side" id="side" data-g="10" aria-label="Library">
     <div class="sh"><h2>Library<small id="libCount"></small></h2>
+      <button class="ib" id="srchBtn" data-tip="Search files|Ctrl+F" aria-pressed="false"><svg class="i"><use href="#u-search"/></svg></button>
       <button class="ib" id="expBtn" data-tip="Collapse all folders"><svg class="i"><use href="#u-tree"/></svg></button>
       <button class="ib" id="hideBtn" data-tip="Hide panel|Ctrl+T"><svg class="i"><use href="#u-collapse"/></svg></button></div>
     <div class="sfield" id="sfield"><svg class="i" style="color:var(--text-3)"><use href="#u-search"/></svg>
@@ -716,8 +836,8 @@ body.gon .app{right:398px}
     <div class="sfoot"><span>Text</span>
       <div class="stp"><button id="tfMinus" aria-label="Smaller text">−</button><output id="tfOut">13px</output><button id="tfPlus" aria-label="Bigger text">+</button></div>
       <span class="sp"></span><span id="libHint" style="color:var(--text-3)">Double-click to open</span></div>
-    <div class="grip" id="grip" title="Drag to resize"></div>
-    <button class="blade" id="blade" aria-label="Collapse panel" data-tip="Collapse panel"><svg viewBox="0 0 10 10"><path d="M6.5 2 3.5 5l3 3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+    <div class="grip" id="grip"></div>
+    <button class="blade" id="blade" aria-label="Hide library" data-tip="Hide library|Drag the edge to resize · Ctrl+T" data-tipp="r"><span class="gd"><i></i><i></i><i></i></span><svg viewBox="0 0 10 10"><path d="M6.5 2 3.5 5l3 3" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="vl">Library</span></button>
   </aside>
 
   <section class="main">
@@ -768,10 +888,10 @@ body.gon .app{right:398px}
 </div>
 
 <div class="pop acct" id="acctPop" role="dialog" aria-label="Account">
-  <div class="hd"><span class="av" id="avP">B</span><div style="flex:1"><b><span id="unP">buddies400</span><button class="cp" id="cpUser" data-tip="Click to copy"><svg class="i" style="width:13px;height:13px"><use href="#u-copy"/></svg></button></b><span class="badge" id="plP">PREMIUM</span></div>
+  <div class="hd"><span class="av" id="avP">B</span><div style="flex:1"><b><span id="unP">buddies400</span><button class="cp" id="cpUser" data-tip="Click to copy"><svg class="i" style="width:13px;height:13px"><use href="#u-copy"/></svg></button></b><span class="badge" id="plP">PRO</span></div>
     <button class="ib" id="acctX" style="width:28px;height:28px" aria-label="Close"><svg class="i"><use href="#u-x"/></svg></button></div>
   <div class="bd">
-    <div class="kv"><span>Plan</span><b id="kvPlan">Premium</b></div>
+    <div class="kv"><span>Plan</span><b id="kvPlan">Pro</b></div>
     <div class="kv"><span>Expiry date</span><b id="kvExp"></b></div>
     <div class="kv"><span>Signed in</span><b>2026-11-09 09:42</b></div>
     <div class="kv"><span>Auto login</span><button class="sw" id="autoSw" role="switch" aria-checked="true" aria-label="Auto login"></button></div>
@@ -808,7 +928,7 @@ const html = document.documentElement, app = $('#app');
 
 /* =============================== account states (demo) =============================== */
 const ACCTS = {
-  premium: {plan: 'Premium', days: 72, exp: '20 Jan 2027', trial: null},
+  premium: {plan: 'Pro', days: 72, exp: '20 Jan 2027', trial: null},
   trial:   {plan: 'Trial', days: 5, exp: '14 Nov 2026', trial: {kind: 'signup', today: 8, day: 10, left: 48, total: 50}},
   free:    {plan: 'Free', days: -1, exp: 'N/A', trial: {kind: 'free', today: 3, day: 5, left: 0, total: 0}},
 };
@@ -901,7 +1021,7 @@ function rowHtml(w, last, flags, flat) {
   const g = flat ? `<span style="width:8px;flex:none"></span>` : gutter(w, last, flags), c = colorOf(w);
   const fc = w.kids ? ` style="--ff:${c};--fo:color-mix(in srgb,${c} 75%,#fff);--fb:color-mix(in srgb,${c} 65%,#000)"` : '';
   const an = !flat && T.anim && w.parent && w.parent.id === T.anim ? ` in" style="--bc:${c};--k:${T.k++}` : `" style="--bc:${c}`;
-  return `<div class="row${w.depth === 0 ? ' root' : ''}${T.sel === w.id ? ' sel' + (T.nw ? ' nw' : '') : ''}${an}" role="treeitem" id="tr${w.id}" data-id="${w.id}" aria-level="${w.depth + 1}"${w.kids ? ` aria-expanded="${o}"` : ''} aria-selected="${T.sel === w.id}" title="${esc(nm)}">${g}<span class="it"><svg class="ico"${fc}><use href="#${iconOf(w, o)}"/></svg><span class="nm">${mark(nm)}</span>${hasDot(w.n) ? '<i class="hd" title="Hardware solution available"></i>' : ''}${T.sel === w.id && !w.kids ? '<span class="ent" title="Press Enter to open">↵ Open</span>' : ''}</span>${flat ? `<span class="pth">${esc(pathOf(w))}</span>` : (!w.kids && locked(w) ? `<span class="lk" title="Premium">${U('u-lock')}</span>` : '')}</div>`;
+  return `<div class="row${w.depth === 0 ? ' root' : ''}${T.sel === w.id ? ' sel' + (T.nw ? ' nw' : '') : ''}${an}" role="treeitem" id="tr${w.id}" data-id="${w.id}" aria-level="${w.depth + 1}"${w.kids ? ` aria-expanded="${o}"` : ''} aria-selected="${T.sel === w.id}">${g}<span class="it"><svg class="ico"${fc}><use href="#${iconOf(w, o)}"/></svg><span class="nm">${mark(nm)}</span>${hasDot(w.n) ? '<i class="hd" title="Hardware solution available"></i>' : ''}${T.sel === w.id && !w.kids ? '<span class="ent" title="Press Enter to open">↵ Open</span>' : ''}</span>${flat ? `<span class="pth">${esc(pathOf(w))}</span>` : (!w.kids && locked(w) ? `<span class="lk" title="Pro">${U('u-lock')}</span>` : '')}</div>`;
 }
 let VIS = [];
 function renderTree() {
@@ -939,7 +1059,7 @@ treeEl.addEventListener('keydown', e => {
 /* search: runs on Enter (like the app), flat results with path */
 const q = $('#q'), sfield = $('#sfield');
 q.addEventListener('input', () => { sfield.classList.toggle('has', !!q.value); if (!q.value && T.hits) clearSearch(); });
-q.addEventListener('keydown', e => { if (e.key === 'Enter') runSearch(); if (e.key === 'Escape') { q.value = ''; sfield.classList.remove('has'); clearSearch(); } if (e.key === 'ArrowDown' && T.hits) { e.preventDefault(); treeEl.focus(); select(VIS[0], true); } });
+q.addEventListener('keydown', e => { if (e.key === 'Escape' && !q.value) { setSearch(false); treeEl.focus(); return; } if (e.key === 'Enter') runSearch(); if (e.key === 'Escape') { q.value = ''; sfield.classList.remove('has'); clearSearch(); } if (e.key === 'ArrowDown' && T.hits) { e.preventDefault(); treeEl.focus(); select(VIS[0], true); } });
 $('#clr').onclick = () => { q.value = ''; sfield.classList.remove('has'); clearSearch(); q.focus(); };
 $('#sresClr').onclick = () => $('#clr').click();
 function runSearch() {
@@ -964,11 +1084,17 @@ treeEl.addEventListener('wheel', e => { if (!e.ctrlKey) return; e.preventDefault
 /* sidebar resize / collapse */
 const side = $('#side');
 let sw = 300;
-function setSide(open) { side.classList.toggle('coll', !open); $('#libBtn').setAttribute('aria-pressed', open); side.style.setProperty('--sw', sw + 'px'); placeGuide(); }
+function setSide(open) { side.classList.toggle('coll', !open); const bl = $('#blade'); bl.dataset.tip = open ? 'Hide library|Drag the edge to resize · Ctrl+T' : 'Show library|Ctrl+T'; bl.setAttribute('aria-label', open ? 'Hide library' : 'Show library'); $('#libBtn').setAttribute('aria-pressed', open); side.style.setProperty('--sw', sw + 'px'); placeGuide(); }
 $('#blade').onclick = () => setSide(side.classList.contains('coll'));
 $('#hideBtn').onclick = () => setSide(false);
+function setSearch(on) { side.classList.toggle('srch', on); $('#srchBtn').setAttribute('aria-pressed', on);
+  if (on) setTimeout(() => { q.focus(); q.select(); }, 60); else { if (q.value || T.hits) { q.value = ''; sfield.classList.remove('has'); clearSearch(); } } }
+$('#srchBtn').onclick = () => setSearch(!side.classList.contains('srch'));
 $('#libBtn').onclick = () => setSide(side.classList.contains('coll'));
+{ let pk; const on = () => { clearTimeout(pk); side.classList.add('peek'); }, off = () => { clearTimeout(pk); pk = setTimeout(() => side.classList.remove('peek'), 320); };
+  [$('#grip'), $('#blade')].forEach(el => { el.addEventListener('pointerenter', on); el.addEventListener('pointerleave', off); }); }
 $('#grip').addEventListener('pointerdown', e => {
+  if (side.classList.contains('coll')) { setSide(true); return; }
   const x0 = e.clientX, w0 = side.classList.contains('coll') ? 13 : sw; let moved = false; side.classList.add('drag');
   const mv = ev => { const nw = Math.max(13, Math.min(800, w0 + ev.clientX - x0)); if (Math.abs(ev.clientX - x0) > 3) moved = true;
     side.classList.remove('coll'); side.style.width = nw + 'px'; };
@@ -1163,13 +1289,13 @@ function homeHtml() {
         <div class="stats"><div class="st"><small>Plan</small><b>${a.plan}</b><em>${a.trial ? (a.trial.kind === 'free' ? 'Free folder only' : 'Sign-up trial') : 'Full library'}</em></div>
           <div class="st"><small>Days left</small><b class="${s || 'ok'}">${a.days < 0 ? '—' : a.days}</b><em>${a.days < 0 ? 'No expiry' : 'until ' + a.exp}</em></div>
           <div class="st"><small>Downloads</small><b>${a.trial ? `${a.trial.today}/${a.trial.day}` : 'Unlimited'}</b><em>${a.trial ? 'left today' : 'fair use'}</em></div></div>
-        <div class="acts"><button class="btn pri" data-scroll-plans>${U('u-bag')}${a.trial ? 'Buy Premium' : 'Renew / extend'}</button><button class="btn" data-key>${U('u-key')}Enter activation key</button></div></div>
+        <div class="acts"><button class="btn pri" data-scroll-plans>${U('u-bag')}${a.trial ? 'Buy Pro' : 'Renew / extend'}</button><button class="btn" data-key>${U('u-key')}Enter activation key</button></div></div>
       <div class="offer"><div class="sparks">${[[62, 18], [78, 30], [88, 12], [70, 60], [92, 48], [56, 40]].map(([x, y], i) => `<i style="left:${x}%;top:${y}%;animation-delay:${i * .35}s"></i>`).join('')}</div>
         <div class="eb">✦ DIWALI OFFER</div><h2>Get <em>3 months extra</em><br>free</h2><p>Buy any 1, 2 or 3 year plan or a team plan and get 3 extra months free.</p>
         <div class="cd"><span>01<small>DAY</small></span><span>14<small>HRS</small></span><span>36<small>MIN</small></span></div>
         <svg class="lamp" viewBox="0 0 80 80"><ellipse cx="40" cy="58" rx="30" ry="11" fill="#f59e0b"/><path d="M10 56q30 22 60 0" fill="#b45309"/><path d="M40 46c-7-9-4-18 0-28 4 10 7 19 0 28z" fill="#fde047"/><path d="M40 44c-3-5-2-10 0-15 2 5 3 10 0 15z" fill="#fff7c2"/></svg></div>
     </div>
-    <div class="sec" id="plans"><div><div class="eb">PREMIUM PLANS</div><h2>Extend your access</h2></div><span class="sp"></span>
+    <div class="sec" id="plans"><div><div class="eb">PRO PLANS</div><h2>Extend your access</h2></div><span class="sp"></span>
       <div class="seg" data-cur><button aria-pressed="true" data-c="inr">INR ₹</button><button aria-pressed="false" data-c="usd">USD $</button></div>
       <a href="#" data-act="purch" onclick="return false">${U('u-bag')}My Purchases</a></div>
     <div class="ptabs"><div class="seg" data-who><button aria-pressed="true" data-w="solo">Individual</button><button aria-pressed="false" data-w="team">Team</button></div>
@@ -1199,7 +1325,7 @@ function wireHome(el) {
     const w = e.target.closest('[data-w]'); if (w) { who = w.dataset.w; $$('[data-w]', el).forEach(b => b.setAttribute('aria-pressed', b === w)); draw(); }
     const p = e.target.closest('[data-p]'); if (p && !e.target.closest('[data-buy],[data-wa]')) { sel = p.dataset.p; draw(); }
     const b = e.target.closest('[data-buy]'); if (b) toast(`Razorpay checkout opens in-app for ${PLANS[b.dataset.buy].k.toLowerCase()} (demo)`, 'u-shield');
-    if (e.target.closest('[data-wa]')) toast('Opens WhatsApp: "Hi, I want to buy Schemax Premium" (demo)', 'u-wa');
+    if (e.target.closest('[data-wa]')) toast('Opens WhatsApp: "Hi, I want to buy Schemax Pro" (demo)', 'u-wa');
     if (e.target.closest('[data-key]')) keyDialog();
     if (e.target.closest('[data-scroll-plans]')) $('#plans', el).scrollIntoView({behavior: 'smooth'});
     if (e.target.closest('[data-act="purch"]')) toast('My Purchases opens on the website (demo)', 'u-bag');
@@ -1211,14 +1337,14 @@ function openPlans() { activate('home'); setTimeout(() => $('[data-pane="home"] 
 /* =============================== account / title bar =============================== */
 function applyAcct() {
   const a = A(), s = sev(a.days), pl = a.plan.toUpperCase();
-  let h = a.days >= 0 ? `<span class="days ${s}"><i class="dot"></i>${a.days} day${a.days === 1 ? '' : 's'} left</span>` : '';
+  let h = `<span class="pu">${U('u-user')}</span>` + (a.days >= 0 ? `<span class="days ${s}"><i class="dot"></i><b>${a.days} day${a.days === 1 ? '' : 's'} left</b><small>· ${a.plan}</small></span>` : '');
   if (a.trial) { const r = a.trial.today / a.trial.day, c = a.trial.today <= 2 ? 'var(--amber)' : 'var(--ok)';
     h += `<span class="use" style="--c:${c}">${U('u-down')}${a.trial.today}/${a.trial.day} today<span class="m"><i style="width:${r * 100}%"></i></span></span>`; }
-  if (!h) h = `<span class="days"><i class="dot"></i>Active</span>`;
+  if (a.days < 0) h += `<span class="days"><i class="dot"></i><b>Active</b><small>· ${a.plan}</small></span>`;
   $('#planBtn').innerHTML = h;
   $('#plL').textContent = $('#plP').textContent = pl; $('#kvPlan').textContent = a.plan;
   $('#kvExp').innerHTML = a.days < 0 ? 'N/A' : `${a.exp}<em class="${s}">· ${a.days === 0 ? 'Expired' : a.days + ' day' + (a.days === 1 ? '' : 's') + ' left'}</em>`;
-  $('#renewBtn span').textContent = a.trial ? 'Buy Premium' : 'Renew plan';
+  $('#renewBtn span').textContent = a.trial ? 'Buy Pro' : 'Renew plan';
   const al = $('#allow'), au = $('#acctUse');
   if (a.trial) { const t = a.trial, c = t.today <= 2 ? 'var(--amber)' : 'var(--ok)';
     const body = `<div class="r"><span>Downloads today</span><b>${t.today} of ${t.day} left</b></div><div class="m" style="--c:${c}"><i style="width:${t.today / t.day * 100}%"></i></div>` +
@@ -1245,7 +1371,8 @@ function closePop() { if (!openPop) return; openPop.classList.remove('on'); open
 document.addEventListener('pointerdown', e => { if (openPop && !openPop.contains(e.target) && !openPop._a.contains(e.target)) closePop(); });
 $('#helpBtn').onclick = () => pop($('#helpPop'), $('#helpBtn'));
 $('#chipBtn').onclick = () => pop($('#acctPop'), $('#chipBtn'));
-$('#planBtn').onclick = () => pop($('#acctPop'), $('#chipBtn'));
+$('#planBtn').onclick = () => pop($('#acctPop'), $('#planBtn'));
+$('#tbNet').onclick = () => $('#netBtn').click();
 $('#acctX').onclick = closePop;
 $('#autoSw').onclick = e => { const b = e.currentTarget, v = b.getAttribute('aria-checked') !== 'true'; b.setAttribute('aria-checked', v); toast(v ? 'Auto login on' : 'Auto login off', 'u-check'); };
 $('#cpUser').onclick = () => toast('Username copied', 'u-copy'); $('#cpHost').onclick = () => toast('Hostname copied', 'u-copy');
@@ -1280,9 +1407,9 @@ function keyDialog() {
 }
 function premiumCard(w) {
   const a = A();
-  modal({eb: 'Premium', c: 'var(--copper)', title: 'This file is included with Premium',
-    body: `<b>${esc(base(w.n.name))}</b><br>Your ${a.trial.kind === 'free' ? 'Free plan' : 'free trial'} can open the files in the "Free - Trail Users" folder. Buy Premium to access every file.`, col: 1,
-    btns: [['Buy Premium', 'pri', openPlans], ['Buy on WhatsApp', 'wa', () => toast('Opens WhatsApp: "Hi, I want to buy Schemax Premium" (demo)', 'u-wa')], ['Enter Activation Key', 'ghost', () => setTimeout(keyDialog, 220)]]});
+  modal({eb: 'Pro', c: 'var(--copper)', title: 'This file is included with Pro',
+    body: `<b>${esc(base(w.n.name))}</b><br>Your ${a.trial.kind === 'free' ? 'Free plan' : 'free trial'} can open the files in the "Free - Trail Users" folder. Buy Pro to access every file.`, col: 1,
+    btns: [['Buy Pro', 'pri', openPlans], ['Buy on WhatsApp', 'wa', () => toast('Opens WhatsApp: "Hi, I want to buy Schemax Pro" (demo)', 'u-wa')], ['Enter Activation Key', 'ghost', () => setTimeout(keyDialog, 220)]]});
 }
 
 /* generic modal */
@@ -1358,7 +1485,7 @@ const CMDS = [
   ['Go to Home', 'u-home', () => activate('home'), ''], ['Show / hide Library', 'u-lib', () => setSide(side.classList.contains('coll')), 'Ctrl T'],
   ['Toggle light / dark theme', 'u-sun', () => $('#themeBtn').click(), ''], ['Settings', 'u-gear', () => openSettings(), 'Ctrl ,'], ['PCB Viewer settings', 'u-board', () => openSettings('pcb'), ''], ['Change language', 'u-lang', () => openSettings('lang'), ''],
   ['Check my connection', 'u-wifi', netCheck, ''], ['About Schemax Schematics', 'u-info', () => act('about'), ''], ['Keyboard shortcuts', 'u-kb', () => act('keys'), '?'],
-  ['Buy / renew Premium', 'u-bag', openPlans, ''], ['Enter activation key', 'u-key', keyDialog, ''], ['Log out', 'u-out', () => $('#logoutBtn').click(), ''],
+  ['Buy / renew Pro', 'u-bag', openPlans, ''], ['Enter activation key', 'u-key', keyDialog, ''], ['Log out', 'u-out', () => $('#logoutBtn').click(), ''],
 ];
 function palette() {
   closePop();
@@ -1386,7 +1513,7 @@ $('#cmdBtn').onclick = palette;
 document.addEventListener('keydown', e => {
   const k = e.key.toLowerCase(), typing = /input|select|textarea/i.test(document.activeElement.tagName);
   if (e.ctrlKey && k === 'k') { e.preventDefault(); palette(); }
-  else if (e.ctrlKey && k === 'f') { e.preventDefault(); setSide(true); q.focus(); q.select(); }
+  else if (e.ctrlKey && k === 'f') { e.preventDefault(); setSide(true); setSearch(true); }
   else if (e.ctrlKey && k === 't') { e.preventDefault(); setSide(e.shiftKey ? true : side.classList.contains('coll')); }
   else if (e.ctrlKey && k === ',') { e.preventDefault(); openSettings(); }
   else if (e.ctrlKey && k === 'tab') { e.preventDefault(); const L = S.tabs, i = L.findIndex(t => t.id === S.cur); activate(L[(i + (e.shiftKey ? -1 : 1) + L.length) % L.length].id); }
@@ -1397,11 +1524,33 @@ document.addEventListener('keydown', e => {
 });
 
 /* =============================== tooltips, hints, toasts =============================== */
-const tip = $('#tip'); let tipT;
-document.addEventListener('pointerover', e => { const el = e.target.closest('[data-tip]'); clearTimeout(tipT); tip.classList.remove('on'); if (!el) return;
-  tipT = setTimeout(() => { const [a, b] = el.dataset.tip.split('|'); tip.innerHTML = esc(a) + (b ? `<small>${esc(b)}</small>` : ''); const r = el.getBoundingClientRect();
-    const inRail = el.closest('.rail'); tip.style.left = (inRail ? r.right + 10 : Math.min(innerWidth - tip.offsetWidth - 8, Math.max(8, r.left + r.width / 2 - tip.offsetWidth / 2))) + 'px';
-    tip.style.top = (inRail ? r.top + r.height / 2 - tip.offsetHeight / 2 : r.bottom + 8) + 'px'; tip.classList.add('on'); }, 380); });
+const tip = $('#tip'); let tipT, tipEl = null;
+const KEY = /^((Ctrl|Shift|Alt)([+ ]\S+)+|Esc|F\d{1,2}|Enter|Tab|\?)$/;
+function tipBody(a, b) { const ks = [], keep = [];
+  (b || '').split(' · ').forEach(x => { x = x.trim(); if (!x) return; x.split(/ or /).every(k => KEY.test(k.trim())) ? ks.push(...x.split(/ or /)) : keep.push(x); });
+  return `<div class="tt">${esc(a)}</div>${keep.length ? `<small>${esc(keep.join(' · '))}</small>` : ''}${ks.length ? `<div class="ks">${ks.map(k => `<kbd>${esc(k.trim())}</kbd>`).join('')}</div>` : ''}`; }
+function rowBody(w) { const c = colorOf(w), nm = w.kids ? w.n.name : base(w.n.name), k = w.kids ? null : kindOf(w.n);
+  const type = w.kids ? (isBeg(w.n) ? 'Beginner course' : `Folder · ${w.kids.length} item${w.kids.length === 1 ? '' : 's'}`) : {pdf: 'Schematic · PDF', pcb: 'Boardview · ' + ext(w.n.name).toUpperCase(), hs: 'Hardware solution', other: 'File'}[k];
+  const where = pathOf(w);
+  return `<div class="tt fl" style="--bc:${c}">${esc(nm)}</div><div class="mt" style="--bc:${c}"><span class="bg">${esc(type)}</span>${where ? `<span>in ${esc(where)}</span>` : ''}${hasDot(w.n) ? '<span>● Hardware fix</span>' : ''}</div>
+    <div class="hn">${!w.kids && locked(w) ? '🔒 Pro file · upgrade to open' : w.kids ? 'Click to ' + (T.open.has(w.id) ? 'collapse' : 'expand') : '<kbd>Enter</kbd> or double-click to open'}</div>`; }
+function placeTip(el, mode, anchorX) { const r = el.getBoundingClientRect(), W = tip.offsetWidth, H = tip.offsetHeight; let x, y; tip.classList.remove('b', 't', 'r');
+  if (mode === 'r') { x = (anchorX ?? r.right) + 12; y = Math.min(innerHeight - H - 8, Math.max(8, r.top + r.height / 2 - H / 2)); tip.classList.add('r');
+    tip.style.setProperty('--ay', (r.top + r.height / 2 - y) + 'px'); tip.style.setProperty('--to', '0 50%'); tip.style.setProperty('--tx', '-6px'); tip.style.setProperty('--ty', '0'); }
+  else { x = Math.min(innerWidth - W - 8, Math.max(8, r.left + r.width / 2 - W / 2)); const below = r.bottom + 10 + H < innerHeight; y = below ? r.bottom + 10 : r.top - H - 10; tip.classList.add(below ? 'b' : 't');
+    tip.style.setProperty('--ax', (r.left + r.width / 2 - x) + 'px'); tip.style.setProperty('--to', below ? '50% 0' : '50% 100%'); tip.style.setProperty('--tx', '0'); tip.style.setProperty('--ty', below ? '4px' : '-4px'); }
+  tip.style.left = x + 'px'; tip.style.top = y + 'px'; }
+function hideTip() { clearTimeout(tipT); tip.classList.remove('on'); tipEl = null; }
+document.addEventListener('pointerover', e => {
+  const row = e.target.closest('#tree .row'), el = row || e.target.closest('[data-tip]');
+  if (el === tipEl) return; hideTip(); if (!el) return; tipEl = el;
+  tipT = setTimeout(() => {
+    if (row) { const w = ALL.get(+row.dataset.id); if (!w) return; tip.innerHTML = rowBody(w); placeTip(row, 'r', side.getBoundingClientRect().right); }
+    else { const [a, b] = el.dataset.tip.split('|'); tip.innerHTML = tipBody(a, b); placeTip(el, el.closest('.rail') || el.dataset.tipp === 'r' ? 'r' : 'b'); }
+    tip.classList.add('on'); }, row ? 520 : 360); });
+document.addEventListener('pointerdown', hideTip, true);
+document.addEventListener('scroll', hideTip, true);
+document.addEventListener('pointerleave', hideTip);
 function hint(el, text) { const h = $('#hint'), r = el.getBoundingClientRect(); h.textContent = text; h.style.left = Math.min(innerWidth - 260, r.left) + 'px'; h.style.top = r.bottom + 8 + 'px'; h.classList.add('on'); clearTimeout(h._t); h._t = setTimeout(() => h.classList.remove('on'), 2200); }
 function toast(t, ic = 'u-info') { const el = document.createElement('div'); el.className = 'toast'; el.innerHTML = U(ic) + esc(t); $('#toasts').appendChild(el); setTimeout(() => el.remove(), 3000); }
 

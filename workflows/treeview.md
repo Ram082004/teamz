@@ -207,7 +207,7 @@ button, 28 px tall (`src/ui/mainapplication.cpp:2720-2736`). It does not take fo
 
 Guided-card buttons (`src/ui/mainapplication.cpp:7225-7319`): **Try again** retries the same file;
 **Get support** copies an English report (version, user, file name, failure, time) to the
-clipboard and opens WhatsApp `wa.me/9150549628` pre-filled; **Close** drops the rest of the queue.
+clipboard and opens WhatsApp `wa.me/919999999999` pre-filled; **Close** drops the rest of the queue.
 
 ## 8. Context menu
 

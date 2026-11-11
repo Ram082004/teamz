@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Library Collapse Mockups</title>
+<style>
+:root{--ui:"Segoe UI Variable Text","Segoe UI",system-ui,sans-serif;--disp:"Segoe UI Variable Display","Segoe UI",system-ui,sans-serif;--mono:"Cascadia Mono",Consolas,monospace;
+  --page:#e7ecf2;--panel:#fff;--panel-2:#f2f5f9;--panel-3:#e6ebf2;--win:#f6f8fb;--text:#0e2140;--text-2:#475569;--text-3:#8492a6;--hair:rgba(14,33,64,.09);--hair-2:rgba(14,33,64,.15);
+  --accent:#0f8f88;--accent-2:#12a39b;--accent-text:#0b7570;--accent-soft:rgba(18,163,155,.11);--hover:rgba(14,33,64,.05);--spring:cubic-bezier(.2,.9,.25,1.15)}
+[data-theme="dark"]{--page:#05080d;--panel:#111923;--panel-2:#16202c;--panel-3:#1f2b3a;--win:#0c1219;--text:#eef3fb;--text-2:#a9b6c9;--text-3:#6f7f96;--hair:rgba(255,255,255,.07);--hair-2:rgba(255,255,255,.13);
+  --accent:#16a69d;--accent-2:#2dd4bf;--accent-text:#5fe3d3;--accent-soft:rgba(45,212,191,.11);--hover:rgba(255,255,255,.05)}
+*{box-sizing:border-box}html,body{margin:0}
+body{background:var(--page);color:var(--text);font:14px/1.45 var(--ui)}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;padding:0}
+.top{position:sticky;top:0;z-index:5;display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;padding:16px 24px;background:color-mix(in srgb,var(--page) 85%,transparent);backdrop-filter:blur(12px);border-bottom:1px solid var(--hair)}
+.top h1{margin:0;font:700 19px var(--disp)}.top p{margin:2px 0 0;font-size:12.5px;color:var(--text-3)}
+.seg{display:inline-flex;padding:3px;border-radius:10px;background:var(--panel-2);box-shadow:inset 0 0 0 1px var(--hair)}
+.seg button{padding:5px 12px;border-radius:7px;font-size:12.5px;font-weight:600;color:var(--text-2)}
+.seg button[aria-pressed="true"]{background:var(--panel);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.15)}
+.grid{max-width:1400px;margin:0 auto;padding:22px 24px 60px;display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,620px),1fr));gap:22px}
+.opt{border-radius:18px;background:color-mix(in srgb,var(--panel) 55%,transparent);box-shadow:inset 0 0 0 1px var(--hair);overflow:hidden}
+.meta{display:flex;gap:12px;align-items:flex-start;padding:14px 16px}
+.num{flex:none;font:700 11.5px var(--mono);color:var(--accent);background:color-mix(in srgb,var(--accent-2) 13%,transparent);border-radius:7px;padding:3px 8px}
+.meta b{display:block;font:650 15px var(--disp)}.meta span{font-size:12.5px;color:var(--text-3)}
+.meta .tg{margin-left:auto;flex:none;padding:6px 12px;border-radius:9px;font-size:12px;font-weight:600;color:var(--text-2);box-shadow:inset 0 0 0 1px var(--hair-2);white-space:nowrap}
+.meta .tg:hover{background:var(--hover);color:var(--text)}
+.rec{display:inline-block;margin-left:6px;padding:1px 7px;border-radius:99px;font:700 10px var(--ui);color:#fff;background:var(--accent-2);vertical-align:2px}
+
+/* mini app frame */
+.app{position:relative;height:330px;margin:0 12px 12px;border-radius:14px;overflow:hidden;display:grid;grid-template-columns:48px auto 1fr;background:var(--win);box-shadow:inset 0 0 0 1px var(--hair)}
+.rail{display:flex;flex-direction:column;align-items:center;gap:5px;padding:8px 0;background:var(--panel);border-right:1px solid var(--hair);z-index:3}
+.rb{position:relative;width:34px;height:34px;border-radius:9px;display:grid;place-items:center;color:var(--text-3)}
+.rb svg{width:17px;height:17px;stroke:currentColor;stroke-width:1.7;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.rb.on{color:var(--accent-text);background:var(--accent-soft)}
+.rb.on::before{content:"";position:absolute;left:-7px;top:8px;bottom:8px;width:3px;border-radius:0 3px 3px 0;background:var(--accent-2)}
+.side{position:relative;width:200px;background:var(--panel);border-right:1px solid var(--hair);transition:width .38s var(--spring),border-color .2s;z-index:2}
+.side .in{position:absolute;inset:0;overflow:hidden;transition:opacity .2s}.side .iw{width:200px;padding:12px}
+.app.coll .side{width:0;border-right-color:transparent}.app.coll .side .in{opacity:0}
+.side h4{margin:0 0 10px;font:650 12.5px var(--disp)}
+.tr{display:flex;align-items:center;gap:8px;height:24px;font-size:11.5px;color:var(--text-2)}
+.tr i{width:12px;height:12px;border-radius:50%;box-shadow:inset 0 0 0 1.5px var(--c,var(--accent-2))}.tr b{width:13px;height:10px;border-radius:2px;background:var(--c,#f59e0b)}
+.main{position:relative;min-width:0;display:flex;flex-direction:column}
+.bar{height:40px;display:flex;align-items:center;gap:6px;padding:0 10px;background:var(--panel-2);border-bottom:1px solid var(--hair)}
+.isl{height:28px;flex:0 1 230px;border-radius:99px;background:#0b1622}[data-theme="dark"] .isl{background:#e6edf6}
+.doc{flex:1;display:grid;place-items:center;color:var(--text-3);font:600 11px var(--mono);letter-spacing:.2em}
+.chev{width:11px;height:11px;stroke:currentColor;stroke-width:1.8;fill:none;stroke-linecap:round;stroke-linejoin:round;transition:transform .35s var(--spring)}
+.app.coll .flip .chev{transform:rotate(180deg)}
+
+/* 01 docked tab */
+.o1 .h{position:absolute;top:50%;right:-5px;width:10px;height:92px;margin-top:-46px;border-radius:99px;background:var(--panel);box-shadow:0 0 0 1px var(--hair-2),0 8px 18px -10px rgba(8,20,40,.45);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:var(--text-2);transition:all .35s var(--spring);z-index:4;overflow:hidden}
+.o1 .h .dots{display:flex;flex-direction:column;gap:4px}.o1 .h .dots i{width:3px;height:3px;border-radius:50%;background:currentColor;opacity:.6}
+.o1 .h .chev,.o1 .h .vl{display:none}
+.o1 .h .vl{writing-mode:vertical-rl;transform:rotate(180deg);font:700 9px var(--mono);letter-spacing:.2em}
+.o1 .h:hover{width:22px;right:-11px;color:#fff;background:linear-gradient(180deg,#12a39b,#0e2140)}.o1 .h:hover .dots{display:none}.o1 .h:hover .chev{display:block}
+.app.coll.o1 .h{right:-24px;width:24px;height:132px;margin-top:-66px;border-radius:0 14px 14px 0;box-shadow:1px 0 0 var(--hair),0 1px 0 var(--hair),0 -1px 0 var(--hair),10px 0 22px -14px rgba(8,20,40,.45)}
+.app.coll.o1 .h .dots{display:none}.app.coll.o1 .h .chev,.app.coll.o1 .h .vl{display:block}
+.app.coll.o1 .h:hover{right:-28px;width:28px;color:#fff}
+
+/* 02 edge ear */
+.o2 .h{position:absolute;top:50%;right:-12px;width:24px;height:48px;margin-top:-24px;border-radius:12px;background:var(--panel);box-shadow:0 0 0 1px var(--hair-2),0 6px 14px -8px rgba(8,20,40,.4);display:grid;place-items:center;color:var(--text-2);z-index:4;transition:all .3s var(--spring)}
+.o2 .h:hover{color:#fff;background:var(--accent-2);box-shadow:0 0 0 4px var(--accent-soft)}
+.app.coll.o2 .h{right:-26px;border-radius:0 12px 12px 0;width:22px;box-shadow:1px 0 0 var(--hair-2),0 1px 0 var(--hair-2),0 -1px 0 var(--hair-2),8px 0 16px -10px rgba(8,20,40,.4)}
+.o2 .h::before{content:"";position:absolute;inset:-6px -2px;border-radius:16px}
+
+/* 03 rail toggle (no edge handle) */
+.o3 .rail .rb.lib{cursor:pointer}
+.app.coll.o3 .rail{box-shadow:inset -2px 0 0 var(--accent-2)}
+.app.coll.o3 .rb.lib{background:none;color:var(--text-3)}.app.coll.o3 .rb.lib::before{display:none}
+.o3 .rb.lib::after{content:"";position:absolute;right:-3px;top:-3px;width:9px;height:9px;border-radius:50%;background:var(--accent-2);box-shadow:0 0 0 2px var(--panel);transform:scale(0);transition:transform .3s var(--spring)}
+.app.coll.o3 .rb.lib::after{transform:scale(1)}
+.o3 .peek{position:absolute;left:48px;top:0;bottom:0;width:6px;z-index:4;cursor:pointer}
+.app.coll.o3 .peek:hover{width:10px;background:linear-gradient(90deg,var(--accent-soft),transparent)}
+
+/* 04 glow seam + docked tab on hover */
+.o4 .h{position:absolute;top:0;bottom:0;right:-10px;width:20px;z-index:4;cursor:pointer}
+.o4 .h::before{content:"";position:absolute;top:0;bottom:0;left:9px;width:2px;background:linear-gradient(180deg,transparent,var(--accent-2) 22%,#0e2140 78%,transparent);opacity:0;transition:opacity .25s}
+[data-theme="dark"] .o4 .h::before{background:linear-gradient(180deg,transparent,var(--accent-2) 22%,#5b7fb5 78%,transparent)}
+.o4 .h:hover::before,.app.coll.o4 .h::before{opacity:1}
+.o4 .h .tab{position:absolute;top:50%;left:10px;width:24px;height:120px;margin-top:-60px;border-radius:0 14px 14px 0;background:var(--panel);color:var(--text-2);
+  box-shadow:1px 0 0 var(--hair-2),0 1px 0 var(--hair-2),0 -1px 0 var(--hair-2),10px 0 22px -14px rgba(8,20,40,.45);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;
+  opacity:0;transform:translateX(-10px);transition:opacity .2s,transform .32s var(--spring),width .3s var(--spring),background .2s,color .2s}
+.o4 .h .tab .vl{writing-mode:vertical-rl;transform:rotate(180deg);font:700 9px var(--mono);letter-spacing:.2em}
+.o4 .h:hover .tab{opacity:1;transform:none}
+.o4 .h .tab:hover{width:28px;color:#fff;background:linear-gradient(180deg,#12a39b,#0e2140)}
+.app.coll.o4 .h{right:-20px}
+.app.coll.o4 .h::before{left:0;width:3px}
+.app.coll.o4 .h .tab{left:1px}
+/* 05 header button */
+.o5 .hb{width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:var(--text-2)}
+.o5 .hb:hover{background:var(--hover);color:var(--text)}
+.o5 .hb svg{width:16px;height:16px;stroke:currentColor;stroke-width:1.6;fill:none}
+.o5 .hb .pn{transition:width .35s var(--spring)}
+.app.coll.o5 .hb .pn{width:0}
+</style>
+</head>
+<body>
+<header class="top">
+  <div><h1>Library collapse — 5 mockups</h1><p>Each frame toggles by itself every few seconds. Hover the handle, click it, or use “Toggle”. No uneven strip in any of them — the collapsed panel is fully gone and the edge stays one clean line.</p></div>
+  <div class="seg" id="theme"><button data-th="light" aria-pressed="true">Light</button><button data-th="dark" aria-pressed="false">Dark</button></div>
+</header>
+<main class="grid" id="grid"></main>
+<script>
+const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const IC = {lib: '<path d="M3.5 6.5a2 2 0 0 1 2-2h4l2 2.2h7a2 2 0 0 1 2 2V17.5a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2z"/>', home: '<path d="M4 11l8-6.5L20 11v8a1 1 0 0 1-1 1h-4.5v-5h-5v5H5a1 1 0 0 1-1-1z"/>',
+  chip: '<rect x="7" y="7" width="10" height="10" rx="1.5"/><path d="M10 3v4M14 3v4M10 17v4M14 17v4M3 10h4M3 14h4M17 10h4M17 14h4"/>', term: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 10l3 2-3 2M12 15h5"/>'};
+const svg = k => `<svg viewBox="0 0 24 24">${IC[k]}</svg>`;
+const CH = '<svg class="chev" viewBox="0 0 10 10"><path d="M6.5 2 3.5 5l3 3"/></svg>';
+const O = [
+  {name: 'Docked tab', desc: 'A slim capsule with grip dots on the panel edge; when collapsed it docks flush to the rail as a half-pill reading LIBRARY with a chevron. ',
+   h: `<button class="h flip" data-t><span class="dots"><i></i><i></i><i></i></span>${CH}<span class="vl">Library</span></button>`},
+  {name: 'Edge ear', desc: 'A small round "ear" sits on the divider — chevron only. It stays in the same place whether open or closed, so the hand always knows where it is.',
+   h: `<button class="h flip" data-t>${CH}</button>`},
+  {name: 'Rail toggle', desc: 'No handle on the edge at all: the Library icon in the rail is the switch. When collapsed, the rail gets a thin teal edge and the icon a dot; hovering the edge shows a peek glow.',
+   h: '', peek: true},
+  {name: 'Glow seam + docked tab', rec: true, desc: 'Nothing on the edge until you hover it: a navy-teal seam lights up and the docked LIBRARY tab slides out (‹ to close, › to open). When collapsed only the seam stays on the rail edge. Applied in the main window now.',
+   h: `<button class="h flip" data-t><span class="tab">${CH}<span class="vl">Library</span></span></button>`},
+  {name: 'Header button', desc: 'Like VS Code / Figma: a sidebar button at the start of the tab bar. The divider never has anything on it — the cleanest edge of all.',
+   h: '', hb: true},
+];
+const tree = ['Free - Trail Users', '[Beginner] Basics', '1. Apple', '2. Samsung', '3. Xiaomi', '4. OnePlus', '5. Oppo', '6. Vivo'];
+const CC = ['#12a39b', '#16a34a', '#8b95a7', '#2f6fe4', '#ff6a00', '#e8323c', '#1a9f68', '#4a5cf0'];
+$('#grid').innerHTML = O.map((o, i) => `<article class="opt"><div class="meta"><span class="num">${String(i + 1).padStart(2, '0')}</span><div><b>${o.name}${o.rec ? '<span class="rec">In app now</span>' : ''}</b><span>${o.desc}</span></div><button class="tg" data-tg="${i}">Toggle</button></div>
+  <div class="app o${i + 1}" id="a${i}">
+    <nav class="rail"><span class="rb lib on" ${i === 2 ? 'data-t' : ''}>${svg('lib')}</span><span class="rb">${svg('home')}</span><span class="rb">${svg('chip')}</span><span class="rb">${svg('term')}</span></nav>
+    <aside class="side"><div class="in"><div class="iw"><h4>Library</h4>${tree.map((t, j) => `<div class="tr" style="--c:${CC[j]}"><i></i><b></b>${t}</div>`).join('')}</div></div>${o.h}</aside>
+    <section class="main"><div class="bar">${o.hb ? `<button class="hb" data-t title="Toggle library"><svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="14" rx="2.5"/><rect class="pn" x="5.5" y="7" width="5" height="10" rx="1" fill="currentColor" stroke="none"/></svg></button>` : ''}<span class="isl"></span></div><div class="doc">SCHEMAX</div></section>
+    ${o.peek ? '<span class="peek" data-t></span>' : ''}
+  </div></article>`).join('');
+const sync = a => { const c = a.classList.contains('coll'), l = $('.lbl', a); if (l) l.textContent = c ? 'Library ›' : '‹ Hide library'; $('.rb.lib', a).classList.toggle('on', !c); };
+const tog = a => { a.classList.toggle('coll'); sync(a); };
+document.addEventListener('click', e => {
+  const t = e.target.closest('.app [data-t]'); if (t) { const a = t.closest('.app'); a._man = Date.now(); tog(a); }
+  const g = e.target.closest('[data-tg]'); if (g) { const a = $('#a' + g.dataset.tg); a._man = Date.now(); tog(a); }
+  const th = e.target.closest('#theme button'); if (th) { document.documentElement.dataset.theme = th.dataset.th; $$('#theme button').forEach(b => b.setAttribute('aria-pressed', b === th)); }
+});
+setInterval(() => $$('.app').forEach(a => { if (!a.matches(':hover') && Date.now() - (a._man || 0) > 8000) tog(a); }), 2600);
+window.__cm = {tog: i => tog($('#a' + i)), theme: t => $(`#theme [data-th="${t}"]`).click()};
+</script>
+</body>
+</html>

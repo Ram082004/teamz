@@ -135,7 +135,7 @@ The current language is ticked from `app/language` on open (`src/ui/mainapplicat
    OK / **Suggest a Correction** (`:7324-7360`).
 
 ### Suggest a wording fix (also Help > Language help & wording fixes)
-Opens WhatsApp (`api.whatsapp.com/send/?phone=919150549628`) with an English template: app
+Opens WhatsApp (`api.whatsapp.com/send/?phone=919999999999`) with an English template: app
 language, Screen, Wording shown, Suggested wording, version and username (`:7366-7399`).
 
 ---
