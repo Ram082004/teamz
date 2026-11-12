@@ -120,9 +120,9 @@ WhatsApp via `QDesktopServices::openUrl`):
 
 | Entry point | Target | Code |
 |---|---|---|
-| Buy Premium card → "Buy on WhatsApp" (or "Buy Premium" when online pay is off) | `api.whatsapp.com/send/?phone=919999999999`, "Hi, I want to buy Schemax Premium. Username: …" | `src/ui/mainapplication.cpp:2328-2334` |
-| Download failure card → "Get support" | `wa.me/919999999999` with a pre-filled error report | `:7308-7313` |
-| Settings > Language > Suggest a wording fix / Help > Language help | `api.whatsapp.com/send/?phone=919999999999` with a wording template | `:7366-7399` |
+| Buy Premium card → "Buy on WhatsApp" (or "Buy Premium" when online pay is off) | `api.whatsapp.com/send/?phone=917708684274`, "Hi, I want to buy Schemax Premium. Username: …" | `src/ui/mainapplication.cpp:2328-2334` |
+| Download failure card → "Get support" | `wa.me/917708684274` with a pre-filled error report | `:7308-7313` |
+| Settings > Language > Suggest a wording fix / Help > Language help | `api.whatsapp.com/send/?phone=917708684274` with a wording template | `:7366-7399` |
 | Help > About → WhatsApp tile | support chat | `src/ui/aboutdialog.cpp:238` |
 
 ---

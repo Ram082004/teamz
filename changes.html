@@ -1,0 +1,343 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Tab ideas — all names visible</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#eef2f7;--card:#fff;--win:#fff;--panel:#f6f8fb;--panel-2:#eaeef4;--hair:#dfe5ee;--text:#0e2140;--text-2:#4a5b75;--text-3:#8592a6;--accent:#0d847d;--pdf:#d93a3a;--pcb:#c8691c;--pdf-soft:#fdecec;--pcb-soft:#fbefe3;--hover:rgba(14,33,64,.06);--sh:0 1px 2px rgba(14,33,64,.06),0 12px 30px -18px rgba(14,33,64,.35);--mono:'JetBrains Mono',ui-monospace,monospace}
+[data-theme=dark]{--bg:#0b1220;--card:#111a2b;--win:#0f1726;--panel:#152035;--panel-2:#1a2740;--hair:#26354f;--text:#e6edf7;--text-2:#a7b4c8;--text-3:#6f7f99;--pdf-soft:rgba(217,58,58,.17);--pcb-soft:rgba(200,105,28,.2);--hover:rgba(255,255,255,.06);--sh:0 1px 2px rgba(0,0,0,.3),0 12px 30px -18px rgba(0,0,0,.7)}
+*{box-sizing:border-box;margin:0}
+body{font:13px/1.45 Inter,system-ui,sans-serif;background:var(--bg);color:var(--text)}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;text-align:left}
+kbd{font:600 10.5px var(--mono);padding:1px 5px;border-radius:5px;background:var(--panel);box-shadow:0 0 0 1px var(--hair),0 1px 0 var(--hair);color:var(--text)}
+@keyframes dIn{from{opacity:0;transform:translateY(-6px)}}
+
+/* page */
+.top{position:sticky;top:0;z-index:30;background:color-mix(in srgb,var(--bg) 86%,transparent);backdrop-filter:blur(12px);border-bottom:1px solid var(--hair)}
+.top .in{max-width:1180px;margin:auto;padding:14px 24px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.top h1{font-size:17px}.top p{color:var(--text-2);font-size:12.5px}
+.ctl{margin-left:auto;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.btn{height:32px;padding:0 12px;border-radius:9px;background:var(--card);box-shadow:0 0 0 1px var(--hair);font-weight:600;font-size:12.5px;display:inline-flex;align-items:center;gap:6px}
+.btn:hover{background:var(--panel)}.btn.pri{background:var(--accent);color:#fff;box-shadow:none}
+.cnt{font:600 11.5px var(--mono);color:var(--text-2);padding:0 6px}
+main{max-width:1180px;margin:auto;padding:22px 24px 80px;display:grid;gap:22px}
+.opt{background:var(--card);border-radius:16px;padding:16px;box-shadow:var(--sh);display:grid;gap:12px;min-width:0}
+.meta{display:flex;gap:12px;align-items:flex-start}
+.num{flex:none;font:700 13px var(--mono);color:var(--accent);background:color-mix(in srgb,var(--accent) 12%,transparent);border-radius:8px;padding:4px 8px}
+.meta h3{font-size:15px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.meta p{color:var(--text-2);font-size:12.5px;margin-top:2px;max-width:880px}
+.rec{font-size:10.5px;font-weight:700;color:#fff;background:var(--accent);padding:2px 8px;border-radius:99px}
+.sum{border:1.5px solid color-mix(in srgb,var(--accent) 40%,transparent)}
+.sum ol{padding-left:18px;display:grid;gap:6px;color:var(--text-2)}.sum b{color:var(--text)}
+
+/* mock window */
+.win{position:relative;height:400px;border-radius:12px;overflow:hidden;background:var(--win);box-shadow:0 0 0 1px var(--hair);display:flex;flex-direction:column}
+.win.mid{height:440px}.win.tall{height:580px}
+.bar{flex:none;position:relative;display:flex;align-items:center;gap:8px;height:44px;padding:0 8px;background:var(--panel-2);border-bottom:1px solid var(--hair)}
+.lay{flex:1;min-height:0;display:flex}
+.view{flex:1;min-width:0;min-height:0;position:relative;display:flex;flex-direction:column;padding:10px 12px;gap:8px;background:var(--panel)}
+.vh{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-2);white-space:nowrap;overflow:hidden}
+.vh b{font-family:var(--mono);color:var(--text)}
+.pg{flex:1;min-height:0;border-radius:8px;overflow:hidden;box-shadow:0 0 0 1px var(--hair)}
+.pg.pdf{background:#fff}.pg.pcb{background:#08241b}
+.pg svg,.th svg{display:block;width:100%;height:100%}
+.empty{flex:1;display:grid;place-items:center;color:var(--text-3)}
+.pdf{--tc:var(--pdf);--ts:var(--pdf-soft)}.pcb{--tc:var(--pcb);--ts:var(--pcb-soft)}
+.bd{flex:none;display:inline-block;font:700 9.5px/1 var(--mono);padding:3px 5px;border-radius:5px;color:#fff;background:var(--tc);letter-spacing:.03em}
+.x{flex:none;width:18px;height:18px;border-radius:5px;display:grid;place-items:center;font-size:14px;line-height:1;color:var(--text-3);opacity:0;cursor:pointer}
+:hover>.x,.sel>.x{opacity:1}.x:hover{background:var(--hover);color:var(--text)}
+.addb{flex:none;margin-left:auto;width:22px;height:22px;border-radius:6px;font-size:15px;line-height:1;color:var(--text-3);display:grid;place-items:center}.addb:hover{background:var(--hover);color:var(--text)}
+.ttl{flex:1;min-width:0;display:flex;align-items:center;gap:8px;padding-left:4px;font-size:12.5px;color:var(--text-2);white-space:nowrap;overflow:hidden}
+.ttl b{font-family:var(--mono);color:var(--text)}
+.sbtn{flex:none;display:flex;align-items:center;gap:7px;height:30px;padding:0 10px;border-radius:8px;font-weight:600;font-size:12px;background:var(--win);box-shadow:inset 0 0 0 1px var(--hair)}
+.sbtn:hover{box-shadow:inset 0 0 0 1px var(--text-3)}
+
+/* list row: full name in one line */
+.side{flex:none;width:300px;display:flex;flex-direction:column;gap:8px;padding:8px;background:var(--panel-2);border-right:1px solid var(--hair);overflow:auto;scrollbar-width:thin}
+.side.r{border-right:0;border-left:1px solid var(--hair)}
+.side.w270{width:305px}
+.sh2{display:flex;align-items:center;gap:8px;height:24px;padding:0 2px 0 6px;font-size:11px;font-weight:700;color:var(--text-2)}
+.grp{display:grid;gap:1px}
+.li{display:flex;align-items:center;gap:8px;width:100%;height:25px;padding:0 3px 0 10px;border-radius:7px;font-size:12px;color:var(--text-2);min-width:0}
+.li:hover{background:var(--hover);color:var(--text)}
+.li .dt{width:6px;height:6px;border-radius:50%;background:var(--tc);flex:none}
+.li b{font:700 11.5px var(--mono);white-space:nowrap;flex:none;color:var(--text)}
+.li .n{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--text-3)}
+.li.sel{background:var(--win);box-shadow:0 0 0 1px var(--hair)}
+.li.on{background:var(--ts);box-shadow:inset 3px 0 0 var(--tc)}.li.on b{color:var(--tc)}
+
+/* two-line cell */
+.c2{position:relative;display:flex;align-items:center;gap:8px;min-width:0;height:40px;padding:0 6px 0 10px;border-radius:9px;color:var(--text-2);background:var(--win);box-shadow:0 0 0 1px var(--hair);transition:box-shadow .15s,background .15s}
+.c2 .tx{flex:1;min-width:0;display:grid;line-height:1.25}
+.c2 .tx b{font:700 11px var(--mono);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--text)}
+.c2 .tx span{font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--text-3)}
+.c2:hover{box-shadow:0 0 0 1px var(--text-3)}
+.c2.sel{box-shadow:0 0 0 1.5px var(--tc)}
+.c2.on{background:var(--ts);box-shadow:0 0 0 1.5px var(--tc)}.c2.on .tx b{color:var(--tc)}
+.c2 .th{width:36px;height:26px;border-radius:4px;overflow:hidden;flex:none;box-shadow:0 0 0 1px var(--hair)}
+.c2 .x{position:absolute;top:3px;right:3px;width:16px;height:16px;font-size:12px;background:var(--win);box-shadow:0 0 0 1px var(--hair)}
+.gp{flex:none;padding:8px 10px;background:var(--panel-2);border-bottom:1px solid var(--hair);display:grid;gap:8px;animation:dIn .18s}
+.g5{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px}
+.gr{display:grid;grid-template-columns:42px repeat(5,minmax(0,1fr));gap:5px}
+.gr>.bd{grid-row:span 2;align-self:center;justify-self:start}
+
+/* 03 switch */
+.seg{flex:none;display:flex;padding:3px;border-radius:10px;background:var(--panel);box-shadow:inset 0 0 0 1px var(--hair)}
+.sg{display:flex;align-items:center;gap:6px;height:30px;padding:0 12px 0 6px;border-radius:7px;font:700 12px var(--mono);color:var(--text-3)}
+.sg.on{background:var(--win);color:var(--text);box-shadow:0 1px 3px rgba(14,33,64,.18)}
+.sg:not(.on) .bd{background:var(--text-3)}
+
+/* horizontal full-name tabs (05, 10) */
+.hs{position:relative;flex:1;min-width:0;display:flex;align-items:center;gap:3px;overflow-x:auto;scrollbar-width:none;-webkit-mask-image:linear-gradient(90deg,transparent,#000 14px,#000 calc(100% - 14px),transparent);mask-image:linear-gradient(90deg,transparent,#000 14px,#000 calc(100% - 14px),transparent);padding:0 12px}
+.hs::-webkit-scrollbar{display:none}
+.tf{flex:none;display:flex;align-items:center;gap:7px;height:30px;padding:0 3px 0 10px;border-radius:8px;font-size:12px;color:var(--text-2);white-space:nowrap}
+.tf .dt{width:6px;height:6px;border-radius:50%;background:var(--tc)}
+.tf b{font:700 11.5px var(--mono);color:var(--text)}.tf .n{color:var(--text-3)}
+.tf:hover{background:var(--hover)}
+.tf.sel{background:var(--win);box-shadow:0 0 0 1px var(--hair),inset 0 2px 0 var(--tc)}.tf.on b{color:var(--tc)}
+.hsep{flex:none;width:1px;height:22px;background:var(--hair);margin:0 6px}
+.jump{flex:none;display:flex;gap:4px}
+.jb{display:flex;align-items:center;gap:6px;height:30px;padding:0 9px 0 6px;border-radius:8px;font:700 11.5px var(--mono);color:var(--text-2);box-shadow:inset 0 0 0 1px var(--hair);background:var(--win)}
+.jb:hover{box-shadow:inset 0 0 0 1.5px var(--tc)}
+.nv{flex:none;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;font-size:16px;color:var(--text-2)}.nv:hover{background:var(--hover)}
+
+/* 06 table */
+.tbl{flex:none;width:480px;display:flex;flex-direction:column;background:var(--panel-2);border-right:1px solid var(--hair);min-height:0}
+.th6,.rw{display:grid;grid-template-columns:50px 140px minmax(0,1fr) 58px 22px;align-items:center;padding:0 10px;gap:6px}
+.th6{flex:none;height:34px;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text-3);border-bottom:1px solid var(--hair)}
+.th6 button{font:inherit;text-transform:inherit;letter-spacing:inherit;color:inherit}.th6 button:hover{color:var(--text)}.th6 button.on{color:var(--accent)}
+.tb6{flex:1;min-height:0;overflow:auto;padding:4px 4px;scrollbar-width:thin}
+.rw{width:100%;height:24px;border-radius:6px;font-size:12px;color:var(--text-3)}
+.rw b{font:700 11.5px var(--mono);color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rw .n{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rw .u{font:500 10.5px var(--mono)}
+.rw:hover{background:var(--hover)}.rw.sel{background:var(--win)}
+.rw.on{background:var(--ts);box-shadow:inset 3px 0 0 var(--tc)}.rw.on b{color:var(--tc)}
+
+/* 07 cards */
+.cp{flex:none;width:410px;overflow:auto;padding:8px 10px;background:var(--panel-2);border-right:1px solid var(--hair);display:grid;align-content:start;gap:6px;scrollbar-width:thin}
+.cg{display:grid;grid-template-columns:1fr 1fr;gap:5px}
+.cp .c2{height:46px}
+
+/* 08 two-line tabs */
+.r2{display:flex;align-items:center;gap:2px;padding:4px 6px 4px 9px;background:var(--panel-2);box-shadow:inset 3px 0 0 var(--tc)}
+.r2+.r2{border-top:1px solid var(--hair)}
+.r2:last-of-type{border-bottom:1px solid var(--hair)}
+.r2>.bd{margin-right:5px}
+.t2{position:relative;flex:1 1 auto;min-width:0;display:grid;line-height:1.25;height:40px;align-content:center;padding:0 16px 0 7px;border-radius:8px;color:var(--text-2);transition:background .15s}
+.t2 b{font-size:11px;letter-spacing:-.01em;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--text)}
+.t2 span:not(.x){font-size:10.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--text-3)}
+.t2:hover{background:var(--hover)}
+.t2.sel{background:var(--win);box-shadow:0 0 0 1px var(--hair),inset 0 2px 0 var(--tc)}.t2.on b{color:var(--tc)}
+.t2 .x{position:absolute;top:2px;right:2px;width:16px;height:16px;font-size:12px}
+
+/* 09 floating panel */
+.view.fpad{padding-right:330px}
+.fp{position:absolute;top:56px;right:12px;bottom:12px;z-index:3;width:306px;display:flex;flex-direction:column;border-radius:14px;background:color-mix(in srgb,var(--win) 90%,transparent);backdrop-filter:blur(14px);box-shadow:0 0 0 1px var(--hair),0 20px 44px -18px rgba(14,33,64,.5);overflow:hidden;animation:dIn .18s}
+.fph{flex:none;display:flex;align-items:center;gap:8px;height:38px;padding:0 6px 0 12px;font-weight:700;font-size:12.5px;border-bottom:1px solid var(--hair)}
+.fph em{font:700 11px var(--mono);font-style:normal;color:var(--text-3)}
+.fph button{margin-left:auto;height:26px;padding:0 8px;border-radius:7px;font-size:11.5px;font-weight:600;color:var(--text-2)}.fph button:hover{background:var(--hover)}
+.fpb{flex:1;overflow:auto;padding:6px;display:grid;align-content:start;gap:6px;scrollbar-width:thin}
+
+/* 05 header columns / 10 two-column panel */
+.hc{flex:none;display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:6px 10px 8px;background:var(--panel-2);border-bottom:1px solid var(--hair)}
+.hc>div+div{border-left:1px solid var(--hair);padding-left:14px}
+.l2{display:grid;grid-template-columns:1fr 1fr;grid-auto-flow:column;grid-template-rows:repeat(5,auto);gap:1px 4px}
+.l2 .li .dt{display:none}.l2 .li{padding-left:8px}
+.p2{flex:none;display:grid;grid-template-columns:1fr 1fr;gap:10px;width:600px;padding:8px;background:var(--panel-2);border-right:1px solid var(--hair);align-content:start}
+.p2>div+div{border-left:1px solid var(--hair);padding-left:10px}
+/* 10 bottom tray */
+.tray{flex:none;border-top:1px solid var(--hair);background:var(--panel-2);padding:4px 8px;display:grid;gap:2px}
+.trr{display:flex;align-items:center;gap:4px}
+.trr .hs{padding:0 10px}
+.trr .tf{height:28px}
+
+.toast{position:fixed;left:50%;bottom:24px;z-index:60;transform:translate(-50%,20px);opacity:0;transition:.25s;background:#0e2140;color:#fff;padding:10px 16px;border-radius:10px;font-weight:600;font-size:12.5px;pointer-events:none}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+</style>
+</head>
+<body>
+<header class="top"><div class="in">
+  <div><h1>Tabs for 10 PDF + 10 PCB — every name visible</h1><p>10 simple designs. In all of them you can read every open file name, so you always know what to open and what to close.</p></div>
+  <div class="ctl">
+    <span class="cnt" id="cnt"></span>
+    <button class="btn" data-a="add" data-t="pdf">+ PDF</button>
+    <button class="btn" data-a="add" data-t="pcb">+ PCB</button>
+    <button class="btn" data-a="reset">Small (2 + 1)</button>
+    <button class="btn pri" data-a="fill">Open 10 + 10</button>
+    <button class="btn" data-a="theme" title="Light / dark">◐</button>
+  </div>
+</div></header>
+<main id="main"></main>
+<div class="toast" id="toast"></div>
+
+<script>
+const $ = (s, r = document) => r.querySelector(s);
+const $all = (s, r = document) => [...r.querySelectorAll(s)];
+
+/* ---------- data ---------- */
+const PDF = [
+  {c:'820-3115', n:'CPU power supply'}, {c:'A1278 820-3115-b', n:'EC issue'}, {c:'820-00165', n:'MacBook Air 13in'},
+  {c:'X2121', n:'iPhone 13 Pro Max'}, {c:'SM-S918B', n:'Galaxy S23 Ultra'}, {c:'M2101K6G', n:'Redmi Note 10 Pro'},
+  {c:'X1854 820-01523', n:'iPhone 11'}, {c:'SM-A525F', n:'Galaxy A52'}, {c:'LE2123', n:'OnePlus 9 Pro'}, {c:'GP4BC', n:'Pixel 7 Pro'}];
+const PCB = [
+  {c:'K92-820-2914_A', n:'MacBook Pro 13in'}, {c:'X2121', n:'iPhone 13 Pro Max'}, {c:'820-3115-B', n:'MacBook Pro 13in'},
+  {c:'SM-S918B_REV1.0', n:'Galaxy S23 Ultra'}, {c:'J79 820-00165', n:'MacBook Air'}, {c:'SM-A525F', n:'Galaxy A52'},
+  {c:'M2004J19G', n:'Redmi 9'}, {c:'X1854', n:'iPhone 11'}, {c:'LE2123', n:'OnePlus 9 Pro'}, {c:'G10', n:'Pixel 7'}];
+const L = {pdf: PDF, pcb: PCB}, TT = {pdf: 'PDF', pcb: 'PCB'}, TYPES = ['pdf', 'pcb'];
+const f = (t, i) => L[t][i], key = (t, i) => t + ':' + i, other = t => t === 'pdf' ? 'pcb' : 'pdf';
+const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
+
+/* ---------- state ---------- */
+let S; const U = {}; for (let n = 1; n <= 10; n++) U[n] = {};
+function reset() { S = {o:{pdf:[0,1], pcb:[0]}, a:{pdf:0, pcb:0}, t:'pdf', mru:['pdf:0','pcb:0','pdf:1']}; draw(); }
+function fill() {
+  S = {o:{pdf:[0,1,2,3,4,5,6,7,8,9], pcb:[0,1,2,3,4,5,6,7,8,9]}, a:{pdf:0, pcb:0}, t:'pdf', mru:['pdf:0','pcb:0','pdf:3','pcb:1']};
+  for (let i = 1; i < 10; i++) for (const t of TYPES) if (!S.mru.includes(key(t, i))) S.mru.push(key(t, i));
+  draw();
+}
+function act(t, i) { S.a[t] = i; S.t = t; const k = key(t, i); S.mru = [k, ...S.mru.filter(x => x !== k)]; draw(); }
+function close(t, i) {
+  const o = S.o[t], p = o.indexOf(i); if (p < 0) return;
+  o.splice(p, 1); S.mru = S.mru.filter(x => x !== key(t, i));
+  if (S.a[t] === i) S.a[t] = o.length ? o[Math.min(p, o.length - 1)] : null;
+  if (S.a[S.t] == null && S.a[other(S.t)] != null) S.t = other(S.t);
+  draw();
+}
+function add(t) {
+  const o = S.o[t];
+  if (o.length >= 10) { toast(`${TT[t]} limit is 10 — close one first`); return; }
+  const i = [0,1,2,3,4,5,6,7,8,9].find(k => !o.includes(k)); o.push(i); act(t, i);
+}
+function setType(t) { S.t = t; if (S.a[t] == null && S.o[t].length) S.a[t] = S.o[t][0]; draw(); }
+
+/* ---------- drawings ---------- */
+const AC = {};
+function rng(s) { return () => (s = s * 16807 % 2147483647) / 2147483647; }
+function art(t, i, fit) {
+  const k = t + i + (fit ? 'f' : ''); if (AC[k]) return AC[k];
+  const r = rng(t === 'pdf' ? i * 131 + 7 : i * 197 + 1003), F = v => v.toFixed(1); let s = '';
+  if (t === 'pdf') {
+    s += '<rect width="320" height="200" fill="#fff"/><rect x="6" y="6" width="308" height="188" fill="none" stroke="#c9d2de"/><rect x="236" y="168" width="72" height="20" fill="none" stroke="#9aa7b8"/><rect x="240" y="173" width="40" height="3" fill="#d93a3a"/><rect x="240" y="180" width="56" height="2" fill="#9aa7b8"/>';
+    const C = [];
+    for (let n = 0; n < 9; n++) { const w = 18 + r() * 44, h = 12 + r() * 30, x = 16 + r() * (270 - w), y = 16 + r() * (140 - h); C.push([x, y, w, h]); s += `<rect x="${F(x)}" y="${F(y)}" width="${F(w)}" height="${F(h)}" fill="none" stroke="#1f2d45" stroke-width="1.2"/>`; }
+    for (let n = 0; n < 8; n++) { const a = C[n], b = C[n + 1], x1 = a[0] + a[2], y1 = a[1] + a[3] / 2, x2 = b[0], y2 = b[1] + b[3] / 2, xm = (x1 + x2) / 2; s += `<path d="M${F(x1)} ${F(y1)}H${F(xm)}V${F(y2)}H${F(x2)}" fill="none" stroke="#3a4a66" stroke-width=".8"/>`; }
+    for (let n = 0; n < 5; n++) s += `<rect x="${F(16 + r() * 260)}" y="${F(16 + r() * 140)}" width="14" height="4" rx="1" fill="#d93a3a" opacity=".85"/>`;
+  } else {
+    s += '<rect width="320" height="200" fill="#08241b"/><rect x="12" y="12" width="296" height="176" rx="20" fill="#0f4d36" stroke="#c9a24a" stroke-width="2"/>';
+    for (let n = 0; n < 14; n++) { const x = 24 + r() * 270, y = 24 + r() * 150; s += `<path d="M${F(x)} ${F(y)}h${F(r() * 80 - 40)}v${F(r() * 60 - 30)}h${F(r() * 60 - 30)}" fill="none" stroke="#2c8a5c" stroke-width="1.4"/>`; }
+    for (let n = 0; n < 6; n++) { const w = 16 + r() * 34, h = 14 + r() * 26, x = 24 + r() * (270 - w), y = 24 + r() * (150 - h); s += `<rect x="${F(x)}" y="${F(y)}" width="${F(w)}" height="${F(h)}" rx="2" fill="#11161b" stroke="#3b4b45"/>`; }
+    for (let n = 0; n < 40; n++) s += `<circle cx="${F(22 + r() * 276)}" cy="${F(22 + r() * 156)}" r="1.7" fill="#d9b55c"/>`;
+  }
+  return AC[k] = `<svg viewBox="0 0 320 200" preserveAspectRatio="xMidYMid ${fit ? 'meet' : 'slice'}">${s}</svg>`;
+}
+
+/* ---------- shared pieces ---------- */
+const st = (t, i) => (S.a[t] === i ? ' sel' : '') + (S.a[t] === i && S.t === t ? ' on' : '');
+const A = (t, i) => `data-a="act" data-t="${t}" data-i="${i}" title="${esc(TT[t] + ' · ' + f(t, i).c + ' — ' + f(t, i).n)}"`;
+const X = (t, i) => `<span class="x" data-a="x" data-t="${t}" data-i="${i}" title="Close">×</span>`;
+const li = (t, i) => `<button class="li ${t}${st(t, i)}" ${A(t, i)}><span class="dt"></span><b>${f(t, i).c}</b><span class="n">${f(t, i).n}</span>${X(t, i)}</button>`;
+const c2 = (t, i, th) => `<button class="c2 ${t}${st(t, i)}" ${A(t, i)}>${th ? `<span class="th">${art(t, i)}</span>` : ''}<span class="tx"><b>${f(t, i).c}</b><span>${f(t, i).n}</span></span>${X(t, i)}</button>`;
+const tf = (t, i) => `<button class="tf ${t}${st(t, i)}" ${A(t, i)}><span class="dt"></span><b>${f(t, i).c}</b><span class="n">${f(t, i).n}</span>${X(t, i)}</button>`;
+const head = t => `<div class="sh2 ${t}"><span class="bd">${TT[t]}</span>${S.o[t].length} open<button class="addb" data-a="add" data-t="${t}" title="Open a ${TT[t]}">+</button></div>`;
+const group = (t, fn = li) => `<div>${head(t)}<div class="grp">${S.o[t].map(i => fn(t, i)).join('')}</div></div>`;
+function view(cls = '') {
+  const t = S.t, i = S.a[t];
+  if (i == null) return `<div class="view ${cls}"><div class="empty">No file open — use + PDF / + PCB at the top</div></div>`;
+  return `<div class="view ${cls}"><div class="vh"><span class="bd ${t}">${TT[t]}</span><b>${f(t, i).c}</b><span>${f(t, i).n}</span></div><div class="pg ${t}">${art(t, i, 1)}</div></div>`;
+}
+const title = () => { const t = S.t, i = S.a[t]; return i != null ? `<span class="bd ${t}">${TT[t]}</span><b>${f(t, i).c}</b>${f(t, i).n}` : 'No file open'; };
+
+/* ---------- the 10 designs ---------- */
+const R = {};
+// 01 side tabs
+R[1] = () => `<div class="lay"><div class="side">${group('pdf')}${group('pcb')}</div>${view()}</div>`;
+// 02 split sides
+R[2] = () => `<div class="lay"><div class="side w270">${group('pdf')}</div>${view()}<div class="side w270 r">${group('pcb')}</div></div>`;
+// 03 switch + grid
+R[3] = () => `<div class="bar"><div class="seg">${TYPES.map(t => `<button class="sg ${t}${S.t === t ? ' on' : ''}" data-a="type" data-t="${t}"><span class="bd">${TT[t]}</span>${S.o[t].length}</button>`).join('')}</div><div class="ttl">${title()}</div><button class="sbtn" data-a="add" data-t="${S.t}">+ Open ${TT[S.t]}</button></div>
+  <div class="gp"><div class="g5">${S.o[S.t].map(i => c2(S.t, i)).join('')}</div></div>${view()}`;
+// 04 tab grid with pictures
+R[4] = u => `<div class="bar"><div class="ttl">${title()}</div><button class="sbtn" data-a="ui" data-d="4" data-k="hide">${u.hide ? '▾ Show all 20' : '▴ Hide'} tabs</button></div>
+  ${u.hide ? '' : `<div class="gp">${TYPES.filter(t => S.o[t].length).map(t => `<div class="gr ${t}"><span class="bd">${TT[t]}</span>${S.o[t].map(i => c2(t, i, 1)).join('')}</div>`).join('')}</div>`}${view()}`;
+// 05 header columns
+R[5] = () => `<div class="hc">${TYPES.map(t => `<div>${head(t)}<div class="l2">${S.o[t].map(i => li(t, i)).join('')}</div></div>`).join('')}</div>${view()}`;
+// 06 table
+R[6] = u => {
+  const so = u.sort || 'type', rows = [...S.o.pdf.map(i => ['pdf', i]), ...S.o.pcb.map(i => ['pcb', i])];
+  const used = (t, i) => S.mru.indexOf(key(t, i));
+  if (so === 'used') rows.sort((a, b) => used(...a) - used(...b));
+  if (so === 'name') rows.sort((a, b) => f(...a).n.localeCompare(f(...b).n));
+  const ago = (t, i) => { const p = used(t, i); return p <= 0 ? 'now' : p * 3 + ' min'; };
+  const hb = (k, l) => `<button class="${so === k ? 'on' : ''}" data-a="sort" data-v="${k}">${l}${so === k ? ' ↓' : ''}</button>`;
+  return `<div class="lay"><div class="tbl"><div class="th6">${hb('type', 'Type')}<span>File</span>${hb('name', 'Model')}${hb('used', 'Used')}<span></span></div>
+    <div class="tb6" data-keep="tb6">${rows.map(([t, i]) => `<button class="rw ${t}${st(t, i)}" ${A(t, i)}><span><span class="bd">${TT[t]}</span></span><b>${f(t, i).c}</b><span class="n">${f(t, i).n}</span><span class="u">${ago(t, i)}</span>${X(t, i)}</button>`).join('')}</div></div>${view()}</div>`;
+};
+// 07 picture cards
+R[7] = () => `<div class="lay"><div class="cp" data-keep="cp7">${TYPES.map(t => `<div>${head(t)}<div class="cg">${S.o[t].map(i => c2(t, i, 1)).join('')}</div></div>`).join('')}</div>${view()}</div>`;
+// 08 two-line tabs
+R[8] = () => `${TYPES.map(t => `<div class="r2 ${t}" title="${TT[t]} row">${S.o[t].map(i => `<button class="t2 ${t}${st(t, i)}" ${A(t, i)}><b>${f(t, i).c}</b><span>${f(t, i).n}</span>${X(t, i)}</button>`).join('')}${S.o[t].length < 10 ? `<button class="addb" style="margin-left:0" data-a="add" data-t="${t}">+</button>` : ''}</div>`).join('')}${view()}`;
+// 09 floating panel
+R[9] = u => `<div class="bar"><div class="ttl">${title()}</div><button class="sbtn" data-a="ui" data-d="9" data-k="hide">${u.hide ? '▤ Show open files' : '✕ Hide panel'}</button></div>${view(u.hide ? '' : 'fpad')}
+  ${u.hide ? '' : `<div class="fp"><div class="fph">Open files <em>${S.o.pdf.length + S.o.pcb.length}</em><button data-a="ui" data-d="9" data-k="hide">Hide</button></div><div class="fpb" data-keep="fp9">${group('pdf')}${group('pcb')}</div></div>`}`;
+// 10 two-column panel
+R[10] = () => `<div class="lay"><div class="p2">${group('pdf')}${group('pcb')}</div>${view()}</div>`;
+
+/* ---------- cards ---------- */
+const META = [
+  {n:1, h:'Side tabs', rec:'Recommended', cls:'tall', p:'All open files in a list on the left: PDF group on top, PCB group below. One file per line, full name, × to close. Simple, like vertical tabs in Edge.'},
+  {n:2, h:'PDF left · PCB right', cls:'mid', p:'PDF list on the left side of the page, PCB list on the right side. You always know which side holds which type.'},
+  {n:3, h:'Switch + name grid', p:'Pick <b>PDF</b> or <b>PCB</b> at the top; its 10 files show as a neat 5 × 2 grid with code and name on two lines.'},
+  {n:4, h:'Picture grid', cls:'mid', p:'All 20 files in one grid above the page, each with a small picture, code and name. <b>Hide</b> folds it away when you need room.'},
+  {n:5, h:'Header columns', cls:'mid', p:'A short panel above the page: PDF files on the left half, PCB files on the right half, 5 lines each. Every name in one glance, no scrolling.'},
+  {n:6, h:'File table', cls:'tall', p:'A clean table: type, file, model and when you last used it. Click a column to sort — for example, sort by <b>Used</b> to find old files to close.'},
+  {n:7, h:'Picture cards', cls:'tall', p:'Side panel of cards in two columns, each with a picture, code and name. Easy to spot a board by how it looks.'},
+  {n:8, h:'Two-line tabs', rec:'Closest to today', cls:'', p:'Same place as today: a PDF row (red edge) and a PCB row (orange edge). Each tab shows the code on top and the name below, so 10 tabs fit in one row.'},
+  {n:9, h:'Floating panel', cls:'tall', p:'A glass panel floats over the right side of the page with every open file. Hide it with one click, show it again from the bar.'},
+  {n:10, h:'Two-column panel', p:'One wider side panel with PDF and PCB side by side — 10 lines tall, so all 20 files fit without scrolling.'}];
+$('#main').innerHTML = META.map(m => `<section class="opt" data-n="${m.n}"><div class="meta"><span class="num">${String(m.n).padStart(2, '0')}</span><div><h3>${m.h}${m.rec ? `<span class="rec">${m.rec}</span>` : ''}</h3><p>${m.p}</p></div></div><div class="win ${m.cls || ''}" id="w${m.n}"></div></section>`).join('') +
+  `<section class="opt sum"><div class="meta"><span class="num">✓</span><div><h3>My pick</h3></div></div><ol>
+   <li><b>01 Side tabs</b> — simplest: every name readable, open and close in one click, room for 10 + 10.</li>
+   <li><b>08 Two-line tabs</b> — if you want to keep tabs at the top like today.</li></ol></section>`;
+
+/* ---------- draw ---------- */
+function show(sc, el) {
+  if (!el) return;
+  const l = el.offsetLeft - 24, r = el.offsetLeft + el.offsetWidth + 24;
+  if (l < sc.scrollLeft) sc.scrollLeft = l; else if (r > sc.scrollLeft + sc.clientWidth) sc.scrollLeft = r - sc.clientWidth;
+}
+function draw() {
+  const keep = {}; $all('[data-keep]').forEach(n => keep[n.dataset.keep] = [n.scrollLeft, n.scrollTop]);
+  for (let n = 1; n <= 10; n++) $('#w' + n).innerHTML = R[n](U[n]);
+  $all('[data-keep]').forEach(n => { const k = keep[n.dataset.keep]; if (k) { n.scrollLeft = k[0]; n.scrollTop = k[1]; } });
+  $all('.hs').forEach(sc => show(sc, sc.querySelector('.tf.on') || sc.querySelector('.tf.sel')));
+  $('#cnt').textContent = `PDF ${S.o.pdf.length}/10 · PCB ${S.o.pcb.length}/10`;
+}
+let tt; function toast(m) { const e = $('#toast'); e.textContent = m; e.classList.add('on'); clearTimeout(tt); tt = setTimeout(() => e.classList.remove('on'), 2200); }
+
+/* ---------- events ---------- */
+document.addEventListener('click', e => {
+  const el = e.target.closest('[data-a]'); if (!el) return;
+  const a = el.dataset.a, t = el.dataset.t, i = el.dataset.i != null ? +el.dataset.i : null;
+  switch (a) {
+    case 'act': act(t, i); break;
+    case 'x': close(t, i); break;
+    case 'type': setType(t); break;
+    case 'add': add(t); break;
+    case 'fill': fill(); break;
+    case 'reset': reset(); break;
+    case 'sort': U[6].sort = el.dataset.v; draw(); break;
+    case 'theme': { const d = document.documentElement; d.dataset.theme = d.dataset.theme === 'dark' ? 'light' : 'dark'; break; }
+    case 'ui': { const d = el.dataset.d, k = el.dataset.k; U[d][k] = !U[d][k]; draw(); break; }
+    case 'hs': { const sc = el.parentElement.querySelector('.hs'); sc.scrollBy({left: +el.dataset.v * 320, behavior: 'smooth'}); break; }
+    case 'jump': { const sc = el.closest('.bar').querySelector('.hs'), m = sc.querySelector(`[data-sec="${t}"]`); if (m) sc.scrollTo({left: m.offsetLeft - 14, behavior: 'smooth'}); break; }
+  }
+});
+document.addEventListener('wheel', e => { const sc = e.target.closest('.hs'); if (sc && Math.abs(e.deltaY) > Math.abs(e.deltaX)) { sc.scrollLeft += e.deltaY; e.preventDefault(); } }, {passive: false});
+
+fill();
+</script>
+</body>
+</html>

@@ -121,7 +121,7 @@ every file." (Free-plan wording: "Your Free plan can open ...").
    browser (username omitted if it contains "@") (`:2321-2324`, `src/core/buildenv.cpp:184-187`).
 
 ### openWhatsAppBuy() (`src/ui/mainapplication.cpp:2328-2334`)
-Opens `api.whatsapp.com/send/?phone=919999999999` with "Hi, I want to buy Schemax Premium.\nUsername: <username>".
+Opens `api.whatsapp.com/send/?phone=917708684274` with "Hi, I want to buy Schemax Premium.\nUsername: <username>".
 
 ### Enter Activation Key
 1. Emits `activationKeyRequested` → `MainWindow::showActivationKeyDialog()` (`src/ui/mainwindow.cpp:2495`, `:1965-…`).

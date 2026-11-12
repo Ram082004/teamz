@@ -256,6 +256,161 @@ body.gon .app{right:398px}
 .blade:hover,.side.coll .blade:hover{right:-24px;width:24px;height:132px;margin-top:-66px}
 .blade{transition:opacity .18s ease,transform .28s cubic-bezier(.2,.8,.2,1),background .2s,color .2s!important}
 
+/* ---- library bottom: plan card, profile (Spaces), footer ---- */
+.splan{position:relative;overflow:hidden;flex:none;margin:8px 10px 6px;padding:12px;border-radius:12px;background:linear-gradient(135deg,#0d847d,#0e2140);color:#e6fffb;font-size:11.5px}
+.splan::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(110deg,transparent 30%,rgba(255,255,255,.18) 50%,transparent 70%);transform:translateX(-100%);animation:splShine 4.5s ease-in-out infinite}
+@keyframes splShine{55%,100%{transform:translateX(100%)}}
+.splan b{display:block;font:700 15px var(--disp);color:#fff;margin-top:1px}
+.splan .m{height:6px;border-radius:9px;background:rgba(255,255,255,.2);overflow:hidden;margin:8px 0}
+.splan .m i{display:block;height:100%;border-radius:9px;background:#5eead4;animation:splGrow 1.2s cubic-bezier(.2,.8,.2,1) both}
+@keyframes splGrow{from{width:0}}
+.splan button{position:relative;z-index:1;width:100%;height:28px;border-radius:8px;background:#fff;color:#0e2140;font-weight:700;font-size:12px;transition:transform .15s,box-shadow .2s}
+.splan button:hover{box-shadow:0 6px 16px -6px rgba(0,0,0,.5)}.splan button:active{transform:scale(.98)}
+.splan.warn{background:linear-gradient(135deg,#b45309,#0e2140)}.splan.warn .m i{background:#fcd34d}
+.allow .up{display:none}
+.sft{flex:none;display:flex;align-items:center;gap:2px;margin-top:4px;padding:8px 8px 8px 10px;border-top:1px solid var(--hair)}
+.sft .ib{width:30px;height:30px}.sft .sp{flex:1}
+/* profile chip with the same spinning "orbit" border as the 72-days-left pill in the title bar */
+.sme{position:relative;isolation:isolate;min-width:0;display:flex;align-items:center;gap:9px;height:40px;padding:0 14px 0 4px;border-radius:999px;background:var(--panel);text-align:left;font-size:12.5px;font-weight:600;color:var(--text);transition:background .15s}
+.sme::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1.5px;background:conic-gradient(from var(--pang),#2dd4bf,#3b82f6,#f59e0b,#2dd4bf);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;animation:pspin 4s linear infinite;z-index:-1;pointer-events:none}
+.sme:hover::before,.sme[aria-expanded="true"]::before{animation-duration:1.6s}
+.sme:hover,.sme[aria-expanded="true"]{background:color-mix(in srgb,var(--panel) 88%,var(--accent-2))}
+.sme .av{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;flex:none;background:linear-gradient(135deg,#0e2140,#12a39b);color:#fff;font:700 13px var(--disp)}
+.sme .t{min-width:0;line-height:1.25}.sme .t>span{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sme small{display:block;font-size:11px;font-weight:500;color:var(--ok);white-space:nowrap}
+.sme.warn small{color:var(--amber)}.sme.urgent small{color:var(--red)}
+
+/* ---- title bar: ping, plan pill, help, settings, theme moved to the library footer ---- */
+.tbr .tnet,.tbr #planBtn,.tbr .vsep,.tbr #helpBtn,.tbr #setBtn,.tbr #themeBtn{display:none!important}
+/* ---- rail footer: shown only while the library is closed ---- */
+.rfoot{display:none;flex-direction:column;align-items:center;gap:4px;padding-top:6px;border-top:1px solid var(--hair);width:34px}
+.app:has(.side.coll) .rfoot{display:flex;animation:rfIn .3s cubic-bezier(.2,.8,.2,1)}
+@keyframes rfIn{from{opacity:0;transform:translateY(6px)}}
+.rfoot .rb{width:34px!important;height:34px!important}
+.rfoot #rfOpen svg{transform:rotate(180deg)}
+/* ---- home: scrolls with the wheel, no scrollbar ---- */
+.home{scrollbar-width:none}.home::-webkit-scrollbar{display:none}
+/* ---- loader: Comet (two comets with dotted tails inside a filling ring) ---- */
+.lcm{position:relative;width:450px;max-width:calc(100% - 28px);display:grid;grid-template-columns:124px 1fr;gap:20px;align-items:center;padding:20px;border-radius:18px;background:var(--panel);
+  box-shadow:0 1px 2px rgba(0,0,0,.06),0 24px 48px -20px rgba(8,20,40,.35),0 0 0 1px var(--hair-2);animation:lcmIn .35s cubic-bezier(.2,.8,.2,1) both}
+@keyframes lcmIn{from{opacity:0;transform:translateY(8px)}}
+.lcm.out{animation:lcmOut .25s ease-in both}@keyframes lcmOut{to{opacity:0;transform:translateY(-4px)}}
+.lcm .vis{position:relative;width:124px;height:124px;display:grid;place-items:center}
+.lcm .vis>svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.lcm .pa0{fill:none;stroke:var(--panel-3);stroke-width:3.5}
+.lcm .pa{fill:none;stroke:var(--c);stroke-width:3.5;stroke-linecap:round;stroke-dasharray:100;stroke-dashoffset:100;transition:stroke-dashoffset .18s linear;transform:rotate(-90deg);transform-origin:62px 62px}
+.lcm .ln{fill:none;stroke:var(--hair-2);stroke-width:1.2}
+.lcm .dot{fill:var(--c)}
+.lcm.done .cm{opacity:0;transition:opacity .3s}
+.lcm .ic{position:relative;z-index:1;width:42px;height:42px;border-radius:12px;display:grid;place-items:center;overflow:hidden;background:var(--panel);box-shadow:0 4px 12px -6px rgba(0,0,0,.3),0 0 0 1px var(--hair)}
+.lcm .ic>svg{width:24px;height:24px}
+.lcm .chk{position:absolute;inset:0;display:grid;place-items:center;background:var(--c);opacity:0;transform:scale(.4);transition:.35s cubic-bezier(.2,1.5,.4,1)}
+.lcm .chk svg{width:22px;height:22px;stroke:#fff;stroke-width:3;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.lcm.done .chk{opacity:1;transform:none}
+.lcm .oi{min-width:0}
+.lcm .eb{display:flex;align-items:center;gap:8px;white-space:nowrap;overflow:hidden;font:600 11px var(--ui);color:var(--text-2)}
+.lcm .eb i{flex:none;width:6px;height:6px;border-radius:50%;background:var(--c);box-shadow:0 0 0 3px color-mix(in srgb,var(--c) 18%,transparent)}
+.lcm .eb .kd{color:var(--c);font-weight:700}
+.lcm h3{margin:6px 0 0;font:650 17px/1.25 var(--disp);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lcm .pct{font:700 30px/1 var(--ui);letter-spacing:-.02em;margin:10px 0 12px;font-variant-numeric:tabular-nums}.lcm .pct small{font-size:14px;font-weight:600;color:var(--text-3);margin-left:1px}
+.lcm .ol{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:8px;font:600 12.5px var(--ui);color:var(--text)}
+.lcm .om{font:500 11.5px var(--ui);color:var(--text-3);font-variant-numeric:tabular-nums}
+.lcm .dts{display:inline-block;width:14px;text-align:left;font-style:normal}.lcm .dts::after{content:"";animation:lcmDots 1.2s steps(4) infinite}
+@keyframes lcmDots{0%{content:""}25%{content:"."}50%{content:".."}75%{content:"..."}}
+.lcm.done .dts{display:none}
+.lcm .ob{position:relative;height:12px;--q:calc(var(--p,0) * 1%)}
+.lcm .ob::before{content:"";position:absolute;left:0;right:0;top:50%;height:2px;margin-top:-1px;border-radius:2px;background:var(--panel-3)}
+.lcm .ob>i{position:absolute;left:0;top:0;bottom:0;width:var(--q);background:linear-gradient(90deg,transparent,var(--c));clip-path:polygon(0 46%,100% 0,100% 100%,0 54%);transition:width .18s linear}
+.lcm .ob>b{position:absolute;top:50%;left:var(--q);width:12px;height:12px;margin:-6px 0 0 -6px;border-radius:50%;background:#fff;box-shadow:0 0 0 2.5px var(--c),0 0 12px var(--c);transition:left .18s linear}
+.lcm .pfoot{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:12px;padding-top:11px;border-top:1px solid var(--hair);font:500 11.5px var(--ui);color:var(--text-3);font-variant-numeric:tabular-nums}
+.lcm .cn{padding:5px 12px;border-radius:7px;font:600 12px var(--ui);color:var(--text-2);box-shadow:inset 0 0 0 1px var(--hair-2)}
+.lcm .cn:hover{background:var(--hover);color:var(--text)}
+.lcm.done .cn{visibility:hidden}
+@media (max-width:520px){.lcm{grid-template-columns:1fr;justify-items:center;text-align:center}.lcm .eb{justify-content:center}.lcm .oi{width:100%}}
+
+/* ---- rail: profile avatar with the orbit ring (replaces the show-library arrow) ---- */
+.rfoot #rfMe{border-radius:50%!important;padding:0}
+.rfoot #rfMe .av{position:relative;isolation:isolate;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,#0e2140,#12a39b);color:#fff;font:700 12px var(--disp)}
+.rfoot #rfMe .av::before{content:"";position:absolute;inset:-3px;border-radius:50%;padding:1.5px;background:conic-gradient(from var(--pang),#2dd4bf,#3b82f6,#f59e0b,#2dd4bf);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;animation:pspin 4s linear infinite;z-index:-1}
+.rfoot #rfMe:hover .av::before{animation-duration:1.6s}
+.rfoot #rfMe .av i{position:absolute;right:-2px;bottom:-2px;width:9px;height:9px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 2px var(--panel)}
+
+/* ---- tab bar: browser tabs (curved flares, colour groups that fold) ---- */
+.wbar{height:44px;padding-left:0;border-bottom:0;background:var(--panel-3)}
+[data-theme="dark"] .wbar{background:#070b10}
+.tabs{gap:2px;padding:0 12px 0 10px;align-items:flex-end}
+.tabs .tab{height:34px;min-width:0;max-width:200px;padding:0 8px 0 12px;border-radius:10px 10px 0 0;background:transparent;box-shadow:none;color:var(--text-2);animation:btIn .4s cubic-bezier(.2,.9,.25,1.15) both}
+@keyframes btIn{from{opacity:0;transform:translateY(10px) scaleX(.85)}}
+.tabs .tab:hover{background:color-mix(in srgb,var(--panel) 50%,transparent)}
+.notice{background:color-mix(in srgb,var(--panel) 90%,transparent)}
+.tabs .tab.on{background:var(--panel);color:var(--text);z-index:1}
+.tabs .tab.on::before,.tabs .tab.on::after{content:"";display:block;position:absolute;top:auto;bottom:0;width:10px;height:10px;pointer-events:none;background-color:transparent}
+.tabs .tab.on::before{left:-10px;right:auto;background:radial-gradient(circle at 0 0,transparent 9.5px,var(--panel) 10px)}
+.tabs .tab.on::after{right:-10px;left:auto;background:radial-gradient(circle at 100% 0,transparent 9.5px,var(--panel) 10px)}
+.tabs .tab.inpane:not(.on){background:color-mix(in srgb,var(--win) 40%,transparent)}
+.tabs .tab.home{width:auto;padding:0 14px 0 12px;gap:8px;font-weight:600}
+.tabs .tab .tx{opacity:0}.tabs .tab:hover .tx,.tabs .tab.on .tx{opacity:1}
+.tgp{display:flex;align-items:flex-end;flex:none;height:100%}
+.glab{align-self:center;display:flex;align-items:center;gap:5px;height:22px;padding:0 9px;margin:0 2px 0 8px;border-radius:7px;font:700 10px var(--mono);letter-spacing:.06em;color:#fff;background:var(--gc);flex:none;transition:transform .2s cubic-bezier(.2,.9,.25,1.15),border-radius .3s,box-shadow .2s}
+.glab:hover{transform:scale(1.06);box-shadow:0 4px 12px -4px var(--gc)}
+.tgp.shut .glab{border-radius:999px}
+.glab .ct{opacity:.85}
+.gt{display:flex;align-items:flex-end;gap:2px;height:100%;max-width:1400px;overflow:hidden;padding:0 10px;margin:0 -10px;transition:max-width .5s cubic-bezier(.2,.8,.2,1),opacity .3s}
+.tgp.shut .gt{max-width:0;opacity:0}
+.gt .tab{box-shadow:inset 0 2px 0 var(--gc)!important}
+.tgp.pdf{--gc:#dc2626}.tgp.pcb{--gc:#2563eb}.tgp.tool{--gc:#0d847d}
+.main .wbar{border-bottom:0!important}
+.tabs .tab:not(.gt .tab){box-shadow:none!important}
+/* even spacing: 4px between tabs, 14px between groups, pill centred on the tab text line */
+.tabs{gap:0!important;padding:0 12px 0 8px!important}
+.tgp{gap:0;margin-left:14px}
+.glab{align-self:flex-end!important;height:24px!important;margin:0 8px 5px 0!important;padding:0 10px!important;gap:6px}
+.gt{gap:4px!important}
+.tabs .tab{max-width:190px;padding:0 6px 0 12px!important;gap:8px}
+.tabs .tab.home{padding:0 14px 0 12px!important}
+.tgp{flex:0 1 auto!important;min-width:0}
+.gt{min-width:0;flex:0 1 auto}
+.gt .tab{flex:0 1 190px!important;min-width:92px!important}
+.tabs .tab.home,.glab{flex:none!important}
+/* trial allowance box removed from the Library */
+.allow{display:none!important}
+
+/* ---- PCB inspector (opened from Settings › PCB Theme › Preview) ---- */
+.main{position:relative}
+.insp{position:absolute;top:52px;right:10px;bottom:10px;width:300px;z-index:15;display:flex;flex-direction:column;background:var(--panel);border-radius:16px;
+  box-shadow:0 24px 60px -24px rgba(8,20,40,.55),0 0 0 1px var(--hair-2);transform:translateX(calc(100% + 24px));opacity:0;pointer-events:none;transition:transform .45s cubic-bezier(.2,.9,.25,1.05),opacity .25s}
+.insp.on{transform:none;opacity:1;pointer-events:auto}
+.insp .ih{display:flex;align-items:center;gap:8px;padding:14px 12px 6px 16px}
+.insp .ih h3{margin:0;flex:1;font:700 15px var(--disp)}
+.insp .ih .ib{width:28px;height:28px}
+.insp .ib2{overflow:auto;padding:0 16px 16px;scrollbar-width:thin}
+.insp .sh2{display:flex;align-items:center;gap:6px;width:100%;padding:14px 0 6px;font:700 9.5px var(--mono);letter-spacing:.14em;color:var(--text-3);text-align:left}
+.insp .sh2 svg{width:12px;height:12px;transition:transform .3s cubic-bezier(.2,.9,.25,1.15)}.insp .sh2[aria-expanded="false"] svg{transform:rotate(-90deg)}
+.insp .sec{display:grid;grid-template-rows:1fr;margin:0;align-items:stretch;gap:0;transition:grid-template-rows .4s cubic-bezier(.2,.8,.2,1)}.insp .sec>div{overflow:hidden;min-height:0}.insp .sec.shut{grid-template-rows:0fr}
+.insp .ihead{display:flex;align-items:center;gap:12px;padding:12px;border-radius:12px;background:var(--panel-2);box-shadow:inset 0 0 0 1px var(--hair);margin-top:4px}
+.insp .ihead>svg{width:32px;height:32px;flex:none}.insp .ihead b{display:block;font:650 14px var(--disp)}.insp .ihead small{color:var(--text-3);font-size:11.5px}
+.insp .ihead.none{color:var(--copper)}.insp .ihead.none small{color:var(--text-3)}
+.insp .sws{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;padding:6px 4px 8px}
+.insp .swt{aspect-ratio:1;border-radius:12px;background:var(--c);box-shadow:inset 0 0 0 1px var(--hair-2);position:relative;overflow:hidden;transition:transform .25s cubic-bezier(.2,.9,.25,1.15),box-shadow .2s}
+.insp .swt::after{content:"";position:absolute;left:22%;right:22%;top:50%;height:3px;margin-top:-1.5px;background:var(--f);border-radius:2px}
+.insp .swt:hover{transform:scale(1.08)}.insp .swt[aria-pressed="true"]{box-shadow:0 0 0 2px var(--panel),0 0 0 4px var(--accent-2)}
+.insp .thn{font-size:11.5px;color:var(--text-3);margin:-2px 0 6px}.insp .thn b{color:var(--text);font-weight:650}
+.insp .ia{display:flex;justify-content:space-between;gap:6px}
+.insp .ia button{flex:1;height:28px;border-radius:8px;font-size:12px;font-weight:650;color:var(--text);transition:background .15s}
+.insp .ia button:hover{background:var(--hover)}.insp .ia .del{color:var(--red)}.insp .ia .del:disabled{opacity:.35;cursor:not-allowed;background:none}
+.insp .irow{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:7px 0;font-size:12.5px;color:var(--text-2)}.insp .irow b{color:var(--text);font-weight:600}
+.insp .irow.dis{opacity:.45}
+.insp .iseg{display:flex;padding:3px;border-radius:10px;background:var(--panel-2);box-shadow:inset 0 0 0 1px var(--hair)}
+.insp .iseg button{flex:1;height:30px;border-radius:8px;font-size:12.5px;font-weight:650;color:var(--text-2);transition:background .2s,color .2s}
+.insp .iseg button[aria-pressed="true"]{background:var(--accent);color:#fff;box-shadow:0 4px 10px -5px rgba(13,132,125,.8)}
+.insp .pvb{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:14px;padding-top:12px;border-top:1px solid var(--hair);font-size:11.5px;color:var(--text-3)}
+
+/* ---- tree: FREE chip on trial-accessible models ---- */
+.row .fr{flex:none;margin-left:6px;padding:1px 6px;border-radius:99px;font:700 8.5px var(--mono);letter-spacing:.08em;font-style:normal;color:#0b7570;background:rgba(18,163,155,.13)}
+[data-theme="dark"] .row .fr{color:#5fe3d3;background:rgba(45,212,191,.13)}
+
 /* ---- main column ---- */
 .main{grid-row:2;grid-column:3;display:flex;flex-direction:column;min-width:0;min-height:0}
 .side,.dock,.rail{min-height:0}
@@ -291,38 +446,26 @@ body.gon .app{right:398px}
 .plan>.days{padding:0 8px 0 4px;gap:7px}.plan>.days b{font-weight:650;color:var(--text)}.plan>.days small{font-weight:500;color:var(--text-3);margin-left:-2px}
 .plan>.use{border-left:1px solid var(--hair-2)!important}
 
-/* ===== tab bar: dark floating island ===== */
-.wbar{height:52px;align-items:center;background:var(--panel-2)}
-.tabs{flex:0 1 auto;height:36px;align-items:center;gap:3px;margin:0 auto 0 2px;padding:0 4px;border-radius:999px;background:#0b1622;color:#cfe0ee;
-  box-shadow:0 12px 30px -12px rgba(0,0,0,.6),inset 0 0 0 1px rgba(255,255,255,.08);max-width:calc(100% - 330px)}
-[data-theme="dark"] .tabs{background:#e6edf6;color:#0e2140;box-shadow:0 12px 30px -14px rgba(0,0,0,.8)}
-.tabs .tab{height:28px;min-width:0;max-width:170px;color:inherit;opacity:.72;border-radius:999px;padding:0 5px 0 10px;flex:0 1 auto}
-.tabs .tab:hover{background:rgba(255,255,255,.08);opacity:1}
-[data-theme="dark"] .tabs .tab:hover{background:rgba(14,33,64,.07)}
-.tabs .tab.on{opacity:1;color:inherit;background:rgba(45,212,191,.2);box-shadow:none}
-[data-theme="dark"] .tabs .tab.on{background:rgba(18,163,155,.18)}
-.tabs .tab.on::after{display:none}
-.tabs .tab.inpane:not(.on){background:rgba(255,255,255,.05);opacity:.9}
-[data-theme="dark"] .tabs .tab.inpane:not(.on){background:rgba(14,33,64,.05)}
-.tabs .tab.home{width:28px;padding:0;justify-content:center;background:rgba(45,212,191,.16);opacity:1}
-.tabs .tab.home.on{background:rgba(45,212,191,.32)}
-.tabs .tab .tx{color:inherit;opacity:0}.tabs .tab:hover .tx,.tabs .tab.on .tx{opacity:.7}
-.tabs .tab .tx:hover{background:rgba(255,255,255,.14);opacity:1}
-[data-theme="dark"] .tabs .tab .tx:hover{background:rgba(14,33,64,.1)}
-.tabs .lane{height:28px;padding:0 4px 0 8px;color:inherit;opacity:.8}
-.tabs .lane i{background:rgba(255,255,255,.12);color:inherit}
-[data-theme="dark"] .tabs .lane i{background:rgba(14,33,64,.1)}
-.tabs .lane.pdf b{color:#f87171}.tabs .lane.pcb b{color:#7aa7ff}.tabs .lane.tool b{color:#5fe3d3}
-[data-theme="dark"] .tabs .lane.pdf b{color:#d92d2d}[data-theme="dark"] .tabs .lane.pcb b{color:#2563eb}[data-theme="dark"] .tabs .lane.tool b{color:#0b7570}
+/* ===== tab bar: Ribbon Studio (flat tabs, rounded tops, teal top ink, lane chips) ===== */
+.wbar{height:44px;align-items:flex-end;background:var(--panel-2)}
+.wtools{align-self:center}
+.tabs{align-items:flex-end;gap:4px;padding-left:2px}
+.tab{height:34px;border-radius:9px 9px 0 0;transition:background .15s,color .15s}
+.tab.on{background:var(--win);color:var(--text);box-shadow:inset 0 2px 0 var(--accent-2),0 0 0 1px var(--hair)}
+.tab.on::after{bottom:-1px;height:2px}
+.tab.home{width:40px;padding:0;justify-content:center}
+.tab.home .ti{width:16px;height:16px}
+.lane{height:34px;align-self:flex-end;padding:0 4px 0 12px}
+.lane i{font:700 10px var(--mono);padding:2px 6px;border-radius:6px}
 
 .wtools{display:flex;align-items:center;gap:6px;height:100%;flex:none}
-.vsw{display:flex;padding:2px;border-radius:9px;background:var(--panel);box-shadow:inset 0 0 0 1px var(--hair)}
-.vsw button{display:flex;align-items:center;gap:6px;height:26px;padding:0 10px;border-radius:7px;font-size:11.5px;font-weight:600;color:var(--text-2)}
+.vsw{display:flex;padding:3px;border-radius:999px;background:color-mix(in srgb,var(--panel) 74%,transparent);backdrop-filter:blur(14px) saturate(1.4);box-shadow:0 0 0 1px var(--hair-2),0 10px 22px -16px rgba(14,33,64,.45)}
+.vsw button{display:flex;align-items:center;gap:6px;height:26px;padding:0 12px;border-radius:999px;font-size:11.5px;font-weight:600;color:var(--text-2);transition:background .2s,color .2s,box-shadow .2s}
 .vsw button:hover:not([aria-disabled="true"]){color:var(--text);background:var(--hover)}
-.vsw button[aria-pressed="true"]{background:var(--accent);color:#fff}
+.vsw button[aria-pressed="true"]{background:var(--accent);color:#fff;box-shadow:0 4px 10px -5px rgba(13,132,125,.8)}
 .vsw button[aria-disabled="true"]{opacity:.42;cursor:not-allowed}
 .vsw svg.i{width:14px;height:14px}
-.swap{display:none;align-items:center;gap:5px;height:28px;padding:0 10px;border-radius:8px;background:var(--accent-soft);color:var(--accent-text);font-size:11.5px;font-weight:650}
+.swap{display:none;align-items:center;gap:5px;height:28px;padding:0 12px;border-radius:999px;background:var(--accent-soft);color:var(--accent-text);font-size:11.5px;font-weight:650}
 .swap.on{display:flex;animation:pop .3s var(--spring)}
 @keyframes pop{from{transform:scale(.8);opacity:0}}
 .wtools .ib{width:30px;height:30px}
@@ -512,70 +655,12 @@ body.gon .app{right:398px}
 .modal p{margin:0;color:var(--text-2);font-size:13px}
 .modal .mf{display:flex;gap:8px;justify-content:flex-end;padding:16px 22px 18px;flex-wrap:wrap}
 .modal .mf.col{flex-direction:column;align-items:stretch}
-.ldx{position:relative;width:440px;max-width:calc(100% - 32px);display:grid;grid-template-columns:132px 1fr;gap:22px;align-items:center;padding:22px 22px 20px;border-radius:26px;
   background:color-mix(in srgb,var(--panel) 88%,transparent);backdrop-filter:blur(18px) saturate(1.4);
   box-shadow:0 40px 80px -30px rgba(0,0,0,.55),inset 0 0 0 1px var(--hair-2),inset 0 1px 0 rgba(255,255,255,.12);overflow:hidden;animation:ldin .45s cubic-bezier(.2,1.3,.4,1) both}
-.ldx::before{content:"";position:absolute;inset:-40% auto auto -20%;width:260px;height:260px;border-radius:50%;background:radial-gradient(closest-side,color-mix(in srgb,var(--c) 30%,transparent),transparent);filter:blur(10px);animation:ldglow 3s ease-in-out infinite alternate;pointer-events:none}
 @keyframes ldin{from{opacity:0;transform:translateY(14px) scale(.94)}}
 @keyframes ldglow{to{transform:translate(40px,30px) scale(1.15)}}
-.ldx.out{animation:ldout .32s ease-in both}@keyframes ldout{to{opacity:0;transform:scale(.96) translateY(-6px)}}
-.ldx .core{position:relative;width:132px;height:132px}
-.ldx .core svg.rg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
-.ldx .trk{fill:none;stroke:var(--panel-3);stroke-width:5}
-.ldx .prg{fill:none;stroke:var(--c);stroke-width:5;stroke-linecap:round;stroke-dasharray:100;stroke-dashoffset:100;transition:stroke-dashoffset .18s linear;filter:drop-shadow(0 0 6px color-mix(in srgb,var(--c) 70%,transparent))}
-.ldx .run{fill:none;stroke:#fff;stroke-width:5;stroke-linecap:round;stroke-dasharray:4 96;opacity:.75;animation:ldrun 1.4s linear infinite}
-@keyframes ldrun{to{stroke-dashoffset:-100}}
-.ldx .tr path{fill:none;stroke:var(--hair-2);stroke-width:1.6;stroke-linecap:round;transition:stroke .3s}
-.ldx .tr circle{fill:var(--panel);stroke:var(--hair-2);stroke-width:1.6;transition:.3s}
-.ldx .tr g.on path{stroke:var(--c)}.ldx .tr g.on circle{fill:var(--c);stroke:var(--c);filter:drop-shadow(0 0 4px var(--c))}
-.ldx .chipc{position:absolute;inset:30px;border-radius:24px;display:grid;place-items:center;background:color-mix(in srgb,var(--c) 11%,var(--panel));box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--c) 35%,transparent);overflow:hidden}
-.ldx .chipc>svg{width:34px;height:34px;animation:ldbob 2.4s ease-in-out infinite}
-@keyframes ldbob{50%{transform:translateY(-3px)}}
-.ldx .chipc::after{content:"";position:absolute;left:0;right:0;height:40%;top:-40%;background:linear-gradient(180deg,transparent,color-mix(in srgb,var(--c) 30%,transparent),transparent);animation:ldscan 1.6s linear infinite}
-@keyframes ldscan{to{top:100%}}
-.ldx.done .chipc::after,.ldx.done .run{display:none}
-.ldx .chk{position:absolute;inset:0;display:grid;place-items:center;background:var(--c);opacity:0;transform:scale(.4);transition:.35s cubic-bezier(.2,1.5,.4,1)}
-.ldx .chk svg{width:30px;height:30px;stroke:#fff;stroke-width:3;fill:none;stroke-linecap:round;stroke-linejoin:round}
-.ldx.done .chk{opacity:1;transform:none}
-.ldx .info{position:relative;min-width:0}
-.ldx .eb{padding-right:30px;white-space:nowrap;overflow:hidden;display:flex;align-items:center;gap:7px;font:700 9.5px var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--c)}
-.ldx .eb i{flex:none;width:7px;height:7px;border-radius:50%;background:var(--c);animation:ldping 1.4s infinite}
-@keyframes ldping{0%{box-shadow:0 0 0 0 var(--c)}70%,100%{box-shadow:0 0 0 7px transparent}}
-.ldx h3{margin:6px 0 2px;padding-right:58px;font:700 19px/1.2 var(--disp,inherit);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.ldx .pct{font:800 34px/1 var(--disp,inherit);letter-spacing:-.03em;font-variant-numeric:tabular-nums;margin:8px 0 10px}
-.ldx .pct small{font-size:15px;font-weight:700;color:var(--text-3);margin-left:2px}
-.ldx .steps{display:flex;gap:4px}
-.ldx .steps span{flex:1;min-width:0}
-.ldx .steps b{display:block;height:4px;border-radius:9px;background:var(--panel-3);overflow:hidden;position:relative}
-.ldx .steps b::after{content:"";position:absolute;inset:0;width:var(--f,0%);background:var(--c);border-radius:9px;transition:width .18s linear}
-.ldx .steps em{display:block;margin-top:5px;font:600 9.5px var(--mono);font-style:normal;color:var(--text-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:color .2s}
-.ldx .steps span.cur em{color:var(--text)}.ldx .steps span.ok em{color:var(--c)}
-.ldx .ft{display:flex;justify-content:space-between;gap:8px;margin-top:12px;font:600 10.5px var(--mono);color:var(--text-3);font-variant-numeric:tabular-nums}
-.ldx .x{position:absolute;top:12px;right:12px;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;color:var(--text-3);transition:.15s;z-index:2}
-.ldx .x:hover{background:var(--hover);color:var(--red);transform:rotate(90deg)}
-.ldx .x svg{width:14px;height:14px;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round}
-.ldx .q{margin-right:8px;font:700 9.5px var(--mono);padding:2px 6px;border-radius:99px;background:var(--panel-2);color:var(--text-3);z-index:2}
 /* professional pass */
-.ldx{grid-template-columns:112px 1fr;gap:20px;padding:20px;border-radius:16px;background:var(--panel);backdrop-filter:none;box-shadow:0 1px 2px rgba(0,0,0,.06),0 24px 48px -20px rgba(8,20,40,.35),0 0 0 1px var(--hair-2);animation:ldpin .3s cubic-bezier(.2,.8,.2,1) both}
 @keyframes ldpin{from{opacity:0;transform:translateY(8px)}}
-.ldx.out{animation:ldpout .25s ease-in both}@keyframes ldpout{to{opacity:0;transform:translateY(-4px)}}
-.ldx::before,.ldx .run,.ldx .chipc::after{display:none}
-.ldx .core{width:112px;height:112px}
-.ldx .trk{stroke-width:4}.ldx .prg{stroke-width:4;filter:none}
-.ldx .tr path{stroke-width:1.4}.ldx .tr circle{r:2.6;stroke-width:1.4}.ldx .tr g.on circle{filter:none}
-.ldx .chipc{inset:28px;border-radius:18px;background:var(--panel-2);box-shadow:inset 0 0 0 1px var(--hair)}
-.ldx .chipc>svg{width:28px;height:28px;animation:none}
-.ldx .eb{padding-right:0;font:600 11px var(--ui);letter-spacing:.01em;text-transform:none;color:var(--text-2);gap:8px}
-.ldx .eb i{width:6px;height:6px;animation:none;box-shadow:0 0 0 3px color-mix(in srgb,var(--c) 18%,transparent)}
-.ldx .eb .kd{color:var(--c);font-weight:700}
-.ldx h3{font:650 17px/1.25 var(--disp);margin:6px 0 0;padding-right:0}
-.ldx .pct{font:700 28px/1 var(--ui);letter-spacing:-.02em;margin:10px 0 12px}.ldx .pct small{font-size:13px;font-weight:600}
-.ldx .steps b{height:3px}.ldx .steps em{font:500 10.5px var(--ui)}
-.ldx .ft{align-items:center;margin-top:12px;padding-top:12px;border-top:1px solid var(--hair);font:500 11.5px var(--ui)}
-.ldx .ft .cn{padding:5px 12px;border-radius:7px;font:600 12px var(--ui);color:var(--text-2);box-shadow:inset 0 0 0 1px var(--hair-2)}
-.ldx .ft .cn:hover{background:var(--hover);color:var(--text)}
-.ldx.done .ft .cn{visibility:hidden}
-@media (max-width:520px){.ldx{grid-template-columns:1fr;justify-items:center;text-align:center}.ldx .eb{justify-content:center}.ldx .info{width:100%}}
 .settings{width:min(780px,94vw);height:min(560px,86vh);background:var(--panel);border-radius:16px;box-shadow:var(--pop);display:grid;grid-template-columns:200px 1fr;overflow:hidden;transform:translateY(8px) scale(.98);transition:transform .25s var(--spring)}
 .scrim.on .settings{transform:none}
 .settings nav{background:var(--panel-2);border-right:1px solid var(--hair);padding:16px 10px;display:flex;flex-direction:column;gap:2px}
@@ -756,6 +841,7 @@ body.gon .app{right:398px}
   <symbol id="u-kb" viewBox="0 0 24 24"><rect x="2.5" y="6" width="19" height="12" rx="2"/><path d="M6 10h.01M9.5 10h.01M13 10h.01M16.5 10h.01M7 14h10"/></symbol>
   <symbol id="u-wa" viewBox="0 0 24 24"><path d="M20.5 11.8a8.5 8.5 0 0 1-12.6 7.4L3.5 20.5l1.3-4.2a8.5 8.5 0 1 1 15.7-4.5z"/><path d="M9 8.5c.2-.4.5-.4.8-.4h.5c.2 0 .4.1.5.4l.7 1.6c.1.3 0 .5-.2.7l-.5.6c.6 1.2 1.6 2.2 2.8 2.8l.6-.5c.2-.2.5-.3.7-.2l1.6.7c.3.1.4.3.4.5v.5c0 .3-.1.6-.4.8-.6.4-1.4.6-2.2.4-2.6-.7-4.6-2.7-5.3-5.3-.2-.8 0-1.6.4-2.2z" fill="currentColor" stroke="none"/></symbol>
   <symbol id="u-palette" viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 0 18c1 0 1.6-.8 1.6-1.6 0-.5-.2-.8-.4-1.1-.3-.3-.4-.7-.4-1.1 0-.9.7-1.6 1.6-1.6H16a5 5 0 0 0 5-5C21 6.6 17 3 12 3z"/><circle cx="7.5" cy="11" r="1.2" fill="currentColor"/><circle cx="10" cy="7" r="1.2" fill="currentColor"/><circle cx="14.5" cy="7" r="1.2" fill="currentColor"/></symbol>
+  <symbol id="u-chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></symbol>
   <symbol id="u-board" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><rect x="7" y="8" width="5" height="5" rx="1"/><path d="M15 8h2M15 11h2M7 16h10"/></symbol>
   <symbol id="u-doc" viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 15.5h6"/></symbol>
   <symbol id="u-tree" viewBox="0 0 24 24"><path d="M5 4v14a2 2 0 0 0 2 2h3M5 9h5M5 14.5h5"/><rect x="11" y="6.5" width="9" height="5" rx="1.5"/><rect x="11" y="12" width="9" height="5" rx="1.5"/></symbol>
@@ -779,7 +865,7 @@ body.gon .app{right:398px}
   <span class="sp"></span>
   <span class="lbl">Account</span>
   <div class="seg" id="acctSeg"><button data-acct="premium" aria-pressed="true">Pro</button><button data-acct="trial" aria-pressed="false">Trial</button><button data-acct="free" aria-pressed="false">Free</button></div>
-  <button class="dbtn" id="guideBtn" aria-pressed="false"><svg class="i"><use href="#u-pin"/></svg>Placement guide</button>
+  <button class="dbtn" id="guideBtn" aria-pressed="false" hidden style="display:none"><svg class="i"><use href="#u-pin"/></svg>Placement guide</button>
 </div>
 
 <!-- ============ the app window ============ -->
@@ -794,11 +880,11 @@ body.gon .app{right:398px}
     <div class="drag"></div>
     <div class="tbr">
       <span class="tnet" id="tbNet" title="Connection · click to check"><i></i>46 ms</span>
-      <button class="plan" id="planBtn" data-g="3" aria-label="Plan status"></button>
+      <button class="plan" id="planBtn" aria-label="Plan status"></button>
       <span class="vsep"></span>
-      <button class="ib" id="helpBtn" data-g="4" data-tip="Help|About, website, connection check, shortcuts" aria-haspopup="menu" aria-expanded="false"><svg class="i"><use href="#u-help"/></svg></button>
-      <button class="ib" id="setBtn" data-g="5" data-tip="Settings|All preferences in one place" aria-haspopup="dialog"><svg class="i"><use href="#u-gear"/></svg></button>
-      <button class="ib" id="themeBtn" data-g="6" data-tip="Toggle theme|Light / dark"><svg class="i"><use href="#u-sun"/></svg></button>
+      <button class="ib" id="helpBtn" data-tip="Help|About, website, connection check, shortcuts" aria-haspopup="menu" aria-expanded="false"><svg class="i"><use href="#u-help"/></svg></button>
+      <button class="ib" id="setBtn" data-tip="Settings|All preferences in one place" aria-haspopup="dialog"><svg class="i"><use href="#u-gear"/></svg></button>
+      <button class="ib" id="themeBtn" data-tip="Toggle theme|Light / dark"><svg class="i"><use href="#u-sun"/></svg></button>
       <button class="chip" id="chipBtn" hidden style="display:none" aria-haspopup="dialog" aria-expanded="false"><span class="av" id="avL">B</span><span class="t"><b id="unL">buddies400</b><small id="plL">PRO</small></span></button>
     </div>
     <div class="wc" data-g="8">
@@ -817,6 +903,7 @@ body.gon .app{right:398px}
     <button class="rb" data-tool="uart" data-tip="UART Terminal|Serial monitor for any COM port"><svg class="i"><use href="#u-term"/></svg></button>
     <button class="rb" data-tool="panic" data-tip="Panic Logger|Read iPhone panic / crash logs"><svg class="i"><use href="#u-apple"/></svg></button>
     <span class="grow"></span>
+    <div class="rfoot"><button class="rb" id="rfSet" data-tip="Settings|All preferences in one place"><svg class="i"><use href="#u-gear"/></svg></button><button class="rb" id="rfHelp" data-tip="Help|About, website, connection check, shortcuts" aria-haspopup="menu" aria-expanded="false"><svg class="i"><use href="#u-help"/></svg></button><button class="rb" id="rfTheme" data-tip="Toggle theme|Light / dark"><svg class="i"><use href="#u-sun"/></svg></button><button class="rb" id="rfMe" data-tip="Account|Plan, expiry, auto login, log out" aria-haspopup="dialog" aria-expanded="false"><span class="av"><b id="rfAv">B</b><i></i></span></button></div>
     <button class="rb" id="netBtn" data-tip="Connection: online|Click to run a full connection check"><svg class="i"><use href="#u-wifi"/></svg><i class="st"></i></button>
   </nav>
 
@@ -836,6 +923,8 @@ body.gon .app{right:398px}
     <div class="sfoot"><span>Text</span>
       <div class="stp"><button id="tfMinus" aria-label="Smaller text">−</button><output id="tfOut">13px</output><button id="tfPlus" aria-label="Bigger text">+</button></div>
       <span class="sp"></span><span id="libHint" style="color:var(--text-3)">Double-click to open</span></div>
+    <div class="splan" id="splan" data-g="3"><span id="splT"></span><b id="splD"></b><div class="m"><i id="splM"></i></div><button id="splBtn">Renew plan</button></div>
+    <div class="sft"><button class="sme" id="sme" data-g="7" aria-haspopup="dialog" aria-expanded="false" data-tip="Account|Plan, expiry, auto login, log out"><span class="av" id="smeAv">B</span><span class="t"><span id="smeN">buddies400</span><small id="smeS">● 72 days left</small></span></button><span class="sp"></span><button class="ib" id="sftSet" data-g="5" data-tip="Settings|All preferences in one place"><svg class="i"><use href="#u-gear"/></svg></button><button class="ib" id="sftHelp" data-g="4" data-tip="Help|About, website, connection check, shortcuts" aria-haspopup="menu" aria-expanded="false"><svg class="i"><use href="#u-help"/></svg></button><button class="ib" id="sftTheme" data-g="6" data-tip="Toggle theme|Light / dark"><svg class="i"><use href="#u-sun"/></svg></button></div>
     <div class="grip" id="grip"></div>
     <button class="blade" id="blade" aria-label="Hide library" data-tip="Hide library|Drag the edge to resize · Ctrl+T" data-tipp="r"><span class="gd"><i></i><i></i><i></i></span><svg viewBox="0 0 10 10"><path d="M6.5 2 3.5 5l3 3" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="vl">Library</span></button>
   </aside>
@@ -853,6 +942,7 @@ body.gon .app{right:398px}
         <button class="ib" id="fullBtn" data-tip="Immersive full screen|F11 · Esc to leave"><svg class="i"><use href="#u-full"/></svg></button>
       </div>
     </div>
+    <aside class="insp" id="insp" aria-label="PCB inspector"><div class="ih"><h3>PCB Inspector</h3><button class="ib" id="inspX" data-tip="Close inspector|Esc" aria-label="Close inspector"><svg class="i"><use href="#u-x"/></svg></button></div><div class="ib2" id="inspB"></div></aside>
     <div class="stage" id="stage" data-g="13"><div class="empty-bd">SCHEMAX</div></div>
   </section>
 
@@ -882,6 +972,7 @@ body.gon .app{right:398px}
   <button class="mi" data-act="about" role="menuitem"><svg class="i"><use href="#u-info"/></svg><span>About Schemax Schematics<small>Version, quick support</small></span></button>
   <button class="mi" data-act="site" role="menuitem"><svg class="i"><use href="#u-globe"/></svg><span>Schemax Schematics website</span></button>
   <button class="mi" data-act="net" role="menuitem"><svg class="i"><use href="#u-wifi"/></svg><span>Check my connection</span></button>
+  <button class="mi" id="guideMi" role="menuitem"><svg class="i"><use href="#u-pin"/></svg><span>Placement guide<small>Where every option lives, and why</small></span></button>
   <hr>
   <button class="mi" data-act="keys" role="menuitem"><svg class="i"><use href="#u-kb"/></svg><span>Keyboard shortcuts</span><kbd>?</kbd></button>
   <button class="mi" data-act="langhelp" role="menuitem"><svg class="i"><use href="#u-lang"/></svg><span>Language help &amp; wording fixes<small>Opens WhatsApp</small></span></button>
@@ -939,10 +1030,10 @@ const restricted = () => !!A().trial;
 
 /* =============================== library =============================== */
 const F = (name, children) => ({name, children}), f = name => ({name});
+const Fr = (name, children) => ({name, children, free: true});   // models every plan can open (trial / free)
 const LIB = [
-  F('Free - Trail Users', [F('iPhone 7', [f('iPhone 7.pcb'), f('iPhone 7 Schematic.pdf')]), F('Redmi 9', [f('Redmi 9.pcb'), f('Redmi 9 Schematic.pdf')]), F('Galaxy A10', [f('SM-A105F.brd'), f('SM-A105F Schematic.pdf')])]),
-  F('[Beginner] Mobile Repair Basics', [f('Multimeter Basics.pdf'), f('Reading a Schematic.pdf'), f('Diode Mode Values.pdf'), f('Practice Board.pcb')]),
   F('1. Apple', [
+    Fr('iPhone 7', [f('iPhone 7.pcb'), f('iPhone 7 Schematic.pdf')]),
     F('iPhone 11', [f('iPhone 11.pcb'), f('iPhone 11 Schematic.pdf')]),
     F('iPhone 12_12Pro', [F('Hardware Solutions', [f('iPhone 12 HS No Power.w2re'), f('iPhone 12 HS No Charging.w2re')]), f('iPhone 12_12Pro.pcb'), f('iPhone 12_12Pro.bvr'), f('iPhone 12_12Pro Schematic.pdf'), f('readme.txt')]),
     F('iPhone 13mini', [f('iPhone 13mini.pcb'), f('iPhone 13mini Schematic.pdf')]),
@@ -951,11 +1042,12 @@ const LIB = [
     F('iPhone 15_15 Plus', [f('iPhone 15_15 Plus.xzz'), f('iPhone 15_15 Plus Schematic.pdf')]),
     F('iPhone 16pro_Max', [f('iPhone 16pro_Max.pcb'), f('iPhone 16pro_Max Schematic.pdf')])]),
   F('2. Samsung', [
+    Fr('Galaxy A10', [f('SM-A105F.brd'), f('SM-A105F Schematic.pdf')]),
     F('Galaxy A15 5G', [f('SM-A156B.brd'), f('SM-A156B Schematic.pdf')]),
     F('Galaxy A55', [f('SM-A556E.pcb'), f('SM-A556E Schematic.pdf')]),
     F('Galaxy S23 Ultra', [F('Hardware Solutions', [f('S23 Ultra HS No Display.w2re')]), f('SM-S918B.pcb'), f('SM-S918B Schematic.pdf'), f('notes.txt')]),
     F('Galaxy S24', [f('SM-S921B.pcb'), f('SM-S921B Schematic.pdf')])]),
-  F('3. Xiaomi', [F('Redmi Note 12', [f('Redmi Note 12.cad'), f('Redmi Note 12 Schematic.pdf')]), F('Redmi Note 13', [f('Redmi Note 13.cad'), f('Redmi Note 13 Schematic.pdf')]), F('Poco X6 Pro', [f('Poco X6 Pro.pcb')])]),
+  F('3. Xiaomi', [Fr('Redmi 9', [f('Redmi 9.pcb'), f('Redmi 9 Schematic.pdf')]), F('Redmi Note 12', [f('Redmi Note 12.cad'), f('Redmi Note 12 Schematic.pdf')]), F('Redmi Note 13', [f('Redmi Note 13.cad'), f('Redmi Note 13 Schematic.pdf')]), F('Poco X6 Pro', [f('Poco X6 Pro.pcb')])]),
   F('4. OnePlus', [F('OnePlus 11R', [f('OnePlus 11R.bvr'), f('OnePlus 11R Schematic.pdf')]), F('OnePlus 12', [f('OnePlus 12.bvr'), f('OnePlus 12 Schematic.pdf')]), F('Nord CE 3', [f('Nord CE 3.pcb')])]),
   F('5. Oppo', [F('Reno 11', [f('Reno 11.pcb'), f('Reno 11 Schematic.pdf')]), F('A78 5G', [f('A78 5G.pcb')])]),
   F('6. Vivo', [F('V30', [f('V30.pcb'), f('V30 Schematic.pdf')]), F('Y36', [f('Y36 Schematic.pdf')])]),
@@ -986,7 +1078,8 @@ const rk = n => isFreeRoot(n) ? 0 : isBeg(n) ? 1 : 2;   // order: Free → Begin
 const ROOTS1 = [...ROOTS0].sort((a, b) => rk(a.n) - rk(b.n) || coll.compare(a.n.name, b.n.name));
 const roots = () => ROOTS1;
 const rootOf = w => { while (w.parent) w = w.parent; return w; };
-const locked = w => restricted() && !isFreeRoot(rootOf(w).n);
+const isFree = w => { for (let x = w; x; x = x.parent) if (x.n.free) return true; return false; };
+const locked = w => restricted() && !isFree(w);
 const sibs = w => w.parent ? w.parent.kids : roots();
 const CAT = {Apple:'#8b95a7', Samsung:'#2f6fe4', Xiaomi:'#ff6a00', OnePlus:'#e8323c', Oppo:'#1a9f68', Vivo:'#4a5cf0', Realme:'#d9a400', Motorola:'#6a4fd8', Google:'#2f86f0', Honor:'#0aa2c0'};
 const colorOf = w => { const n = rootOf(w).n; return isBeg(n) ? '#16a34a' : isFreeRoot(n) ? '#12a39b' : CAT[n.name.replace(/^\d+\.\s*/, '')] || '#12a39b'; };
@@ -997,7 +1090,7 @@ const T = {open: new Set(), sel: null, hits: null, term: '', tfs: 13, anim: null
 const treeEl = $('#tree');
 
 function gutter(w, last, flags) {   // design 6: brand-colour lines, round toggles, curved last branch; path to the selection lights up
-  const W = Math.round(T.tfs * 22 / 13), H = T.tfs + 15, d = w.depth, Y = Math.round(H / 2) + .5, cx = j => j * W + Math.floor(W / 2) + .5;
+  const W = Math.round(T.tfs * 16 / 13), H = T.tfs + 15, d = w.depth, Y = Math.round(H / 2) + .5, cx = j => j * W + Math.floor(W / 2) + .5;
   const rr = Math.round(T.tfs * 13 / 13) / 2, cv = Math.round(T.tfs * 8 / 13), k = Math.max(2.5, rr - 3.5);
   const on = x => T.path.has(x.id), pIdx = A => A.kids.findIndex(on), ix = x => x.parent.kids.indexOf(x);
   let s = '', top = '';
@@ -1007,10 +1100,10 @@ function gutter(w, last, flags) {   // design 6: brand-colour lines, round toggl
     if (last) ln(`M${x0} 0V${Y - cv}Q${x0} ${Y} ${x0 + cv} ${Y}H${x1}`, on(w));
     else { ln(`M${x0} 0V${Y}`, pi >= i); ln(`M${x0} ${Y}V${H}`, pi > i); ln(`M${x0} ${Y}H${x1}`, on(w)); } }
   const bx = cx(d);
-  if (w.kids) { const o = T.open.has(w.id);
-    if (d > 0) ln(`M${d * W} ${Y}H${bx - rr}`, on(w));
-    if (o && w.kids.length) ln(`M${bx} ${Y + rr}V${H}`, on(w) && T.sel !== w.id);
-    top += `<g class="bx${o ? ' o' : ''}" data-tog><circle cx="${bx}" cy="${Y}" r="${rr + 2}" fill="transparent"/><circle class="bb" cx="${bx}" cy="${Y}" r="${rr}"/><path class="bi" d="M${bx - k} ${Y}H${bx + k}${o ? '' : `M${bx} ${Y - k}V${Y + k}`}"/></g>`;
+  if (w.kids) { const o = T.open.has(w.id), ie = (d + 1) * W - 3;
+    if (d > 0) ln(`M${d * W} ${Y}H${ie}`, on(w));
+    if (o && w.kids.length) ln(`M${ie} ${Y}H${bx + cv}Q${bx} ${Y} ${bx} ${Y + cv}V${H}`, on(w) && T.sel !== w.id);
+    top += `<g class="bx${o ? ' o' : ''}" data-tog><circle cx="${bx}" cy="${Y}" r="${rr + 2}" fill="transparent"/></g>`;
   } else if (d > 0) { ln(`M${d * W} ${Y}H${d * W + W - 4}`, on(w)); if (T.sel === w.id) top += `<circle class="nd" cx="${d * W + W - 4}" cy="${Y}" r="2.6"/>`; }
   return `<svg class="g" width="${(d + 1) * W}" height="${H}">${s}${top}</svg>`;
 }
@@ -1021,7 +1114,7 @@ function rowHtml(w, last, flags, flat) {
   const g = flat ? `<span style="width:8px;flex:none"></span>` : gutter(w, last, flags), c = colorOf(w);
   const fc = w.kids ? ` style="--ff:${c};--fo:color-mix(in srgb,${c} 75%,#fff);--fb:color-mix(in srgb,${c} 65%,#000)"` : '';
   const an = !flat && T.anim && w.parent && w.parent.id === T.anim ? ` in" style="--bc:${c};--k:${T.k++}` : `" style="--bc:${c}`;
-  return `<div class="row${w.depth === 0 ? ' root' : ''}${T.sel === w.id ? ' sel' + (T.nw ? ' nw' : '') : ''}${an}" role="treeitem" id="tr${w.id}" data-id="${w.id}" aria-level="${w.depth + 1}"${w.kids ? ` aria-expanded="${o}"` : ''} aria-selected="${T.sel === w.id}">${g}<span class="it"><svg class="ico"${fc}><use href="#${iconOf(w, o)}"/></svg><span class="nm">${mark(nm)}</span>${hasDot(w.n) ? '<i class="hd" title="Hardware solution available"></i>' : ''}${T.sel === w.id && !w.kids ? '<span class="ent" title="Press Enter to open">↵ Open</span>' : ''}</span>${flat ? `<span class="pth">${esc(pathOf(w))}</span>` : (!w.kids && locked(w) ? `<span class="lk" title="Pro">${U('u-lock')}</span>` : '')}</div>`;
+  return `<div class="row${w.depth === 0 ? ' root' : ''}${T.sel === w.id ? ' sel' + (T.nw ? ' nw' : '') : ''}${an}" role="treeitem" id="tr${w.id}" data-id="${w.id}" aria-level="${w.depth + 1}"${w.kids ? ` aria-expanded="${o}"` : ''} aria-selected="${T.sel === w.id}">${g}<span class="it"><svg class="ico"${fc}><use href="#${iconOf(w, o)}"/></svg><span class="nm">${mark(nm)}</span>${w.n.free && restricted() ? '<i class="fr">FREE</i>' : ''}${hasDot(w.n) ? '<i class="hd" title="Hardware solution available"></i>' : ''}${T.sel === w.id && !w.kids ? '<span class="ent" title="Press Enter to open">↵ Open</span>' : ''}</span>${flat ? `<span class="pth">${esc(pathOf(w))}</span>` : (!w.kids && locked(w) ? `<span class="lk" title="Pro">${U('u-lock')}</span>` : '')}</div>`;
 }
 let VIS = [];
 function renderTree() {
@@ -1105,16 +1198,16 @@ $('#grip').addEventListener('pointerdown', e => {
   addEventListener('pointermove', mv); addEventListener('pointerup', up); });
 
 /* =============================== tabs & lanes =============================== */
-const S = {tabs: [{id: 'home', kind: 'home', lane: 'pdf', name: 'Home'}], cur: 'home', mru: ['home'], view: 'single', swapped: false};
+const S = {tabs: [{id: 'home', kind: 'home', lane: 'pdf', name: 'Home'}], cur: 'home', mru: ['home'], view: 'single', swapped: false, fold: {}};
 const stage = $('#stage'), panes = new Map();
 const laneOf = k => k === 'pcb' ? 'pcb' : 'pdf';
 const realPdf = () => S.tabs.filter(t => t.kind === 'pdf');
 const pcbs = () => S.tabs.filter(t => t.kind === 'pcb');
 const tabIcon = t => t.kind === 'home' ? U('u-home', 'ti i') : t.kind === 'tool' ? `<svg class="ti i" style="color:var(--accent-text)"><use href="#${t.icon}"/></svg>` : `<svg class="ti"><use href="#${t.kind === 'pdf' ? 'i-pdf' : t.kind === 'hs' ? 'i-hw' : 'i-pcb'}"/></svg>`;
 function renderTabs() {
-  const g = (k, label, list) => list.length ? `<span class="lane ${k}"><b>${label}</b><i>${list.length}/10</i></span>` + list.map(tabHtml).join('') : '';
+  const g = (k, label, list) => list.length ? `<div class="tgp ${k}${S.fold[k] ? ' shut' : ''}"><button class="glab" data-grp="${k}" data-tip="${label} tabs · ${list.length} of ${k === 'tool' ? 'any' : 10}|${S.fold[k] ? 'Click to show them' : 'Click to fold them away'}">${label}<span class="ct">· ${list.length}</span></button><div class="gt">${list.map(tabHtml).join('')}</div></div>` : '';
   const shown = shownPanes().map(t => t.id);
-  const tabHtml = t => `<div class="tab${t.id === S.cur ? ' on' : ''}${shown.includes(t.id) ? ' inpane' : ''}${t.kind === 'home' ? ' home' : ''}" role="tab" aria-selected="${t.id === S.cur}" data-tab="${t.id}" title="${esc(t.name)}">${tabIcon(t)}${t.kind === 'home' ? '' : `<span>${esc(t.name)}</span><button class="tx" data-close="${t.id}" aria-label="Close ${esc(t.name)}">${U('u-x')}</button>`}</div>`;
+  const tabHtml = t => `<div class="tab${t.id === S.cur ? ' on' : ''}${shown.includes(t.id) ? ' inpane' : ''}${t.kind === 'home' ? ' home' : ''}" role="tab" aria-selected="${t.id === S.cur}" data-tab="${t.id}" title="${esc(t.name)}">${tabIcon(t)}${t.kind === 'home' ? '<span>Home</span>' : `<span>${esc(t.name)}</span><button class="tx" data-close="${t.id}" aria-label="Close ${esc(t.name)}">${U('u-x')}</button>`}</div>`;
   $('#tabs').innerHTML = tabHtml(S.tabs[0]) + g('pdf', 'PDF', S.tabs.filter(t => t.kind === 'pdf' || t.kind === 'hs')) + g('pcb', 'PCB', pcbs()) + g('tool', 'TOOLS', S.tabs.filter(t => t.kind === 'tool'));
   const nP = realPdf().length, nB = pcbs().length;
   const vs = {pdfpcb: !nP && !nB ? 'Open a PDF and a PCB to use split view' : !nP ? 'Open a PDF to use split view' : !nB ? 'Open a PCB to use split view' : '',
@@ -1123,6 +1216,7 @@ function renderTabs() {
   $('#swapBtn').classList.toggle('on', S.view !== 'single');
   $('#sbTabs').textContent = `${nP} PDF · ${nB} PCB open`;
   $('#tabs .tab.on')?.scrollIntoView({block: 'nearest', inline: 'nearest'});
+  if ($('#insp')?.classList.contains('on')) drawInsp();
 }
 function shownPanes() {
   const cur = S.tabs.find(t => t.id === S.cur);
@@ -1153,7 +1247,8 @@ function closeTab(id) {
   if (S.cur === id) S.cur = S.mru[0] || 'home';
   renderTabs(); renderStage(); placeGuide();
 }
-$('#tabs').addEventListener('click', e => { const c = e.target.closest('[data-close]'); if (c) { e.stopPropagation(); return closeTab(c.dataset.close); }
+$('#tabs').addEventListener('click', e => { const gb = e.target.closest('[data-grp]'); if (gb) { const k = gb.dataset.grp; S.fold[k] = !S.fold[k]; $('#tip').classList.remove('on'); return renderTabs(); }
+  const c = e.target.closest('[data-close]'); if (c) { e.stopPropagation(); return closeTab(c.dataset.close); }
   const t = e.target.closest('[data-tab]'); if (t) activate(t.dataset.tab); });
 $('#tabs').addEventListener('auxclick', e => { const t = e.target.closest('[data-tab]'); if (e.button === 1 && t) closeTab(t.dataset.tab); });
 $('#vsw').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return;
@@ -1180,38 +1275,32 @@ function openFile(w) {
   loader(w, k, () => { const t = {id: 't' + w.id, key: w.id, kind: k, name: base(w.n.name), w}; S.tabs.push(t); activate(t.id); placeGuide();
     if (acct !== 'premium' && A().trial.today > 0) { A().trial.today--; applyAcct(); } });
 }
-function loader(w, k, done) {   // chip-core loader: squircle progress ring, circuit traces light up, 4 live stages
+function loader(w, k, done) {   // Comet loader: two comets race round the file icon inside a filling ring
   const meta = {pdf: ['Schematic', 'var(--red)', 'i-pdf'], pcb: ['Boardview', 'var(--copper)', 'i-pcb'], hs: ['Hardware Solution', 'var(--ok)', 'i-hw']}[k];
   const size = +(2 + (w.id * 7919 % 140) / 10).toFixed(1);
-  const ST = ['Connect', 'Download', 'Verify', 'Open'], CUT = [0, 8, 86, 96, 100];
-  const TR = [[66, 10, 66, -6], [111, 21, 124, 8], [122, 66, 138, 66], [111, 111, 124, 124], [66, 122, 66, 138], [21, 111, 8, 124], [10, 66, -6, 66], [21, 21, 8, 8]];
-  const trc = TR.map(([x0, y0, x1, y1]) => `<g><path d="M${x0} ${y0}L${x1} ${y1}"/><circle cx="${x1}" cy="${y1}" r="3.2"/></g>`).join('');
+  const comet = (rr, d, rev) => `<g class="cm"><animateTransform attributeName="transform" type="rotate" from="${rev ? 360 : 0} 62 62" to="${rev ? 0 : 360} 62 62" dur="${d}" repeatCount="indefinite"/>${Array.from({length: 11}, (_, j) => { const a = (rev ? j : -j) * 5 * Math.PI / 180 - Math.PI / 2; return `<circle class="dot" cx="${(62 + Math.cos(a) * rr).toFixed(1)}" cy="${(62 + Math.sin(a) * rr).toFixed(1)}" r="${(4.6 * (1 - j / 13)).toFixed(2)}" opacity="${(1 - j / 11).toFixed(2)}"/>`; }).join('')}</g>`;
   const sc = document.createElement('div'); sc.className = 'scrim local on'; sc.style.zIndex = 20;
-  sc.innerHTML = `<div class="ldx" style="--c:${meta[1]}" role="dialog" aria-label="Loading ${esc(base(w.n.name))}">
-    
-    <div class="core"><svg class="rg" viewBox="0 0 132 132"><g class="tr">${trc}</g>
-        <rect class="trk" x="10" y="10" width="112" height="112" rx="38"/><rect class="prg" x="10" y="10" width="112" height="112" rx="38" pathLength="100"/><rect class="run" x="10" y="10" width="112" height="112" rx="38" pathLength="100"/></svg>
-      <div class="chipc"><svg><use href="#${meta[2]}"/></svg><div class="chk"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div></div></div>
-    <div class="info"><div class="eb"><i></i><span class="sl">${meta[0]} · Connecting</span></div><h3 title="${esc(w.n.name)}">${esc(base(w.n.name))}</h3>
+  sc.innerHTML = `<div class="lcm" style="--c:${meta[1]}" role="dialog" aria-label="Loading ${esc(base(w.n.name))}">
+    <div class="vis"><svg viewBox="0 0 124 124"><circle class="pa0" cx="62" cy="62" r="50"/><circle class="pa" cx="62" cy="62" r="50" pathLength="100"/><circle class="ln" cx="62" cy="62" r="36"/>${comet(50, '1.8s')}${comet(36, '2.6s', 1)}</svg>
+      <span class="ic"><svg><use href="#${meta[2]}"/></svg><span class="chk"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span></span></div>
+    <div class="oi"><div class="eb"><i></i><span class="sl"><span class="kd">${meta[0]}</span></span></div><h3 title="${esc(w.n.name)}">${esc(base(w.n.name))}</h3>
       <div class="pct"><span class="n">0</span><small>%</small></div>
-      <div class="steps">${ST.map(t => `<span><b></b><em>${t}</em></span>`).join('')}</div>
-      <div class="ft"><span><span class="mb">0.0 / ${size} MB</span> · <span class="sp">— MB/s</span></span><button class="cn" title="Cancel · Esc">Cancel</button></div></div></div>`;
+      <div class="one"><div class="ol"><span class="ot">Downloading<i class="dts"></i></span><span class="om">0.0 / ${size} MB</span></div><div class="ob"><i></i><b></b></div></div>
+      <div class="pfoot"><span><span class="eta">… left</span> · <span class="sp">— MB/s</span></span><button class="cn" title="Cancel · Esc">Cancel</button></div></div></div>`;
   stage.appendChild(sc);
-  const card = $('.ldx', sc), steps = [...card.querySelectorAll('.steps span')], gs = [...card.querySelectorAll('.tr g')];
+  const card = $('.lcm', sc);
   $('#sbDl').classList.add('on'); $('#sbDlT').textContent = 'Fetching ' + base(w.n.name);
   let p = 0, dead = false;
   const paint = () => {
-    $('.prg', card).style.strokeDashoffset = 100 - p; $('.n', card).textContent = Math.round(p); $('#sbDlM').style.width = p + '%';
-    const si = Math.max(0, Math.min(3, CUT.findIndex((c, i) => i < 4 && p < CUT[i + 1])));
-    steps.forEach((el, i) => { const f = Math.max(0, Math.min(1, (p - CUT[i]) / (CUT[i + 1] - CUT[i]))); el.style.setProperty('--f', f * 100 + '%');
-      el.classList.toggle('ok', f >= 1); el.classList.toggle('cur', i === si && f < 1); });
-    gs.forEach((g, i) => g.classList.toggle('on', p >= (i + 1) * 12));
-    $('.sl', card).innerHTML = `<span class="kd">${meta[0]}</span> · ${p >= 100 ? 'Ready' : ['Connecting', 'Downloading', 'Verifying', 'Opening'][si]}`;
-    $('.mb', card).textContent = `${(size * p / 100).toFixed(1)} / ${size} MB`;
-    if (p > 8 && p < 100) $('.sp', card).textContent = `${(6 + Math.random() * 9).toFixed(1)} MB/s`;
+    $('.pa', card).style.strokeDashoffset = 100 - p; $('.n', card).textContent = Math.round(p); $('#sbDlM').style.width = p + '%';
+    $('.ob', card).style.setProperty('--p', p);
+    const mb = size * p / 100, spd = 6 + Math.random() * 9;
+    $('.ot', card).firstChild.textContent = p >= 100 ? 'Downloaded' : 'Downloading';
+    $('.om', card).textContent = p >= 100 ? 'Opening…' : `${mb.toFixed(1)} / ${size} MB`;
+    if (p > 8 && p < 100) { $('.sp', card).textContent = `${spd.toFixed(1)} MB/s`; $('.eta', card).textContent = `${Math.max(1, Math.ceil((size - mb) / spd))} s left`; }
   };
   const iv = setInterval(() => { p = Math.min(100, p + (p < 8 ? 3 : 5 + Math.random() * 9)); paint();
-    if (p >= 100) { clearInterval(iv); card.classList.add('done'); $('.sp', card).textContent = 'Done'; setTimeout(fin, 520); } }, 90);
+    if (p >= 100) { clearInterval(iv); card.classList.add('done'); $('.sp', card).textContent = 'Done'; $('.eta', card).textContent = '0 s left'; setTimeout(fin, 620); } }, 90);
   const onKey = e => { if (e.key === 'Escape') { e.stopPropagation(); cancel(); } };
   const close = () => { document.removeEventListener('keydown', onKey, true); card.classList.add('out'); setTimeout(() => sc.remove(), 300); $('#sbDl').classList.remove('on'); $('#sbDlM').style.width = 0; };
   const fin = () => { if (dead) return; dead = true; close(); done(); };
@@ -1345,11 +1434,19 @@ function applyAcct() {
   $('#plL').textContent = $('#plP').textContent = pl; $('#kvPlan').textContent = a.plan;
   $('#kvExp').innerHTML = a.days < 0 ? 'N/A' : `${a.exp}<em class="${s}">· ${a.days === 0 ? 'Expired' : a.days + ' day' + (a.days === 1 ? '' : 's') + ' left'}</em>`;
   $('#renewBtn span').textContent = a.trial ? 'Buy Pro' : 'Renew plan';
+  $('#splT').textContent = a.days < 0 ? `${a.plan} · no expiry` : `${a.plan} · until ${a.exp}`;
+  $('#splD').textContent = a.days < 0 ? 'Active' : a.days === 0 ? 'Expired' : `${a.days} day${a.days === 1 ? '' : 's'} left`;
+  $('#splM').style.width = (a.days < 0 ? 100 : Math.max(3, Math.min(100, a.days / 90 * 100))) + '%';
+  $('#splBtn').textContent = a.trial ? 'Buy Pro' : 'Renew plan';
+  $('#splan').classList.toggle('warn', a.days >= 0 && a.days <= 7);
+  $('#smeAv').textContent = $('#rfAv').textContent = $('#avP').textContent; $('#smeN').textContent = $('#unP').textContent;
+  $('#smeS').textContent = a.days < 0 ? `● ${a.plan} · active` : a.days === 0 ? '● Expired' : `● ${a.days} day${a.days === 1 ? '' : 's'} left`;
+  $('#sme').className = 'sme ' + sev(a.days);
   const al = $('#allow'), au = $('#acctUse');
   if (a.trial) { const t = a.trial, c = t.today <= 2 ? 'var(--amber)' : 'var(--ok)';
     const body = `<div class="r"><span>Downloads today</span><b>${t.today} of ${t.day} left</b></div><div class="m" style="--c:${c}"><i style="width:${t.today / t.day * 100}%"></i></div>` +
       (t.total ? `<div class="r"><span>Trial total</span><b>${t.left} of ${t.total} left</b></div><div class="m" style="--c:${t.left <= 5 ? 'var(--amber)' : 'var(--ok)'}"><i style="width:${t.left / t.total * 100}%"></i></div>` : '');
-    al.innerHTML = body + `<div class="r" style="margin:0 0 6px"><span>${t.kind === 'free' ? 'Free plan: files in "Free - Trail Users"' : 'Trial: files in "Free - Trail Users"'}</span></div><button class="up" id="allowUp">Unlock every file</button>`;
+    al.innerHTML = body + `<div class="r" style="margin:0 0 6px"><span>${t.kind === 'free' ? 'Free plan: models marked FREE' : 'Trial: models marked FREE'}</span></div><button class="up" id="allowUp">Unlock every file</button>`;
     al.classList.add('on'); au.innerHTML = body.replace(/<div class="r">/g, '<div class="r" style="display:flex;justify-content:space-between;font-size:12px;color:var(--text-2)">');
     $('#allowUp').onclick = openPlans; }
   else { al.classList.remove('on'); au.innerHTML = ''; }
@@ -1357,14 +1454,16 @@ function applyAcct() {
   renderTree();
   const hp = panes.get('home'); if (hp) { hp.remove(); panes.delete('home'); renderStage(); }
 }
-$$('#acctSeg button').forEach(b => b.onclick = () => { acct = b.dataset.acct; $$('#acctSeg button').forEach(x => x.setAttribute('aria-pressed', x === b)); applyAcct(); placeGuide(); });
+$$('#acctSeg button').forEach(b => b.onclick = () => { acct = b.dataset.acct; $$('#acctSeg button').forEach(x => x.setAttribute('aria-pressed', x === b)); applyAcct(); renderTree(); placeGuide(); });
 
 /* popovers */
 let openPop = null;
 function pop(el, anchor, align = 'right') {
   if (openPop === el) return closePop();
   closePop(); const r = anchor.getBoundingClientRect(); el.classList.add('on');
-  el.style.top = r.bottom + 8 + 'px'; el.style.left = Math.max(8, align === 'right' ? r.right - el.offsetWidth : r.left) + 'px';
+  if (anchor.closest('.rail')) { el.style.top = Math.max(8, Math.min(innerHeight - el.offsetHeight - 8, r.bottom - el.offsetHeight)) + 'px'; el.style.left = r.right + 10 + 'px'; anchor.setAttribute('aria-expanded', 'true'); openPop = el; el._a = anchor; return; }
+  const up = r.bottom + 8 + el.offsetHeight > innerHeight - 8;
+  el.style.top = Math.max(8, up ? r.top - el.offsetHeight - 8 : r.bottom + 8) + 'px'; el.style.left = Math.min(innerWidth - el.offsetWidth - 8, Math.max(8, align === 'right' ? r.right - el.offsetWidth : r.left)) + 'px';
   anchor.setAttribute('aria-expanded', 'true'); openPop = el; el._a = anchor;
 }
 function closePop() { if (!openPop) return; openPop.classList.remove('on'); openPop._a?.setAttribute('aria-expanded', 'false'); openPop = null; }
@@ -1372,6 +1471,15 @@ document.addEventListener('pointerdown', e => { if (openPop && !openPop.contains
 $('#helpBtn').onclick = () => pop($('#helpPop'), $('#helpBtn'));
 $('#chipBtn').onclick = () => pop($('#acctPop'), $('#chipBtn'));
 $('#planBtn').onclick = () => pop($('#acctPop'), $('#planBtn'));
+$('#sme').onclick = () => pop($('#acctPop'), $('#sme'), 'left');
+$('#sftHelp').onclick = () => pop($('#helpPop'), $('#sftHelp'), 'left');
+$('#sftSet').onclick = () => openSettings();
+$('#rfSet').onclick = () => openSettings();
+$('#rfHelp').onclick = () => pop($('#helpPop'), $('#rfHelp'), 'left');
+$('#rfTheme').onclick = () => $('#themeBtn').click();
+$('#rfMe').onclick = () => pop($('#acctPop'), $('#rfMe'));
+$('#sftTheme').onclick = () => $('#themeBtn').click();
+$('#splBtn').onclick = () => openPlans();
 $('#tbNet').onclick = () => $('#netBtn').click();
 $('#acctX').onclick = closePop;
 $('#autoSw').onclick = e => { const b = e.currentTarget, v = b.getAttribute('aria-checked') !== 'true'; b.setAttribute('aria-checked', v); toast(v ? 'Auto login on' : 'Auto login off', 'u-check'); };
@@ -1408,7 +1516,7 @@ function keyDialog() {
 function premiumCard(w) {
   const a = A();
   modal({eb: 'Pro', c: 'var(--copper)', title: 'This file is included with Pro',
-    body: `<b>${esc(base(w.n.name))}</b><br>Your ${a.trial.kind === 'free' ? 'Free plan' : 'free trial'} can open the files in the "Free - Trail Users" folder. Buy Pro to access every file.`, col: 1,
+    body: `<b>${esc(base(w.n.name))}</b><br>Your ${a.trial.kind === 'free' ? 'Free plan' : 'free trial'} can open the models marked FREE (iPhone 7, Galaxy A10, Redmi 9). Buy Pro to access every file.`, col: 1,
     btns: [['Buy Pro', 'pri', openPlans], ['Buy on WhatsApp', 'wa', () => toast('Opens WhatsApp: "Hi, I want to buy Schemax Pro" (demo)', 'u-wa')], ['Enter Activation Key', 'ghost', () => setTimeout(keyDialog, 220)]]});
 }
 
@@ -1445,7 +1553,7 @@ function setBody() {
       <div class="grp"><small>ANIMATION</small>${opt('Smooth jump to search results & pages', '', swc('pdfFly', SET.pdfFly))}</div>`],
     ptheme: ['PCB Theme', `${pcbOpen ? '' : `<div class="opt" style="background:var(--copper-soft);box-shadow:none"><div class="tx"><b style="color:var(--copper)">No PCB file open</b><span>Themes apply to the active board. Open a PCB to preview them.</span></div></div>`}
       <div class="grp"><small>APPLY THEME</small><div class="themes">${PTHEMES.map(([n, bg, fg, user]) => `<div class="th" role="radio" data-pth="${n}" aria-checked="${SET.theme === n}"><div class="pv" style="background:${bg}"><svg viewBox="0 0 120 56" style="position:absolute;inset:0"><path d="M10 40h30l10-12h40M20 14h50l10 10h30" stroke="${fg}" stroke-width="2" fill="none"/><rect x="72" y="30" width="18" height="14" rx="2" fill="${fg}" opacity=".8"/></svg></div><div class="ac">${n}<span>${user ? `<button data-del="${n}" aria-label="Delete ${n}">${U('u-x')}</button>` : 'Built-in'}</span></div></div>`).join('')}</div></div>
-      <div class="grp" style="display:flex;gap:8px;margin-top:14px"><button class="btn pri" data-newtheme>+ Create new theme</button><button class="btn" data-newtheme>Edit selected theme</button></div>`],
+      <div class="grp" style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap"><button class="btn pri" data-newtheme>+ Create new theme</button><button class="btn" data-newtheme>Edit selected theme</button><span style="flex:1"></span><button class="btn" data-preview><svg class="i" style="width:15px;height:15px"><use href="#u-board"/></svg>Preview</button></div>`],
     lang: ['Language', `<div class="grp"><small>APP LANGUAGE · RESTART NEEDED</small><div class="langs">${LANGS.map(l => radio('lang', l, SET.lang, l, '')).join('')}</div></div>
       <div class="grp"><small>HELP US TRANSLATE</small>${opt('Suggest a wording fix', 'Opens WhatsApp with a ready template', '<button class="btn" data-act2="langhelp">Suggest</button>')}</div>`],
   };
@@ -1467,16 +1575,51 @@ function openSettings(tab) {
     const tf = e.target.closest('[data-tf]'); if (tf && !tf.disabled) { const d = +tf.dataset.tf; setTf(d ? T.tfs + d : 13); drawSet(); }
     const del = e.target.closest('[data-del]'); if (del) { e.stopPropagation(); toast(`Delete theme "${del.dataset.del}"? asks to confirm first (demo)`, 'u-palette'); return; }
     const th = e.target.closest('[data-pth]'); if (th) { if (!pcbs().length) return toast('Please open a PCB file first.', 'u-palette'); SET.theme = th.dataset.pth; drawSet(); }
+    if (e.target.closest('[data-preview]')) { closeModal(); setTimeout(openInsp, 180); return; }
     if (e.target.closest('[data-newtheme]')) toast(pcbs().length ? 'Opens the PCB theme editor' : 'Please open a PCB file first.', 'u-palette');
     if (e.target.closest('[data-act2]')) act('langhelp');
   });
 }
+/* PCB inspector: board, theme swatches, viewer options, animation (no account details) */
+const INS = {sec: {board: true, theme: true, viewer: true, anim: false}};
+function insHtml() {
+  const t = S.tabs.find(x => x.id === S.cur && x.kind === 'pcb') || pcbs()[0];
+  const sec = (k, title, body) => `<button class="sh2" data-isec="${k}" aria-expanded="${INS.sec[k]}">${U('u-chev')}${title}</button><div class="sec${INS.sec[k] ? '' : ' shut'}"><div>${body}</div></div>`;
+  const sw = (k, v, dis) => `<button class="sw" role="switch" data-isw="${k}" aria-checked="${v}"${dis ? ' disabled' : ''}></button>`;
+  const cur = PTHEMES.find(x => x[0] === SET.theme) || PTHEMES[0];
+  const nets = t ? (900 + (t.key || 7) * 37 % 900).toLocaleString('en-US') : 0;
+  return sec('board', 'BOARD', t ? `<div class="ihead"><svg><use href="#i-pcb"/></svg><div><b>${esc(t.name)}</b><small>.${esc(ext(t.w?.n.name || 'x.pcb'))} · ${nets} nets · Top</small></div></div>`
+      : `<div class="ihead none">${U('u-board')}<div><b>No PCB file open</b><small>Open a boardview to apply a theme</small></div></div>`)
+    + sec('theme', 'PCB THEME', `<div class="sws">${PTHEMES.map(([n, bg, fg]) => `<button class="swt" data-ith="${n}" aria-pressed="${SET.theme === n}" data-tip="${n}|${PTHEMES.find(x => x[0] === n)[3] ? 'Custom theme' : 'Built-in theme'}" style="--c:${bg};--f:${fg}"></button>`).join('')}</div>
+      <div class="thn"><b>${cur[0]}</b> · ${cur[3] ? 'custom' : 'built-in'}</div>
+      <div class="ia"><button data-iact="new">+ New</button><button data-iact="edit">Edit</button><button class="del" data-iact="del"${cur[3] ? '' : ' disabled title="Built-in themes cannot be deleted"'}>Delete</button></div>`)
+    + sec('viewer', 'PCB VIEWER', `<div class="irow">Info card on hover ${sw('pcbHover', SET.pcbHover)}</div><div class="irow">Panning</div>
+      <div class="iseg" role="group" aria-label="Panning"><button data-ipan="floating" aria-pressed="${SET.pcbPan === 'floating'}">Floating</button><button data-ipan="standard" aria-pressed="${SET.pcbPan === 'standard'}">Standard</button></div>`)
+    + sec('anim', 'ANIMATION', `<div class="irow"><b>Animations</b>${sw('anim', SET.anim)}</div>${ANIMS.map((n, i) => `<div class="irow${SET.anim ? '' : ' dis'}">${n}${sw('a' + i, SET.a[i], !SET.anim)}</div>`).join('')}`)
+    + `<div class="pvb"><span>Changes apply instantly</span><button class="btn ghost" data-iact="all" style="height:28px;font-size:12px">All settings</button></div>`;
+}
+function drawInsp() { $('#inspB').innerHTML = insHtml(); }
+function openInsp() { closePop(); drawInsp(); $('#insp').classList.add('on'); }
+function closeInsp() { $('#insp').classList.remove('on'); }
+$('#inspX').onclick = closeInsp;
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && $('#insp').classList.contains('on') && !scrim.classList.contains('on')) closeInsp(); });
+$('#inspB').addEventListener('click', e => {
+  const sh = e.target.closest('[data-isec]'); if (sh) { const k = sh.dataset.isec; INS.sec[k] = !INS.sec[k]; sh.setAttribute('aria-expanded', INS.sec[k]); sh.nextElementSibling.classList.toggle('shut', !INS.sec[k]); return; }
+  const th = e.target.closest('[data-ith]'); if (th) { if (!pcbs().length) return toast('Please open a PCB file first.', 'u-palette'); SET.theme = th.dataset.ith; drawInsp(); return toast(`PCB theme: ${SET.theme}`, 'u-palette'); }
+  const sw = e.target.closest('[data-isw]'); if (sw && !sw.disabled) { const k = sw.dataset.isw; if (k[0] === 'a' && k !== 'anim') SET.a[+k.slice(1)] = !SET.a[+k.slice(1)]; else SET[k] = !SET[k]; return drawInsp(); }
+  const pn = e.target.closest('[data-ipan]'); if (pn) { SET.pcbPan = pn.dataset.ipan; return drawInsp(); }
+  const a = e.target.closest('[data-iact]'); if (!a) return; const k = a.dataset.iact;
+  if (k === 'all') { closeInsp(); return openSettings('ptheme'); }
+  if (!pcbs().length) return toast('Please open a PCB file first.', 'u-palette');
+  if (k === 'new' || k === 'edit') toast('Opens the PCB theme editor', 'u-palette');
+  if (k === 'del' && !a.disabled) toast(`Delete theme "${SET.theme}"? asks to confirm first (demo)`, 'u-palette');
+});
 function drawSet() { const [t, b] = setBody(); $('.settings .sch h4').textContent = t; $('.settings .scb').innerHTML = b; }
 function syncSettings() { if (scrim.classList.contains('on') && $('.settings', scrim)) drawSet(); }
 $('#setBtn').onclick = () => openSettings();
 
 /* theme */
-function setTheme(t) { html.dataset.theme = t; $('#themeBtn use').setAttribute('href', t === 'dark' ? '#u-moon' : '#u-sun'); syncSettings(); }
+function setTheme(t) { html.dataset.theme = t; ['#themeBtn', '#sftTheme', '#rfTheme'].forEach(q => $(q + ' use').setAttribute('href', t === 'dark' ? '#u-moon' : '#u-sun')); syncSettings(); }
 $('#themeBtn').onclick = () => setTheme(html.dataset.theme === 'dark' ? 'light' : 'dark');
 
 /* =============================== command palette (Ctrl K) =============================== */
@@ -1558,11 +1701,11 @@ function toast(t, ic = 'u-info') { const el = document.createElement('div'); el.
 const G = [
   ['Brand & drag area', 'Logo and name only. Empty space in the title bar drags the window; double-click maximizes.', 'Same place'],
   ['Search everything', 'One box finds files, tools and settings. Ctrl K from anywhere; files open like a double-click.', 'New — today you must know which menu holds an option'],
-  ['Plan status', 'Days left + downloads left today in one pill. Turns copper at 30 days and red at 7. Click opens Account.', 'Two separate pills that never change colour'],
-  ['Help', 'About, website, Check my connection, keyboard shortcuts, language help.', 'Help menu in the menu bar'],
+  ['Plan card', 'Bottom of the Library: plan, expiry, days left with a bar, and Renew / Buy Pro. Turns amber in the last 7 days.', 'Two separate pills that never change colour'],
+  ['Help', 'About, website, Check my connection, keyboard shortcuts, this Placement guide.', 'Help menu in the menu bar'],
   ['Settings', 'One panel with tabs: Appearance (theme, tree text size), PCB Viewer, PDF Viewer, PCB Theme, Language. Changes apply instantly.', 'Settings menu with 3 levels of fly-out submenus'],
-  ['Theme', 'Sun / moon. Kept next to Settings because it is a setting people flip often.', 'Same place'],
-  ['Account', 'Plan, expiry, auto login, usage, system diagnostics, Renew / Buy, Activation key, My purchases and Log out.', 'Profile card had no actions; Log out was hidden in File'],
+  ['Theme', 'Sun / moon, next to Settings in the Library footer (and on the rail while the Library is closed).', 'Same place'],
+  ['Account', 'Profile chip with the orbit border: plan, expiry, auto login, usage, system diagnostics, Renew / Buy, Activation key, My purchases and Log out.', 'Profile card had no actions; Log out was hidden in File'],
   ['Window controls', 'Minimize, maximize, close. Close = Exit, so the File menu is not needed.', 'File › Exit duplicated Close'],
   ['Activity rail', 'Library, Home and every tool (Chip Finder, RFFE, UART, Panic Logger) one click away. Connection status at the bottom.', 'Tools strip had to be swept open first'],
   ['Library', 'Search (Enter), structured tree, collapse-all, text size in the footer, trial allowance with an upgrade button. Drag the edge to resize, blade to collapse.', 'Same panel, text size was only in Settings'],
@@ -1586,7 +1729,7 @@ function showBox(n) { const el = $(`[data-g="${n}"]`); if (!el || !n) return gbo
   Object.assign(gbox.style, {left: r.left - 3 + 'px', top: r.top - 3 + 'px', width: r.width + 6 + 'px', height: r.height + 6 + 'px'}); gbox.classList.add('on');
   $$('#glist li').forEach(li => li.classList.toggle('hl', li.dataset.gi === n)); }
 function toggleGuide(on) { guideOn = on; document.body.classList.toggle('gon', on); setTimeout(placeGuide, 320); $('#guide').classList.toggle('on', on); $('#guideBtn').setAttribute('aria-pressed', on); placeGuide(); if (!on) gbox.classList.remove('on'); }
-$('#guideBtn').onclick = () => toggleGuide(!guideOn); $('#guideX').onclick = () => toggleGuide(false);
+$('#guideBtn').onclick = () => toggleGuide(!guideOn); $('#guideMi').onclick = () => { closePop(); toggleGuide(!guideOn); }; $('#guideX').onclick = () => toggleGuide(false);
 $('#glist').addEventListener('pointerover', e => { const li = e.target.closest('li'); showBox(li ? li.dataset.gi : null); });
 $('#glist').addEventListener('pointerleave', () => showBox(null));
 document.addEventListener('pointerover', e => { const m = e.target.closest('.gmk'); if (m) { showBox(m.dataset.gi); $(`#glist li[data-gi="${m.dataset.gi}"]`).scrollIntoView({block: 'nearest', behavior: 'smooth'}); } });
@@ -1597,7 +1740,7 @@ side.addEventListener('transitionend', placeGuide);
 window.__demo = {openFile: n => { const w = [...ALL.values()].find(x => x.n.name === n); reveal(w); select(w, true); openFile(w); }, palette, openSettings, toggleGuide, setTheme, act, S, T, ALL};
 new ResizeObserver(() => app.classList.toggle('narrow', app.offsetWidth < 1180)).observe(app);
 setTf(13); applyAcct(); renderTabs(); renderStage();
-T.open.add(ROOTS0[0].id); renderTree();
+renderTree();
 })();
 </script>
 </body>

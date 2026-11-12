@@ -1,0 +1,343 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Profile popup — 10 designs</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#eef2f7;--card:#fff;--pop:#fff;--panel:#f4f7fa;--hair:#e3e8ef;--text:#0e2140;--t2:#5a6a82;--t3:#8f9bb0;--accent:#0d847d;--accent-2:#12a39b;--navy:#0e2140;--ok:#16a34a;--bad:#dc2626;--hover:rgba(14,33,64,.05);--sh:0 1px 2px rgba(14,33,64,.06),0 22px 48px -24px rgba(14,33,64,.45);--mono:'JetBrains Mono',ui-monospace,monospace}
+[data-theme=dark]{--bg:#0b1220;--card:#111a2b;--pop:#141f33;--panel:#1a2740;--hair:#26354f;--text:#e6edf7;--t2:#a7b4c8;--t3:#6f7f99;--hover:rgba(255,255,255,.05);--sh:0 1px 2px rgba(0,0,0,.3),0 22px 48px -24px rgba(0,0,0,.8)}
+*{box-sizing:border-box;margin:0}
+body{font:13px/1.45 Inter,system-ui,sans-serif;background:var(--bg);color:var(--text)}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;text-align:left}
+svg.i{width:16px;height:16px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+
+.top{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 86%,transparent);backdrop-filter:blur(12px);border-bottom:1px solid var(--hair)}
+.top .in{max-width:1200px;margin:auto;padding:14px 24px;display:flex;align-items:center;gap:14px}
+.top h1{font-size:17px}.top p{font-size:12.5px;color:var(--t2)}
+.tbtn{margin-left:auto;height:32px;padding:0 12px;border-radius:9px;background:var(--card);box-shadow:0 0 0 1px var(--hair);font-weight:600;font-size:12.5px}
+main{max-width:1200px;margin:auto;padding:24px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px}
+.opt{background:var(--card);border-radius:18px;box-shadow:var(--sh);padding:16px;display:grid;grid-template-rows:auto 1fr;gap:14px}
+.opt.wide{grid-column:1/-1}
+.meta{display:flex;gap:12px}
+.num{flex:none;height:26px;font:700 13px var(--mono);color:var(--accent);background:color-mix(in srgb,var(--accent) 12%,transparent);border-radius:8px;padding:4px 8px}
+.meta h3{font-size:15px;display:flex;gap:8px;align-items:center}.meta p{font-size:12.5px;color:var(--t2);margin-top:1px}
+.rec{font-size:10.5px;font-weight:700;color:#fff;background:var(--accent);padding:2px 8px;border-radius:99px}
+.stage{display:grid;place-items:center;padding:26px 16px;border-radius:14px;background:radial-gradient(circle at 1px 1px,color-mix(in srgb,var(--t3) 35%,transparent) 1px,transparent 0) 0 0/16px 16px,var(--panel)}
+
+/* ---------- shared popup pieces ---------- */
+.pp{position:relative;width:340px;max-width:100%;background:var(--pop);border-radius:18px;box-shadow:0 0 0 1px var(--hair),0 24px 50px -22px rgba(14,33,64,.5);overflow:hidden}
+.av{flex:none;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,#0e2140,#12a39b);color:#fff;font:800 17px Inter}
+.nm{display:flex;align-items:center;gap:6px;font-weight:700;font-size:15px}
+.cp{width:24px;height:24px;border-radius:7px;display:grid;place-items:center;color:var(--t3)}.cp:hover{background:var(--hover);color:var(--text)}
+.cp svg.i{width:14px;height:14px}
+.pro{display:inline-flex;align-items:center;gap:4px;font:800 10px/1 Inter;letter-spacing:.08em;color:#fff;background:linear-gradient(135deg,#0d847d,#12a39b);padding:4px 7px;border-radius:6px}
+.xb{flex:none;width:30px;height:30px;border-radius:9px;display:grid;place-items:center;color:var(--t2)}.xb:hover{background:var(--hover);color:var(--text)}
+.sub{font-size:12px;color:var(--t2)}
+.ok{color:var(--ok)}
+.rows{display:grid}
+.rw{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:40px;border-bottom:1px solid var(--hair);font-size:13px}
+.rw:last-child{border-bottom:0}
+.rw>span{color:var(--t2);display:flex;align-items:center;gap:8px}.rw>b{font-weight:600;text-align:right}
+.rw small{font-weight:500;color:var(--accent)}
+.sw{position:relative;flex:none;width:40px;height:23px;border-radius:99px;background:var(--hair);transition:background .2s}
+.sw::after{content:"";position:absolute;top:3px;left:3px;width:17px;height:17px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:transform .2s}
+.sw.on{background:var(--accent)}.sw.on::after{transform:translateX(17px)}
+.dg{border-radius:12px;background:var(--panel);box-shadow:inset 0 0 0 1px var(--hair)}
+.dgh{display:flex;align-items:center;gap:8px;width:100%;height:38px;padding:0 12px;font-size:12px;font-weight:600;color:var(--t2)}
+.dgh .ch{margin-left:auto;transition:transform .2s}.dg.open .dgh .ch{transform:rotate(180deg)}
+.dgh .dot{width:7px;height:7px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 3px color-mix(in srgb,var(--ok) 20%,transparent)}
+.dgb{display:none;padding:0 12px 10px;font-size:12px}
+.dg.open .dgb{display:grid;gap:5px;animation:fd .2s}
+@keyframes fd{from{opacity:0;transform:translateY(-4px)}}
+.dgb div{display:flex;justify-content:space-between;color:var(--t2)}.dgb b{font:600 11.5px var(--mono);color:var(--text)}
+.dgb .copyr{justify-self:start;margin-top:4px;font-size:11.5px;font-weight:600;color:var(--accent)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:40px;padding:0 14px;border-radius:11px;font-weight:700;font-size:13px;transition:transform .12s,box-shadow .2s,background .2s}
+.btn:active{transform:scale(.98)}
+.btn.p{background:var(--accent);color:#fff;box-shadow:0 8px 18px -10px rgba(13,132,125,.9)}.btn.p:hover{background:#0b766f}
+.btn.s{background:var(--pop);box-shadow:inset 0 0 0 1px var(--hair)}.btn.s:hover{background:var(--hover)}
+.btns{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.foot{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-top:1px solid var(--hair);background:var(--panel)}
+.lk{display:inline-flex;align-items:center;gap:7px;font-weight:600;font-size:12.5px;color:var(--t2);padding:4px 6px;border-radius:7px}.lk:hover{color:var(--text);background:var(--hover)}
+.lo{color:var(--bad)}.lo:hover{color:var(--bad);background:color-mix(in srgb,var(--bad) 8%,transparent)}
+.body{padding:14px 16px;display:grid;gap:12px}
+
+/* ---------- 01 gradient header ---------- */
+:is(.d1,.d4) .hero{position:relative;height:78px;background:linear-gradient(120deg,#0e2140,#0d847d 70%,#12a39b);overflow:hidden}
+:is(.d1,.d4) .hero::after{content:"";position:absolute;right:-30px;top:-40px;width:150px;height:150px;border-radius:50%;background:rgba(255,255,255,.08)}
+:is(.d1,.d4) .hero .xb{position:absolute;right:10px;top:10px;color:#fff}:is(.d1,.d4) .hero .xb:hover{background:rgba(255,255,255,.15)}
+:is(.d1,.d4) .id{display:flex;align-items:flex-end;gap:12px;margin:-26px 16px 0;position:relative}
+:is(.d1,.d4) .av{width:62px;height:62px;font-size:24px;box-shadow:0 0 0 4px var(--pop)}
+:is(.d1,.d4) .id>div{display:flex;align-items:center;gap:8px;padding-bottom:4px}
+.d1 .tiles{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.tile{padding:10px 12px;border-radius:12px;background:var(--panel);box-shadow:inset 0 0 0 1px var(--hair)}
+.tile span{display:block;font-size:11px;color:var(--t3);font-weight:600}.tile b{display:block;font-size:14px;margin-top:2px}
+.bar{height:5px;border-radius:9px;background:var(--hair);overflow:hidden;margin-top:7px}.bar i{display:block;height:100%;width:80%;border-radius:9px;background:linear-gradient(90deg,#0d847d,#2dd4bf)}
+
+/* ---------- 02 ring ---------- */
+.d2 .xb{position:absolute;right:10px;top:10px}
+.d2 .top2{display:grid;justify-items:center;gap:6px;padding:22px 16px 6px;text-align:center}
+.ring{position:relative;width:96px;height:96px}
+.ring svg{position:absolute;inset:0;transform:rotate(-90deg)}
+.ring .av{position:absolute;inset:12px;width:auto;height:auto;font-size:28px}
+.d2 .days{font-size:12px;color:var(--t2)}.d2 .days b{color:var(--accent);font-size:13px}
+.d2 .chips{display:flex;gap:6px;justify-content:center;flex-wrap:wrap}
+.chip{display:inline-flex;align-items:center;gap:5px;height:24px;padding:0 9px;border-radius:99px;background:var(--panel);box-shadow:inset 0 0 0 1px var(--hair);font-size:11.5px;font-weight:600;color:var(--t2)}
+.chip svg.i{width:13px;height:13px}
+.d2 .btns{grid-template-columns:1fr}
+
+/* ---------- 03 grouped list ---------- */
+.d3{background:var(--panel)}
+.d3 .hd{display:flex;align-items:center;gap:12px;padding:14px 12px 10px 16px}
+.grpb{margin:0 12px 10px;border-radius:13px;background:var(--pop);box-shadow:0 0 0 1px var(--hair);overflow:hidden}
+.li{display:flex;align-items:center;gap:11px;width:100%;min-height:42px;padding:0 12px;font-size:13px;border-bottom:1px solid var(--hair)}
+.li:last-child{border-bottom:0}
+button.li:hover{background:var(--hover)}
+.li .ic{width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff;flex:none}
+.li .ic svg.i{width:15px;height:15px}
+.li .lt{flex:1;color:var(--text)}.li .rt{color:var(--t2);font-weight:600;font-size:12.5px}
+.li .ch{color:var(--t3)}
+.c-teal{background:#0d847d}.c-navy{background:#334a72}.c-blue{background:#2563eb}.c-green{background:#16a34a}.c-amber{background:#d97706}.c-violet{background:#7c3aed}.c-gray{background:#64748b}
+.d3 .li.acc .lt{color:var(--accent);font-weight:700}
+.d3 .logout{justify-content:center;color:var(--bad);font-weight:700}
+.d3 .dgb{padding:2px 12px 10px 51px}
+
+/* ---------- 04 membership card ---------- */
+.d4 .hd{display:flex;align-items:center;gap:12px;padding:14px 12px 4px 16px}
+.mcard{position:relative;margin:14px 16px 0;aspect-ratio:1.72;border-radius:16px;padding:16px;color:#fff;overflow:hidden;background:radial-gradient(circle at 85% 10%,rgba(45,212,191,.55),transparent 45%),linear-gradient(135deg,#0e2140 20%,#0b3b52 60%,#0d847d);box-shadow:0 18px 34px -18px rgba(13,40,80,.8)}
+.mcard::after{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 35%,rgba(255,255,255,.14) 50%,transparent 65%);transform:translateX(-100%);animation:sh 5s ease-in-out infinite}
+@keyframes sh{55%,100%{transform:translateX(100%)}}
+.mcard .brand{display:flex;justify-content:space-between;align-items:center;font:800 12px Inter;letter-spacing:.14em;opacity:.95}
+.mcard .chipc{width:34px;height:25px;border-radius:6px;background:linear-gradient(135deg,#f6d77b,#c89b2c);margin-top:14px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.15)}
+.mcard .mseg{position:absolute;z-index:1;left:16px;right:16px;bottom:54px}
+.mcard .ml{display:flex;justify-content:space-between;font:700 9px Inter;letter-spacing:.12em;color:rgba(255,255,255,.6);margin-bottom:6px}
+.mcard .ml b{color:#99f6e4;font-size:10px}
+.mcard .mq{display:grid;grid-template-columns:repeat(18,1fr);gap:3px;padding:3px;border-radius:8px;background:rgba(0,0,0,.22);box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}
+.mcard .mq i{height:8px;border-radius:3px;background:rgba(255,255,255,.12)}
+.mcard .mq i.f{background:linear-gradient(180deg,#99f6e4,#14b8a6);box-shadow:0 0 6px rgba(45,212,191,.45);animation:segIn .4s ease both}
+.mcard .mq i.tip{background:linear-gradient(180deg,#fff,#5eead4);animation:segIn .4s ease both,tipGlow 1.6s ease-in-out .9s infinite}
+@keyframes segIn{from{opacity:0;transform:scaleY(.3)}}
+@keyframes tipGlow{50%{box-shadow:0 0 12px 2px rgba(94,234,212,.95)}}
+.pro svg.i{fill:url(#gold);stroke:#92400e;stroke-width:1.1;filter:drop-shadow(0 0 3px rgba(251,191,36,.7))}
+.mcard .who{position:absolute;left:16px;bottom:14px;font:600 13px var(--mono);letter-spacing:.06em}
+.mcard .who small{display:block;font:600 9px Inter;letter-spacing:.12em;opacity:.65;margin-bottom:2px}
+.mcard .val{position:absolute;right:16px;bottom:14px;text-align:right;font:700 13px var(--mono)}
+.mcard .val small{display:block;font:600 9px Inter;letter-spacing:.12em;opacity:.65;margin-bottom:2px}
+.mcard .left{position:absolute;right:16px;top:44px;font:800 22px Inter;text-align:right;line-height:1}
+.mcard .left small{display:block;font:600 10px Inter;opacity:.75;margin-top:3px}
+
+/* ---------- 05 stat tiles ---------- */
+.d5 .hd{display:flex;align-items:center;gap:12px;padding:16px 12px 0 16px}
+.d5 .t3{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.d5 .tile{text-align:center;padding:10px 6px}
+.d5 .tile b{font-size:15px}.d5 .tile b.a{color:var(--accent)}
+.d5 .togc{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;box-shadow:inset 0 0 0 1px var(--hair)}
+.d5 .togc div{flex:1}.d5 .togc b{display:block;font-size:13px}.d5 .togc span{font-size:11.5px;color:var(--t3)}
+
+/* ---------- 06 timeline ---------- */
+.d6 .hd{display:flex;align-items:center;gap:12px;padding:16px 12px 4px 16px}
+.tl{padding:12px 14px;border-radius:13px;background:var(--panel);box-shadow:inset 0 0 0 1px var(--hair)}
+.tl .tlh{display:flex;justify-content:space-between;align-items:baseline}
+.tl .tlh b{font-size:14px}.tl .tlh span{font-size:12px;color:var(--accent);font-weight:700}
+.track{position:relative;height:8px;border-radius:9px;background:var(--hair);margin:26px 0 6px}
+.track i{position:absolute;left:0;top:0;bottom:0;width:20%;border-radius:9px;background:linear-gradient(90deg,#0e2140,#0d847d)}
+.track em{position:absolute;left:20%;top:50%;width:16px;height:16px;border-radius:50%;background:#fff;border:3px solid var(--accent);transform:translate(-50%,-50%);box-shadow:0 2px 6px rgba(0,0,0,.2)}
+.track em::after{content:"Today";position:absolute;left:50%;bottom:16px;transform:translateX(-50%);font:700 10px Inter;color:var(--accent);font-style:normal}
+.tl .ends{display:flex;justify-content:space-between;font-size:11px;color:var(--t3)}
+
+/* ---------- 07 tabs ---------- */
+.d7 .hd{display:flex;align-items:center;gap:12px;padding:16px 12px 12px 16px}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);padding:3px;margin:0 16px;border-radius:11px;background:var(--panel);box-shadow:inset 0 0 0 1px var(--hair)}
+.seg button{height:30px;border-radius:8px;font-size:12px;font-weight:600;color:var(--t2);text-align:center}
+.seg button.on{background:var(--pop);color:var(--text);box-shadow:0 1px 3px rgba(14,33,64,.15)}
+.d7 .pane{display:none}.d7 .pane.on{display:grid;gap:12px;animation:fd .2s}
+.d7 .body{min-height:226px;align-content:start}
+
+/* ---------- 08 dark glass ---------- */
+.stage.dark{background:radial-gradient(circle at 20% 20%,rgba(18,163,155,.35),transparent 45%),radial-gradient(circle at 80% 90%,rgba(79,70,229,.3),transparent 45%),#0a1120}
+.d8{--pop:rgba(17,27,46,.72);--panel:rgba(255,255,255,.05);--hair:rgba(255,255,255,.09);--text:#eef4fb;--t2:#a9b7cc;--t3:#72829b;--hover:rgba(255,255,255,.06);color:var(--text);backdrop-filter:blur(18px) saturate(1.4);box-shadow:0 0 0 1px rgba(255,255,255,.1),0 30px 60px -20px rgba(0,0,0,.8)}
+.d8 .hd{display:flex;align-items:center;gap:12px;padding:16px 12px 6px 16px}
+.d8 .av{box-shadow:0 0 0 2px #0a1120,0 0 0 4px #2dd4bf,0 0 22px rgba(45,212,191,.6)}
+.d8 .pro{background:transparent;color:#5eead4;box-shadow:inset 0 0 0 1px #2dd4bf;text-shadow:0 0 8px rgba(45,212,191,.7)}
+.d8 .btn.p{background:linear-gradient(135deg,#0d847d,#2dd4bf);box-shadow:0 10px 24px -10px rgba(45,212,191,.8)}
+.d8 .foot{background:rgba(0,0,0,.15)}
+
+/* ---------- 09 menu ---------- */
+.d9 .hd{display:flex;align-items:center;gap:12px;padding:14px 14px 12px}
+.d9 .menu{padding:6px;border-top:1px solid var(--hair)}
+.mi{display:flex;align-items:center;gap:11px;width:100%;height:38px;padding:0 10px;border-radius:9px;font-size:13px;font-weight:500}
+.mi:hover{background:var(--hover)}
+.mi svg.i{color:var(--t2)}
+.mi .r{margin-left:auto;font-size:11.5px;color:var(--t3);font-weight:600}
+.mi kbd{margin-left:auto;font:600 10.5px var(--mono);padding:1px 6px;border-radius:5px;background:var(--panel);box-shadow:0 0 0 1px var(--hair);color:var(--t2)}
+.mi .badge{margin-left:auto;font-size:11px;font-weight:700;color:var(--accent);background:color-mix(in srgb,var(--accent) 12%,transparent);padding:2px 8px;border-radius:99px}
+.mi.lo svg.i{color:var(--bad)}
+.sep{height:1px;background:var(--hair);margin:5px 4px}
+.d9 .dg{margin:2px 4px 4px}
+
+/* ---------- 10 wide split ---------- */
+.d10{width:500px;display:grid;grid-template-columns:180px 1fr}
+.d10 .lp{position:relative;padding:22px 18px;color:#fff;background:radial-gradient(circle at 90% 0%,rgba(45,212,191,.5),transparent 50%),linear-gradient(160deg,#0e2140,#0d5f63 80%);display:grid;align-content:start;justify-items:start;gap:10px}
+.d10 .lp .av{width:64px;height:64px;font-size:25px;background:rgba(255,255,255,.14);box-shadow:inset 0 0 0 1px rgba(255,255,255,.3)}
+.d10 .lp .nm{color:#fff}.d10 .lp .cp{color:rgba(255,255,255,.7)}.d10 .lp .cp:hover{background:rgba(255,255,255,.12);color:#fff}
+.d10 .lp .pro{background:#fff;color:#0d847d}
+.d10 .big{font:800 34px/1 Inter;margin-top:8px}.d10 .big small{display:block;font:600 11.5px Inter;opacity:.75;margin-top:4px}
+.d10 .lp .bar{width:100%;background:rgba(255,255,255,.18)}.d10 .lp .bar i{background:#5eead4}
+.d10 .lp .btn{width:100%;background:#fff;color:#0e2140;margin-top:6px}
+.d10 .rp{display:flex;flex-direction:column}
+.d10 .rp .hd{display:flex;align-items:center;justify-content:space-between;padding:14px 12px 0 18px;font-weight:700}
+.d10 .rp .body{padding:8px 18px 14px;flex:1}
+
+.toast{position:fixed;left:50%;bottom:24px;z-index:60;transform:translate(-50%,20px);opacity:0;transition:.25s;background:#0e2140;color:#fff;padding:10px 16px;border-radius:10px;font-weight:600;font-size:12.5px;pointer-events:none}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+@media (max-width:900px){main{grid-template-columns:1fr}.d10{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute">
+  <defs><linearGradient id="gold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fef3c7"/><stop offset=".45" stop-color="#fbbf24"/><stop offset="1" stop-color="#d97706"/></linearGradient></defs>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2.5"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></symbol>
+  <symbol id="i-bag" viewBox="0 0 24 24"><path d="M5 8h14l-1 12H6L5 8z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></symbol>
+  <symbol id="i-key" viewBox="0 0 24 24"><circle cx="8" cy="15" r="4"/><path d="M11 12l8-8M16 7l2 2M14 9l2 2"/></symbol>
+  <symbol id="i-rcpt" viewBox="0 0 24 24"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2V3z"/><path d="M9 8h6M9 12h6"/></symbol>
+  <symbol id="i-out" viewBox="0 0 24 24"><path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3"/><path d="M10 8l-4 4 4 4M6 12h10"/></symbol>
+  <symbol id="i-chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></symbol>
+  <symbol id="i-right" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></symbol>
+  <symbol id="i-crown" viewBox="0 0 24 24"><path d="M3 8l4 4 5-7 5 7 4-4-2 11H5L3 8z"/></symbol>
+  <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2.5"/><path d="M3 10h18M8 3v4M16 3v4"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+  <symbol id="i-login" viewBox="0 0 24 24"><path d="M10 17l5-5-5-5M15 12H3"/><path d="M14 4h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-4"/></symbol>
+  <symbol id="i-pulse" viewBox="0 0 24 24"><path d="M3 12h4l3-7 4 14 3-7h4"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6l8-3z"/><path d="M9 12l2 2 4-4"/></symbol>
+  <symbol id="i-pc" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></symbol>
+</svg>
+
+<header class="top"><div class="in">
+  <div><h1>Profile popup — 10 designs</h1><p>Same content in each: name, plan, expiry, sign-in, auto login, diagnostics, Renew / Activation key, purchases, log out. Everything can be clicked.</p></div>
+  <button class="tbtn" data-a="theme">◐ Light / dark</button>
+</div></header>
+<main id="main"></main>
+<div class="toast" id="toast"></div>
+
+<script>
+const $ = (s, r = document) => r.querySelector(s);
+const I = (n, c = '') => `<svg class="i ${c}"><use href="#i-${n}"/></svg>`;
+const U = {name:'buddies400', plan:'Pro', exp:'20 Jan 2027', left:72, total:90, start:'22 Oct 2026', since:'2026-11-09 09:42'};
+
+/* shared pieces */
+const av = (c = '') => `<span class="av ${c}">B</span>`;
+const name = () => `<div class="nm">${U.name}<button class="cp" data-a="copy" title="Copy user name">${I('copy')}</button></div>`;
+const pro = () => `<span class="pro">${I('crown')}PRO</span>`.replace('class="i "', 'class="i" style="width:14px;height:14px"');
+const x = () => `<button class="xb" data-a="toast" data-m="Popup closed" title="Close">${I('x')}</button>`;
+const sw = (on = 1) => `<button class="sw${on ? ' on' : ''}" data-a="sw" role="switch" aria-checked="${!!on}" title="Auto login"></button>`;
+const diagBody = () => `<div class="dgb"><div>App version<b>4.8.2</b></div><div>Server<b class="ok">Connected · 42 ms</b></div><div>Device<b>Windows 11 · x64</b></div><div>Graphics<b>DirectX 12 OK</b></div><button class="copyr" data-a="toast" data-m="Diagnostics report copied">Copy report</button></div>`;
+const diag = () => `<div class="dg"><button class="dgh" data-a="acc"><span class="dot"></span>System diagnostics<span style="color:var(--t3);font-weight:500">· all good</span>${I('chev', 'ch')}</button>${diagBody()}</div>`;
+const renew = (c = 'p') => `<button class="btn ${c}" data-a="toast" data-m="Opening plans…">${I('bag')}Renew plan</button>`;
+const keyb = (c = 's') => `<button class="btn ${c}" data-a="toast" data-m="Enter your activation key">${I('key')}Activation key</button>`;
+const foot = () => `<div class="foot"><button class="lk" data-a="toast" data-m="Opening purchases…">${I('rcpt')}My purchases</button><button class="lk lo" data-a="toast" data-m="Logged out">${I('out')}Log out</button></div>`;
+const rows = (list) => `<div class="rows">${list.map(([k, v]) => `<div class="rw"><span>${k}</span>${v}</div>`).join('')}</div>`;
+const R_EXP = `<b>${U.exp} <small>· ${U.left} days left</small></b>`, R_SIGN = `<b>${U.since}</b>`, R_AUTO = sw();
+
+const D = [];
+
+/* 01 gradient header */
+D.push({h:'Gradient header', rec:'Recommended', p:'Brand banner on top, big avatar sitting on its edge, two clear tiles for plan and days left.', html:`
+<div class="pp d1"><div class="hero">${x()}</div>
+ <div class="id">${av()}<div>${name()}${pro()}</div></div>
+ <div class="body">
+  <div class="tiles"><div class="tile"><span>Expires</span><b>${U.exp}</b></div><div class="tile"><span>Days left</span><b style="color:var(--accent)">${U.left} days</b><div class="bar"><i></i></div></div></div>
+  ${rows([['Signed in', R_SIGN], ['Auto login', R_AUTO]])}
+  ${diag()}<div class="btns">${renew()}${keyb()}</div>
+ </div>${foot()}</div>`});
+
+/* 02 ring */
+const ringSvg = `<svg viewBox="0 0 96 96"><circle cx="48" cy="48" r="44" fill="none" stroke="var(--hair)" stroke-width="6"/><circle cx="48" cy="48" r="44" fill="none" stroke="url(#rg)" stroke-width="6" stroke-linecap="round" stroke-dasharray="${2 * Math.PI * 44}" stroke-dashoffset="${2 * Math.PI * 44 * (1 - U.left / U.total)}"/><defs><linearGradient id="rg"><stop offset="0" stop-color="#0d847d"/><stop offset="1" stop-color="#2dd4bf"/></linearGradient></defs></svg>`;
+D.push({h:'Days ring', p:'The ring around the photo shows how much of the plan is left — you see it before reading anything.', html:`
+<div class="pp d2">${x()}<div class="top2"><div class="ring">${ringSvg}${av()}</div>${name()}<div class="days"><b>${U.left} days left</b> · until ${U.exp}</div>
+ <div class="chips">${pro()}<span class="chip">${I('login')}${U.since.slice(11)} today</span></div></div>
+ <div class="body">${rows([['Signed in', R_SIGN], ['Auto login', R_AUTO]])}${diag()}<div class="btns">${renew()}${keyb()}</div></div>${foot()}</div>`});
+
+/* 03 grouped list */
+const li = (ic, col, lt, rt, extra = '') => `<div class="li"><span class="ic ${col}">${I(ic)}</span><span class="lt">${lt}</span>${rt}${extra}</div>`;
+D.push({h:'Settings list', p:'Phone-settings style: small colour icons, grouped rows, log out on its own at the bottom.', html:`
+<div class="pp d3"><div class="hd">${av()}<div style="flex:1">${name()}${pro()}</div>${x()}</div>
+ <div class="grpb">${li('crown', 'c-teal', 'Plan', `<span class="rt">${U.plan}</span>`)}${li('cal', 'c-amber', 'Expires', `<span class="rt">${U.exp} · ${U.left}d</span>`)}${li('clock', 'c-navy', 'Signed in', `<span class="rt">${U.since}</span>`)}</div>
+ <div class="grpb">${li('login', 'c-green', 'Auto login', sw())}<div class="dg" style="border-radius:0;box-shadow:none;background:none"><button class="li" data-a="acc" style="border:0"><span class="ic c-gray">${I('pulse')}</span><span class="lt">System diagnostics</span><span class="rt ok" style="font-size:12px">All good</span>${I('chev', 'ch')}</button>${diagBody()}</div></div>
+ <div class="grpb"><button class="li acc" data-a="toast" data-m="Opening plans…"><span class="ic c-teal">${I('bag')}</span><span class="lt">Renew plan</span>${I('right', 'ch')}</button><button class="li" data-a="toast" data-m="Enter your activation key"><span class="ic c-violet">${I('key')}</span><span class="lt">Activation key</span>${I('right', 'ch')}</button><button class="li" data-a="toast" data-m="Opening purchases…"><span class="ic c-blue">${I('rcpt')}</span><span class="lt">My purchases</span>${I('right', 'ch')}</button></div>
+ <div class="grpb"><button class="li logout" data-a="toast" data-m="Logged out">${I('out')}Log out</button></div></div>`});
+
+/* 04 membership card */
+D.push({h:'Membership card', p:'Your plan shown as a real Pro card: name, valid-thru date and days left. Feels premium, easy to read.', html:`
+<div class="pp d4"><div class="hero">${x()}</div>
+ <div class="id">${av()}<div>${name()}${pro()}</div></div>
+ <div class="mcard"><div class="brand">SCHEMAX<span style="opacity:.8">PRO MEMBER</span></div><div class="chipc"></div><div class="mseg" title="${U.left} of ${U.total} days left"><div class="ml"><span>PLAN TIME</span><span><b>${Math.round(U.left / U.total * 100)}%</b> left</span></div><div class="mq">${Array.from({length:18}, (_, k) => { const n = Math.round(18 * U.left / U.total); return `<i class="${k < n ? 'f' : ''}${k === n - 1 ? ' tip' : ''}" style="animation-delay:${k * 45}ms"></i>`; }).join('')}</div></div><div class="left">${U.left}<small>days left</small></div>
+  <div class="who"><small>MEMBER</small>${U.name.toUpperCase()}</div><div class="val"><small>VALID THRU</small>20/01/27</div></div>
+ <div class="body">${rows([['Signed in', R_SIGN], ['Auto login', R_AUTO]])}${diag()}<div class="btns">${renew()}${keyb()}</div></div>${foot()}</div>`});
+
+/* 05 stat tiles */
+D.push({h:'Stat tiles', p:'Three small tiles answer the three questions at once: which plan, how long left, since when.', html:`
+<div class="pp d5"><div class="hd">${av()}<div style="flex:1">${name()}${pro()}</div>${x()}</div>
+ <div class="body"><div class="t3"><div class="tile"><span>Plan</span><b>${U.plan}</b></div><div class="tile"><span>Days left</span><b class="a">${U.left}</b></div><div class="tile"><span>Expires</span><b>20 Jan</b></div></div>
+  <div class="togc">${I('login')}<div><b>Auto login</b><span>Signed in ${U.since}</span></div>${sw()}</div>
+  ${diag()}<div class="btns">${renew()}${keyb()}</div></div>${foot()}</div>`});
+
+/* 06 timeline */
+D.push({h:'Plan timeline', p:'A bar from start to end of the plan with a "Today" marker — you instantly feel how much time is left.', html:`
+<div class="pp d6"><div class="hd">${av()}<div style="flex:1">${name()}${pro()}</div>${x()}</div>
+ <div class="body"><div class="tl"><div class="tlh"><b>Pro plan</b><span>${U.left} days left</span></div><div class="track"><i></i><em></em></div><div class="ends"><span>${U.start}</span><span>${U.exp}</span></div></div>
+  ${rows([['Signed in', R_SIGN], ['Auto login', R_AUTO]])}${diag()}<div class="btns">${renew()}${keyb()}</div></div>${foot()}</div>`});
+
+/* 07 tabs */
+D.push({h:'Tabs inside', p:'Account, Security and System on three tabs — the popup stays short and tidy.', html:`
+<div class="pp d7"><div class="hd">${av()}<div style="flex:1">${name()}${pro()}</div>${x()}</div>
+ <div class="seg"><button class="on" data-a="tab" data-v="0">Account</button><button data-a="tab" data-v="1">Security</button><button data-a="tab" data-v="2">System</button></div>
+ <div class="body">
+  <div class="pane on">${rows([['Plan', `<b>${U.plan}</b>`], ['Expiry date', R_EXP]])}<div class="btns">${renew()}${keyb()}</div></div>
+  <div class="pane">${rows([['Signed in', R_SIGN], ['Device', '<b>Windows 11 · This PC</b>'], ['Auto login', R_AUTO]])}<button class="btn s" data-a="toast" data-m="Signed out of other devices">${I('shield')}Sign out other devices</button></div>
+  <div class="pane"><div class="dg open"><div class="dgh" style="cursor:default"><span class="dot"></span>System diagnostics<span style="color:var(--t3);font-weight:500">· all good</span></div>${diagBody()}</div></div>
+ </div>${foot()}</div>`});
+
+/* 08 dark glass */
+D.push({h:'Dark glass', dark:1, p:'Frosted dark glass with a soft teal glow. Fits the dark PCB view and looks high-end.', html:`
+<div class="pp d8"><div class="hd">${av()}<div style="flex:1">${name()}${pro()}</div>${x()}</div>
+ <div class="body">${rows([['Plan', `<b>${U.plan}</b>`], ['Expiry date', R_EXP], ['Signed in', R_SIGN], ['Auto login', R_AUTO]])}${diag()}<div class="btns">${renew()}${keyb()}</div></div>${foot()}</div>`});
+
+/* 09 menu */
+D.push({h:'Quick menu', p:'Like the account menu in modern apps: one line per action, with shortcuts. Fastest to use.', html:`
+<div class="pp d9"><div class="hd">${av()}<div style="flex:1">${name()}<span class="sub">${U.plan} · until ${U.exp}</span></div>${pro()}</div>
+ <div class="menu">
+  <button class="mi" data-a="toast" data-m="Opening plans…">${I('bag')}Renew plan<span class="badge">${U.left} days left</span></button>
+  <button class="mi" data-a="toast" data-m="Enter your activation key">${I('key')}Activation key</button>
+  <button class="mi" data-a="toast" data-m="Opening purchases…">${I('rcpt')}My purchases</button>
+  <div class="sep"></div>
+  <div class="mi" style="cursor:default">${I('login')}Auto login<span style="margin-left:auto">${sw()}</span></div>
+  <div class="mi" style="cursor:default">${I('clock')}Signed in<span class="r">${U.since}</span></div>
+  ${diag()}
+  <div class="sep"></div>
+  <button class="mi lo" data-a="toast" data-m="Logged out">${I('out')}Log out<kbd>Ctrl Shift Q</kbd></button>
+ </div></div>`});
+
+/* 10 wide split */
+D.push({h:'Wide split',p:'A wider panel: your identity and days left on the left, all details on the right. Nothing is hidden, nothing is crowded.', html:`
+<div class="pp d10"><div class="lp">${av()}<div>${name()}${pro()}</div><div class="big">${U.left}<small>days left · until ${U.exp}</small></div><div class="bar"><i></i></div>${renew()}</div>
+ <div class="rp"><div class="hd">Account${x()}</div><div class="body">${rows([['Plan', `<b>${U.plan}</b>`], ['Signed in', R_SIGN], ['Auto login', R_AUTO]])}${diag()}${keyb()}</div>${foot()}</div></div>`});
+
+$('#main').innerHTML = D.map((d, n) => `<section class="opt${d.wide ? ' wide' : ''}"><div class="meta"><span class="num">${String(n + 1).padStart(2, '0')}</span><div><h3>${d.h}${d.rec ? `<span class="rec">${d.rec}</span>` : ''}</h3><p>${d.p}</p></div></div><div class="stage${d.dark ? ' dark' : ''}">${d.html}</div></section>`).join('');
+
+/* events */
+let tt; function toast(m) { const e = $('#toast'); e.textContent = m; e.classList.add('on'); clearTimeout(tt); tt = setTimeout(() => e.classList.remove('on'), 1800); }
+document.addEventListener('click', e => {
+  const el = e.target.closest('[data-a]'); if (!el) return;
+  const a = el.dataset.a;
+  if (a === 'sw') { el.classList.toggle('on'); el.setAttribute('aria-checked', el.classList.contains('on')); toast('Auto login ' + (el.classList.contains('on') ? 'on' : 'off')); }
+  if (a === 'acc') el.closest('.dg').classList.toggle('open');
+  if (a === 'copy') { navigator.clipboard?.writeText(U.name).catch(() => {}); toast('User name copied'); }
+  if (a === 'toast') toast(el.dataset.m);
+  if (a === 'theme') { const d = document.documentElement; d.dataset.theme = d.dataset.theme === 'dark' ? 'light' : 'dark'; }
+  if (a === 'tab') { const pp = el.closest('.pp'), v = +el.dataset.v; pp.querySelectorAll('.seg button').forEach((b, i) => b.classList.toggle('on', i === v)); pp.querySelectorAll('.pane').forEach((p, i) => p.classList.toggle('on', i === v)); }
+});
+</script>
+</body>
+</html>
