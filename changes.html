@@ -3,156 +3,238 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Tab ideas — all names visible</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<title>Tabs with tree view — 2 designs</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#eef2f7;--card:#fff;--win:#fff;--panel:#f6f8fb;--panel-2:#eaeef4;--hair:#dfe5ee;--text:#0e2140;--text-2:#4a5b75;--text-3:#8592a6;--accent:#0d847d;--pdf:#d93a3a;--pcb:#c8691c;--pdf-soft:#fdecec;--pcb-soft:#fbefe3;--hover:rgba(14,33,64,.06);--sh:0 1px 2px rgba(14,33,64,.06),0 12px 30px -18px rgba(14,33,64,.35);--mono:'JetBrains Mono',ui-monospace,monospace}
-[data-theme=dark]{--bg:#0b1220;--card:#111a2b;--win:#0f1726;--panel:#152035;--panel-2:#1a2740;--hair:#26354f;--text:#e6edf7;--text-2:#a7b4c8;--text-3:#6f7f99;--pdf-soft:rgba(217,58,58,.17);--pcb-soft:rgba(200,105,28,.2);--hover:rgba(255,255,255,.06);--sh:0 1px 2px rgba(0,0,0,.3),0 12px 30px -18px rgba(0,0,0,.7)}
+:root{--bg:#eef2f7;--card:#fff;--win:#fff;--panel:#f6f8fb;--panel-2:#eaeef4;--hair:#dfe5ee;--text:#0e2140;--text-2:#4a5b75;--text-3:#8592a6;--accent:#0d847d;--acc-t:#0d847d;--accent-soft:rgba(13,132,125,.12);--pdf:#d93a3a;--pcb:#c8691c;--pdf-soft:#fdecec;--pcb-soft:#fbefe3;--hover:rgba(14,33,64,.06);--ok:#16a34a;--sh:0 1px 2px rgba(14,33,64,.06),0 12px 30px -18px rgba(14,33,64,.35);--mono:'JetBrains Mono',ui-monospace,monospace}
+[data-theme=dark]{--bg:#0b1220;--card:#111a2b;--win:#0f1726;--panel:#152035;--panel-2:#1a2740;--hair:#26354f;--text:#e6edf7;--text-2:#a7b4c8;--text-3:#6f7f99;--acc-t:#2dd4bf;--accent-soft:rgba(45,212,191,.14);--pdf-soft:rgba(217,58,58,.17);--pcb-soft:rgba(200,105,28,.2);--hover:rgba(255,255,255,.06);--ok:#22c55e;--sh:0 1px 2px rgba(0,0,0,.3),0 12px 30px -18px rgba(0,0,0,.7)}
 *{box-sizing:border-box;margin:0}
 body{font:13px/1.45 Inter,system-ui,sans-serif;background:var(--bg);color:var(--text)}
-button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;text-align:left}
-kbd{font:600 10.5px var(--mono);padding:1px 5px;border-radius:5px;background:var(--panel);box-shadow:0 0 0 1px var(--hair),0 1px 0 var(--hair);color:var(--text)}
-@keyframes dIn{from{opacity:0;transform:translateY(-6px)}}
+button,input{font:inherit;color:inherit;background:none;border:0;cursor:pointer;text-align:left}
+input{cursor:text;outline:0}
+svg.i{width:15px;height:15px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+@keyframes dIn{from{opacity:0;transform:translateY(-4px)}}
 
-/* page */
 .top{position:sticky;top:0;z-index:30;background:color-mix(in srgb,var(--bg) 86%,transparent);backdrop-filter:blur(12px);border-bottom:1px solid var(--hair)}
-.top .in{max-width:1180px;margin:auto;padding:14px 24px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.top .in{max-width:1220px;margin:auto;padding:14px 24px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
 .top h1{font-size:17px}.top p{color:var(--text-2);font-size:12.5px}
 .ctl{margin-left:auto;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
 .btn{height:32px;padding:0 12px;border-radius:9px;background:var(--card);box-shadow:0 0 0 1px var(--hair);font-weight:600;font-size:12.5px;display:inline-flex;align-items:center;gap:6px}
 .btn:hover{background:var(--panel)}.btn.pri{background:var(--accent);color:#fff;box-shadow:none}
 .cnt{font:600 11.5px var(--mono);color:var(--text-2);padding:0 6px}
-main{max-width:1180px;margin:auto;padding:22px 24px 80px;display:grid;gap:22px}
+main{max-width:1220px;margin:auto;padding:22px 24px 80px;display:grid;gap:22px}
 .opt{background:var(--card);border-radius:16px;padding:16px;box-shadow:var(--sh);display:grid;gap:12px;min-width:0}
 .meta{display:flex;gap:12px;align-items:flex-start}
-.num{flex:none;font:700 13px var(--mono);color:var(--accent);background:color-mix(in srgb,var(--accent) 12%,transparent);border-radius:8px;padding:4px 8px}
+.num{flex:none;font:700 13px var(--mono);color:var(--acc-t);background:var(--accent-soft);border-radius:8px;padding:4px 8px}
 .meta h3{font-size:15px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.meta p{color:var(--text-2);font-size:12.5px;margin-top:2px;max-width:880px}
-.rec{font-size:10.5px;font-weight:700;color:#fff;background:var(--accent);padding:2px 8px;border-radius:99px}
-.sum{border:1.5px solid color-mix(in srgb,var(--accent) 40%,transparent)}
-.sum ol{padding-left:18px;display:grid;gap:6px;color:var(--text-2)}.sum b{color:var(--text)}
+.meta p{color:var(--text-2);font-size:12.5px;margin-top:2px;max-width:900px}
+.why{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}.why span{font-size:11px;padding:2px 9px;border-radius:99px;background:var(--panel);color:var(--text-2);box-shadow:0 0 0 1px var(--hair)}
+.ask{border:1.5px solid color-mix(in srgb,var(--accent) 40%,transparent)}
+.ask ul{padding-left:18px;display:grid;gap:5px;color:var(--text-2)}.ask b{color:var(--text)}
 
-/* mock window */
-.win{position:relative;height:400px;border-radius:12px;overflow:hidden;background:var(--win);box-shadow:0 0 0 1px var(--hair);display:flex;flex-direction:column}
-.win.mid{height:440px}.win.tall{height:580px}
-.bar{flex:none;position:relative;display:flex;align-items:center;gap:8px;height:44px;padding:0 8px;background:var(--panel-2);border-bottom:1px solid var(--hair)}
-.lay{flex:1;min-height:0;display:flex}
-.view{flex:1;min-width:0;min-height:0;position:relative;display:flex;flex-direction:column;padding:10px 12px;gap:8px;background:var(--panel)}
+/* app window */
+.win{position:relative;height:600px;border-radius:12px;overflow:hidden;background:var(--win);box-shadow:0 0 0 1px var(--hair);display:flex}
+.content{position:relative;flex:1;min-width:0;display:flex;flex-direction:column}
+.view{flex:1;min-width:0;min-height:0;display:flex;flex-direction:column;padding:10px 12px;gap:8px;background:var(--panel)}
 .vh{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-2);white-space:nowrap;overflow:hidden}
 .vh b{font-family:var(--mono);color:var(--text)}
 .pg{flex:1;min-height:0;border-radius:8px;overflow:hidden;box-shadow:0 0 0 1px var(--hair)}
 .pg.pdf{background:#fff}.pg.pcb{background:#08241b}
-.pg svg,.th svg{display:block;width:100%;height:100%}
-.empty{flex:1;display:grid;place-items:center;color:var(--text-3)}
+.pg svg{display:block;width:100%;height:100%}
+.empty{flex:1;display:grid;place-items:center;color:var(--text-3);text-align:center}
 .pdf{--tc:var(--pdf);--ts:var(--pdf-soft)}.pcb{--tc:var(--pcb);--ts:var(--pcb-soft)}
-.bd{flex:none;display:inline-block;font:700 9.5px/1 var(--mono);padding:3px 5px;border-radius:5px;color:#fff;background:var(--tc);letter-spacing:.03em}
-.x{flex:none;width:18px;height:18px;border-radius:5px;display:grid;place-items:center;font-size:14px;line-height:1;color:var(--text-3);opacity:0;cursor:pointer}
+.bd{flex:none;display:inline-block;font:700 8.5px/1 var(--mono);padding:3px 4px;border-radius:4px;color:#fff;background:var(--tc);letter-spacing:.03em}
+.tx{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tx b{font-family:var(--mono);font-size:.95em;margin-right:5px}
+.x{flex:none;width:16px;height:16px;border-radius:50%;display:grid;place-items:center;font-size:13px;line-height:1;color:var(--text-3);opacity:0;cursor:pointer}
 :hover>.x,.sel>.x{opacity:1}.x:hover{background:var(--hover);color:var(--text)}
-.addb{flex:none;margin-left:auto;width:22px;height:22px;border-radius:6px;font-size:15px;line-height:1;color:var(--text-3);display:grid;place-items:center}.addb:hover{background:var(--hover);color:var(--text)}
-.ttl{flex:1;min-width:0;display:flex;align-items:center;gap:8px;padding-left:4px;font-size:12.5px;color:var(--text-2);white-space:nowrap;overflow:hidden}
-.ttl b{font-family:var(--mono);color:var(--text)}
-.sbtn{flex:none;display:flex;align-items:center;gap:7px;height:30px;padding:0 10px;border-radius:8px;font-weight:600;font-size:12px;background:var(--win);box-shadow:inset 0 0 0 1px var(--hair)}
-.sbtn:hover{box-shadow:inset 0 0 0 1px var(--text-3)}
 
-/* list row: full name in one line */
-.side{flex:none;width:300px;display:flex;flex-direction:column;gap:8px;padding:8px;background:var(--panel-2);border-right:1px solid var(--hair);overflow:auto;scrollbar-width:thin}
-.side.r{border-right:0;border-left:1px solid var(--hair)}
-.side.w270{width:305px}
-.sh2{display:flex;align-items:center;gap:8px;height:24px;padding:0 2px 0 6px;font-size:11px;font-weight:700;color:var(--text-2)}
-.grp{display:grid;gap:1px}
-.li{display:flex;align-items:center;gap:8px;width:100%;height:25px;padding:0 3px 0 10px;border-radius:7px;font-size:12px;color:var(--text-2);min-width:0}
-.li:hover{background:var(--hover);color:var(--text)}
-.li .dt{width:6px;height:6px;border-radius:50%;background:var(--tc);flex:none}
-.li b{font:700 11.5px var(--mono);white-space:nowrap;flex:none;color:var(--text)}
-.li .n{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--text-3)}
-.li.sel{background:var(--win);box-shadow:0 0 0 1px var(--hair)}
-.li.on{background:var(--ts);box-shadow:inset 3px 0 0 var(--tc)}.li.on b{color:var(--tc)}
+/* tree view (library) */
+.tree{flex:none;width:262px;display:flex;flex-direction:column;background:var(--panel-2);border-right:1px solid var(--hair)}
+.th{display:flex;align-items:center;gap:8px;height:42px;padding:0 10px 0 14px;font-weight:700;font-size:12.5px;border-bottom:1px solid var(--hair)}
+.th em{margin-left:auto;font:600 10.5px var(--mono);font-style:normal;color:var(--text-3)}
+.ts{margin:8px 10px 4px;display:flex;align-items:center;gap:7px;height:30px;padding:0 9px;border-radius:8px;background:var(--win);box-shadow:inset 0 0 0 1px var(--hair);color:var(--text-3)}
+.ts:focus-within{box-shadow:inset 0 0 0 2px var(--accent)}
+.ts input{flex:1;min-width:0;font-size:12px;color:var(--text)}
+.tb{flex:1;overflow:auto;padding:4px 6px 10px;scrollbar-width:thin}
+.tr{position:relative;display:flex;align-items:center;gap:6px;width:100%;height:25px;padding-right:6px;border-radius:7px;font-size:12px;color:var(--text-2)}
+.tr:hover{background:var(--hover);color:var(--text)}
+.tr .cv{width:14px;height:14px;flex:none;color:var(--text-3);transition:transform .15s}
+.tr.fo .cv{transform:rotate(90deg)}
+.tr .fd{flex:none;color:#d4a72c}
+.tr.fold{font-weight:600;color:var(--text)}
+.tr.lv0{font-weight:700}
+.tr .tx{flex:1}
+.tr .n{font:600 10px var(--mono);color:var(--text-3)}
+.guide{position:absolute;top:0;bottom:0;width:1px;background:var(--hair)}
+.tr.file .tx{font-size:11.5px}
+.tr.file.op{color:var(--text)}
+.tr.file .od{width:6px;height:6px;border-radius:50%;background:var(--ok);flex:none;box-shadow:0 0 0 2px color-mix(in srgb,var(--ok) 25%,transparent)}
+.tr.file.cur{background:var(--ts);color:var(--text)}
+.tr.file.cur::before{content:"";position:absolute;left:0;top:4px;bottom:4px;width:3px;border-radius:2px;background:var(--tc)}
+.tf{flex:none;display:flex;align-items:center;gap:8px;padding:8px 12px;border-top:1px solid var(--hair);font-size:11px;color:var(--text-3)}
+.tf i{width:6px;height:6px;border-radius:50%;background:var(--ok);display:inline-block}
 
-/* two-line cell */
-.c2{position:relative;display:flex;align-items:center;gap:8px;min-width:0;height:40px;padding:0 6px 0 10px;border-radius:9px;color:var(--text-2);background:var(--win);box-shadow:0 0 0 1px var(--hair);transition:box-shadow .15s,background .15s}
-.c2 .tx{flex:1;min-width:0;display:grid;line-height:1.25}
-.c2 .tx b{font:700 11px var(--mono);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--text)}
-.c2 .tx span{font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--text-3)}
-.c2:hover{box-shadow:0 0 0 1px var(--text-3)}
-.c2.sel{box-shadow:0 0 0 1.5px var(--tc)}
-.c2.on{background:var(--ts);box-shadow:0 0 0 1.5px var(--tc)}.c2.on .tx b{color:var(--tc)}
-.c2 .th{width:36px;height:26px;border-radius:4px;overflow:hidden;flex:none;box-shadow:0 0 0 1px var(--hair)}
-.c2 .x{position:absolute;top:3px;right:3px;width:16px;height:16px;font-size:12px;background:var(--win);box-shadow:0 0 0 1px var(--hair)}
-.gp{flex:none;padding:8px 10px;background:var(--panel-2);border-bottom:1px solid var(--hair);display:grid;gap:8px;animation:dIn .18s}
-.g5{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px}
-.gr{display:grid;grid-template-columns:42px repeat(5,minmax(0,1fr));gap:5px}
-.gr>.bd{grid-row:span 2;align-self:center;justify-self:start}
+/* design A: capsule switch */
+.p2{position:relative;z-index:4;flex:none;display:flex;align-items:center;gap:10px;height:44px;padding:0 10px;background:var(--panel-2);border-bottom:1px solid var(--hair)}
+.capw{position:relative;flex:none}
+/* ===== switch style gallery ===== */
+.swg .sgrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.swc{position:relative;display:grid;gap:10px;padding:12px;border-radius:14px;background:var(--panel);box-shadow:inset 0 0 0 1px var(--hair);text-align:left;transition:box-shadow .15s,transform .15s}
+.swc:hover{box-shadow:inset 0 0 0 1px var(--text-3);transform:translateY(-2px)}
+.swc.on{background:var(--accent-soft);box-shadow:inset 0 0 0 2px var(--accent)}
+.swc .hd{display:flex;align-items:center;gap:8px}
+.swc .hd b{font-size:12.5px}.swc .hd span{font:700 10.5px var(--mono);color:var(--text-3)}
+.swc .use{margin-left:auto;font-size:10px;font-weight:800;letter-spacing:.06em;color:#fff;background:var(--accent);padding:2px 7px;border-radius:99px}
+.swc .pvw{display:flex;align-items:center;justify-content:center;height:58px;border-radius:10px;background:var(--panel-2);box-shadow:inset 0 0 0 1px var(--hair);pointer-events:none;overflow:hidden}
+.swc p{font-size:11.5px;color:var(--text-2);line-height:1.35}
+.swic{width:16px;height:16px}
+/* 2 underline */
+.s-under{display:flex;align-items:center;gap:2px;height:36px}
+.s-under .ty{position:relative;display:flex;align-items:center;gap:6px;height:36px;padding:0 9px;font:700 12.5px Inter;color:var(--text-3);transition:color .2s}
+.s-under .ty .n{font:700 10.5px var(--mono);color:var(--text-3)}
+.s-under .ty:hover{color:var(--text)}
+.s-under .ty.on{color:var(--tc)}.s-under .ty.on .n{color:var(--tc);opacity:.7}
+.s-under .ty.on::after{content:"";position:absolute;left:8px;right:8px;bottom:1px;height:3px;border-radius:3px;background:var(--tc);animation:grow .25s ease}
+@keyframes grow{from{transform:scaleX(.2);opacity:0}}
+/* 3 toggle */
+.s-tog{display:flex;align-items:center;gap:9px;height:36px;padding:0 6px 0 10px;border-radius:12px;background:var(--panel);box-shadow:inset 0 0 0 1px var(--hair)}
+.s-tog .lb{display:flex;align-items:center;gap:5px;font:700 12px Inter;color:var(--text-3);transition:color .2s}
+.s-tog .lb .n{font:700 10px var(--mono);opacity:.75}
+.s-tog .lb.on{color:var(--tc)}
+.s-tog .trk{position:relative;width:42px;height:24px;border-radius:99px;background:var(--tc);box-shadow:inset 0 1px 3px rgba(0,0,0,.25);transition:background .25s}
+.s-tog .trk i{position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.35);transition:transform .25s cubic-bezier(.2,.9,.25,1.2)}
+.s-tog .trk.pcb i{transform:translateX(18px)}
+/* 4 split buttons */
+.s-split{display:flex;align-items:center;gap:6px;height:36px}
+.s-split .ty{display:flex;align-items:center;gap:7px;height:34px;padding:0 12px 0 9px;border-radius:11px;font:700 12px Inter;color:var(--text-2);background:var(--win);box-shadow:inset 0 0 0 1px var(--hair);transition:all .15s}
+.s-split .ty svg.i{color:var(--tc)}
+.s-split .ty .n{font:700 10px var(--mono);color:var(--text-3)}
+.s-split .ty:hover{box-shadow:inset 0 0 0 1px var(--text-3)}
+.s-split .ty.on{background:var(--ts);color:var(--tc);box-shadow:inset 0 0 0 1.5px var(--tc)}.s-split .ty.on .n{color:var(--tc)}
+.s-split .lay{border-radius:50%!important;background:var(--panel);box-shadow:inset 0 0 0 1px var(--hair)}
+/* 5 icon cards */
+.s-card{display:flex;align-items:center;gap:6px;height:38px}
+.s-card .ty{display:flex;align-items:center;gap:8px;height:38px;padding:0 12px 0 4px;border-radius:12px;color:var(--text-3);transition:all .18s}
+.s-card .ty .tile{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;background:var(--panel-2);color:var(--text-3);transition:all .18s}
+.s-card .ty .tile svg.i{width:16px;height:16px}
+.s-card .ty .tx2{display:grid;line-height:1.1;text-align:left}.s-card .ty .tx2 b{font-size:12px}.s-card .ty .tx2 span{font:600 10px var(--mono)}
+.s-card .ty:hover{background:var(--hover)}
+.s-card .ty.on{background:var(--win);color:var(--text);box-shadow:0 0 0 1px var(--hair),0 6px 14px -8px rgba(14,33,64,.45)}
+.s-card .ty.on .tile{background:var(--tc);color:#fff;box-shadow:0 4px 10px -4px var(--tc)}
+/* 6 smart swap button */
+.s-drop{display:flex;align-items:center;gap:4px;height:36px}
+.s-drop .sw{display:flex;align-items:center;height:34px;border-radius:12px;background:var(--win);box-shadow:inset 0 0 0 1px var(--hair);overflow:hidden}
+.s-drop .cur{display:flex;align-items:center;gap:7px;height:34px;padding:0 12px 0 10px;font:800 12px Inter;color:#fff;background:linear-gradient(180deg,color-mix(in srgb,var(--tc) 82%,#fff),var(--tc))}
+.s-drop .cur .n{font:700 10px var(--mono);padding:1px 6px;border-radius:6px;background:rgba(255,255,255,.22)}
+.s-drop .oth{display:flex;align-items:center;gap:6px;height:34px;padding:0 12px;font:700 11.5px Inter;color:var(--text-3)}
+.s-drop .oth svg.i{width:14px;height:14px}
+.s-drop .oth:hover{color:var(--tc);background:var(--ts)}
+.s-drop .sw{box-shadow:inset 0 0 0 1px var(--hair),0 1px 2px rgba(14,33,64,.06)}
+.s-drop .cur{gap:6px!important;padding:0 10px 0 9px!important;position:relative;cursor:default;box-shadow:inset 0 1px 0 rgba(255,255,255,.25)}
+.s-drop .cur svg.i{width:15px;height:15px}
+.s-drop .oth{position:relative;transition:background .15s,color .15s}
+.s-drop .oth .dot{width:7px;height:7px;border-radius:50%;background:var(--tc);opacity:.85}
+.s-drop .oth{gap:5px!important;padding:0 9px!important;color:color-mix(in srgb,var(--tc) 55%,var(--text-3))!important}.s-drop .oth .n2{font:700 10px var(--mono);padding:1px 4px;border-radius:6px;background:var(--panel-2);color:var(--text-3)}
+.s-drop .oth:hover .n2{background:var(--win);color:var(--tc)}
+.s-drop .oth svg.i{transition:transform .3s cubic-bezier(.2,.9,.25,1.2)}
+.s-drop .oth:hover svg.i{transform:rotate(180deg)}
+.s-drop .cur.swp{animation:swpIn .32s cubic-bezier(.2,.9,.25,1.1)}
+.s-drop .oth.swp{animation:swpOut .32s cubic-bezier(.2,.9,.25,1.1)}
+@keyframes swpIn{from{transform:translateX(40px);opacity:.2}}
+@keyframes swpOut{from{transform:translateX(-40px);opacity:0}}
+.s-drop [data-tt]:hover::after{content:attr(data-tt);position:absolute;top:calc(100% + 9px);left:50%;transform:translateX(-50%);white-space:nowrap;padding:5px 9px;border-radius:8px;background:#0e2140;color:#fff;font:600 11px Inter;box-shadow:0 8px 20px -8px rgba(0,0,0,.5);pointer-events:none;animation:dIn .12s;z-index:9}
+.s-drop .sw{overflow:visible!important}.s-drop .cur{border-radius:12px 0 0 12px}.s-drop .oth{border-radius:0 12px 12px 0}
+/* 7 rocker */
+.s-rock{position:relative;display:flex;align-items:center;height:38px;padding:3px;border-radius:12px;background:linear-gradient(#1b2232,#0f1520);box-shadow:inset 0 2px 5px rgba(0,0,0,.6),0 1px 0 rgba(255,255,255,.4)}
+.s-rock .ty{position:relative;display:flex;align-items:center;gap:7px;height:32px;padding:0 16px;border-radius:9px;font:800 11.5px Inter;letter-spacing:.06em;color:#7c879a;background:linear-gradient(#3a4458,#283142);box-shadow:inset 0 1px 0 rgba(255,255,255,.14),0 2px 3px rgba(0,0,0,.5);transition:all .12s}
+.s-rock .ty .led{width:6px;height:6px;border-radius:50%;background:#2a1414;box-shadow:inset 0 0 0 1px #000}
+.s-rock .ty .n{font:700 10px var(--mono);color:#5d6779}
+.s-rock .ty.on{color:#fff;background:linear-gradient(#232b3a,#1a2130);box-shadow:inset 0 2px 4px rgba(0,0,0,.6);transform:translateY(1px)}
+.s-rock .ty.on .led{background:var(--tc);box-shadow:0 0 8px var(--tc)}.s-rock .ty.on .n{color:#cbd5e1}
+.s-rock .lay{width:28px!important;height:28px!important;margin:0 5px;border-radius:50%!important;color:#cbd5e1!important;background:radial-gradient(circle at 35% 30%,#5b667b,#2a3242)!important;box-shadow:0 2px 4px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.2)!important}
+/* 8 icon segments */
+.s-ico{display:flex;align-items:center;gap:2px;height:36px;padding:3px;border-radius:12px;background:var(--panel);box-shadow:inset 0 0 0 1px var(--hair)}
+.s-ico .ty{position:relative;width:40px;height:30px;border-radius:9px;display:grid;place-items:center;color:var(--text-3);transition:all .15s}
+.s-ico .ty svg.i{width:18px;height:18px}
+.s-ico .ty .n{position:absolute;top:-6px;right:-6px;min-width:18px;height:16px;padding:0 4px;border-radius:99px;display:grid;place-items:center;font:800 9.5px var(--mono);color:#fff;background:var(--text-3);box-shadow:0 0 0 2px var(--panel)}
+.s-ico .ty:hover{color:var(--text)}
+.s-ico .ty.on{background:var(--win);color:var(--tc);box-shadow:0 1px 4px rgba(14,33,64,.18)}.s-ico .ty.on .n{background:var(--tc)}
+.s-ico .lay{width:40px!important}
+/* shared layout button for non-pill styles */
+.capw .lay.named{width:auto!important;gap:7px;padding:0 8px 0 9px;display:flex!important;align-items:center;font:700 11.5px Inter;color:var(--text-2);background:var(--win);box-shadow:inset 0 0 0 1px var(--hair);white-space:nowrap}
+.capw .lay.named svg.i{width:13px;height:13px;color:var(--text-3);transition:transform .2s}.capw .lay.named.open svg.i{transform:rotate(180deg)}
+.capw .lay.named:hover{color:var(--text)}
+.capw .lay{position:relative;z-index:2;width:30px;height:30px;border-radius:9px;display:grid;place-items:center;color:var(--text-2);transition:background .15s,box-shadow .15s}
+.capw .lay:hover{background:var(--win);box-shadow:0 1px 4px rgba(14,33,64,.18)}
+.capw .lay.open{background:var(--win);box-shadow:0 0 0 2px var(--accent)}
+.capw .lay[data-tt]:hover::after{content:attr(data-tt);position:absolute;top:calc(100% + 9px);left:50%;transform:translateX(-50%);white-space:nowrap;padding:5px 9px;border-radius:8px;background:#0e2140;color:#fff;font:600 11px Inter;box-shadow:0 8px 20px -8px rgba(0,0,0,.5);pointer-events:none;animation:dIn .12s;z-index:9}
+.capw .lay.open[data-tt]:hover::after,.pvw .lay[data-tt]::after{display:none}
+.s-dv{width:1px;height:18px;background:var(--hair)}
 
-/* 03 switch */
-.seg{flex:none;display:flex;padding:3px;border-radius:10px;background:var(--panel);box-shadow:inset 0 0 0 1px var(--hair)}
-.sg{display:flex;align-items:center;gap:6px;height:30px;padding:0 12px 0 6px;border-radius:7px;font:700 12px var(--mono);color:var(--text-3)}
-.sg.on{background:var(--win);color:var(--text);box-shadow:0 1px 3px rgba(14,33,64,.18)}
-.sg:not(.on) .bd{background:var(--text-3)}
+.cap{position:relative;display:flex;align-items:center;gap:2px;height:36px;padding:3px;border-radius:12px;background:var(--panel);box-shadow:inset 0 0 0 1px var(--hair),inset 0 1px 2px rgba(14,33,64,.06)}
+.thumb{position:absolute;top:3px;bottom:3px;left:3px;width:60px;border-radius:9px;background:linear-gradient(180deg,color-mix(in srgb,var(--tc) 82%,#fff),var(--tc));box-shadow:0 6px 14px -6px var(--tc),inset 0 1px 0 rgba(255,255,255,.28)}
+.cap .ty{position:relative;z-index:1;display:flex;align-items:center;gap:6px;height:30px;padding:0 8px 0 10px;border-radius:9px;font:700 12px Inter;letter-spacing:.02em;color:var(--text-2);transition:color .2s}
+.cap .ty::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--tc);transition:opacity .2s}
+.cap .ty:hover{color:var(--text)}
+.cap .ty .n{min-width:20px;height:18px;padding:0 5px;border-radius:6px;display:grid;place-items:center;font:700 10px var(--mono);background:var(--win);color:var(--text-3);box-shadow:0 0 0 1px var(--hair);transition:background .2s,color .2s}
+.cap .ty.on{color:#fff}.cap .ty.on::before{background:#fff;opacity:.85}
+.cap .ty.on .n{background:rgba(255,255,255,.22);color:#fff;box-shadow:none}
+.cap .dv{position:relative;z-index:1;width:1px;height:16px;background:var(--hair)}
+.cap .lay{position:relative;z-index:2;width:30px;height:30px;border-radius:9px;display:grid;place-items:center;color:var(--text-2);transition:background .15s,box-shadow .15s}
+.cap .lay:hover{background:var(--win);box-shadow:0 1px 4px rgba(14,33,64,.18)}
+.cap .lay.open{background:var(--win);box-shadow:0 0 0 2px var(--accent)}
+.cap .lay[data-tt]:hover::after{content:attr(data-tt);position:absolute;top:calc(100% + 9px);left:50%;transform:translateX(-50%);white-space:nowrap;padding:5px 9px;border-radius:8px;background:#0e2140;color:#fff;font:600 11px Inter;box-shadow:0 8px 20px -8px rgba(0,0,0,.5);pointer-events:none;animation:dIn .12s}
+.cap .lay.open[data-tt]:hover::after{display:none}
+.mg{display:flex;gap:2px;width:18px;height:13px;padding:2px;border-radius:3px;box-shadow:inset 0 0 0 1.5px currentColor}
+.mg i{flex:1;border-radius:1px;background:currentColor;opacity:.55}
+.mg i.b{background:var(--pcb);opacity:1}.mg i.a{background:var(--pdf);opacity:1}
+.lpop{position:absolute;top:calc(100% + 12px);left:-2px;width:318px;padding:10px;border-radius:14px;background:var(--win);box-shadow:0 0 0 1px var(--hair),0 22px 44px -16px rgba(14,33,64,.55);animation:dIn .16s}
+.lpop::before{content:"";position:absolute;top:-6px;left:var(--ax,50%);width:12px;height:12px;margin-left:-6px;background:var(--win);transform:rotate(45deg);box-shadow:-1px -1px 0 var(--hair)}
+.lpop .lh{position:relative;display:flex;align-items:baseline;justify-content:space-between;padding:0 2px 8px}
+.lpop .lh b{font-size:12.5px}.lpop .lh span{font-size:10.5px;color:var(--text-3)}
+.lcards{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+.lc{position:relative;display:grid;justify-items:center;gap:6px;padding:8px 6px 7px;border-radius:11px;box-shadow:inset 0 0 0 1px var(--hair);transition:box-shadow .15s,background .15s}
+.lc:hover{box-shadow:inset 0 0 0 1px var(--text-3)}
+.lc.on{background:var(--accent-soft);box-shadow:inset 0 0 0 1.5px var(--accent)}
+.lc .pv{display:flex;gap:3px;width:100%;height:46px;padding:4px;border-radius:7px;background:var(--panel-2)}
+.lc .pv i{flex:1;border-radius:3px;background:#fff;box-shadow:inset 0 3px 0 var(--pdf),0 0 0 1px var(--hair)}
+.lc .pv i.b{background:#0f4d36;box-shadow:inset 0 3px 0 var(--pcb)}
+.lc b{font-size:11.5px;white-space:nowrap}
+.lc kbd{font:600 9.5px var(--mono);padding:1px 5px;border-radius:5px;background:var(--panel);box-shadow:0 0 0 1px var(--hair);color:var(--text-3)}
+.lc .ck{position:absolute;top:-6px;right:-6px;width:18px;height:18px;border-radius:50%;display:grid;place-items:center;font-size:10px;font-weight:800;color:#fff;background:var(--accent);box-shadow:0 0 0 2px var(--win)}
+.split{flex:1;min-height:0;display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:8px;background:var(--panel)}
+.pane{display:flex;flex-direction:column;gap:6px;min-width:0;min-height:0;padding:6px;border-radius:10px;cursor:pointer;box-shadow:0 0 0 1px var(--hair);background:var(--win)}
+.pane.foc{box-shadow:0 0 0 2px var(--tc)}
+.pane .vh{padding:0 2px}
+.chips2{flex:1;min-width:0;display:flex;align-items:center;gap:4px;overflow-x:auto;scrollbar-width:none;-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 28px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 28px),transparent);padding-right:6px;gap:2px}
+.chips2::-webkit-scrollbar{display:none}
+.ch2{flex:none;white-space:nowrap;position:relative}
+.ch2:not(.sel){padding:0 5px!important}
+.ch2:not(.sel) .x{position:absolute;top:-5px;right:-5px;width:15px;height:15px;font-size:11px;background:var(--win);box-shadow:0 0 0 1px var(--hair);display:none}
+.ch2:not(.sel):hover .x{display:grid;opacity:1}
+.ch2 .sc{font:700 10.5px var(--mono);color:var(--text)}
+.ch2{display:flex;align-items:center;gap:4px;height:26px;padding:0 4px 0 10px;border-radius:8px;font-size:11.5px;color:var(--text-2);background:color-mix(in srgb,var(--ts) 55%,var(--win))}
+.ch2 .tx b{color:var(--text)}
+.ch2:hover{background:var(--ts)}
+.ch2.sel{background:var(--win);box-shadow:inset 0 0 0 1.5px var(--tc)}.ch2.sel .tx b{color:var(--tc)}
+.nochip{font-size:11.5px;color:var(--text-3);padding:5px 4px}
 
-/* horizontal full-name tabs (05, 10) */
-.hs{position:relative;flex:1;min-width:0;display:flex;align-items:center;gap:3px;overflow-x:auto;scrollbar-width:none;-webkit-mask-image:linear-gradient(90deg,transparent,#000 14px,#000 calc(100% - 14px),transparent);mask-image:linear-gradient(90deg,transparent,#000 14px,#000 calc(100% - 14px),transparent);padding:0 12px}
-.hs::-webkit-scrollbar{display:none}
-.tf{flex:none;display:flex;align-items:center;gap:7px;height:30px;padding:0 3px 0 10px;border-radius:8px;font-size:12px;color:var(--text-2);white-space:nowrap}
-.tf .dt{width:6px;height:6px;border-radius:50%;background:var(--tc)}
-.tf b{font:700 11.5px var(--mono);color:var(--text)}.tf .n{color:var(--text-3)}
-.tf:hover{background:var(--hover)}
-.tf.sel{background:var(--win);box-shadow:0 0 0 1px var(--hair),inset 0 2px 0 var(--tc)}.tf.on b{color:var(--tc)}
-.hsep{flex:none;width:1px;height:22px;background:var(--hair);margin:0 6px}
-.jump{flex:none;display:flex;gap:4px}
-.jb{display:flex;align-items:center;gap:6px;height:30px;padding:0 9px 0 6px;border-radius:8px;font:700 11.5px var(--mono);color:var(--text-2);box-shadow:inset 0 0 0 1px var(--hair);background:var(--win)}
-.jb:hover{box-shadow:inset 0 0 0 1.5px var(--tc)}
-.nv{flex:none;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;font-size:16px;color:var(--text-2)}.nv:hover{background:var(--hover)}
-
-/* 06 table */
-.tbl{flex:none;width:480px;display:flex;flex-direction:column;background:var(--panel-2);border-right:1px solid var(--hair);min-height:0}
-.th6,.rw{display:grid;grid-template-columns:50px 140px minmax(0,1fr) 58px 22px;align-items:center;padding:0 10px;gap:6px}
-.th6{flex:none;height:34px;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text-3);border-bottom:1px solid var(--hair)}
-.th6 button{font:inherit;text-transform:inherit;letter-spacing:inherit;color:inherit}.th6 button:hover{color:var(--text)}.th6 button.on{color:var(--accent)}
-.tb6{flex:1;min-height:0;overflow:auto;padding:4px 4px;scrollbar-width:thin}
-.rw{width:100%;height:24px;border-radius:6px;font-size:12px;color:var(--text-3)}
-.rw b{font:700 11.5px var(--mono);color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.rw .n{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.rw .u{font:500 10.5px var(--mono)}
-.rw:hover{background:var(--hover)}.rw.sel{background:var(--win)}
-.rw.on{background:var(--ts);box-shadow:inset 3px 0 0 var(--tc)}.rw.on b{color:var(--tc)}
-
-/* 07 cards */
-.cp{flex:none;width:410px;overflow:auto;padding:8px 10px;background:var(--panel-2);border-right:1px solid var(--hair);display:grid;align-content:start;gap:6px;scrollbar-width:thin}
-.cg{display:grid;grid-template-columns:1fr 1fr;gap:5px}
-.cp .c2{height:46px}
-
-/* 08 two-line tabs */
-.r2{display:flex;align-items:center;gap:2px;padding:4px 6px 4px 9px;background:var(--panel-2);box-shadow:inset 3px 0 0 var(--tc)}
-.r2+.r2{border-top:1px solid var(--hair)}
-.r2:last-of-type{border-bottom:1px solid var(--hair)}
-.r2>.bd{margin-right:5px}
-.t2{position:relative;flex:1 1 auto;min-width:0;display:grid;line-height:1.25;height:40px;align-content:center;padding:0 16px 0 7px;border-radius:8px;color:var(--text-2);transition:background .15s}
-.t2 b{font-size:11px;letter-spacing:-.01em;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--text)}
-.t2 span:not(.x){font-size:10.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--text-3)}
-.t2:hover{background:var(--hover)}
-.t2.sel{background:var(--win);box-shadow:0 0 0 1px var(--hair),inset 0 2px 0 var(--tc)}.t2.on b{color:var(--tc)}
-.t2 .x{position:absolute;top:2px;right:2px;width:16px;height:16px;font-size:12px}
-
-/* 09 floating panel */
-.view.fpad{padding-right:330px}
-.fp{position:absolute;top:56px;right:12px;bottom:12px;z-index:3;width:306px;display:flex;flex-direction:column;border-radius:14px;background:color-mix(in srgb,var(--win) 90%,transparent);backdrop-filter:blur(14px);box-shadow:0 0 0 1px var(--hair),0 20px 44px -18px rgba(14,33,64,.5);overflow:hidden;animation:dIn .18s}
-.fph{flex:none;display:flex;align-items:center;gap:8px;height:38px;padding:0 6px 0 12px;font-weight:700;font-size:12.5px;border-bottom:1px solid var(--hair)}
-.fph em{font:700 11px var(--mono);font-style:normal;color:var(--text-3)}
-.fph button{margin-left:auto;height:26px;padding:0 8px;border-radius:7px;font-size:11.5px;font-weight:600;color:var(--text-2)}.fph button:hover{background:var(--hover)}
-.fpb{flex:1;overflow:auto;padding:6px;display:grid;align-content:start;gap:6px;scrollbar-width:thin}
-
-/* 05 header columns / 10 two-column panel */
-.hc{flex:none;display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:6px 10px 8px;background:var(--panel-2);border-bottom:1px solid var(--hair)}
-.hc>div+div{border-left:1px solid var(--hair);padding-left:14px}
-.l2{display:grid;grid-template-columns:1fr 1fr;grid-auto-flow:column;grid-template-rows:repeat(5,auto);gap:1px 4px}
-.l2 .li .dt{display:none}.l2 .li{padding-left:8px}
-.p2{flex:none;display:grid;grid-template-columns:1fr 1fr;gap:10px;width:600px;padding:8px;background:var(--panel-2);border-right:1px solid var(--hair);align-content:start}
-.p2>div+div{border-left:1px solid var(--hair);padding-left:10px}
-/* 10 bottom tray */
-.tray{flex:none;border-top:1px solid var(--hair);background:var(--panel-2);padding:4px 8px;display:grid;gap:2px}
-.trr{display:flex;align-items:center;gap:4px}
-.trr .hs{padding:0 10px}
-.trr .tf{height:28px}
+/* design B: expanding strip */
+.r6{position:relative;flex:none;width:52px;z-index:3}
+.r6in{position:absolute;inset:0 auto 0 0;width:52px;overflow:hidden;padding:8px 6px;background:var(--panel-2);border-right:1px solid var(--hair);display:flex;flex-direction:column;gap:2px;transition:width .22s cubic-bezier(.2,.8,.2,1),box-shadow .22s}
+.r6:hover .r6in,.r6.pin .r6in{width:330px;box-shadow:16px 0 34px -18px rgba(14,33,64,.45)}
+.r6.pin{width:330px}.r6.pin .r6in{box-shadow:none}
+.r6h{display:flex;align-items:center;gap:8px;height:22px;padding-left:4px;margin-top:4px;flex:none;width:318px}
+.tl{font:800 10px var(--mono);letter-spacing:.1em;color:var(--tc);flex:none;width:34px;text-align:center}
+.r6h .ct{font-size:10.5px;color:var(--text-3);white-space:nowrap}
+.r6h .pinb{margin-left:auto;font-size:10.5px;font-weight:600;color:var(--text-3);padding:2px 6px;border-radius:6px;white-space:nowrap}
+.r6h .pinb:hover{background:var(--hover);color:var(--text)}
+.i6{display:flex;align-items:center;gap:10px;height:24px;border-radius:7px;padding:0 3px 0 4px;font-size:11.5px;color:var(--text-2);white-space:nowrap;flex:none;width:318px}
+.i6 .av{flex:none;width:34px;height:20px;border-radius:5px;display:grid;place-items:center;font:700 8.5px var(--mono);letter-spacing:-.02em;color:var(--tc);background:var(--ts)}
+.i6 .tx{flex:1}.i6 .tx b{color:var(--text)}
+.i6:hover{background:var(--hover)}
+.i6.sel .av{background:var(--tc);color:#fff}.i6.sel{background:var(--win)}
 
 .toast{position:fixed;left:50%;bottom:24px;z-index:60;transform:translate(-50%,20px);opacity:0;transition:.25s;background:#0e2140;color:#fff;padding:10px 16px;border-radius:10px;font-weight:600;font-size:12.5px;pointer-events:none}
 .toast.on{opacity:1;transform:translate(-50%,0)}
@@ -160,11 +242,9 @@ main{max-width:1180px;margin:auto;padding:22px 24px 80px;display:grid;gap:22px}
 </head>
 <body>
 <header class="top"><div class="in">
-  <div><h1>Tabs for 10 PDF + 10 PCB — every name visible</h1><p>10 simple designs. In all of them you can read every open file name, so you always know what to open and what to close.</p></div>
+  <div><h1>Tabs with the tree view — Capsule switch vs Expanding strip</h1><p>Both shown inside the real layout: library tree on the left. Click a file in the tree to open it; the green dot means it is open.</p></div>
   <div class="ctl">
     <span class="cnt" id="cnt"></span>
-    <button class="btn" data-a="add" data-t="pdf">+ PDF</button>
-    <button class="btn" data-a="add" data-t="pcb">+ PCB</button>
     <button class="btn" data-a="reset">Small (2 + 1)</button>
     <button class="btn pri" data-a="fill">Open 10 + 10</button>
     <button class="btn" data-a="theme" title="Light / dark">◐</button>
@@ -176,167 +256,247 @@ main{max-width:1180px;margin:auto;padding:22px 24px 80px;display:grid;gap:22px}
 <script>
 const $ = (s, r = document) => r.querySelector(s);
 const $all = (s, r = document) => [...r.querySelectorAll(s)];
+const I = d => `<svg class="i" viewBox="0 0 24 24"><path d="${d}"/></svg>`;
+const IC = {chev:'M9 6l6 6-6 6', fold:'M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z', search:'M10.5 4a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13zM20 20l-4.8-4.8', lib:'M4 4h4v16H4zM10 4h4v16h-4zM16 5l4 1-3 14-4-1z'};
 
-/* ---------- data ---------- */
+/* ---------- data: catalogue (brand > model > files) ---------- */
 const PDF = [
-  {c:'820-3115', n:'CPU power supply'}, {c:'A1278 820-3115-b', n:'EC issue'}, {c:'820-00165', n:'MacBook Air 13in'},
-  {c:'X2121', n:'iPhone 13 Pro Max'}, {c:'SM-S918B', n:'Galaxy S23 Ultra'}, {c:'M2101K6G', n:'Redmi Note 10 Pro'},
-  {c:'X1854 820-01523', n:'iPhone 11'}, {c:'SM-A525F', n:'Galaxy A52'}, {c:'LE2123', n:'OnePlus 9 Pro'}, {c:'GP4BC', n:'Pixel 7 Pro'}];
+  {c:'820-3115', n:'CPU power supply', k:'3115', br:'Apple', md:'MacBook Pro 13in'}, {c:'A1278 820-3115-b', n:'EC issue', k:'3115', br:'Apple', md:'MacBook Pro 13in'},
+  {c:'820-00165', n:'MacBook Air 13in', k:'00165', br:'Apple', md:'MacBook Air 13in'}, {c:'X2121', n:'iPhone 13 Pro Max', k:'X2121', br:'Apple', md:'iPhone 13 Pro Max'},
+  {c:'SM-S918B', n:'Galaxy S23 Ultra', k:'S918B', br:'Samsung', md:'Galaxy S23 Ultra'}, {c:'M2101K6G', n:'Redmi Note 10 Pro', k:'M2101', br:'Xiaomi', md:'Redmi Note 10 Pro'},
+  {c:'X1854 820-01523', n:'iPhone 11', k:'X1854', br:'Apple', md:'iPhone 11'}, {c:'SM-A525F', n:'Galaxy A52', k:'A525F', br:'Samsung', md:'Galaxy A52'},
+  {c:'LE2123', n:'OnePlus 9 Pro', k:'LE2123', br:'OnePlus', md:'OnePlus 9 Pro'}, {c:'GP4BC', n:'Pixel 7 Pro', k:'GP4BC', br:'Google', md:'Pixel 7 Pro'},
+  {c:'D27 820-02870', n:'iPhone 14 Pro', k:'D27', br:'Apple', md:'iPhone 14 Pro'}, {c:'SM-A546E', n:'Galaxy A54', k:'A546E', br:'Samsung', md:'Galaxy A54'}];
 const PCB = [
-  {c:'K92-820-2914_A', n:'MacBook Pro 13in'}, {c:'X2121', n:'iPhone 13 Pro Max'}, {c:'820-3115-B', n:'MacBook Pro 13in'},
-  {c:'SM-S918B_REV1.0', n:'Galaxy S23 Ultra'}, {c:'J79 820-00165', n:'MacBook Air'}, {c:'SM-A525F', n:'Galaxy A52'},
-  {c:'M2004J19G', n:'Redmi 9'}, {c:'X1854', n:'iPhone 11'}, {c:'LE2123', n:'OnePlus 9 Pro'}, {c:'G10', n:'Pixel 7'}];
+  {c:'K92-820-2914_A', n:'MacBook Pro 13in', k:'2914', br:'Apple', md:'MacBook Pro 13in'}, {c:'X2121', n:'iPhone 13 Pro Max', k:'X2121', br:'Apple', md:'iPhone 13 Pro Max'},
+  {c:'820-3115-B', n:'MacBook Pro 13in', k:'3115', br:'Apple', md:'MacBook Pro 13in'}, {c:'SM-S918B_REV1.0', n:'Galaxy S23 Ultra', k:'S918B', br:'Samsung', md:'Galaxy S23 Ultra'},
+  {c:'J79 820-00165', n:'MacBook Air', k:'00165', br:'Apple', md:'MacBook Air 13in'}, {c:'SM-A525F', n:'Galaxy A52', k:'A525F', br:'Samsung', md:'Galaxy A52'},
+  {c:'M2004J19G', n:'Redmi 9', k:'M2004', br:'Xiaomi', md:'Redmi 9'}, {c:'X1854', n:'iPhone 11', k:'X1854', br:'Apple', md:'iPhone 11'},
+  {c:'LE2123', n:'OnePlus 9 Pro', k:'LE2123', br:'OnePlus', md:'OnePlus 9 Pro'}, {c:'G10', n:'Pixel 7', k:'G10', br:'Google', md:'Pixel 7'},
+  {c:'D27', n:'iPhone 14 Pro', k:'D27', br:'Apple', md:'iPhone 14 Pro'}, {c:'SM-A546E', n:'Galaxy A54', k:'A546E', br:'Samsung', md:'Galaxy A54'}];
+['3115', '3115-b', '00165', 'X2121', 'S918B', 'M2101', 'X1854', 'A525F', 'LE2123', 'GP4BC', 'D27', 'A546E'].forEach((s, i) => PDF[i].s = s);
+['2914', 'X2121', '3115-B', 'S918B', 'J79', 'A525F', 'M2004', 'X1854', 'LE2123', 'G10', 'D27', 'A546E'].forEach((s, i) => PCB[i].s = s);
 const L = {pdf: PDF, pcb: PCB}, TT = {pdf: 'PDF', pcb: 'PCB'}, TYPES = ['pdf', 'pcb'];
-const f = (t, i) => L[t][i], key = (t, i) => t + ':' + i, other = t => t === 'pdf' ? 'pcb' : 'pdf';
+const F = (t, i) => L[t][i], key = (t, i) => t + ':' + i, other = t => t === 'pdf' ? 'pcb' : 'pdf';
 const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
+const CAT = (() => { const b = {}; for (const t of TYPES) L[t].forEach((f, i) => { ((b[f.br] = b[f.br] || {})[f.md] = b[f.br][f.md] || []).push([t, i]); }); return b; })();
 
 /* ---------- state ---------- */
-let S; const U = {}; for (let n = 1; n <= 10; n++) U[n] = {};
-function reset() { S = {o:{pdf:[0,1], pcb:[0]}, a:{pdf:0, pcb:0}, t:'pdf', mru:['pdf:0','pcb:0','pdf:1']}; draw(); }
-function fill() {
-  S = {o:{pdf:[0,1,2,3,4,5,6,7,8,9], pcb:[0,1,2,3,4,5,6,7,8,9]}, a:{pdf:0, pcb:0}, t:'pdf', mru:['pdf:0','pcb:0','pdf:3','pcb:1']};
-  for (let i = 1; i < 10; i++) for (const t of TYPES) if (!S.mru.includes(key(t, i))) S.mru.push(key(t, i));
+let S; const U = {1:{}, 2:{}};
+for (const n of [1, 2]) { U[n].open = new Set(['Apple', 'Apple/MacBook Pro 13in', 'Apple/iPhone 13 Pro Max', 'Samsung']); U[n].q = ''; }
+function reset() { S = {o:{pdf:[0,1], pcb:[0]}, a:{pdf:0, pcb:0}, t:'pdf'}; draw(); }
+function fill() { S = {o:{pdf:[0,1,2,3,4,5,6,7,8,9], pcb:[0,1,2,3,4,5,6,7,8,9]}, a:{pdf:1, pcb:0}, t:'pdf'}; draw(); }
+function act(t, i) { S.a[t] = i; S.t = t; draw(); }
+/* design A view layout: single · pdf|pdf · pdf|pcb (the round button in the capsule) */
+const LY = {lay:'single', a2:null, pane:'L', pop:false};
+const LAYS = [['single', 'Single', 'One file, full width', '1'], ['pp', 'PDF × PDF', 'Two schematics side by side', '2'], ['pb', 'PDF × PCB', 'Schematic and its board', '3']];
+const lic = k => I(k === 'single' ? 'M3 4h18v16H3z' : k === 'pp' ? 'M3 4h18v16H3zM12 4v16M6 8h3M6 11h3M15 8h3M15 11h3' : 'M3 4h18v16H3zM12 4v16M6 8h3M6 11h3M15 9h3v5h-3z');
+function a2() { const o = S.o.pdf; if (LY.a2 != null && o.includes(LY.a2) && LY.a2 !== S.a.pdf) return LY.a2; return o.find(i => i !== S.a.pdf) ?? null; }
+function actA(t, i) { if (LY.lay === 'pp' && t === 'pdf' && LY.pane === 'R') { LY.a2 = i; S.t = 'pdf'; draw(); } else act(t, i); }
+function setLay(k) {
+  LY.lay = k; LY.pop = false; LY.pane = 'L';
+  if (k === 'pp') { S.t = 'pdf'; if (S.a.pdf == null && S.o.pdf.length) S.a.pdf = S.o.pdf[0]; if (a2() == null) toast('Open a second PDF to see two side by side'); }
+  if (k === 'pb' && (!S.o.pdf.length || !S.o.pcb.length)) toast('Open one PDF and one PCB to see both');
   draw();
 }
-function act(t, i) { S.a[t] = i; S.t = t; const k = key(t, i); S.mru = [k, ...S.mru.filter(x => x !== k)]; draw(); }
+function typeA(t) {
+  if (t === S.t) return;
+  SWAPPED = true;
+  if (LY.lay === 'pp' && t === 'pcb') LY.lay = 'single';
+  if (LY.lay === 'pb') LY.pane = t === 'pdf' ? 'L' : 'R';
+  S.t = t; if (S.a[t] == null && S.o[t].length) S.a[t] = S.o[t][0]; draw(); SWAPPED = false;
+}
+function openFile(t, i) {
+  if (!S.o[t].includes(i)) {
+    if (S.o[t].length >= 10) { toast(`${TT[t]} limit is 10 — close a ${TT[t]} first`); return; }
+    S.o[t].push(i);
+  }
+  act(t, i);
+}
 function close(t, i) {
   const o = S.o[t], p = o.indexOf(i); if (p < 0) return;
-  o.splice(p, 1); S.mru = S.mru.filter(x => x !== key(t, i));
+  o.splice(p, 1);
   if (S.a[t] === i) S.a[t] = o.length ? o[Math.min(p, o.length - 1)] : null;
   if (S.a[S.t] == null && S.a[other(S.t)] != null) S.t = other(S.t);
   draw();
 }
-function add(t) {
-  const o = S.o[t];
-  if (o.length >= 10) { toast(`${TT[t]} limit is 10 — close one first`); return; }
-  const i = [0,1,2,3,4,5,6,7,8,9].find(k => !o.includes(k)); o.push(i); act(t, i);
-}
-function setType(t) { S.t = t; if (S.a[t] == null && S.o[t].length) S.a[t] = S.o[t][0]; draw(); }
 
 /* ---------- drawings ---------- */
 const AC = {};
 function rng(s) { return () => (s = s * 16807 % 2147483647) / 2147483647; }
-function art(t, i, fit) {
-  const k = t + i + (fit ? 'f' : ''); if (AC[k]) return AC[k];
-  const r = rng(t === 'pdf' ? i * 131 + 7 : i * 197 + 1003), F = v => v.toFixed(1); let s = '';
+function art(t, i) {
+  const k = t + i; if (AC[k]) return AC[k];
+  const r = rng(t === 'pdf' ? i * 131 + 7 : i * 197 + 1003), f = v => v.toFixed(1); let s = '';
   if (t === 'pdf') {
-    s += '<rect width="320" height="200" fill="#fff"/><rect x="6" y="6" width="308" height="188" fill="none" stroke="#c9d2de"/><rect x="236" y="168" width="72" height="20" fill="none" stroke="#9aa7b8"/><rect x="240" y="173" width="40" height="3" fill="#d93a3a"/><rect x="240" y="180" width="56" height="2" fill="#9aa7b8"/>';
+    s += '<rect width="320" height="200" fill="#fff"/><rect x="6" y="6" width="308" height="188" fill="none" stroke="#c9d2de"/><rect x="236" y="168" width="72" height="20" fill="none" stroke="#9aa7b8"/><rect x="240" y="173" width="40" height="3" fill="#d93a3a"/>';
     const C = [];
-    for (let n = 0; n < 9; n++) { const w = 18 + r() * 44, h = 12 + r() * 30, x = 16 + r() * (270 - w), y = 16 + r() * (140 - h); C.push([x, y, w, h]); s += `<rect x="${F(x)}" y="${F(y)}" width="${F(w)}" height="${F(h)}" fill="none" stroke="#1f2d45" stroke-width="1.2"/>`; }
-    for (let n = 0; n < 8; n++) { const a = C[n], b = C[n + 1], x1 = a[0] + a[2], y1 = a[1] + a[3] / 2, x2 = b[0], y2 = b[1] + b[3] / 2, xm = (x1 + x2) / 2; s += `<path d="M${F(x1)} ${F(y1)}H${F(xm)}V${F(y2)}H${F(x2)}" fill="none" stroke="#3a4a66" stroke-width=".8"/>`; }
-    for (let n = 0; n < 5; n++) s += `<rect x="${F(16 + r() * 260)}" y="${F(16 + r() * 140)}" width="14" height="4" rx="1" fill="#d93a3a" opacity=".85"/>`;
+    for (let n = 0; n < 9; n++) { const w = 18 + r() * 44, h = 12 + r() * 30, x = 16 + r() * (270 - w), y = 16 + r() * (140 - h); C.push([x, y, w, h]); s += `<rect x="${f(x)}" y="${f(y)}" width="${f(w)}" height="${f(h)}" fill="none" stroke="#1f2d45" stroke-width="1.2"/>`; }
+    for (let n = 0; n < 8; n++) { const a = C[n], b = C[n + 1], x1 = a[0] + a[2], y1 = a[1] + a[3] / 2, x2 = b[0], y2 = b[1] + b[3] / 2, xm = (x1 + x2) / 2; s += `<path d="M${f(x1)} ${f(y1)}H${f(xm)}V${f(y2)}H${f(x2)}" fill="none" stroke="#3a4a66" stroke-width=".8"/>`; }
   } else {
     s += '<rect width="320" height="200" fill="#08241b"/><rect x="12" y="12" width="296" height="176" rx="20" fill="#0f4d36" stroke="#c9a24a" stroke-width="2"/>';
-    for (let n = 0; n < 14; n++) { const x = 24 + r() * 270, y = 24 + r() * 150; s += `<path d="M${F(x)} ${F(y)}h${F(r() * 80 - 40)}v${F(r() * 60 - 30)}h${F(r() * 60 - 30)}" fill="none" stroke="#2c8a5c" stroke-width="1.4"/>`; }
-    for (let n = 0; n < 6; n++) { const w = 16 + r() * 34, h = 14 + r() * 26, x = 24 + r() * (270 - w), y = 24 + r() * (150 - h); s += `<rect x="${F(x)}" y="${F(y)}" width="${F(w)}" height="${F(h)}" rx="2" fill="#11161b" stroke="#3b4b45"/>`; }
-    for (let n = 0; n < 40; n++) s += `<circle cx="${F(22 + r() * 276)}" cy="${F(22 + r() * 156)}" r="1.7" fill="#d9b55c"/>`;
+    for (let n = 0; n < 14; n++) { const x = 24 + r() * 270, y = 24 + r() * 150; s += `<path d="M${f(x)} ${f(y)}h${f(r() * 80 - 40)}v${f(r() * 60 - 30)}h${f(r() * 60 - 30)}" fill="none" stroke="#2c8a5c" stroke-width="1.4"/>`; }
+    for (let n = 0; n < 6; n++) { const w = 16 + r() * 34, h = 14 + r() * 26, x = 24 + r() * (270 - w), y = 24 + r() * (150 - h); s += `<rect x="${f(x)}" y="${f(y)}" width="${f(w)}" height="${f(h)}" rx="2" fill="#11161b" stroke="#3b4b45"/>`; }
+    for (let n = 0; n < 40; n++) s += `<circle cx="${f(22 + r() * 276)}" cy="${f(22 + r() * 156)}" r="1.7" fill="#d9b55c"/>`;
   }
-  return AC[k] = `<svg viewBox="0 0 320 200" preserveAspectRatio="xMidYMid ${fit ? 'meet' : 'slice'}">${s}</svg>`;
+  return AC[k] = `<svg viewBox="0 0 320 200" preserveAspectRatio="xMidYMid meet">${s}</svg>`;
 }
 
 /* ---------- shared pieces ---------- */
 const st = (t, i) => (S.a[t] === i ? ' sel' : '') + (S.a[t] === i && S.t === t ? ' on' : '');
-const A = (t, i) => `data-a="act" data-t="${t}" data-i="${i}" title="${esc(TT[t] + ' · ' + f(t, i).c + ' — ' + f(t, i).n)}"`;
+const A = (t, i) => `data-a="act" data-t="${t}" data-i="${i}" title="${esc(TT[t] + ' · ' + F(t, i).c + ' — ' + F(t, i).n)}"`;
 const X = (t, i) => `<span class="x" data-a="x" data-t="${t}" data-i="${i}" title="Close">×</span>`;
-const li = (t, i) => `<button class="li ${t}${st(t, i)}" ${A(t, i)}><span class="dt"></span><b>${f(t, i).c}</b><span class="n">${f(t, i).n}</span>${X(t, i)}</button>`;
-const c2 = (t, i, th) => `<button class="c2 ${t}${st(t, i)}" ${A(t, i)}>${th ? `<span class="th">${art(t, i)}</span>` : ''}<span class="tx"><b>${f(t, i).c}</b><span>${f(t, i).n}</span></span>${X(t, i)}</button>`;
-const tf = (t, i) => `<button class="tf ${t}${st(t, i)}" ${A(t, i)}><span class="dt"></span><b>${f(t, i).c}</b><span class="n">${f(t, i).n}</span>${X(t, i)}</button>`;
-const head = t => `<div class="sh2 ${t}"><span class="bd">${TT[t]}</span>${S.o[t].length} open<button class="addb" data-a="add" data-t="${t}" title="Open a ${TT[t]}">+</button></div>`;
-const group = (t, fn = li) => `<div>${head(t)}<div class="grp">${S.o[t].map(i => fn(t, i)).join('')}</div></div>`;
-function view(cls = '') {
+const lab = (t, i) => `<span class="tx"><b>${F(t, i).c}</b>${F(t, i).n}</span>`;
+function view() {
   const t = S.t, i = S.a[t];
-  if (i == null) return `<div class="view ${cls}"><div class="empty">No file open — use + PDF / + PCB at the top</div></div>`;
-  return `<div class="view ${cls}"><div class="vh"><span class="bd ${t}">${TT[t]}</span><b>${f(t, i).c}</b><span>${f(t, i).n}</span></div><div class="pg ${t}">${art(t, i, 1)}</div></div>`;
+  if (i == null) return `<div class="view"><div class="empty">No file open<br>Pick a PDF or PCB in the library tree</div></div>`;
+  return `<div class="view"><div class="vh"><span class="bd ${t}">${TT[t]}</span><b>${F(t, i).c}</b><span>${F(t, i).n}</span><span style="margin-left:auto;color:var(--text-3)">${F(t, i).br} › ${F(t, i).md}</span></div><div class="pg ${t}">${art(t, i)}</div></div>`;
 }
-const title = () => { const t = S.t, i = S.a[t]; return i != null ? `<span class="bd ${t}">${TT[t]}</span><b>${f(t, i).c}</b>${f(t, i).n}` : 'No file open'; };
 
-/* ---------- the 10 designs ---------- */
+/* ---------- tree view ---------- */
+function tree(n) {
+  const u = U[n], q = u.q.toLowerCase().trim(), open = id => q || u.open.has(id);
+  const W = 16, guides = d => Array.from({length:d}, (_, k) => `<span class="guide" style="left:${k * W + 13}px"></span>`).join('');
+  let h = '';
+  for (const br of Object.keys(CAT)) {
+    const models = Object.entries(CAT[br]).filter(([md, fs]) => !q || (br + ' ' + md).toLowerCase().includes(q) || fs.some(([t, i]) => (F(t, i).c + ' ' + F(t, i).n).toLowerCase().includes(q)));
+    if (!models.length) continue;
+    const nOpen = models.reduce((s, [, fs]) => s + fs.filter(([t, i]) => S.o[t].includes(i)).length, 0);
+    h += `<button class="tr fold lv0${open(br) ? ' fo' : ''}" data-a="tog" data-n="${n}" data-v="${br}" style="padding-left:4px">${I(IC.chev).replace('class="i"', 'class="i cv"')}${I(IC.fold).replace('class="i"', 'class="i fd"')}<span class="tx">${br}</span>${nOpen ? `<span class="n">${nOpen} open</span>` : ''}</button>`;
+    if (!open(br)) continue;
+    for (const [md, fs] of models) {
+      const id = br + '/' + md;
+      h += `<button class="tr fold${open(id) ? ' fo' : ''}" data-a="tog" data-n="${n}" data-v="${id}" style="padding-left:${W + 4}px">${guides(1)}${I(IC.chev).replace('class="i"', 'class="i cv"')}${I(IC.fold).replace('class="i"', 'class="i fd"')}<span class="tx">${md}</span><span class="n">${fs.length}</span></button>`;
+      if (!open(id)) continue;
+      for (const [t, i] of fs) {
+        const op = S.o[t].includes(i), cur = S.a[t] === i && S.t === t && op;
+        h += `<button class="tr file ${t}${op ? ' op' : ''}${cur ? ' cur' : ''}" data-a="open" data-t="${t}" data-i="${i}" style="padding-left:${W * 2 + 8}px" title="${op ? 'Open — click to show' : 'Click to open'}">${guides(2)}<span class="bd">${TT[t]}</span><span class="tx">${F(t, i).c}</span>${op ? '<span class="od"></span>' : ''}</button>`;
+      }
+    }
+  }
+  return `<aside class="tree"><div class="th">${I(IC.lib)}Library<em>${S.o.pdf.length + S.o.pcb.length} open</em></div>
+    <label class="ts">${I(IC.search)}<input data-tq="${n}" placeholder="Search boards…" value="${esc(u.q)}"></label>
+    <div class="tb" data-keep="tb${n}">${h || '<div style="padding:12px;color:var(--text-3);font-size:12px">No match</div>'}</div>
+    <div class="tf"><i></i> open in a tab · PDF ${S.o.pdf.length}/10 · PCB ${S.o.pcb.length}/10</div></aside>`;
+}
+
+/* ---------- the 2 designs ---------- */
 const R = {};
-// 01 side tabs
-R[1] = () => `<div class="lay"><div class="side">${group('pdf')}${group('pcb')}</div>${view()}</div>`;
-// 02 split sides
-R[2] = () => `<div class="lay"><div class="side w270">${group('pdf')}</div>${view()}<div class="side w270 r">${group('pcb')}</div></div>`;
-// 03 switch + grid
-R[3] = () => `<div class="bar"><div class="seg">${TYPES.map(t => `<button class="sg ${t}${S.t === t ? ' on' : ''}" data-a="type" data-t="${t}"><span class="bd">${TT[t]}</span>${S.o[t].length}</button>`).join('')}</div><div class="ttl">${title()}</div><button class="sbtn" data-a="add" data-t="${S.t}">+ Open ${TT[S.t]}</button></div>
-  <div class="gp"><div class="g5">${S.o[S.t].map(i => c2(S.t, i)).join('')}</div></div>${view()}`;
-// 04 tab grid with pictures
-R[4] = u => `<div class="bar"><div class="ttl">${title()}</div><button class="sbtn" data-a="ui" data-d="4" data-k="hide">${u.hide ? '▾ Show all 20' : '▴ Hide'} tabs</button></div>
-  ${u.hide ? '' : `<div class="gp">${TYPES.filter(t => S.o[t].length).map(t => `<div class="gr ${t}"><span class="bd">${TT[t]}</span>${S.o[t].map(i => c2(t, i, 1)).join('')}</div>`).join('')}</div>`}${view()}`;
-// 05 header columns
-R[5] = () => `<div class="hc">${TYPES.map(t => `<div>${head(t)}<div class="l2">${S.o[t].map(i => li(t, i)).join('')}</div></div>`).join('')}</div>${view()}`;
-// 06 table
-R[6] = u => {
-  const so = u.sort || 'type', rows = [...S.o.pdf.map(i => ['pdf', i]), ...S.o.pcb.map(i => ['pcb', i])];
-  const used = (t, i) => S.mru.indexOf(key(t, i));
-  if (so === 'used') rows.sort((a, b) => used(...a) - used(...b));
-  if (so === 'name') rows.sort((a, b) => f(...a).n.localeCompare(f(...b).n));
-  const ago = (t, i) => { const p = used(t, i); return p <= 0 ? 'now' : p * 3 + ' min'; };
-  const hb = (k, l) => `<button class="${so === k ? 'on' : ''}" data-a="sort" data-v="${k}">${l}${so === k ? ' ↓' : ''}</button>`;
-  return `<div class="lay"><div class="tbl"><div class="th6">${hb('type', 'Type')}<span>File</span>${hb('name', 'Model')}${hb('used', 'Used')}<span></span></div>
-    <div class="tb6" data-keep="tb6">${rows.map(([t, i]) => `<button class="rw ${t}${st(t, i)}" ${A(t, i)}><span><span class="bd">${TT[t]}</span></span><b>${f(t, i).c}</b><span class="n">${f(t, i).n}</span><span class="u">${ago(t, i)}</span>${X(t, i)}</button>`).join('')}</div></div>${view()}</div>`;
+function paneA(t, i, side) {
+  const foc = LY.lay === 'pp' ? LY.pane === side : S.t === t;
+  if (i == null) return `<div class="pane${foc ? ' foc' : ''} ${t}" data-a="pane" data-v="${side}"><div class="empty">No ${TT[t]} here<br>pick one in the tree</div></div>`;
+  return `<div class="pane ${t}${foc ? ' foc' : ''}" data-a="pane" data-v="${side}"><div class="vh"><span class="bd">${TT[t]}</span><b>${F(t, i).c}</b><span>${F(t, i).n}</span></div><div class="pg ${t}">${art(t, i)}</div></div>`;
+}
+function viewA() {
+  if (LY.lay === 'pp') return `<div class="split">${paneA('pdf', S.a.pdf, 'L')}${paneA('pdf', a2(), 'R')}</div>`;
+  if (LY.lay === 'pb') return `<div class="split">${paneA('pdf', S.a.pdf, 'L')}${paneA('pcb', S.a.pcb, 'R')}</div>`;
+  return view();
+}
+
+/* ---------- switch styles (pick one in the gallery) ---------- */
+let SW = 'drop', SWAPPED = false;
+const DOC = 'M6 3h9l4 4v14H6zM14 3v5h5', CHIP = 'M7 7h10v10H7zM10 3v4M14 3v4M10 17v4M14 17v4M3 10h4M3 14h4M17 10h4M17 14h4', SWAP = 'M7 7h13M16 3l4 4-4 4M17 17H4M8 13l-4 4 4 4';
+const SWS = [
+  ['pill', 'Sliding pill', 'A colour pill slides behind the active side.'],
+  ['under', 'Underline tabs', 'Plain words; a coloured line marks the open type.'],
+  ['tog', 'Toggle switch', 'PDF ⟷ PCB like a real on/off switch.'],
+  ['split', 'Split buttons', 'Two clear buttons with icons and counts.'],
+  ['card', 'Icon cards', 'File-type tiles; the active one lifts up.'],
+  ['drop', 'Smart swap', 'Shows the current type big; one click swaps.'],
+  ['rock', 'Rocker', 'A hardware rocker with an LED, bench-tool feel.'],
+  ['ico', 'Icon segments', 'Smallest: icons with count badges.']];
+function switchHTML(style, live) {
+  const t = S.t, cur = LAYS.find(l => l[0] === LY.lay), np = S.o.pdf.length, nb = S.o.pcb.length;
+  const ty = tt => live ? `data-a="typeA" data-t="${tt}"` : '';
+  const lay = `<button class="lay named${live && LY.pop ? ' open' : ''}" ${live ? 'data-a="laym"' : ''} data-tt="${cur[1]} · Alt 1–3">${mg(LY.lay)}<span>View layout</span>${I('M6 9l6 6 6-6')}</button>`;
+  const ic = tt => I(tt === 'pdf' ? DOC : CHIP);
+  switch (style) {
+    case 'under': return `<div class="s-under">${['pdf', 'pcb'].map((x, k) => `${k ? `<span class="s-dv"></span>${lay}<span class="s-dv"></span>` : ''}<button class="ty ${x}${t === x ? ' on' : ''}" ${ty(x)}>${TT[x]}<span class="n">${x === 'pdf' ? np : nb}</span></button>`).join('')}</div>`;
+    case 'tog': return `<div class="s-tog"><button class="lb pdf${t === 'pdf' ? ' on' : ''}" ${ty('pdf')}>PDF<span class="n">${np}</span></button><button class="trk ${t}" ${ty(t === 'pdf' ? 'pcb' : 'pdf')} title="Switch PDF ⟷ PCB"><i></i></button><button class="lb pcb${t === 'pcb' ? ' on' : ''}" ${ty('pcb')}>PCB<span class="n">${nb}</span></button><span class="s-dv"></span>${lay}</div>`;
+    case 'split': return `<div class="s-split"><button class="ty pdf${t === 'pdf' ? ' on' : ''}" ${ty('pdf')}>${ic('pdf')}PDF<span class="n">${np}</span></button>${lay}<button class="ty pcb${t === 'pcb' ? ' on' : ''}" ${ty('pcb')}>${ic('pcb')}PCB<span class="n">${nb}</span></button></div>`;
+    case 'card': return `<div class="s-card">${['pdf', 'pcb'].map((x, k) => `${k ? lay : ''}<button class="ty ${x}${t === x ? ' on' : ''}" ${ty(x)}><span class="tile">${ic(x)}</span><span class="tx2"><b>${TT[x]}</b><span>${x === 'pdf' ? np : nb} open</span></span></button>`).join('')}</div>`;
+    case 'drop': { const o = t === 'pdf' ? 'pcb' : 'pdf', sw = live && SWAPPED ? ' swp' : '';
+      return `<div class="s-drop"><div class="sw"><span class="cur ${t}${sw}" data-tt="Showing ${TT[t]} files">${ic(t)}${TT[t]}<span class="n">${t === 'pdf' ? np : nb}</span></span><button class="oth ${o}${sw}" ${ty(o)} data-tt="Swap to ${TT[o]} · Alt S">${I(SWAP)}${TT[o]}<span class="n2">${o === 'pdf' ? np : nb}</span></button></div>${lay}</div>`; }
+    case 'rock': return `<div class="s-rock"><button class="ty pdf${t === 'pdf' ? ' on' : ''}" ${ty('pdf')}><span class="led"></span>PDF<span class="n">${np}</span></button>${lay}<button class="ty pcb${t === 'pcb' ? ' on' : ''}" ${ty('pcb')}><span class="led"></span>PCB<span class="n">${nb}</span></button></div>`;
+    case 'ico': return `<div class="s-ico"><button class="ty pdf${t === 'pdf' ? ' on' : ''}" ${ty('pdf')} title="PDF files">${ic('pdf')}<span class="n">${np}</span></button><button class="ty pcb${t === 'pcb' ? ' on' : ''}" ${ty('pcb')} title="PCB files">${ic('pcb')}<span class="n">${nb}</span></button><span class="s-dv" style="margin:0 3px"></span>${lay}</div>`;
+    default: return `<div class="cap"><span class="thumb ${t}"${live ? '' : ` style="left:3px;width:${t === 'pdf' ? 70 : 72}px;${t === 'pcb' ? 'left:auto;right:3px' : ''}"`}></span>
+      <button class="ty pdf${t === 'pdf' ? ' on' : ''}" ${ty('pdf')}>PDF<span class="n">${np}</span></button><span class="dv"></span>${lay.replace('class="lay', 'class="lay')}<span class="dv"></span>
+      <button class="ty pcb${t === 'pcb' ? ' on' : ''}" ${ty('pcb')}>PCB<span class="n">${nb}</span></button></div>`;
+  }
+}
+function gallery() {
+  return SWS.map(([k, name, d], n) => `<div class="swc${SW === k ? ' on' : ''}" data-a="swpick" data-v="${k}" role="button" tabindex="0" style="cursor:pointer"><span class="hd"><span>${String(n + 1).padStart(2, '0')}</span><b>${name}</b>${SW === k ? '<span class="use">IN USE</span>' : ''}</span><span class="pvw">${switchHTML(k, false)}</span><p>${d}</p></div>`).join('');
+}
+const mg = k => `<span class="mg">${k === 'single' ? '<i></i>' : k === 'pp' ? '<i class="a"></i><i class="a"></i>' : '<i class="a"></i><i class="b"></i>'}</span>`;
+R[1] = () => {
+  const t = S.t, selI = LY.lay === 'pp' && LY.pane === 'R' && t === 'pdf' ? a2() : S.a[t];
+  const chip = i => { const on = i === selI, f = F(t, i);
+    return `<button class="ch2 ${t}${on ? ' sel' : ''}" data-a="actA" data-t="${t}" data-i="${i}" title="${esc(TT[t] + ' · ' + f.c + ' — ' + f.n)}">${on ? `<span class="tx"><b style="margin:0">${f.c}</b></span>` : `<span class="sc">${f.s}</span>`}${X(t, i)}</button>`; };
+  const cur = LAYS.find(l => l[0] === LY.lay);
+  return `${tree(1)}<div class="content"><div class="p2"><div class="capw">${switchHTML(SW, true)}
+      ${LY.pop ? `<div class="lpop"><div class="lh"><b>View layout</b><span>Alt 1 · 2 · 3</span></div><div class="lcards">${LAYS.map(([k, l, d, kb]) => `<button class="lc${LY.lay === k ? ' on' : ''}" data-a="lay" data-v="${k}" title="${d}">${LY.lay === k ? '<span class="ck">✓</span>' : ''}<span class="pv">${k === 'single' ? `<i class="${t === 'pcb' ? 'b' : ''}"></i>` : k === 'pp' ? '<i></i><i></i>' : '<i></i><i class="b"></i>'}</span><b>${l}</b></button>`).join('')}</div></div>` : ''}</div>
+    <div class="chips2" data-keep="ch1">${S.o[t].length ? S.o[t].map(chip).join('') : `<span class="nochip">No ${TT[t]} open — pick one in the tree</span>`}</div></div>${viewA()}</div>`;
 };
-// 07 picture cards
-R[7] = () => `<div class="lay"><div class="cp" data-keep="cp7">${TYPES.map(t => `<div>${head(t)}<div class="cg">${S.o[t].map(i => c2(t, i, 1)).join('')}</div></div>`).join('')}</div>${view()}</div>`;
-// 08 two-line tabs
-R[8] = () => `${TYPES.map(t => `<div class="r2 ${t}" title="${TT[t]} row">${S.o[t].map(i => `<button class="t2 ${t}${st(t, i)}" ${A(t, i)}><b>${f(t, i).c}</b><span>${f(t, i).n}</span>${X(t, i)}</button>`).join('')}${S.o[t].length < 10 ? `<button class="addb" style="margin-left:0" data-a="add" data-t="${t}">+</button>` : ''}</div>`).join('')}${view()}`;
-// 09 floating panel
-R[9] = u => `<div class="bar"><div class="ttl">${title()}</div><button class="sbtn" data-a="ui" data-d="9" data-k="hide">${u.hide ? '▤ Show open files' : '✕ Hide panel'}</button></div>${view(u.hide ? '' : 'fpad')}
-  ${u.hide ? '' : `<div class="fp"><div class="fph">Open files <em>${S.o.pdf.length + S.o.pcb.length}</em><button data-a="ui" data-d="9" data-k="hide">Hide</button></div><div class="fpb" data-keep="fp9">${group('pdf')}${group('pcb')}</div></div>`}`;
-// 10 two-column panel
-R[10] = () => `<div class="lay"><div class="p2">${group('pdf')}${group('pcb')}</div>${view()}</div>`;
+
+R[2] = u => `${tree(2)}<div class="content" style="flex-direction:row"><div class="r6${u.pin ? ' pin' : ''}"><div class="r6in">${TYPES.map(t => `<div class="r6h ${t}"><span class="tl">${TT[t]}</span><span class="ct">${S.o[t].length} open</span>${t === 'pdf' ? `<button class="pinb" data-a="pin">${u.pin ? '⇤ Unpin' : '📌 Keep open'}</button>` : ''}</div>${S.o[t].map(i => `<button class="i6 ${t}${st(t, i)}" ${A(t, i)}><span class="av">${F(t, i).k.slice(0, 5)}</span>${lab(t, i)}${X(t, i)}</button>`).join('')}`).join('')}</div></div>${view()}</div>`;
 
 /* ---------- cards ---------- */
 const META = [
-  {n:1, h:'Side tabs', rec:'Recommended', cls:'tall', p:'All open files in a list on the left: PDF group on top, PCB group below. One file per line, full name, × to close. Simple, like vertical tabs in Edge.'},
-  {n:2, h:'PDF left · PCB right', cls:'mid', p:'PDF list on the left side of the page, PCB list on the right side. You always know which side holds which type.'},
-  {n:3, h:'Switch + name grid', p:'Pick <b>PDF</b> or <b>PCB</b> at the top; its 10 files show as a neat 5 × 2 grid with code and name on two lines.'},
-  {n:4, h:'Picture grid', cls:'mid', p:'All 20 files in one grid above the page, each with a small picture, code and name. <b>Hide</b> folds it away when you need room.'},
-  {n:5, h:'Header columns', cls:'mid', p:'A short panel above the page: PDF files on the left half, PCB files on the right half, 5 lines each. Every name in one glance, no scrolling.'},
-  {n:6, h:'File table', cls:'tall', p:'A clean table: type, file, model and when you last used it. Click a column to sort — for example, sort by <b>Used</b> to find old files to close.'},
-  {n:7, h:'Picture cards', cls:'tall', p:'Side panel of cards in two columns, each with a picture, code and name. Easy to spot a board by how it looks.'},
-  {n:8, h:'Two-line tabs', rec:'Closest to today', cls:'', p:'Same place as today: a PDF row (red edge) and a PCB row (orange edge). Each tab shows the code on top and the name below, so 10 tabs fit in one row.'},
-  {n:9, h:'Floating panel', cls:'tall', p:'A glass panel floats over the right side of the page with every open file. Hide it with one click, show it again from the bar.'},
-  {n:10, h:'Two-column panel', p:'One wider side panel with PDF and PCB side by side — 10 lines tall, so all 20 files fit without scrolling.'}];
-$('#main').innerHTML = META.map(m => `<section class="opt" data-n="${m.n}"><div class="meta"><span class="num">${String(m.n).padStart(2, '0')}</span><div><h3>${m.h}${m.rec ? `<span class="rec">${m.rec}</span>` : ''}</h3><p>${m.p}</p></div></div><div class="win ${m.cls || ''}" id="w${m.n}"></div></section>`).join('') +
-  `<section class="opt sum"><div class="meta"><span class="num">✓</span><div><h3>My pick</h3></div></div><ol>
-   <li><b>01 Side tabs</b> — simplest: every name readable, open and close in one click, room for 10 + 10.</li>
-   <li><b>08 Two-line tabs</b> — if you want to keep tabs at the top like today.</li></ol></section>`;
+  {h:'Smart swap + tree', p:'Tree on the left. Above the page, the <b>current type</b> sits in a bold colour block with its count, and the other type waits beside it — one click (or <kbd>Alt</kbd>+<kbd>S</kbd>) swaps them. The layout button next to it gives Single · PDF | PDF · PDF | PCB.', w:['One row even with 10 open','Click the grey side or Alt+S to swap','Layout button: Alt 1/2/3','Hover a chip for its full name']},
+  {h:'Expanding strip + tree', p:'Tree on the left, then a thin 52-pixel strip of short codes. Rest the mouse on it and it slides open with every full name. <b>📌 Keep open</b> pins it as a real column.', w:['Page keeps almost full width','PDF and PCB both visible','Pin it when you need it']}];
+$('#main').innerHTML = META.map((m, n) => `<section class="opt" data-n="${n + 1}"><div class="meta"><span class="num">${String.fromCharCode(65 + n)}</span><div><h3>${m.h}</h3><p>${m.p}</p><div class="why">${m.w.map(x => `<span>${x}</span>`).join('')}</div></div></div><div class="win" id="w${n + 1}"></div></section>`).join('') +
+  `<section class="opt ask"><div class="meta"><span class="num">?</span><div><h3>How to compare</h3></div></div><ul>
+    <li>Click files in the tree in both windows — watch where the new tab appears and how quickly you find it again.</li>
+    <li>Press <b>Open 10 + 10</b> and see which one still feels calm with 20 files.</li>
+    <li><b>A</b> keeps the page at full width but shows one type at a time. <b>B</b> shows both types but needs a hover (or the pin).</li></ul></section>`;
 
-/* ---------- draw ---------- */
-function show(sc, el) {
-  if (!el) return;
-  const l = el.offsetLeft - 24, r = el.offsetLeft + el.offsetWidth + 24;
-  if (l < sc.scrollLeft) sc.scrollLeft = l; else if (r > sc.scrollLeft + sc.clientWidth) sc.scrollLeft = r - sc.clientWidth;
-}
+/* ---------- draw + events ---------- */
 function draw() {
-  const keep = {}; $all('[data-keep]').forEach(n => keep[n.dataset.keep] = [n.scrollLeft, n.scrollTop]);
-  for (let n = 1; n <= 10; n++) $('#w' + n).innerHTML = R[n](U[n]);
-  $all('[data-keep]').forEach(n => { const k = keep[n.dataset.keep]; if (k) { n.scrollLeft = k[0]; n.scrollTop = k[1]; } });
-  $all('.hs').forEach(sc => show(sc, sc.querySelector('.tf.on') || sc.querySelector('.tf.sel')));
+  const th0 = $('#w1 .thumb'), prev = th0 ? [th0.offsetLeft, th0.offsetWidth] : null;
+  const keep = {}; $all('[data-keep]').forEach(n => keep[n.dataset.keep] = n.scrollTop);
+  for (const n of [1, 2]) $('#w' + n).innerHTML = R[n](U[n]);
+  $all('[data-keep]').forEach(n => { if (keep[n.dataset.keep] != null) n.scrollTop = keep[n.dataset.keep]; });
   $('#cnt').textContent = `PDF ${S.o.pdf.length}/10 · PCB ${S.o.pcb.length}/10`;
+  const th = $('#w1 .thumb'), on = $('#w1 .cap .ty.on');
+  const lp = $('#w1 .lpop'), lb = $('#w1 .capw .lay'); if (lp && lb) { const cr = $('#w1 .capw').getBoundingClientRect(), br = lb.getBoundingClientRect(); lp.style.setProperty('--ax', (br.left - cr.left + br.width / 2 + 2) + 'px'); }
+  if (th && on) { th.style.left = on.offsetLeft + 'px'; th.style.width = on.offsetWidth + 'px';
+    if (prev && prev[0] !== on.offsetLeft) th.animate([{left:prev[0] + 'px', width:prev[1] + 'px'}, {left:on.offsetLeft + 'px', width:on.offsetWidth + 'px'}], {duration:280, easing:'cubic-bezier(.2,.8,.2,1)'}); }
 }
 let tt; function toast(m) { const e = $('#toast'); e.textContent = m; e.classList.add('on'); clearTimeout(tt); tt = setTimeout(() => e.classList.remove('on'), 2200); }
 
-/* ---------- events ---------- */
 document.addEventListener('click', e => {
+  if (LY.pop && !e.target.closest('.capw')) { LY.pop = false; if (!e.target.closest('[data-a]')) return draw(); }
   const el = e.target.closest('[data-a]'); if (!el) return;
+  if (el.dataset.a === 'actA') return actA(el.dataset.t, +el.dataset.i);
+  if (el.dataset.a === 'typeA') return typeA(el.dataset.t);
+  if (el.dataset.a === 'laym') { LY.pop = !LY.pop; return draw(); }
+  if (el.dataset.a === 'lay') return setLay(el.dataset.v);
+  if (el.dataset.a === 'pane') { if (LY.lay === 'pp') LY.pane = el.dataset.v; else S.t = el.dataset.v === 'L' ? 'pdf' : 'pcb'; return draw(); }
+  if (el.dataset.a === 'open' && el.closest('#w1') && LY.lay === 'pp' && LY.pane === 'R' && el.dataset.t === 'pdf') { const i = +el.dataset.i; if (!S.o.pdf.includes(i)) { if (S.o.pdf.length >= 10) return toast('PDF limit is 10 — close a PDF first'); S.o.pdf.push(i); } LY.a2 = i; S.t = 'pdf'; return draw(); }
   const a = el.dataset.a, t = el.dataset.t, i = el.dataset.i != null ? +el.dataset.i : null;
   switch (a) {
     case 'act': act(t, i); break;
+    case 'open': openFile(t, i); break;
     case 'x': close(t, i); break;
-    case 'type': setType(t); break;
-    case 'add': add(t); break;
+    case 'type': S.t = t; if (S.a[t] == null && S.o[t].length) S.a[t] = S.o[t][0]; draw(); break;
+    case 'tog': { const s = U[el.dataset.n].open, v = el.dataset.v; s.has(v) ? s.delete(v) : s.add(v); draw(); break; }
+    case 'pin': U[2].pin = !U[2].pin; draw(); break;
+    case 'swpick': SW = el.dataset.v; LY.pop = false; draw(); document.querySelector('#w1').scrollIntoView({behavior:'smooth', block:'center'}); toast(`Switch style: ${SWS.find(x => x[0] === SW)[1]}`); break;
     case 'fill': fill(); break;
     case 'reset': reset(); break;
-    case 'sort': U[6].sort = el.dataset.v; draw(); break;
     case 'theme': { const d = document.documentElement; d.dataset.theme = d.dataset.theme === 'dark' ? 'light' : 'dark'; break; }
-    case 'ui': { const d = el.dataset.d, k = el.dataset.k; U[d][k] = !U[d][k]; draw(); break; }
-    case 'hs': { const sc = el.parentElement.querySelector('.hs'); sc.scrollBy({left: +el.dataset.v * 320, behavior: 'smooth'}); break; }
-    case 'jump': { const sc = el.closest('.bar').querySelector('.hs'), m = sc.querySelector(`[data-sec="${t}"]`); if (m) sc.scrollTo({left: m.offsetLeft - 14, behavior: 'smooth'}); break; }
   }
 });
-document.addEventListener('wheel', e => { const sc = e.target.closest('.hs'); if (sc && Math.abs(e.deltaY) > Math.abs(e.deltaX)) { sc.scrollLeft += e.deltaY; e.preventDefault(); } }, {passive: false});
+document.addEventListener('input', e => {
+  const n = e.target.dataset.tq; if (!n) return;
+  U[n].q = e.target.value; draw();
+  const inp = $(`[data-tq="${n}"]`); inp.focus(); inp.setSelectionRange(inp.value.length, inp.value.length);
+});
 
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && LY.pop) { LY.pop = false; draw(); }
+  if (e.altKey && ['1', '2', '3'].includes(e.key)) { e.preventDefault(); setLay(LAYS[+e.key - 1][0]); }
+  if (e.altKey && e.key.toLowerCase() === 's') { e.preventDefault(); typeA(S.t === 'pdf' ? 'pcb' : 'pdf'); }
+});
 fill();
 </script>
 </body>

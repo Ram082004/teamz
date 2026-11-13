@@ -1,0 +1,1806 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Settings, Help & Theme Editor</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#eef2f7;--card:#fff;--pop:#fff;--panel:#f4f7fa;--panel-2:#e9eef5;--hair:#e3e8ef;--text:#0e2140;--t2:#5a6a82;--t3:#8f9bb0;--accent:#0d847d;--accent-2:#12a39b;--ts:rgba(13,132,125,.1);--navy:#0e2140;--ok:#16a34a;--warn:#d97706;--bad:#dc2626;--hover:rgba(14,33,64,.05);--mono:'JetBrains Mono',Consolas,monospace;--sh:0 1px 2px rgba(14,33,64,.06),0 22px 48px -26px rgba(14,33,64,.35);--msh:0 0 0 1px var(--hair),0 30px 70px -30px rgba(14,33,64,.55)}
+[data-theme=dark]{--bg:#0b1220;--card:#111a2b;--pop:#141f33;--panel:#1a2740;--panel-2:#22314d;--hair:#26354f;--text:#e6edf7;--t2:#a7b4c8;--t3:#6f7f99;--ts:rgba(18,163,155,.16);--hover:rgba(255,255,255,.05);--sh:0 1px 2px rgba(0,0,0,.3),0 22px 48px -24px rgba(0,0,0,.8);--msh:0 0 0 1px var(--hair),0 30px 70px -30px rgba(0,0,0,.9)}
+*{box-sizing:border-box;margin:0}
+body{font:13px/1.45 Inter,system-ui,sans-serif;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;text-align:left;padding:0}
+input,select{font:inherit;color:inherit}
+svg.i{width:16px;height:16px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+kbd{display:inline-flex;align-items:center;min-width:20px;height:20px;justify-content:center;padding:0 5px;margin:0 1px;border-radius:5px;font:700 10.5px var(--mono);color:var(--text);background:var(--pop);box-shadow:inset 0 0 0 1px var(--hair),0 1px 0 var(--hair);vertical-align:1px}
+em{font-style:normal;font-weight:700;color:var(--text)}
+mark{background:color-mix(in srgb,#facc15 45%,transparent);color:inherit;border-radius:3px;padding:0 1px}
+.bdg{display:inline-grid;place-items:center;width:17px;height:17px;border-radius:5px;font:800 10px Inter;color:#fff;vertical-align:1px}
+.bdg.S{background:#dc2626}.bdg.B{background:#2563eb}.bdg.H{background:#16a34a}
+
+/* ---------- page shell ---------- */
+.top{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--bg) 86%,transparent);backdrop-filter:blur(12px);border-bottom:1px solid var(--hair)}
+.top .in{max-width:1180px;margin:auto;padding:12px 24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.top h1{font-size:16px}.top p{font-size:12px;color:var(--t2)}
+.gnav{display:flex;gap:3px;padding:3px;border-radius:12px;background:var(--card);box-shadow:0 0 0 1px var(--hair);margin-left:auto}
+.gnav button{display:flex;align-items:center;gap:7px;height:32px;padding:0 13px;border-radius:9px;font-weight:600;font-size:12.5px;color:var(--t2)}
+.gnav button b{font:700 10px var(--mono);padding:1px 6px;border-radius:6px;background:var(--panel)}
+.gnav button.on{background:var(--navy);color:#fff}.gnav button.on b{background:rgba(255,255,255,.18)}
+[data-theme=dark] .gnav button.on{background:var(--accent)}
+.tbtn{height:34px;width:34px;display:grid;place-items:center;border-radius:10px;background:var(--card);box-shadow:0 0 0 1px var(--hair)}
+main{max-width:1180px;margin:auto;padding:24px;display:grid;gap:22px}
+.opt{background:var(--card);border-radius:20px;box-shadow:var(--sh);padding:16px;display:grid;gap:14px}
+.meta{display:flex;gap:12px;align-items:flex-start}
+.num{flex:none;font:700 13px var(--mono);color:var(--accent);background:var(--ts);border-radius:8px;padding:4px 8px}
+.meta h3{font-size:15px}.meta p{font-size:12.5px;color:var(--t2);margin-top:1px;max-width:820px}
+.meta .tags{margin-left:auto;display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;max-width:360px}
+.meta .tags span{font-size:11px;font-weight:600;color:var(--t2);background:var(--panel);padding:3px 8px;border-radius:99px;white-space:nowrap}
+.stage{position:relative;display:grid;place-items:center;padding:34px 18px;border-radius:16px;overflow:hidden;
+  background:linear-gradient(180deg,rgba(14,33,64,.28),rgba(14,33,64,.42)),radial-gradient(circle at 1px 1px,rgba(255,255,255,.35) 1px,transparent 0) 0 0/18px 18px,linear-gradient(135deg,#9fb3c8,#c7d4e2)}
+[data-theme=dark] .stage{background:linear-gradient(180deg,rgba(0,0,0,.35),rgba(0,0,0,.5)),radial-gradient(circle at 1px 1px,rgba(255,255,255,.12) 1px,transparent 0) 0 0/18px 18px,linear-gradient(135deg,#1c2a40,#0d1626)}
+.toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);z-index:99;background:#0e2140;color:#fff;font-weight:600;font-size:12.5px;padding:10px 16px;border-radius:12px;box-shadow:0 14px 30px -12px rgba(0,0,0,.6);display:flex;gap:8px;align-items:center;animation:tin .25s}
+.toast svg.i{color:#34d399}
+@keyframes tin{from{opacity:0;transform:translate(-50%,10px)}}
+
+/* ---------- shared modal pieces ---------- */
+.mdl{position:relative;width:100%;background:var(--pop);border-radius:18px;box-shadow:var(--msh);overflow:hidden;text-align:left}
+.xb{flex:none;width:32px;height:32px;border-radius:10px;display:grid;place-items:center;color:var(--t2);transition:background .15s}
+.xb:hover{background:var(--hover);color:var(--text)}
+.eyb{font:800 10.5px Inter;letter-spacing:.11em;color:var(--t3);text-transform:uppercase}
+.tg{position:relative;flex:none;width:40px;height:23px;border-radius:99px;background:var(--panel-2);box-shadow:inset 0 0 0 1px var(--hair);transition:background .2s}
+.tg::after{content:"";position:absolute;top:3px;left:3px;width:17px;height:17px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.3);transition:transform .22s cubic-bezier(.3,1.4,.5,1)}
+.tg.on{background:var(--accent);box-shadow:none}.tg.on::after{transform:translateX(17px)}
+.tg.dis{opacity:.4;pointer-events:none}
+.seg{display:inline-flex;padding:3px;gap:2px;border-radius:10px;background:var(--panel);box-shadow:inset 0 0 0 1px var(--hair)}
+.seg button{height:28px;padding:0 12px;border-radius:8px;font-weight:600;font-size:12px;color:var(--t2);white-space:nowrap}
+.seg button.on{background:var(--pop);color:var(--text);box-shadow:0 1px 3px rgba(14,33,64,.15),0 0 0 1px var(--hair)}
+.stp{display:inline-flex;align-items:center;gap:2px;padding:3px;border-radius:10px;background:var(--panel);box-shadow:inset 0 0 0 1px var(--hair)}
+.stp button{width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:var(--t2)}
+.stp button:hover{background:var(--pop);color:var(--text)}
+.stp b{min-width:46px;text-align:center;font:700 12px var(--mono)}
+.gbtn{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 12px;border-radius:9px;font-weight:600;font-size:12px;background:var(--pop);box-shadow:inset 0 0 0 1px var(--hair);white-space:nowrap}
+.gbtn:hover{background:var(--hover)}
+.pbtn{display:inline-flex;align-items:center;justify-content:center;gap:7px;height:36px;padding:0 16px;border-radius:10px;font-weight:700;font-size:12.5px;background:var(--accent);color:#fff;box-shadow:0 8px 18px -10px rgba(13,132,125,.9);white-space:nowrap}
+.pbtn:hover{filter:brightness(1.07)}
+.lbtn{display:inline-flex;align-items:center;gap:6px;font-weight:700;font-size:12px;color:var(--accent)}
+.lbtn:hover{text-decoration:underline}
+.inp{height:36px;border-radius:10px;border:0;outline:0;padding:0 12px;background:var(--panel);box-shadow:inset 0 0 0 1px var(--hair);width:100%;transition:box-shadow .15s}
+.inp:focus{box-shadow:inset 0 0 0 1.5px var(--accent),0 0 0 4px var(--ts)}
+.inp.err{box-shadow:inset 0 0 0 1.5px var(--bad),0 0 0 4px rgba(220,38,38,.12)}
+.foot{display:flex;align-items:center;gap:8px;font-size:11.5px;color:var(--t3)}
+.live{width:7px;height:7px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 3px color-mix(in srgb,var(--ok) 22%,transparent);flex:none}
+.scr{overflow:auto;scrollbar-width:thin;scrollbar-color:var(--hair) transparent}
+.ico{flex:none;width:30px;height:30px;border-radius:9px;display:grid;place-items:center;color:var(--tint);background:color-mix(in srgb,var(--tint) 13%,transparent)}
+.ico svg.i{width:15px;height:15px}
+.swi{position:relative;display:block;flex:none;width:30px;height:30px;border-radius:50%;background:var(--c);box-shadow:inset 0 0 0 1px rgba(0,0,0,.15),0 0 0 3px var(--pop),0 0 0 4px var(--hair);cursor:pointer;transition:transform .15s}
+.swi:hover{transform:scale(1.08)}
+.swi input,.cpk input{position:absolute;inset:0;opacity:0;width:100%;height:100%;cursor:pointer;border:0;padding:0}
+.cpk{position:relative}
+.hx{font:600 11px var(--mono);color:var(--t2)}
+.hxi{width:86px;height:26px;border:0;outline:0;border-radius:7px;padding:0 7px;font:600 11px var(--mono);color:var(--t2);background:var(--panel);box-shadow:inset 0 0 0 1px var(--hair);text-transform:uppercase}
+.hxi:focus{box-shadow:inset 0 0 0 1.5px var(--accent);color:var(--text)}
+.bsvg{display:block;width:100%;height:auto}
+.bsvg .hl{animation:hlb .8s ease-in-out infinite alternate}
+@keyframes hlb{to{opacity:.25}}
+
+/* =========================================================
+   SETTINGS 01 — Spotlight search
+   ========================================================= */
+.s1{max-width:720px}
+.s1-h{display:flex;align-items:center;gap:10px;padding:14px 14px 12px 18px;border-bottom:1px solid var(--hair)}
+.s1-h>svg.i{width:19px;height:19px;color:var(--accent)}
+.s1-h input{flex:1;border:0;outline:0;background:none;font-size:16px;font-weight:500;height:34px}
+.s1-h input::placeholder{color:var(--t3)}
+.s1-c{display:flex;gap:6px;padding:10px 16px;border-bottom:1px solid var(--hair);overflow-x:auto;scrollbar-width:none}
+.s1-c button{display:flex;align-items:center;gap:6px;height:28px;padding:0 10px;border-radius:99px;font-size:12px;font-weight:600;color:var(--t2);box-shadow:inset 0 0 0 1px var(--hair);white-space:nowrap}
+.s1-c button i{width:7px;height:7px;border-radius:50%;background:var(--tint)}
+.s1-c button b{font:700 10px var(--mono);color:var(--t3)}
+.s1-c button.on{background:var(--text);color:var(--pop);box-shadow:none}.s1-c button.on b{color:inherit;opacity:.6}
+.s1-b{height:380px;padding:6px 8px 12px}
+.s1-gh{display:flex;align-items:center;gap:8px;padding:12px 10px 6px;font:800 10.5px Inter;letter-spacing:.1em;color:var(--t3);text-transform:uppercase;position:sticky;top:-6px;background:var(--pop);z-index:2}
+.s1-gh i{width:8px;height:8px;border-radius:3px;background:var(--tint)}
+.s1-r{display:flex;align-items:center;gap:12px;padding:9px 10px;border-radius:12px;transition:background .15s}
+.s1-r:hover{background:var(--hover)}
+.s1-r.sub{padding-left:52px}
+.s1-r.sub .ico{display:none}
+.s1-r .tx{flex:1;min-width:0}.s1-r .tx b{display:block;font-weight:600;font-size:13px}.s1-r .tx span{display:block;font-size:11.5px;color:var(--t3)}
+.s1-r.sub .tx b{font-weight:500;font-size:12.5px}
+.s1-r.off{opacity:.45}
+.s1-r select{height:32px;border-radius:9px;border:0;padding:0 10px;background:var(--panel);box-shadow:inset 0 0 0 1px var(--hair);font-weight:600;font-size:12.5px;outline:0}
+.s1-th{display:flex;gap:6px}
+.s1-th button{position:relative;width:34px;height:34px;border-radius:10px;overflow:hidden;box-shadow:0 0 0 1px var(--hair);display:flex;transition:transform .15s}
+.s1-th button:hover{transform:translateY(-2px)}
+.s1-th button span{flex:1}
+.s1-th button.on{box-shadow:0 0 0 2px var(--pop),0 0 0 4px var(--accent)}
+.s1-empty{display:grid;place-items:center;gap:6px;text-align:center;padding:70px 20px;color:var(--t3)}
+.s1-empty svg.i{width:30px;height:30px}
+.s1-f{display:flex;align-items:center;gap:8px;padding:11px 18px;border-top:1px solid var(--hair);background:var(--panel)}
+.s1-f .r{margin-left:auto;display:flex;gap:10px;align-items:center}
+
+/* =========================================================
+   SETTINGS 02 — Sliding tabs + tiles
+   ========================================================= */
+.s2{max-width:760px}
+.s2-h{display:flex;align-items:center;gap:12px;padding:18px 18px 0 22px}
+.s2-h h2{font-size:19px;letter-spacing:-.01em}.s2-h p{font-size:12px;color:var(--t3)}
+.s2-h .xb{margin-left:auto}
+.s2-tabs{position:relative;display:grid;grid-template-columns:repeat(5,1fr);margin:14px 18px 0;padding:4px;border-radius:14px;background:var(--panel);box-shadow:inset 0 0 0 1px var(--hair)}
+.s2-tabs .th{position:absolute;top:4px;bottom:4px;left:4px;width:calc((100% - 8px)/5);border-radius:10px;background:var(--pop);box-shadow:0 2px 6px rgba(14,33,64,.12),0 0 0 1px var(--hair);transform:translateX(calc(var(--i)*100%));animation:s2t .35s cubic-bezier(.3,1.3,.5,1)}
+@keyframes s2t{from{transform:translateX(calc(var(--f)*100%))}}
+.s2-tabs button{position:relative;z-index:1;display:flex;align-items:center;justify-content:center;gap:7px;height:36px;font-weight:600;font-size:12.5px;color:var(--t2);transition:color .2s}
+.s2-tabs button.on{color:var(--text)}.s2-tabs button.on svg.i{color:var(--tint)}
+.s2-b{height:400px;padding:18px 22px}
+.s2-b .eyb{margin:4px 0 9px}
+.s2-b .eyb~.eyb{margin-top:18px}
+.s2-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.s2-grid.c3{grid-template-columns:repeat(3,1fr)}.s2-grid.c4{grid-template-columns:repeat(4,1fr)}
+.s2-tile{position:relative;display:flex;flex-direction:column;gap:6px;padding:14px;border-radius:14px;background:var(--panel);box-shadow:inset 0 0 0 1px var(--hair);transition:box-shadow .2s,background .2s,transform .15s}
+button.s2-tile:hover{transform:translateY(-1px)}
+.s2-tile.on{background:color-mix(in srgb,var(--accent) 7%,var(--pop));box-shadow:inset 0 0 0 1.5px var(--accent)}
+.s2-tile .tt{display:flex;align-items:center;gap:10px}
+.s2-tile .tt .tg{margin-left:auto}
+.s2-tile b{font-size:13px}.s2-tile span.d{font-size:11.5px;color:var(--t3)}
+.s2-tile .ck{position:absolute;top:10px;right:10px;width:20px;height:20px;border-radius:50%;display:grid;place-items:center;background:var(--accent);color:#fff;transform:scale(0);transition:transform .25s cubic-bezier(.3,1.5,.5,1)}
+.s2-tile .ck svg.i{width:12px;height:12px;stroke-width:3}
+.s2-tile.on .ck{transform:scale(1)}
+.s2-win{height:78px;border-radius:9px;overflow:hidden;display:grid;grid-template-columns:30% 1fr;grid-template-rows:12px 1fr;box-shadow:0 0 0 1px rgba(0,0,0,.08)}
+.s2-win i{grid-column:1/-1}.s2-win u{display:grid;align-content:start;gap:4px;padding:6px}.s2-win u::before,.s2-win u::after,.s2-win s::before{content:"";height:4px;border-radius:2px;background:currentColor;opacity:.35}
+.s2-win s{padding:8px;display:grid;align-content:start;gap:5px}
+.s2-win.l{background:#fff;color:#0e2140}.s2-win.l i{background:#eef2f7}.s2-win.l u{background:#f4f7fa}
+.s2-win.d{background:#141f33;color:#e6edf7}.s2-win.d i{background:#0b1220}.s2-win.d u{background:#1a2740}
+.s2-win s::after{content:"";height:24px;border-radius:5px;background:linear-gradient(135deg,#0d847d,#12a39b);opacity:.8}
+.s2-size{display:grid;grid-template-columns:1fr 180px;gap:16px;align-items:center;padding:16px;border-radius:14px;background:var(--panel);box-shadow:inset 0 0 0 1px var(--hair)}
+.s2-size .rr{display:flex;align-items:center;gap:10px;margin-top:8px}
+.s2-size .val{font:800 22px var(--mono);color:var(--accent);min-width:60px}
+.rng{-webkit-appearance:none;appearance:none;flex:1;height:6px;border-radius:99px;background:linear-gradient(90deg,var(--accent) var(--p),var(--panel-2) var(--p));outline:0}
+.rng::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:#fff;box-shadow:0 0 0 2px var(--accent),0 2px 6px rgba(0,0,0,.25);cursor:grab}
+.s2-tree{display:grid;gap:3px;padding:10px;border-radius:10px;background:var(--pop);box-shadow:inset 0 0 0 1px var(--hair);overflow:hidden;height:96px;align-content:start}
+.s2-tree div{display:flex;align-items:center;gap:6px;white-space:nowrap;font-weight:500}
+.s2-tree div svg.i{width:1em;height:1em;color:var(--warn)}
+.s2-motion{height:34px;border-radius:9px;background:var(--pop);box-shadow:inset 0 0 0 1px var(--hair);position:relative;overflow:hidden;margin-bottom:4px}
+.s2-motion i{position:absolute;top:50%;left:10%;width:12px;height:12px;margin-top:-6px;border-radius:50%;background:var(--accent)}
+.s2-motion.f i{animation:glide 2.4s cubic-bezier(.15,.7,.2,1) infinite}
+.s2-motion.s i{animation:stopm 2.4s linear infinite}
+.s2-motion.f i::after{content:"";position:absolute;right:100%;top:3px;width:40px;height:6px;border-radius:3px;background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--accent) 45%,transparent))}
+@keyframes glide{0%{left:8%}55%,100%{left:82%}}
+@keyframes stopm{0%{left:8%}40%,100%{left:50%}}
+.s2-chips{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:10px}
+.s2-chips button{display:flex;align-items:center;gap:9px;padding:9px 11px;border-radius:11px;font-size:12px;font-weight:500;background:var(--pop);box-shadow:inset 0 0 0 1px var(--hair);transition:all .15s}
+.s2-chips button i{flex:none;width:18px;height:18px;border-radius:6px;display:grid;place-items:center;box-shadow:inset 0 0 0 1.5px var(--hair);color:#fff}
+.s2-chips button i svg.i{width:11px;height:11px;stroke-width:3;opacity:0}
+.s2-chips button.on i{background:var(--accent);box-shadow:none}.s2-chips button.on i svg.i{opacity:1}
+.s2-chips.dis{opacity:.4;pointer-events:none}
+.s2-thm{position:relative;border-radius:14px;overflow:hidden;background:var(--panel);box-shadow:inset 0 0 0 1px var(--hair);transition:transform .15s,box-shadow .2s}
+.s2-thm:hover{transform:translateY(-2px)}
+.s2-thm .strip{display:flex;height:64px}.s2-thm .strip span{flex:1}
+.s2-thm .strip span:first-child{flex:2}
+.s2-thm .nm{padding:9px 11px}.s2-thm .nm b{display:block;font-size:12.5px}.s2-thm .nm span{font-size:11px;color:var(--t3)}
+.s2-thm.on{box-shadow:0 0 0 2px var(--accent)}
+.s2-thm .on-tag{position:absolute;top:8px;left:8px;font:800 9px Inter;letter-spacing:.08em;color:#fff;background:rgba(0,0,0,.55);backdrop-filter:blur(4px);padding:3px 7px;border-radius:99px}
+.s2-thm .acts{position:absolute;top:8px;right:8px;display:flex;gap:4px;opacity:0;transition:opacity .15s}
+.s2-thm:hover .acts{opacity:1}
+.s2-thm .acts span{width:26px;height:26px;border-radius:8px;display:grid;place-items:center;background:rgba(255,255,255,.92);color:#0e2140}
+.s2-thm .acts span.del{color:var(--bad)}
+.s2-thm .acts svg.i{width:13px;height:13px}
+.s2-new{display:grid;place-items:center;align-content:center;gap:4px;min-height:110px;border-radius:14px;border:1.5px dashed var(--hair);color:var(--t2);font-size:12px;font-weight:600;text-align:center}
+.s2-new:hover{border-color:var(--accent);color:var(--accent)}
+.s2-new small{font-weight:500;color:var(--t3)}
+.s2-lang{display:grid;gap:2px;padding:12px;border-radius:14px;background:var(--panel);box-shadow:inset 0 0 0 1px var(--hair);text-align:left;position:relative;transition:all .15s}
+.s2-lang b{font-size:15px}.s2-lang span{font-size:11px;color:var(--t3)}
+.s2-lang.on{box-shadow:inset 0 0 0 1.5px var(--accent);background:color-mix(in srgb,var(--accent) 7%,var(--pop))}
+.s2-lang .ck{position:absolute;top:9px;right:9px;width:18px;height:18px;border-radius:50%;display:grid;place-items:center;background:var(--accent);color:#fff;opacity:0}
+.s2-lang.on .ck{opacity:1}.s2-lang .ck svg.i{width:11px;height:11px;stroke-width:3}
+.s2-note{display:flex;gap:10px;align-items:center;padding:11px 13px;border-radius:12px;font-size:12px;background:color-mix(in srgb,var(--warn) 12%,transparent);color:color-mix(in srgb,var(--warn) 75%,var(--text));margin-top:12px}
+.s2-f{display:flex;align-items:center;gap:8px;padding:12px 22px;border-top:1px solid var(--hair)}
+
+/* =========================================================
+   SETTINGS 03 — Icon rail + live preview
+   ========================================================= */
+.s3{max-width:820px;display:grid;grid-template-columns:64px 1fr 260px;height:470px}
+.s3-rail{display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px 0;background:var(--navy)}
+[data-theme=dark] .s3-rail{background:#0a1322}
+.s3-rail .mk{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;background:linear-gradient(135deg,#0d847d,#12a39b);color:#fff;margin-bottom:12px}
+.s3-rail button{position:relative;width:42px;height:42px;border-radius:12px;display:grid;place-items:center;color:rgba(255,255,255,.5);transition:all .18s}
+.s3-rail button svg.i{width:19px;height:19px}
+.s3-rail button:hover{color:#fff;background:rgba(255,255,255,.07)}
+.s3-rail button.on{color:#fff;background:rgba(255,255,255,.12)}
+.s3-rail button.on::before{content:"";position:absolute;left:-11px;top:10px;bottom:10px;width:4px;border-radius:0 4px 4px 0;background:var(--tint)}
+.s3-rail button.on svg.i{color:var(--tint);filter:drop-shadow(0 0 6px var(--tint))}
+.s3-rail button:hover::after{content:attr(data-tip);position:absolute;left:calc(100% + 10px);top:50%;transform:translateY(-50%);white-space:nowrap;padding:5px 9px;border-radius:8px;background:#0e2140;color:#fff;font-size:11.5px;font-weight:600;box-shadow:0 8px 20px -8px rgba(0,0,0,.5);z-index:9;pointer-events:none}
+.s3-rail .sp{flex:1}
+.s3-mid{display:flex;flex-direction:column;min-width:0}
+.s3-hd{display:flex;align-items:flex-start;gap:10px;padding:20px 22px 10px}
+.s3-hd h2{font-size:20px;letter-spacing:-.01em}.s3-hd p{font-size:12px;color:var(--t3)}
+.s3-body{flex:1;padding:4px 22px 14px}
+.s3-sec{font:800 10.5px Inter;letter-spacing:.11em;color:var(--t3);text-transform:uppercase;padding:14px 0 4px}
+.s3-row{display:flex;align-items:center;gap:14px;padding:11px 0;border-bottom:1px solid var(--hair)}
+.s3-row:last-child{border-bottom:0}
+.s3-row .tx{flex:1;min-width:0}.s3-row .tx b{display:block;font-weight:600}.s3-row .tx span{font-size:11.5px;color:var(--t3)}
+.s3-row.sub{padding-left:14px;border-left:2px solid var(--hair);margin-left:4px;padding-top:7px;padding-bottom:7px;border-bottom:0}
+.s3-row.sub .tx b{font-weight:500;font-size:12.5px}
+.s3-row.off{opacity:.45}
+.s3-ft{padding:10px 22px;border-top:1px solid var(--hair)}
+.s3-pv{position:relative;background:var(--panel);border-left:1px solid var(--hair);padding:16px;display:flex;flex-direction:column;gap:12px}
+.s3-pv .xb{position:absolute;top:10px;right:10px}
+.s3-pv .eyb{display:flex;align-items:center;gap:7px}
+.s3-pv .eyb::before{content:"";width:6px;height:6px;border-radius:50%;background:#ef4444;animation:rec 1.4s infinite}
+@keyframes rec{50%{opacity:.25}}
+.s3-cap{font-size:11.5px;color:var(--t2);line-height:1.5}
+.s3-cap b{color:var(--text)}
+.pv-win{border-radius:12px;overflow:hidden;box-shadow:0 12px 26px -14px rgba(0,0,0,.5),0 0 0 1px rgba(0,0,0,.08);display:grid;grid-template-columns:42% 1fr;grid-template-rows:18px 150px;transition:background .3s}
+.pv-win .tb{grid-column:1/-1;display:flex;align-items:center;gap:4px;padding:0 8px}
+.pv-win .tb i{width:6px;height:6px;border-radius:50%;background:currentColor;opacity:.35}
+.pv-win .tr{padding:8px 6px;display:grid;align-content:start;gap:4px;overflow:hidden}
+.pv-win .tr div{display:flex;gap:4px;align-items:center;white-space:nowrap;font-weight:500;line-height:1.1}
+.pv-win .tr div svg.i{width:.95em;height:.95em;color:#d97706}
+.pv-win .pg{padding:10px;display:grid;align-content:start;gap:5px}
+.pv-win .pg i{height:4px;border-radius:2px;background:currentColor;opacity:.25}
+.pv-win .pg i:nth-child(2){width:70%}.pv-win .pg i:nth-child(4){width:50%}
+.pv-win .pg u{height:40px;border-radius:6px;background:linear-gradient(135deg,#0d847d,#12a39b);opacity:.85;margin:4px 0}
+.pv-win.light{background:#fff;color:#0e2140}.pv-win.light .tb{background:#eef2f7}.pv-win.light .tr{background:#f4f7fa}
+.pv-win.dark{background:#141f33;color:#e6edf7}.pv-win.dark .tb{background:#0b1220}.pv-win.dark .tr{background:#1a2740}
+.pv-board{position:relative;border-radius:12px;overflow:hidden;box-shadow:0 12px 26px -14px rgba(0,0,0,.6)}
+.pv-board .card{position:absolute;left:44%;top:16%;padding:6px 8px;border-radius:8px;background:rgba(14,33,64,.92);color:#fff;font-size:9.5px;line-height:1.35;box-shadow:0 8px 18px -8px rgba(0,0,0,.6);animation:tin .3s}
+.pv-board .card b{display:block;font-size:10.5px}.pv-board .card span{font-family:var(--mono);color:#5eead4}
+.pv-board .cur{position:absolute;top:58%;width:14px;height:14px;margin-top:-7px;border-radius:50%;border:2px solid #fff;background:rgba(18,163,155,.6);box-shadow:0 0 10px rgba(18,163,155,.8)}
+.pv-board .cur.f{animation:glide 2.4s cubic-bezier(.15,.7,.2,1) infinite}
+.pv-board .cur.s{animation:stopm 2.4s linear infinite}
+.pv-board.blink .bsvg [data-pk~=sameNetHighlight]{animation:hlb .7s ease-in-out infinite alternate}
+.pv-pdf{position:relative;height:200px;border-radius:12px;background:#fff;box-shadow:0 12px 26px -14px rgba(0,0,0,.5);padding:16px;display:grid;align-content:start;gap:7px;overflow:hidden}
+.pv-pdf i{height:4px;border-radius:2px;background:#cbd5e1}
+.pv-pdf i.h{background:#facc15;height:7px;width:38%!important;border-radius:3px}
+.pv-pdf .lens{position:absolute;width:56px;height:20px;border-radius:6px;border:2px solid #0d847d;box-shadow:0 0 0 4px rgba(13,132,125,.18)}
+.pv-pdf .lens.f{animation:lensG 3s cubic-bezier(.4,0,.2,1) infinite}
+.pv-pdf .lens.s{animation:lensS 3s steps(1) infinite}
+@keyframes lensG{0%,20%{left:12px;top:36px}40%,60%{left:110px;top:90px}80%,100%{left:40px;top:150px}}
+@keyframes lensS{0%{left:12px;top:36px}33%{left:110px;top:90px}66%{left:40px;top:150px}}
+.pv-lang{display:grid;gap:8px}
+.pv-lang .b{display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:10px;background:var(--pop);box-shadow:inset 0 0 0 1px var(--hair);font-weight:600}
+.pv-lang .b.p{background:var(--accent);color:#fff;box-shadow:none}
+.pv-pal{display:flex;height:30px;border-radius:9px;overflow:hidden;box-shadow:0 0 0 1px var(--hair)}
+.pv-pal span{flex:1}
+
+/* =========================================================
+   SETTINGS 04 — Bento
+   ========================================================= */
+.s4{max-width:860px;padding:18px}
+.s4-h{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.s4-h h2{font-size:19px}.s4-h p{font-size:12px;color:var(--t3)}
+.s4-h .foot{margin-left:auto}
+.s4-g{display:grid;grid-template-columns:repeat(3,1fr);grid-template-areas:"app pcb pdf" "thm pcb lng";gap:12px}
+.s4-c{border-radius:16px;background:var(--panel);box-shadow:inset 0 0 0 1px var(--hair);padding:14px;display:flex;flex-direction:column;gap:11px;min-width:0}
+.s4-c .ch{display:flex;align-items:center;gap:10px}
+.s4-c .ch b{font-size:13.5px}.s4-c .ch small{display:block;font-size:11px;color:var(--t3);font-weight:500}
+.s4-c .ln{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:12.5px;font-weight:500}
+.s4-c .ln span{color:var(--t2)}
+.s4-dn{position:relative;display:grid;grid-template-columns:1fr 1fr;padding:4px;border-radius:14px;background:var(--pop);box-shadow:inset 0 0 0 1px var(--hair)}
+.s4-dn::before{content:"";position:absolute;top:4px;bottom:4px;left:4px;width:calc(50% - 4px);border-radius:10px;background:linear-gradient(135deg,#fbbf24,#f97316);transition:transform .35s cubic-bezier(.3,1.3,.5,1),background .35s;box-shadow:0 6px 14px -6px rgba(249,115,22,.7)}
+.s4-dn.dk::before{transform:translateX(100%);background:linear-gradient(135deg,#312e81,#0e2140);box-shadow:0 6px 14px -6px rgba(49,46,129,.8)}
+.s4-dn button{position:relative;z-index:1;display:flex;align-items:center;justify-content:center;gap:7px;height:42px;font-weight:700;font-size:12.5px;color:var(--t2);transition:color .3s}
+.s4-dn button.on{color:#fff}
+.s4-aa{display:flex;align-items:center;gap:10px}
+.s4-aa .aa{flex:1;display:flex;align-items:baseline;gap:6px;font-weight:700;overflow:hidden;white-space:nowrap}
+.s4-aa .aa small{font-size:10.5px;color:var(--t3);font-weight:600}
+.s4-pcb{grid-area:pcb}.s4-app{grid-area:app}.s4-pdf{grid-area:pdf}.s4-thm{grid-area:thm}.s4-lng{grid-area:lng}
+.s4-list{display:grid;gap:1px;border-radius:12px;overflow:hidden;background:var(--hair);box-shadow:0 0 0 1px var(--hair)}
+.s4-list button{display:flex;align-items:center;gap:9px;padding:8px 10px;background:var(--pop);font-size:12px;font-weight:500;text-align:left}
+.s4-list button:hover{background:color-mix(in srgb,var(--pop) 92%,var(--accent))}
+.s4-list button .bx{flex:none;width:16px;height:16px;border-radius:5px;display:grid;place-items:center;box-shadow:inset 0 0 0 1.5px var(--t3);color:#fff}
+.s4-list button .bx svg.i{width:10px;height:10px;stroke-width:3.2;opacity:0}
+.s4-list button.on .bx{background:var(--accent);box-shadow:none}.s4-list button.on .bx svg.i{opacity:1}
+.s4-list.dis{opacity:.4;pointer-events:none}
+.s4-orbs{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.s4-orb{display:grid;justify-items:center;gap:6px;font-size:11px;font-weight:600;color:var(--t2)}
+.s4-orb i{width:44px;height:44px;border-radius:50%;box-shadow:0 0 0 3px var(--panel),0 0 0 4px var(--hair);transition:transform .2s,box-shadow .2s}
+.s4-orb:hover i{transform:rotate(40deg) scale(1.05)}
+.s4-orb.on{color:var(--text)}.s4-orb.on i{box-shadow:0 0 0 3px var(--panel),0 0 0 5px var(--accent)}
+.s4-thm .row2{display:flex;gap:8px}.s4-thm .row2 .gbtn{flex:1;justify-content:center}
+.s4-lg{display:flex;flex-wrap:wrap;gap:6px}
+.s4-lg button{height:30px;padding:0 11px;border-radius:99px;font-size:12px;font-weight:600;background:var(--pop);box-shadow:inset 0 0 0 1px var(--hair);color:var(--t2)}
+.s4-lg button.on{background:var(--accent);color:#fff;box-shadow:none}
+
+/* =========================================================
+   SETTINGS 05 — Drill-in stack
+   ========================================================= */
+.s5{max-width:420px;height:560px;background:var(--panel);display:flex;flex-direction:column}
+.s5-top{display:flex;align-items:center;gap:8px;padding:12px 12px 0 14px;height:48px}
+.s5-top .bk{display:flex;align-items:center;gap:2px;font-weight:600;color:var(--accent);font-size:13.5px}
+.s5-top .bk svg.i{width:19px;height:19px}
+.s5-top .xb{margin-left:auto}
+.s5-pg{flex:1;padding:4px 16px 16px}
+.s5-pg.in{animation:s5in .32s cubic-bezier(.2,.8,.2,1)}.s5-pg.out{animation:s5out .32s cubic-bezier(.2,.8,.2,1)}
+@keyframes s5in{from{transform:translateX(40px);opacity:0}}
+@keyframes s5out{from{transform:translateX(-40px);opacity:0}}
+.s5-pg h2{font-size:26px;letter-spacing:-.02em;margin:0 4px 12px}
+.s5-me{display:flex;align-items:center;gap:12px;padding:12px;border-radius:14px;background:var(--pop);box-shadow:0 0 0 1px var(--hair);margin-bottom:18px}
+.s5-me .lg{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(135deg,#0e2140,#12a39b);color:#fff}
+.s5-me b{display:block}.s5-me span{font-size:11.5px;color:var(--t3)}
+.s5-cap{font:600 11px Inter;letter-spacing:.06em;color:var(--t3);text-transform:uppercase;margin:16px 14px 6px}
+.s5-cap:first-of-type{margin-top:0}
+.s5-grp{border-radius:14px;background:var(--pop);box-shadow:0 0 0 1px var(--hair);overflow:hidden}
+.s5-row{display:flex;align-items:center;gap:12px;width:100%;min-height:46px;padding:0 14px;position:relative;text-align:left}
+.s5-row+.s5-row::before{content:"";position:absolute;top:0;left:56px;right:0;height:1px;background:var(--hair)}
+.s5-row.noi+.s5-row::before,.s5-row.noi::before{left:14px}
+button.s5-row:hover{background:var(--hover)}
+.s5-row .sq{flex:none;width:30px;height:30px;border-radius:8px;display:grid;place-items:center;color:#fff;background:var(--tint)}
+.s5-row .sq svg.i{width:16px;height:16px}
+.s5-row .tx{flex:1;min-width:0;padding:9px 0}.s5-row .tx b{display:block;font-weight:500;font-size:13.5px}.s5-row .tx small{display:block;font-size:11px;color:var(--t3)}
+.s5-row .vl{font-size:12.5px;color:var(--t3);white-space:nowrap}
+.s5-row>svg.i.cv{color:var(--t3);width:15px;height:15px}
+.s5-row .tick{color:var(--accent);width:18px;height:18px;stroke-width:2.6}
+.s5-row.off{opacity:.45}
+.s5-note{font-size:11.5px;color:var(--t3);margin:7px 14px 0;line-height:1.45}
+.s5 .tg.on{background:#34c759}
+[data-theme=dark] .s5 .tg.on{background:#30d158}
+
+/* =========================================================
+   HELP — shared article blocks
+   ========================================================= */
+.hb{display:grid;gap:12px;font-size:13px;color:var(--t2);line-height:1.55}
+.hb p{max-width:62ch}
+.hb .eyb{margin-top:6px}
+.hb-steps{display:grid;gap:8px;counter-reset:st}
+.hb-steps li{list-style:none;display:grid;grid-template-columns:28px 1fr;gap:12px;padding:12px;border-radius:12px;background:var(--panel);box-shadow:inset 0 0 0 1px var(--hair)}
+.hb-steps li::before{counter-increment:st;content:counter(st);width:28px;height:28px;border-radius:9px;display:grid;place-items:center;font:800 12px Inter;color:#fff;background:linear-gradient(135deg,#0e2140,#0d847d)}
+.hb-steps b,.hb-defs b{display:block;color:var(--text);font-weight:700;font-size:13px;margin-bottom:1px}
+.hb-defs{display:grid;border-radius:12px;box-shadow:inset 0 0 0 1px var(--hair);overflow:hidden}
+.hb-defs>div{display:grid;grid-template-columns:150px 1fr;gap:14px;padding:10px 14px}
+.hb-defs>div+div{border-top:1px solid var(--hair)}
+.hb-defs>div b{margin:0;font-size:12.5px}
+.hb-call{display:flex;gap:12px;padding:13px 14px;border-radius:12px;background:color-mix(in srgb,var(--tone) 9%,transparent);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--tone) 25%,transparent)}
+.hb-call>svg.i{color:var(--tone);width:19px;height:19px;margin-top:1px}
+.hb-call b{display:block;color:var(--text)}
+.hb-call .gbtn{margin-top:8px}
+.hb-keys{display:grid;grid-template-columns:1fr 1fr;gap:6px 16px}
+.hb-keys div{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:7px 0;border-bottom:1px dashed var(--hair);font-size:12.5px}
+.hb-keys div span:last-child{white-space:nowrap}
+.hb-faq{display:grid;gap:6px}
+.hb-faq details{border-radius:12px;background:var(--panel);box-shadow:inset 0 0 0 1px var(--hair);transition:background .2s}
+.hb-faq summary{list-style:none;display:flex;align-items:center;gap:10px;padding:11px 13px;font-weight:600;color:var(--text);cursor:pointer}
+.hb-faq summary::-webkit-details-marker{display:none}
+.hb-faq summary svg.i{margin-left:auto;color:var(--t3);transition:transform .2s}
+.hb-faq details[open]{background:var(--pop);box-shadow:inset 0 0 0 1.5px var(--accent)}
+.hb-faq details[open] summary svg.i{transform:rotate(90deg);color:var(--accent)}
+.hb-faq details>div{padding:0 13px 13px}
+.hb-faq details>div .gbtn{margin-top:8px}
+.hb-acts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.hb-acts button{display:flex;align-items:center;gap:11px;padding:12px;border-radius:12px;background:var(--panel);box-shadow:inset 0 0 0 1px var(--hair);transition:transform .15s,box-shadow .2s}
+.hb-acts button:hover{transform:translateY(-1px);box-shadow:inset 0 0 0 1.5px var(--tint)}
+.hb-acts b{display:block;font-size:12.5px;color:var(--text)}.hb-acts small{font-size:11px;color:var(--t3)}
+
+/* HELP 01 — Help center */
+.h1{max-width:760px}
+.h1-hero{position:relative;padding:16px 20px 22px;color:#fff;background:radial-gradient(120% 140% at 100% 0,rgba(18,163,155,.55),transparent 55%),linear-gradient(135deg,#0e2140,#123a5a);overflow:hidden}
+.h1-hero::after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 1px 1px,rgba(255,255,255,.12) 1px,transparent 0) 0 0/16px 16px;pointer-events:none}
+.h1-hero>*{position:relative;z-index:1}
+.h1-top{display:flex;align-items:center;gap:9px;font-weight:700}
+.h1-top .v{font:600 10.5px var(--mono);padding:2px 7px;border-radius:99px;background:rgba(255,255,255,.14)}
+.h1-top .xb{margin-left:auto;color:rgba(255,255,255,.7)}.h1-top .xb:hover{background:rgba(255,255,255,.1);color:#fff}
+.h1-hero h2{font-size:24px;letter-spacing:-.02em;margin:12px 0 12px}
+.h1-sr{display:flex;align-items:center;gap:10px;height:46px;padding:0 14px;border-radius:13px;background:#fff;color:#0e2140;box-shadow:0 14px 30px -14px rgba(0,0,0,.6)}
+.h1-sr svg.i{color:#0d847d;width:18px;height:18px}
+.h1-sr input{flex:1;border:0;outline:0;background:none;font-size:14px;color:#0e2140}
+.h1-pop{display:flex;gap:6px;flex-wrap:wrap;margin-top:11px;font-size:11.5px;align-items:center;color:rgba(255,255,255,.6)}
+.h1-pop button{height:26px;padding:0 10px;border-radius:99px;background:rgba(255,255,255,.12);color:#fff;font-size:11.5px;font-weight:600}
+.h1-pop button:hover{background:rgba(255,255,255,.22)}
+.h1-b{height:330px;padding:16px 20px}
+.h1-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.h1-card{display:flex;flex-direction:column;gap:8px;padding:14px;border-radius:14px;background:var(--panel);box-shadow:inset 0 0 0 1px var(--hair);transition:transform .18s,box-shadow .2s}
+.h1-card:hover{transform:translateY(-2px);box-shadow:inset 0 0 0 1.5px var(--tint),0 12px 24px -16px var(--tint)}
+.h1-card b{font-size:13.5px}.h1-card span{font-size:11.5px;color:var(--t3);line-height:1.4}
+.h1-card small{margin-top:auto;font:700 10.5px var(--mono);color:var(--tint)}
+.h1-crumb{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--t3);margin-bottom:12px}
+.h1-crumb button{color:var(--accent);font-weight:600;display:flex;align-items:center;gap:3px}
+.h1-crumb svg.i{width:13px;height:13px}
+.h1-ttl{display:flex;align-items:center;gap:11px;margin-bottom:14px}.h1-ttl h3{font-size:18px}
+.h1-res{display:grid;gap:6px}
+.h1-res button{display:grid;grid-template-columns:auto 1fr;gap:3px 11px;padding:11px 13px;border-radius:12px;text-align:left;box-shadow:inset 0 0 0 1px var(--hair)}
+.h1-res button:hover{background:var(--hover)}
+.h1-res .ico{grid-row:span 2;width:28px;height:28px}
+.h1-res b{font-size:13px}.h1-res span{font-size:11.5px;color:var(--t3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.h1-f{display:flex;align-items:center;gap:10px;padding:12px 20px;border-top:1px solid var(--hair)}
+.h1-f .wa{margin-left:auto;display:inline-flex;align-items:center;gap:7px;height:34px;padding:0 14px;border-radius:10px;background:#16a34a;color:#fff;font-weight:700;font-size:12.5px}
+
+/* HELP 02 — Guided stepper */
+.h2{max-width:800px;display:grid;grid-template-columns:240px 1fr;height:500px}
+.h2-l{background:var(--panel);border-right:1px solid var(--hair);padding:18px 16px;display:flex;flex-direction:column}
+.h2-l h2{font-size:17px}.h2-l>p{font-size:11.5px;color:var(--t3)}
+.h2-pr{display:flex;align-items:center;gap:10px;margin:12px 0 16px;font-size:11.5px;font-weight:600;color:var(--t2)}
+.h2-pr .bar{flex:1;height:6px;border-radius:99px;background:var(--panel-2);overflow:hidden}
+.h2-pr .bar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#0d847d,#34d399);transition:width .4s}
+.h2-st{position:relative;display:grid;gap:2px}
+.h2-st button{position:relative;display:flex;align-items:center;gap:11px;padding:7px 8px;border-radius:11px;text-align:left}
+.h2-st button:hover{background:var(--hover)}
+.h2-st button+button::before{content:"";position:absolute;left:21px;top:-9px;height:14px;width:2px;background:var(--hair)}
+.h2-st button.seen+button::before{background:var(--accent)}
+.h2-st .dt{flex:none;position:relative;z-index:1;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font:800 11px Inter;color:var(--t3);background:var(--pop);box-shadow:inset 0 0 0 1.5px var(--hair)}
+.h2-st .dt svg.i{width:13px;height:13px;stroke-width:3}
+.h2-st button.seen .dt{background:var(--accent);color:#fff;box-shadow:none}
+.h2-st button.on .dt{background:var(--navy);color:#fff;box-shadow:0 0 0 4px var(--ts)}
+[data-theme=dark] .h2-st button.on .dt{background:#fff;color:#0e2140}
+.h2-st b{display:block;font-size:12.5px;font-weight:600}.h2-st small{font-size:10.5px;color:var(--t3)}
+.h2-st button.on b{color:var(--accent)}
+.h2-l .wa{margin-top:auto;display:flex;align-items:center;gap:9px;padding:10px;border-radius:12px;background:var(--pop);box-shadow:0 0 0 1px var(--hair);font-size:11.5px}
+.h2-l .wa .ico{width:28px;height:28px}
+.h2-l .wa b{display:block;font-size:12px}
+.h2-r{display:flex;flex-direction:column;min-width:0}
+.h2-hd{display:flex;align-items:flex-start;gap:10px;padding:18px 22px 6px}
+.h2-hd h3{font-size:21px;letter-spacing:-.01em}
+.h2-hd .eyb{color:var(--accent)}
+.h2-b{flex:1;padding:8px 22px 16px}
+.h2-nav{display:flex;align-items:center;gap:10px;padding:12px 22px;border-top:1px solid var(--hair)}
+.h2-nav .nx{margin-left:auto}
+.h2-nav .pbtn small{font-weight:500;opacity:.8}
+
+/* HELP 03 — Docs + on this page */
+.h3{max-width:900px;display:grid;grid-template-rows:auto 1fr;height:500px}
+.h3-top{display:flex;align-items:center;gap:12px;padding:10px 12px 10px 16px;border-bottom:1px solid var(--hair)}
+.h3-top .lg{display:flex;align-items:center;gap:8px;font-weight:800;font-size:13.5px}
+.h3-top .lg i{width:24px;height:24px;border-radius:7px;display:grid;place-items:center;background:var(--navy);color:#fff}
+.h3-top .lg i svg.i{width:13px;height:13px}
+.h3-top .cr{font-size:12px;color:var(--t3);display:flex;align-items:center;gap:5px}
+.h3-top .cr b{color:var(--text);font-weight:600}
+.h3-top .sk{margin-left:auto;display:flex;align-items:center;gap:8px;height:32px;width:220px;padding:0 10px;border-radius:9px;background:var(--panel);box-shadow:inset 0 0 0 1px var(--hair);color:var(--t3);font-size:12px}
+.h3-top .sk kbd{margin-left:auto}
+.h3-m{display:grid;grid-template-columns:190px 1fr 170px;min-height:0}
+.h3-nav{padding:14px 10px;border-right:1px solid var(--hair)}
+.h3-nav .eyb{padding:10px 8px 5px;font-size:9.5px}
+.h3-nav .eyb:first-child{padding-top:0}
+.h3-nav button{display:flex;align-items:center;gap:9px;width:100%;height:32px;padding:0 9px;border-radius:9px;font-size:12.5px;font-weight:500;color:var(--t2)}
+.h3-nav button:hover{background:var(--hover);color:var(--text)}
+.h3-nav button.on{background:var(--ts);color:var(--accent);font-weight:700}
+.h3-art{padding:20px 26px 30px;min-width:0}
+.h3-art h1{font-size:24px;letter-spacing:-.02em;margin-bottom:4px}
+.h3-art .lead{font-size:13px;color:var(--t3);margin-bottom:16px}
+.h3-art .hb .eyb{font-size:15px;letter-spacing:-.01em;text-transform:none;color:var(--text);font-weight:800;margin-top:12px;scroll-margin-top:14px}
+.h3-fb{display:flex;align-items:center;gap:10px;margin-top:22px;padding-top:16px;border-top:1px solid var(--hair);font-size:12.5px;color:var(--t2)}
+.h3-fb .gbtn{height:30px}
+.h3-fb .gbtn.on{background:var(--ts);color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+.h3-toc{padding:20px 14px;border-left:1px solid var(--hair)}
+.h3-toc .eyb{font-size:9.5px;margin-bottom:8px}
+.h3-toc button{display:block;width:100%;padding:5px 0 5px 11px;font-size:12px;color:var(--t3);border-left:2px solid var(--hair);text-align:left}
+.h3-toc button:hover{color:var(--text)}
+.h3-toc button.on{color:var(--accent);border-color:var(--accent);font-weight:600}
+.h3-toc .up{margin-top:14px;font-size:11.5px;color:var(--t3);display:flex;align-items:center;gap:5px}
+
+/* HELP 04 — Assistant chat */
+.h4{max-width:560px;height:560px;display:flex;flex-direction:column;background:linear-gradient(180deg,var(--pop),var(--panel))}
+.h4-top{display:flex;align-items:center;gap:11px;padding:14px 14px 12px 16px;border-bottom:1px solid var(--hair);background:var(--pop)}
+.h4-av{position:relative;width:38px;height:38px;border-radius:12px;display:grid;place-items:center;color:#fff;background:conic-gradient(from 200deg,#0d847d,#12a39b,#38bdf8,#0d847d)}
+.h4-av::after{content:"";position:absolute;right:-2px;bottom:-2px;width:11px;height:11px;border-radius:50%;background:#22c55e;border:2px solid var(--pop)}
+.h4-top b{display:block;font-size:14px}.h4-top small{font-size:11.5px;color:var(--t3)}
+.h4-top .xb{margin-left:auto}
+.h4-tp{display:flex;gap:5px;padding:9px 14px;overflow-x:auto;scrollbar-width:none;border-bottom:1px solid var(--hair);background:var(--pop)}
+.h4-tp button{display:flex;align-items:center;gap:6px;flex:none;height:28px;padding:0 10px;border-radius:99px;font-size:11.5px;font-weight:600;color:var(--t2);box-shadow:inset 0 0 0 1px var(--hair)}
+.h4-tp button svg.i{width:13px;height:13px;color:var(--tint)}
+.h4-tp button.on{background:var(--tint);color:#fff;box-shadow:none}.h4-tp button.on svg.i{color:#fff}
+.h4-b{flex:1;padding:16px 14px;display:flex;flex-direction:column;gap:12px}
+.h4-m{display:flex;gap:9px;max-width:88%;animation:min .3s cubic-bezier(.2,.8,.2,1)}
+@keyframes min{from{opacity:0;transform:translateY(8px)}}
+.h4-m .av{flex:none;width:26px;height:26px;border-radius:9px;display:grid;place-items:center;color:#fff;background:linear-gradient(135deg,#0d847d,#38bdf8)}
+.h4-m .av svg.i{width:14px;height:14px}
+.h4-m .bb{padding:10px 13px;border-radius:4px 16px 16px 16px;background:var(--pop);box-shadow:0 0 0 1px var(--hair),0 6px 14px -10px rgba(14,33,64,.3);font-size:12.5px;color:var(--t2);line-height:1.55}
+.h4-m .bb b.t{display:block;color:var(--text);margin-bottom:2px}
+.h4-m .bb .gbtn{margin-top:9px;height:30px}
+.h4-m.me{align-self:flex-end}
+.h4-m.me .bb{border-radius:16px 4px 16px 16px;background:var(--accent);color:#fff;box-shadow:0 8px 16px -10px rgba(13,132,125,.8);font-weight:600}
+.h4-sg{display:flex;flex-wrap:wrap;gap:6px;padding-left:35px}
+.h4-sg button{height:30px;padding:0 11px;border-radius:99px;font-size:12px;font-weight:600;color:var(--accent);background:var(--pop);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--accent) 40%,transparent);transition:all .15s}
+.h4-sg button:hover{background:var(--accent);color:#fff}
+.h4-in{display:flex;align-items:center;gap:8px;margin:0 12px 12px;padding:6px 6px 6px 14px;border-radius:14px;background:var(--pop);box-shadow:0 0 0 1px var(--hair),0 10px 24px -16px rgba(14,33,64,.4)}
+.h4-in input{flex:1;border:0;outline:0;background:none;height:32px}
+.h4-in button{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:var(--accent);color:#fff}
+.h4-typ{display:flex;gap:4px;padding:12px 14px!important}
+.h4-typ i{width:6px;height:6px;border-radius:50%;background:var(--t3);animation:typ 1s infinite}
+.h4-typ i:nth-child(2){animation-delay:.15s}.h4-typ i:nth-child(3){animation-delay:.3s}
+@keyframes typ{50%{transform:translateY(-4px);opacity:.4}}
+
+/* HELP 05 — Key map + topic cards */
+.h5{max-width:860px}
+.h5-hd{display:flex;align-items:center;gap:12px;padding:16px 18px 0 22px}
+.h5-hd h2{font-size:19px}.h5-hd p{font-size:12px;color:var(--t3)}.h5-hd .xb{margin-left:auto}
+.h5-tabs{display:flex;gap:2px;padding:0 18px;margin-top:10px;border-bottom:1px solid var(--hair);overflow-x:auto;scrollbar-width:none}
+.h5-tabs button{position:relative;display:flex;align-items:center;gap:7px;height:42px;padding:0 11px;font-size:12.5px;font-weight:600;color:var(--t3);white-space:nowrap}
+.h5-tabs button:hover{color:var(--text)}
+.h5-tabs button.on{color:var(--text)}
+.h5-tabs button.on::after{content:"";position:absolute;left:8px;right:8px;bottom:-1px;height:3px;border-radius:3px 3px 0 0;background:var(--tint)}
+.h5-tabs button.on svg.i{color:var(--tint)}
+.h5-b{height:400px;padding:18px 22px}
+.h5-km{display:grid;grid-template-columns:1fr 300px;gap:20px}
+.kb{padding:14px;border-radius:16px;background:linear-gradient(180deg,#1f2a3d,#111827);box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 18px 30px -18px rgba(0,0,0,.7);display:grid;gap:7px;align-content:start}
+.kb .row{display:flex;gap:7px}
+.kb .k{flex:var(--w,1) 1 0;height:40px;border-radius:9px;display:grid;place-items:center;font:700 11.5px Inter;color:#cbd5e1;background:linear-gradient(180deg,#2b3850,#222d42);box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 3px 0 #0b111c;transition:all .15s;cursor:default}
+.kb .k.gap{visibility:hidden}
+.kb .k.lit{color:#04211f;background:linear-gradient(180deg,#5eead4,#14b8a6);box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 3px 0 #0f766e,0 0 18px rgba(45,212,191,.55);transform:translateY(1px)}
+.kb .cap{display:flex;justify-content:space-between;font-size:10.5px;color:#64748b;font-weight:600;padding:0 2px 2px}
+.kb .cap b{color:#5eead4}
+.h5-sl{display:grid;gap:2px;align-content:start}
+.h5-sl .eyb{margin:8px 0 3px}.h5-sl .eyb:first-child{margin-top:0}
+.h5-sl div[data-sk]{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:6px 9px;border-radius:9px;font-size:12px;cursor:default;transition:background .12s}
+.h5-sl div[data-sk]:hover,.h5-sl div[data-sk].lit{background:var(--ts)}
+.h5-sl div[data-sk] span:last-child{white-space:nowrap}
+.h5-hint{font-size:11.5px;color:var(--t3);margin-top:10px;display:flex;align-items:center;gap:6px}
+.h5-cards .hb-steps{grid-template-columns:repeat(auto-fit,minmax(180px,1fr))}
+.h5-cards .hb-steps li{grid-template-columns:1fr;gap:10px}
+.h5-cards .hb-defs{grid-template-columns:1fr 1fr;box-shadow:none;gap:8px;overflow:visible}
+.h5-cards .hb-defs>div{grid-template-columns:1fr;gap:2px;border-radius:12px;background:var(--panel);box-shadow:inset 0 0 0 1px var(--hair)}
+.h5-cards .hb-defs>div+div{border-top:0}
+.h5-cards .hb-faq{grid-template-columns:1fr 1fr;align-items:start}
+
+/* =========================================================
+   PCB THEME — shared viewer chrome + editor pieces
+   ========================================================= */
+.te-hd{display:flex;align-items:center;gap:11px;padding:13px 14px 13px 16px;border-bottom:1px solid var(--hair)}
+.te-mk{flex:none;width:34px;height:34px;border-radius:10px;display:grid;place-items:center;color:#fff;background:conic-gradient(from 210deg,#5b7fff,#e0a63c,#e2596b,#d98a4f,#5b7fff);box-shadow:0 6px 14px -8px rgba(91,127,255,.8)}
+.te-mk.sm{width:30px;height:30px;border-radius:9px}
+.te-mk svg.i{width:17px;height:17px}
+.te-hd h2{font-size:15px}.te-hd small{display:block;font-size:11.5px;color:var(--t3)}
+.te-hd .xb{margin-left:auto}
+.te-ft{display:flex;align-items:center;gap:8px;padding:11px 14px;border-top:1px solid var(--hair);background:var(--panel)}
+.te-ft .sp{flex:1}
+.te-tabs{display:flex;gap:6px;padding:10px 16px 0}
+.te-tabs button{display:flex;align-items:center;gap:7px;height:34px;padding:0 10px 0 5px;border-radius:11px;font-size:12px;font-weight:600;color:var(--t2);transition:all .15s}
+.te-tabs button .ci{width:24px;height:24px;border-radius:8px;display:grid;place-items:center;color:var(--tint);background:color-mix(in srgb,var(--tint) 14%,transparent)}
+.te-tabs button .ci svg.i{width:13px;height:13px}
+.te-tabs button em{font:700 10px var(--mono);color:var(--t3);background:var(--panel-2);padding:1px 6px;border-radius:99px;font-style:normal}
+.te-tabs button:hover{background:var(--hover)}
+.te-tabs button.on{background:color-mix(in srgb,var(--tint) 10%,var(--pop));color:var(--text);box-shadow:inset 0 0 0 1.5px var(--tint)}
+.te-tabs button.on .ci,.te-tabs button.on em{background:var(--tint);color:#fff}
+.vw{position:relative;width:100%;max-width:1020px;height:580px;border-radius:16px;overflow:hidden;background:var(--pop);box-shadow:var(--msh);text-align:left}
+.vw-tb{position:absolute;left:0;right:0;top:0;height:46px;z-index:12;display:flex;align-items:center;gap:2px;padding:0 10px;background:var(--pop);border-bottom:1px solid var(--hair)}
+.vw-tb .fn{display:flex;align-items:center;gap:8px;margin-right:10px;font-size:12px;font-weight:600;color:var(--t2);white-space:nowrap}
+.vw-tb .fn i{width:22px;height:22px;border-radius:6px;display:grid;place-items:center;background:#2563eb;color:#fff;font:800 10px Inter;font-style:normal}
+.vw-tb .tb{width:32px;height:32px;border-radius:9px;display:grid;place-items:center;color:var(--t2)}
+.vw-tb .tb:hover{background:var(--hover);color:var(--text)}
+.vw-tb .tb svg.i{width:17px;height:17px}
+.vw-tb .sep{width:1px;height:20px;background:var(--hair);margin:0 6px}
+.vw-tb .sk{margin-left:auto;display:flex;align-items:center;gap:8px;height:32px;width:190px;padding:0 10px;border-radius:9px;background:var(--panel);box-shadow:inset 0 0 0 1px var(--hair);color:var(--t3);font-size:12px}
+.tb-col{display:flex;align-items:center;gap:8px;height:32px;padding:0 8px 0 6px;border-radius:9px;font-weight:600;font-size:12px;box-shadow:inset 0 0 0 1px var(--hair);transition:all .15s}
+.tb-col:hover{background:var(--hover)}
+.tb-col.on{background:var(--ts);box-shadow:inset 0 0 0 1.5px var(--accent);color:var(--accent)}
+.tb-col svg.i{width:14px;height:14px;transition:transform .2s}.tb-col.on svg.i{transform:rotate(180deg)}
+.sw3{display:inline-flex;align-items:center;width:36px;height:18px;border-radius:5px;overflow:hidden;box-shadow:0 0 0 1px rgba(0,0,0,.18);flex:none;background:var(--panel-2)}
+.sw3 i{height:100%;flex:2.2}.sw3 i:nth-child(2){flex:1}.sw3 i:nth-child(3){flex:none;width:7px;height:7px;border-radius:50%;margin:0 3px}
+.vw-cv{position:absolute;left:0;right:0;top:46px;bottom:36px;overflow:hidden;background:radial-gradient(circle at 1px 1px,rgba(14,33,64,.13) 1px,transparent 0) 0 0/20px 20px,#e6ebf2;transition:bottom .35s cubic-bezier(.2,.8,.2,1)}
+[data-theme=dark] .vw-cv{background:radial-gradient(circle at 1px 1px,rgba(255,255,255,.06) 1px,transparent 0) 0 0/20px 20px,#0a111d}
+.vw-board{position:absolute;inset:0;display:grid;place-items:center;padding:30px 70px;transition:transform .45s cubic-bezier(.2,.8,.2,1)}
+.vw-board>div,.vw-board .bsvg{width:min(640px,100%)}
+.vw-board .bsvg{filter:drop-shadow(0 26px 30px rgba(0,0,0,.35));animation:bfade .35s}
+@keyframes bfade{from{opacity:.55}}
+.vw-lb{position:absolute;left:0;right:0;bottom:0;height:36px;display:flex;align-items:center;gap:5px;padding:0 12px;background:var(--pop);border-top:1px solid var(--hair);font:700 10.5px var(--mono);color:#fff}
+.vw-lb span{height:22px;min-width:24px;padding:0 6px;border-radius:6px;display:grid;place-items:center;background:var(--c);text-shadow:0 1px 1px rgba(0,0,0,.35)}
+.vw-lb span.all{background:var(--panel-2);color:var(--text);text-shadow:none}
+.vw-lb .st{margin-left:auto;display:flex;align-items:center;gap:7px;background:none;font:600 11.5px Inter;color:var(--t2);text-shadow:none}
+.vw-lb .st svg.i{width:14px;height:14px}
+.sw{position:relative;flex:none;width:30px;height:30px;border-radius:50%;background:var(--c);box-shadow:inset 0 0 0 1px rgba(0,0,0,.18),0 0 0 3px var(--pop),0 0 0 4px var(--hair);transition:transform .15s,box-shadow .15s}
+.sw:hover{transform:scale(1.1);box-shadow:inset 0 0 0 1px rgba(0,0,0,.18),0 0 0 3px var(--pop),0 0 0 5px var(--accent)}
+.sw::after{content:"";position:absolute;inset:0;border-radius:50%;background:no-repeat center/14px url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.4' stroke-linecap='round'%3E%3Cpath d='M4 20h4L19 9l-4-4L4 16z'/%3E%3C/svg%3E");opacity:0;transition:opacity .15s;filter:drop-shadow(0 1px 1px rgba(0,0,0,.6))}
+.sw:hover::after{opacity:1}
+.chg{flex:none;width:7px;height:7px;border-radius:50%;background:var(--warn);box-shadow:0 0 0 3px color-mix(in srgb,var(--warn) 22%,transparent)}
+.terr{display:flex;align-items:center;gap:6px;margin-top:6px;font-size:11.5px;font-weight:600;color:var(--bad);animation:tin .2s}
+.terr svg.i{width:14px;height:14px}
+.dbtn{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 13px;border-radius:9px;font-weight:700;font-size:12px;background:var(--bad);color:#fff;box-shadow:0 8px 16px -10px rgba(220,38,38,.9)}
+.dbtn svg.i{width:14px;height:14px}
+.gbtn.danger{color:var(--bad)}.gbtn.danger:hover{background:color-mix(in srgb,var(--bad) 9%,transparent)}
+.gbtn.flat{box-shadow:none;background:none}.gbtn.flat:hover{background:var(--hover)}
+.ovr{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:12px;font-weight:600;white-space:nowrap}
+.ovr small{display:block;font-weight:500;font-size:10.5px;color:var(--t3);white-space:normal}
+.orb{flex:none;width:30px;height:30px;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(255,255,255,.18),0 2px 6px -2px rgba(0,0,0,.4)}
+.prev-chip{position:absolute;bottom:16px;left:50%;transform:translateX(-50%);z-index:6;display:flex;align-items:center;gap:7px;padding:7px 13px;border-radius:99px;background:rgba(14,33,64,.9);color:#fff;font-size:11.5px;font-weight:500;box-shadow:0 10px 24px -12px rgba(0,0,0,.6);animation:tin .2s;white-space:nowrap}
+.prev-chip svg.i{width:14px;height:14px;color:#5eead4}
+.prev-chip[hidden]{display:none}
+.cf-scrim{position:absolute;inset:0;z-index:60;display:grid;place-items:center;background:rgba(10,17,29,.45);backdrop-filter:blur(2px);animation:fdin .2s}
+@keyframes fdin{from{opacity:0}}
+.cf{width:340px;padding:22px 20px 18px;border-radius:18px;background:var(--pop);box-shadow:0 0 0 1px var(--hair),0 30px 60px -20px rgba(0,0,0,.6);display:grid;justify-items:center;gap:6px;text-align:center;animation:popin .22s}
+.cf .ico svg.i{width:20px;height:20px}
+.cf b{font-size:15.5px;margin-top:6px}.cf p{font-size:12.5px;color:var(--t2)}
+.cf>div{display:flex;gap:8px;margin-top:10px}
+@keyframes popin{from{opacity:0;transform:translateY(-6px) scale(.97)}}
+/* menu rows (T1, T4) */
+.mr{position:relative;display:flex;align-items:center;gap:10px;height:42px;padding:0 8px 0 10px;border-radius:10px;cursor:pointer;transition:background .12s}
+.mr:hover{background:var(--hover)}
+.mr .nm{display:grid;line-height:1.2}.mr b{font-size:12.5px;font-weight:600}.mr em{font-size:10.5px;color:var(--t3);font-style:normal}
+.mr.on b{color:var(--accent)}
+.mr .ck{margin-left:auto;color:var(--accent);stroke-width:2.6}
+.mr .ra{margin-left:auto;display:none;gap:2px}.mr:hover .ra{display:flex}.mr:hover .ck{display:none}
+.mr .ra button{width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:var(--t2)}
+.mr .ra button:hover{background:var(--pop);color:var(--text);box-shadow:0 0 0 1px var(--hair)}.mr .ra button.del:hover{color:var(--bad)}
+.mr .ra svg.i{width:14px;height:14px}
+.mr.cfm{height:auto;display:grid;gap:8px;padding:10px;cursor:default;font-size:12px;color:var(--t2);background:color-mix(in srgb,var(--bad) 8%,transparent);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--bad) 25%,transparent);animation:tin .2s}
+.mr.cfm b{color:var(--text)}
+.mr.cfm div{display:flex;gap:6px;justify-content:flex-end}.mr.cfm .gbtn,.mr.cfm .dbtn{height:28px}
+
+/* ---------- colour picker ---------- */
+.pk{position:fixed;z-index:300;width:276px;padding:12px;border-radius:16px;background:var(--pop);box-shadow:0 0 0 1px var(--hair),0 30px 60px -20px rgba(14,33,64,.65);animation:popin .16s;user-select:none}
+.pk-h{display:flex;align-items:center;gap:9px;margin-bottom:10px}
+.pk-h>i{flex:none;width:28px;height:28px;border-radius:9px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.15)}
+.pk-h b{display:block;font-size:12.5px}.pk-h small{display:block;font-size:10.5px;color:var(--t3);line-height:1.3}
+.pk-h .xb{margin-left:auto;width:26px;height:26px}
+.pk-sv{position:relative;height:150px;border-radius:11px;cursor:crosshair;touch-action:none;background:linear-gradient(to top,#000,transparent),linear-gradient(to right,#fff,hsl(calc(var(--h)*1deg),100%,50%));box-shadow:inset 0 0 0 1px rgba(0,0,0,.1)}
+.pk-sv i{position:absolute;width:16px;height:16px;margin:-8px 0 0 -8px;border-radius:50%;border:2.5px solid #fff;box-shadow:0 0 0 1px rgba(0,0,0,.3),0 2px 6px rgba(0,0,0,.4);pointer-events:none}
+.pk-mid{display:grid;grid-template-columns:32px 1fr 40px;gap:10px;align-items:center;margin-top:11px}
+.pk-ed{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;color:var(--t2);box-shadow:inset 0 0 0 1px var(--hair)}
+.pk-ed:hover{color:var(--accent);box-shadow:inset 0 0 0 1.5px var(--accent)}
+.pk-bars{display:grid;gap:9px}
+.pk-bar{position:relative;height:12px;border-radius:99px;cursor:pointer;touch-action:none}
+.pk-hue{background:linear-gradient(90deg,#f00,#ff0,#0f0,#0ff,#00f,#f0f,#f00)}
+.pk-al{background:linear-gradient(90deg,transparent,var(--o)),repeating-conic-gradient(#cbd5e1 0 25%,#fff 0 50%) 0 0/8px 8px}
+.pk-bar i{position:absolute;top:50%;width:16px;height:16px;margin:-8px 0 0 -8px;border-radius:50%;background:#fff;box-shadow:0 0 0 1px rgba(0,0,0,.25),0 2px 5px rgba(0,0,0,.3);pointer-events:none}
+.pk-cmp{height:40px;border-radius:10px;overflow:hidden;display:grid;grid-template-rows:1fr 1fr;box-shadow:inset 0 0 0 1px var(--hair);background:repeating-conic-gradient(#cbd5e1 0 25%,#fff 0 50%) 0 0/8px 8px}
+.pk-cmp span:first-child{cursor:pointer}
+.pk-in{display:grid;grid-template-columns:1fr 78px;gap:6px;margin-top:10px}
+.pk-in label{display:flex;align-items:center;gap:6px;height:30px;padding:0 9px;border-radius:9px;background:var(--panel);box-shadow:inset 0 0 0 1px var(--hair);font:700 10px var(--mono);color:var(--t3)}
+.pk-in label:focus-within{box-shadow:inset 0 0 0 1.5px var(--accent)}
+.pk-in input{width:100%;min-width:0;border:0;outline:0;background:none;font:600 12px var(--mono);color:var(--text);text-transform:uppercase}
+.pk .eyb{margin:11px 0 6px;font-size:9.5px}
+.pk-pal{display:grid;grid-template-columns:repeat(9,1fr);gap:5px}
+.pk-pal button{aspect-ratio:1;border-radius:6px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.15);transition:transform .12s}
+.pk-pal button:hover{transform:scale(1.2)}
+.pk-f{display:flex;justify-content:space-between;align-items:center;margin-top:12px}
+.pk-f .pbtn{height:30px;padding:0 16px}
+.pk-f .lbtn svg.i{width:13px;height:13px}
+
+/* ---------- T1 toolbar menu + dock ---------- */
+.t1-menu{position:absolute;top:8px;right:206px;z-index:20;width:300px;padding:6px;border-radius:14px;background:var(--pop);box-shadow:0 0 0 1px var(--hair),0 24px 50px -20px rgba(14,33,64,.6);animation:popin .18s}
+.t1-menu .mh{padding:8px 10px 8px}.t1-menu .mh b{display:block;font-size:12.5px}.t1-menu .mh small{font-size:11px;color:var(--t3)}
+.t1-menu .mf{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:8px 2px 2px;border-top:1px solid var(--hair);margin-top:6px}
+.t1-menu .mf .gbtn{justify-content:center}
+.t1-dock{position:absolute;top:46px;bottom:36px;right:0;width:330px;z-index:10;display:flex;flex-direction:column;background:var(--pop);border-left:1px solid var(--hair);box-shadow:-24px 0 44px -28px rgba(14,33,64,.55);animation:dkin .38s cubic-bezier(.2,.8,.2,1)}
+@keyframes dkin{from{transform:translateX(100%)}}
+.vw.dock .vw-board{transform:translateX(-165px) scale(.9)}
+.dk-h{display:flex;align-items:center;gap:10px;padding:12px 12px 11px 14px;border-bottom:1px solid var(--hair)}
+.dk-h b{display:block;font-size:13.5px}.dk-h small{display:block;font-size:11px;color:var(--t3)}
+.dk-h .xb{margin-left:auto}
+.dk-top{display:grid;gap:10px;padding:12px 14px 8px}
+.dk-tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:3px;margin:4px 14px 2px;padding:3px;border-radius:11px;background:var(--panel);box-shadow:inset 0 0 0 1px var(--hair)}
+.dk-tabs button{display:grid;justify-items:center;gap:1px;padding:5px 0;border-radius:8px;font-size:10.5px;font-weight:600;color:var(--t3)}
+.dk-tabs button svg.i{width:15px;height:15px}
+.dk-tabs button:hover{color:var(--text)}
+.dk-tabs button.on{background:var(--pop);color:var(--text);box-shadow:0 1px 3px rgba(14,33,64,.15),0 0 0 1px var(--hair)}.dk-tabs button.on svg.i{color:var(--tint)}
+.dk-list{flex:1;min-height:0;padding:6px 8px}
+.dk-r{display:flex;align-items:center;gap:11px;padding:6px 8px;border-radius:11px;transition:background .12s}
+.dk-r:hover{background:var(--hover)}
+.dk-r span{flex:1;min-width:0;font-size:12.5px;font-weight:500}
+.dk-r code{font:600 10.5px var(--mono);color:var(--t3)}
+.dk-cu{display:grid;grid-template-columns:repeat(4,1fr);gap:12px 6px;padding:8px}
+.dk-cu>div{position:relative;display:grid;justify-items:center;gap:5px;font:700 10px var(--mono);color:var(--t3)}
+.dk-cu .chg,.t2-cu .chg,.acc .bd.cu .chg{position:absolute;top:0;right:12px}
+.dk-f{display:flex;align-items:center;gap:8px;padding:10px 12px;border-top:1px solid var(--hair);background:var(--panel)}
+.dk-f .n{margin-right:auto;display:flex;align-items:center;gap:7px;font-size:11.5px;color:var(--t3)}
+
+/* ---------- T2 filmstrip + studio ---------- */
+.t2-pill{position:absolute;left:14px;bottom:14px;z-index:9;display:flex;align-items:center;gap:10px;height:46px;padding:0 14px 0 6px;border-radius:99px;background:color-mix(in srgb,var(--pop) 90%,transparent);backdrop-filter:blur(12px);box-shadow:0 0 0 1px var(--hair),0 14px 30px -14px rgba(0,0,0,.5);font-weight:700;font-size:13px;line-height:1.15;text-align:left}
+.t2-pill small{display:block;font-weight:500;font-size:10.5px;color:var(--t3)}
+.t2-pill .orb{width:34px;height:34px}
+.t2-pill svg.i{width:15px;height:15px;color:var(--t3);transition:transform .25s}.t2-pill.open svg.i{transform:rotate(180deg)}
+.t2-film{position:absolute;left:0;right:0;bottom:0;z-index:8;padding:16px 14px 72px;background:linear-gradient(to top,color-mix(in srgb,var(--pop) 97%,transparent) 72%,transparent);animation:upin .32s cubic-bezier(.2,.8,.2,1)}
+@keyframes upin{from{transform:translateY(40px);opacity:0}}
+.t2-film .hd{display:flex;align-items:baseline;gap:9px;margin:0 2px 10px}
+.t2-film .hd b{font-size:13.5px}.t2-film .hd small{font-size:11px;color:var(--t3)}
+.t2-row{display:flex;gap:10px;overflow-x:auto;padding:3px 3px 8px}
+.t2-card{position:relative;flex:none;width:156px;border-radius:13px;overflow:hidden;background:var(--panel);box-shadow:0 0 0 1px var(--hair);cursor:pointer;transition:transform .18s,box-shadow .2s}
+.t2-card:hover{transform:translateY(-3px);box-shadow:0 0 0 1px var(--hair),0 14px 24px -14px rgba(14,33,64,.5)}
+.t2-card.on{box-shadow:0 0 0 2px var(--accent)}
+.t2-card .th{background:#0b1220;padding:6px}
+.t2-card .nm{padding:7px 10px 8px}.t2-card .nm b{display:block;font-size:12.5px}.t2-card .nm small{font-size:10.5px;color:var(--t3)}
+.t2-card .tag{position:absolute;top:8px;left:8px;z-index:1;font:800 8.5px Inter;letter-spacing:.08em;color:#fff;background:var(--accent);padding:3px 7px;border-radius:99px}
+.t2-card .ac{position:absolute;top:7px;right:7px;z-index:1;display:flex;gap:4px;opacity:0;transform:translateY(-3px);transition:all .15s}
+.t2-card:hover .ac{opacity:1;transform:none}
+.t2-card .ac button{width:26px;height:26px;border-radius:8px;display:grid;place-items:center;background:rgba(255,255,255,.95);color:#0e2140;box-shadow:0 4px 10px -4px rgba(0,0,0,.4)}
+.t2-card .ac button.del{color:var(--bad)}.t2-card .ac svg.i{width:13px;height:13px}
+.t2-new{flex:none;width:136px;min-height:128px;border-radius:13px;border:1.5px dashed var(--hair);display:grid;place-items:center;align-content:center;gap:5px;font-size:12px;font-weight:700;color:var(--t2);text-align:center;transition:all .15s}
+.t2-new small{font-weight:500;font-size:10.5px;color:var(--t3)}
+.t2-new:hover{border-color:var(--accent);color:var(--accent);background:var(--ts)}
+.vw.studio .vw-board{transform:translateX(-250px) scale(.8)}
+.t2-scrim{position:absolute;top:46px;bottom:36px;right:0;left:42%;z-index:30;display:grid;align-items:center;padding:14px 16px 14px 0}
+.t2-md{display:flex;flex-direction:column;max-height:100%;border-radius:18px;background:var(--pop);box-shadow:0 0 0 1px var(--hair),0 40px 80px -30px rgba(0,0,0,.7);overflow:hidden;animation:popin .25s}
+.t2-strip{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;padding:12px 16px}
+.ovr.sm{gap:8px}
+.pbar{display:flex;height:38px;margin:0 16px;border-radius:11px;overflow:hidden;box-shadow:0 0 0 1px var(--hair)}
+.pbar span{position:relative;flex:1;display:grid;place-items:center;font:800 9.5px Inter;letter-spacing:.09em;color:var(--ink);background:var(--c);cursor:pointer}
+.pbar span+span{box-shadow:-1px 0 0 rgba(0,0,0,.12)}
+.pbar span b{position:absolute;inset:0;display:grid;place-items:center;font:700 10.5px var(--mono);letter-spacing:0;background:var(--c);opacity:0;transition:opacity .15s}
+.pbar span:hover b{opacity:1}
+.t2-body{flex:1;min-height:0;padding:12px 16px 14px}
+.t2-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.t2-f{display:flex;align-items:center;gap:11px;padding:9px 11px;border-radius:12px;background:var(--panel);box-shadow:inset 0 0 0 1px var(--hair);transition:box-shadow .15s}
+.t2-f:hover{box-shadow:inset 0 0 0 1.5px var(--accent)}
+.t2-f b{display:block;font-size:12px;font-weight:600;line-height:1.25}.t2-f small{font:600 10.5px var(--mono);color:var(--t3)}
+.t2-f .chg{margin-left:auto}
+.t2-cu{display:grid;grid-template-columns:repeat(6,1fr);gap:12px 6px}
+.t2-cu>div{position:relative;display:grid;justify-items:center;gap:5px;font:700 10px var(--mono);color:var(--t3)}
+
+/* ---------- T3 settings page ---------- */
+.t3w{position:relative;width:100%;max-width:980px;border-radius:18px;background:var(--pop);box-shadow:var(--msh);overflow:hidden;text-align:left}
+.t3-top{display:flex;align-items:center;gap:10px;padding:11px 14px 11px 16px;border-bottom:1px solid var(--hair)}
+.t3-top .cr{display:flex;align-items:center;gap:5px;font-size:12.5px;color:var(--t3)}.t3-top .cr b{color:var(--text)}.t3-top .cr svg.i{width:13px;height:13px}
+.t3-in{padding:16px 18px 18px}
+.t3-hero{display:grid;grid-template-columns:1.25fr 1fr;grid-template-rows:330px;border-radius:16px;overflow:hidden;box-shadow:0 0 0 1px var(--hair)}
+.t3-pv [data-board]{max-width:430px}
+.t3-hero.flip{animation:flip .55s cubic-bezier(.2,.8,.2,1)}
+@keyframes flip{from{transform:perspective(1400px) rotateX(10deg) scale(.98);opacity:.35}}
+.t3-pv{position:relative;display:grid;place-items:center;overflow:hidden;padding:34px 22px 14px;background:radial-gradient(circle at 50% 40%,#1e293b,#0b1220)}
+.t3-pv .bsvg{filter:drop-shadow(0 22px 26px rgba(0,0,0,.55))}
+.t3-pv .tag{position:absolute;top:12px;left:12px;display:flex;align-items:center;gap:7px;font:800 9.5px Inter;letter-spacing:.1em;color:#5eead4;background:rgba(94,234,212,.12);padding:5px 10px;border-radius:99px}
+.t3-info{display:flex;flex-direction:column;gap:9px;padding:18px;background:var(--panel);min-height:0;overflow:hidden}
+.t3-info h2{font-size:24px;letter-spacing:-.02em;line-height:1.1}.t3-info>p{font-size:12px;color:var(--t3)}
+.t3-leg{display:grid;grid-template-columns:1fr 1fr;gap:9px 14px;margin:8px 0}
+.t3-leg div{display:flex;align-items:center;font-size:12px;color:var(--t2)}
+.t3-leg i{width:16px;height:16px;border-radius:50%;margin-right:-5px;box-shadow:0 0 0 2px var(--panel),inset 0 0 0 1px rgba(0,0,0,.15)}
+.t3-leg span{margin-left:13px}
+.t3-act{margin-top:auto;display:flex;gap:8px}
+.t3-ed .row{display:flex;align-items:center;gap:8px}.t3-ed .row small{margin-left:auto;font-size:10.5px;color:var(--t3)}
+.t3-ed .inp{height:34px;background:var(--pop)}
+.t3-accs{flex:1;min-height:0;display:grid;gap:6px;align-content:start;margin-top:2px}
+.acc{border-radius:12px;background:var(--pop);box-shadow:0 0 0 1px var(--hair)}
+.acc>button{display:flex;align-items:center;gap:9px;width:100%;padding:7px 10px 7px 7px;font-size:12.5px;font-weight:600}
+.acc>button em{font:700 10px var(--mono);color:var(--t3);font-style:normal}
+.acc>button .dots{margin-left:auto;display:flex}.acc .dots i{width:13px;height:13px;border-radius:50%;margin-left:-4px;box-shadow:0 0 0 2px var(--pop)}
+.acc>button>svg.i:last-child{width:14px;height:14px;color:var(--t3);transition:transform .2s}
+.acc.open>button>svg.i:last-child{transform:rotate(180deg)}
+.acc .bd{display:grid;grid-template-columns:1fr 1fr;gap:6px 10px;padding:4px 10px 10px;animation:tin .2s}
+.acc .bd>div{position:relative;display:flex;align-items:center;gap:9px;font-size:11.5px;font-weight:500;min-width:0}
+.acc .bd>div span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.acc .bd .sw{width:22px;height:22px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.18),0 0 0 2px var(--pop),0 0 0 3px var(--hair)}
+.acc .bd.cu{grid-template-columns:repeat(8,1fr)}
+.acc .bd.cu>div{flex-direction:column;gap:3px;font:700 9.5px var(--mono);color:var(--t3)}
+.t3-gh{display:flex;justify-content:space-between;align-items:baseline;margin:18px 2px 10px;font-size:11.5px;color:var(--t3)}
+.t3-grid{display:flex;flex-wrap:wrap;gap:10px;transition:opacity .2s}
+.t3-grid .t2-card{width:calc((100% - 50px)/6)}
+.t3-grid .t2-new{width:calc((100% - 50px)/6);min-height:0}
+.t3-grid.dim{opacity:.45;pointer-events:none}
+.t3-note{font-size:11.5px;color:var(--t3);margin-top:12px}
+.t3-empty{display:grid;justify-items:center;gap:8px;text-align:center;padding:34px 20px 40px}
+.t3-empty .gb{width:320px;filter:grayscale(1) opacity(.3)}
+.t3-empty h3{font-size:18px;margin-top:6px}.t3-empty p{font-size:12.5px;color:var(--t3);max-width:420px}
+
+/* ---------- T4 click-to-recolour ---------- */
+.t4-bar{position:absolute;top:14px;left:50%;transform:translateX(-50%);z-index:9;display:flex;align-items:center;gap:3px;padding:5px;border-radius:15px;background:color-mix(in srgb,var(--pop) 90%,transparent);backdrop-filter:blur(12px);box-shadow:0 0 0 1px var(--hair),0 16px 34px -18px rgba(0,0,0,.55);white-space:nowrap}
+.t4-bar .cur{display:flex;align-items:center;gap:8px;height:36px;padding:0 10px 0 4px;border-radius:11px;font-weight:700;font-size:12.5px}
+.t4-bar .cur:hover{background:var(--hover)}
+.t4-bar .cur .orb{width:28px;height:28px}
+.t4-bar .cur svg.i{width:14px;height:14px;color:var(--t3)}
+.t4-bar .vs{width:1px;height:22px;background:var(--hair);margin:0 3px}
+.t4-dd{position:absolute;top:66px;left:50%;transform:translateX(-50%);z-index:20;width:280px;padding:6px;border-radius:14px;background:var(--pop);box-shadow:0 0 0 1px var(--hair),0 24px 50px -20px rgba(14,33,64,.6);animation:popin .18s}
+.t4-edit{position:absolute;top:0;left:0;right:0;z-index:11;display:flex;align-items:center;gap:10px;padding:8px 12px;background:linear-gradient(90deg,#0d847d,#0e6f8a);color:#fff;box-shadow:0 10px 24px -14px rgba(0,0,0,.5);animation:dn .32s cubic-bezier(.2,.8,.2,1)}
+@keyframes dn{from{transform:translateY(-100%)}}
+.t4-edit .msg{display:flex;align-items:center;gap:10px;font-size:12.5px;font-weight:700;line-height:1.25;white-space:nowrap}
+.t4-edit .msg>svg.i{width:30px;height:30px;padding:7px;border-radius:9px;background:rgba(255,255,255,.16)}
+.t4-edit .msg small{display:block;font-weight:500;font-size:11px;opacity:.8}
+.t4-edit .sp{flex:1}
+.t4-edit input{width:170px;height:32px;border:0;outline:0;border-radius:9px;padding:0 10px;background:rgba(255,255,255,.16);color:#fff;font-weight:600;font-size:12.5px}
+.t4-edit input::placeholder{color:rgba(255,255,255,.65)}
+.t4-edit input:focus{background:rgba(255,255,255,.24)}
+.t4-edit input.err{box-shadow:0 0 0 2px #fecaca}
+.t4-edit .ovr{color:#fff}
+.t4-edit .tg{background:rgba(255,255,255,.25);box-shadow:none}.t4-edit .tg.on{background:#5eead4}
+.t4-edit .gbtn{background:rgba(255,255,255,.14);color:#fff;box-shadow:none}.t4-edit .gbtn:hover{background:rgba(255,255,255,.24)}
+.t4-edit .pbtn{height:32px;background:#fff;color:#0d6f69;box-shadow:none}
+.t4-err{position:absolute;top:54px;right:12px;z-index:11;padding:6px 10px;border-radius:10px;background:var(--pop);box-shadow:0 0 0 1px var(--hair),0 10px 20px -12px rgba(0,0,0,.4)}
+.t4-err .terr{margin:0}
+.vw.pick .vw-board{transform:translateX(120px)}
+.vw.pick .bsvg [data-pk]{cursor:crosshair}
+.bsvg .hov{filter:drop-shadow(0 0 2px #fff) drop-shadow(0 0 5px #5eead4)}
+.t4-tip{position:absolute;z-index:14;pointer-events:none;display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:10px;background:rgba(14,33,64,.95);color:#fff;font-size:11.5px;font-weight:700;white-space:nowrap;transform:translate(14px,14px);box-shadow:0 10px 20px -10px rgba(0,0,0,.6)}
+.t4-tip[hidden]{display:none}
+.t4-tip i{width:16px;height:16px;border-radius:5px;box-shadow:0 0 0 1px rgba(255,255,255,.35)}
+.t4-tip code{font:600 10.5px var(--mono);opacity:.75}.t4-tip small{font-weight:500;opacity:.55}
+.t4-side{position:absolute;left:12px;top:62px;bottom:12px;z-index:9;width:236px;display:flex;flex-direction:column;border-radius:15px;background:color-mix(in srgb,var(--pop) 94%,transparent);backdrop-filter:blur(12px);box-shadow:0 0 0 1px var(--hair),0 16px 34px -18px rgba(0,0,0,.5);overflow:hidden;animation:lin .32s cubic-bezier(.2,.8,.2,1)}
+@keyframes lin{from{transform:translateX(-24px);opacity:0}}
+.t4-side .hd{display:flex;align-items:center;justify-content:space-between;padding:11px 12px 6px}
+.t4-side .bd{flex:1;min-height:0;padding:0 7px 10px}
+.t4-chg{display:flex;align-items:center;gap:9px;padding:6px 5px;border-radius:10px;font-size:12px;font-weight:600;animation:tin .2s}
+.t4-chg:hover{background:var(--hover)}
+.t4-chg .sw{width:24px;height:24px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.18),0 0 0 2px var(--pop),0 0 0 3px var(--hair)}
+.t4-chg>span{min-width:0;line-height:1.25}.t4-chg code{display:block;font:600 9.5px var(--mono);color:var(--t3);white-space:nowrap}
+.t4-chg .rv{margin-left:auto;flex:none;width:26px;height:26px;border-radius:8px;display:grid;place-items:center;color:var(--t3)}
+.t4-chg .rv:hover{background:var(--pop);color:var(--accent);box-shadow:0 0 0 1px var(--hair)}
+.t4-chg .rv svg.i{width:13px;height:13px}
+.t4-empty{font-size:11.5px;color:var(--t3);padding:2px 6px 4px;line-height:1.5}
+.t4-sg small{display:block;font-size:10.5px;font-weight:700;padding:6px 6px 4px}
+.t4-mini{display:grid;grid-template-columns:repeat(8,1fr);gap:5px;padding:0 6px}
+.t4-mini .sw{width:20px;height:20px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.18),0 0 0 1.5px var(--pop),0 0 0 2.5px var(--hair)}
+.t4-mini .sw::after{background-size:10px}
+
+/* ---------- T5 rail + before/after ---------- */
+.t5-rail{position:absolute;left:14px;top:50%;transform:translateY(-50%);z-index:9;display:flex;flex-direction:column;align-items:center;gap:9px;padding:11px 8px;border-radius:99px;background:color-mix(in srgb,var(--pop) 90%,transparent);backdrop-filter:blur(12px);box-shadow:0 0 0 1px var(--hair),0 16px 30px -16px rgba(0,0,0,.5);animation:lin .3s}
+.t5-rail .o{position:relative;width:34px;height:34px;border-radius:50%;box-shadow:0 0 0 2px var(--pop),0 2px 6px -2px rgba(0,0,0,.4);transition:transform .2s,box-shadow .2s}
+.t5-rail .o:hover{transform:scale(1.14)}
+.t5-rail .o.on{box-shadow:0 0 0 2px var(--pop),0 0 0 4.5px var(--accent)}
+.t5-rail .ln{width:20px;height:1px;background:var(--hair)}
+.t5-rail .rb{position:relative;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;color:var(--t2);box-shadow:inset 0 0 0 1px var(--hair)}
+.t5-rail .rb:hover{color:var(--accent);box-shadow:inset 0 0 0 1.5px var(--accent)}
+.t5-rail [data-tip]:hover::after{content:attr(data-tip);position:absolute;left:calc(100% + 14px);top:50%;transform:translateY(-50%);white-space:nowrap;padding:5px 9px;border-radius:8px;background:#0e2140;color:#fff;font:600 11.5px Inter;pointer-events:none;box-shadow:0 8px 18px -8px rgba(0,0,0,.5)}
+.t5-b2{clip-path:inset(0 0 0 var(--s))}
+.t5-hd{position:absolute;top:0;bottom:0;left:var(--s);z-index:6;width:2px;margin-left:-1px;background:#fff;box-shadow:0 0 12px rgba(0,0,0,.45);cursor:ew-resize;touch-action:none}
+.t5-hd::before{content:"";position:absolute;inset:0 -10px}
+.t5-hd i{position:absolute;top:50%;left:50%;width:36px;height:36px;margin:-18px;border-radius:50%;display:grid;place-items:center;background:#fff;color:#0e2140;box-shadow:0 4px 14px rgba(0,0,0,.35)}
+.t5-hd i svg.i{transform:rotate(90deg)}
+.t5-lab{position:absolute;top:12px;z-index:6;font:800 10px Inter;letter-spacing:.09em;padding:5px 10px;border-radius:99px;background:rgba(14,33,64,.82);color:#fff;pointer-events:none}
+.t5-lab.l{left:12px}.t5-lab.r{right:12px;background:rgba(13,132,125,.92)}
+.vw.split .vw-cv{bottom:214px}
+.vw.split .vw-board{padding:16px 60px}.vw.split .vw-board .bsvg{width:min(430px,100%)}
+.t5-dock{position:absolute;left:0;right:0;bottom:0;height:214px;z-index:12;display:flex;flex-direction:column;background:var(--pop);border-top:1px solid var(--hair);box-shadow:0 -20px 40px -28px rgba(14,33,64,.5);animation:upin .32s cubic-bezier(.2,.8,.2,1)}
+.t5-dh{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--hair)}
+.t5-dh .inp{width:190px;height:32px}
+.t5-dh .cnt{display:flex;align-items:center;gap:7px;font-size:11.5px;color:var(--t3);white-space:nowrap}
+.t5-dh .sp{flex:1}
+.t5-db{flex:1;min-height:0;display:grid;grid-template-columns:150px 1fr}
+.t5-secs{display:grid;gap:2px;align-content:start;padding:8px;border-right:1px solid var(--hair)}
+.t5-secs button{display:flex;align-items:center;gap:8px;padding:5px 8px 5px 5px;border-radius:9px;font-size:12px;font-weight:600;color:var(--t2)}
+.t5-secs button:hover{background:var(--hover)}
+.t5-secs button.on{background:var(--ts);color:var(--text)}
+.t5-secs em{margin-left:auto;font:700 10px var(--mono);color:var(--t3);font-style:normal}
+.t5-cards{display:flex;gap:10px;overflow-x:auto;padding:12px 14px}
+.t5-cd{position:relative;flex:none;width:112px;border-radius:12px;overflow:hidden;background:var(--panel);box-shadow:inset 0 0 0 1px var(--hair);transition:transform .15s}
+.t5-cd:hover{transform:translateY(-2px)}
+.t5-cd .big{position:relative;display:block;width:100%;height:62px;background:var(--c);box-shadow:inset 0 -1px 0 var(--hair)}
+.t5-cd .big::after{content:"";position:absolute;inset:0;background:no-repeat center/18px url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.2' stroke-linecap='round'%3E%3Cpath d='M4 20h4L19 9l-4-4L4 16z'/%3E%3C/svg%3E");opacity:0;transition:opacity .15s;filter:drop-shadow(0 1px 2px rgba(0,0,0,.6))}
+.t5-cd .big:hover::after{opacity:1}
+.t5-cd .chg{position:absolute;top:7px;right:7px}
+.t5-cd .tx{padding:6px 8px 7px}.t5-cd .tx b{display:block;font-size:11px;line-height:1.25;height:28px;overflow:hidden}.t5-cd .tx code{font:600 10px var(--mono);color:var(--t3)}
+
+@media (max-width:900px){.s3,.h2,.h3 .h3-m,.t1-m,.t3-m,.t4-m,.t5-m{grid-template-columns:1fr!important;height:auto}.s3-rail,.h3-nav,.h3-toc,.t3-nav,.t4-secs{display:none}.s4-g{grid-template-columns:1fr;grid-template-areas:"app" "pcb" "pdf" "thm" "lng"}.t5-pre{grid-template-columns:repeat(3,1fr)}}
+</style>
+</head>
+<body>
+<header class="top"><div class="in">
+  <div><h1>Settings · Help · Theme editor</h1><p>5 designs of each, built on the real Schemax options. Everything you click works.</p></div>
+  <nav class="gnav" id="gnav"></nav>
+  <button class="tbtn" data-act="dark" title="Light / dark"><svg class="i" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+</div></header>
+<main id="main"></main>
+<script>
+const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const IC = {
+  sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
+  moon: '<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>',
+  board: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 9h4v4H7zM15 9h2M15 13h2M7 16h10"/>',
+  doc: '<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h6"/>',
+  pal: '<path d="M12 3a9 9 0 1 0 0 18c1 0 1.6-.8 1.6-1.7 0-.5-.2-.9-.5-1.2-.3-.3-.5-.7-.5-1.2 0-.9.8-1.7 1.7-1.7H16a5 5 0 0 0 5-5c0-4-4-7.2-9-7.2z"/><circle cx="7.5" cy="11" r="1"/><circle cx="10" cy="7" r="1"/><circle cx="15" cy="7.5" r="1"/>',
+  lang: '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/>',
+  rocket: '<path d="M5 15c-1.5 1.3-2 4-2 6 2 0 4.7-.5 6-2M14 4c3-1 6-1 6-1s0 3-1 6l-7 7-5-5z"/><path d="M9 11 6 10l3-3h4M13 15l1 3 3-3v-4"/><circle cx="15" cy="9" r="1.3"/>',
+  folder: '<path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>',
+  wrench: '<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.8-3.8a6 6 0 0 1-7.9 7.9l-6.9 6.9a2.1 2.1 0 0 1-3-3l6.9-6.9a6 6 0 0 1 7.9-7.9z"/>',
+  keys: '<rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M7 14h10"/>',
+  life: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/><path d="m5.6 5.6 3.6 3.6M14.8 14.8l3.6 3.6M18.4 5.6l-3.6 3.6M9.2 14.8l-3.6 3.6"/>',
+  chat: '<path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/>',
+  info: '<circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/>',
+  wifi: '<path d="M5 12.5a10 10 0 0 1 14 0M8.5 16a5 5 0 0 1 7 0M2 9a15 15 0 0 1 20 0M12 19.5h.01"/>',
+  pin: '<path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/>',
+  search: '<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>',
+  x: '<path d="M6 6l12 12M18 6 6 18"/>',
+  check: '<path d="M5 12.5l4.5 4.5L19 7.5"/>',
+  chev: '<path d="m9 6 6 6-6 6"/>',
+  back: '<path d="m15 6-6 6 6 6"/>',
+  down: '<path d="m6 9 6 6 6-6"/>',
+  plus: '<path d="M12 5v14M5 12h14"/>',
+  minus: '<path d="M5 12h14"/>',
+  pencil: '<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="m13.5 6.5 4 4"/>',
+  trash: '<path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/>',
+  layers: '<path d="m12 3 9 5-9 5-9-5z"/><path d="m3 13 9 5 9-5"/>',
+  comps: '<rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/>',
+  pins: '<circle cx="12" cy="12" r="3"/><path d="M12 3v4M12 17v4M3 12h4M17 12h4"/>',
+  frame: '<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/>',
+  hand: '<path d="M8 13V5.5a1.5 1.5 0 0 1 3 0V12M11 11V4.5a1.5 1.5 0 0 1 3 0V12M14 11.5V6a1.5 1.5 0 0 1 3 0v8a7 7 0 0 1-7 7h-1a6 6 0 0 1-4.6-2.2L3 15.5a1.6 1.6 0 0 1 2.4-2l2.6 2.5"/>',
+  eye: '<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
+  type: '<path d="M4 7V5h10v2M9 5v14M7 19h4M14 13v-1h7v1M17.5 12v7M16 19h3"/>',
+  zap: '<path d="M13 2 4 14h7l-1 8 9-12h-7z"/>',
+  refresh: '<path d="M20 11a8 8 0 0 0-14.9-3.5M4 4v4h4M4 13a8 8 0 0 0 14.9 3.5M20 20v-4h-4"/>',
+  thumb: '<path d="M7 11v9H4v-9zM7 11l4-8a2 2 0 0 1 2.6 2L13 9h6a2 2 0 0 1 2 2.3l-1.2 7A2 2 0 0 1 17.8 20H7"/>',
+  send: '<path d="M4 12 20 4l-6 16-3-7z"/><path d="m11 13 9-9"/>',
+  drop: '<path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z"/>',
+  book: '<path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 19V5M19 19v2H6"/>',
+  spark: '<path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/>',
+  warn: '<path d="M12 4 2.5 20h19z"/><path d="M12 10v4M12 17h.01"/>',
+  bulb: '<path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.4 1 1.1 1 1.8V16h5v-.3c0-.7.4-1.4 1-1.8A6 6 0 0 0 12 3z"/>',
+  up: '<path d="m6 15 6-6 6 6"/>',
+  sliders: '<path d="M4 6h9M17 6h3M4 12h3M11 12h9M4 18h11M19 18h1"/><circle cx="15" cy="6" r="2"/><circle cx="9" cy="12" r="2"/><circle cx="17" cy="18" r="2"/>',
+};
+const I = (k, c = '') => `<svg class="i ${c}" viewBox="0 0 24 24">${IC[k] || ''}</svg>`;
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));
+const strip = h => String(h).replace(/<[^>]+>/g, '');
+const markQ = (t, q) => { if (!q) return t; const i = t.toLowerCase().indexOf(q.toLowerCase()); return i < 0 ? t : t.slice(0, i) + '<mark>' + t.slice(i, i + q.length) + '</mark>' + t.slice(i + q.length); };
+const VER = 'v4.2.0';
+let TOASTT;
+function toast(m) { $('.toast')?.remove(); const t = document.createElement('div'); t.className = 'toast'; t.innerHTML = I('check') + m; document.body.append(t); clearTimeout(TOASTT); TOASTT = setTimeout(() => t.remove(), 2200); }
+
+/* ================= Settings data (mirrors SettingsDialog) ================= */
+const ST = {mode: 'light', px: 14, hover: true, pcbPan: 'float', anim: true, pdfPan: 'std', pdfFly: true, theme: 'Graphite', lang: 'en', langBoot: 'en',
+  subs: {netPulse: true, traceReveal: true, solutionGlow: true, spotlightDim: true, rffeBlink: false, chrome: true, flyTo: true}};
+const STABS = [['appearance', 'sun', 'Appearance', '#0d847d'], ['pcb', 'board', 'PCB Viewer', '#2563eb'], ['pdf', 'doc', 'PDF Viewer', '#dc2626'], ['ptheme', 'pal', 'PCB Theme', '#7c3aed'], ['lang', 'lang', 'Language', '#d97706']];
+const TABOF = k => STABS.find(t => t[0] === k);
+const SUBS = [['netPulse', 'Net & component highlight blink'], ['traceReveal', 'Solution trace reveal'], ['solutionGlow', 'Solution glow & signal particles'], ['spotlightDim', 'Dim other nets when one is focused'], ['rffeBlink', 'RFFE blink'], ['chrome', 'Panel & toolbar animations'], ['flyTo', 'Smooth jump to search results & net steps']];
+const PANS = [['float', 'Floating', 'Keeps gliding after you let go'], ['std', 'Standard', 'Stops when you let go']];
+const LANGS = [['en', 'English', 'English', 'Open schematic'], ['ru', 'Русский', 'Russian', 'Открыть схему'], ['ar', 'العربية', 'Arabic', 'افتح المخطط'], ['th', 'ไทย', 'Thai', 'เปิดแผนผัง'], ['ta', 'தமிழ்', 'Tamil', 'வரைபடத்தைத் திற'], ['fa', 'فارسی', 'Persian', 'باز کردن نقشه'], ['id', 'Bahasa Indonesia', 'Indonesian', 'Buka skema']];
+let THEMES = [
+  {n: 'Graphite', b: 1, p: ['#26292e', '#4b5563', '#9aa4b1', '#f5c542', '#38bdf8']},
+  {n: 'Navy', b: 1, p: ['#0d1b2a', '#1a3a5c', '#3d7bd9', '#ffd166', '#06d6a0']},
+  {n: 'Plum', b: 1, p: ['#2a1430', '#5b2a6e', '#b06ab3', '#ffcf56', '#ff6b9a']},
+  {n: 'Dark Pro', b: 0, p: ['#111827', '#2d4a6b', '#7a2f2f', '#ffd700', '#e5484d']},
+];
+const thm = () => THEMES.find(t => t.n === ST.theme) || THEMES[0];
+const gv = k => k.startsWith('sub.') ? ST.subs[k.slice(4)] : ST[k];
+const onCount = () => Object.values(ST.subs).filter(Boolean).length;
+function setV(k, v) {
+  if (k === 'px') ST.px = v === 'reset' ? 13 : Math.max(10, Math.min(24, v === '+1' ? ST.px + 1 : v === '-1' ? ST.px - 1 : +v));
+  else if (k.startsWith('sub.')) ST.subs[k.slice(4)] = !ST.subs[k.slice(4)];
+  else if (v === '!') ST[k] = !ST[k];
+  else ST[k] = v;
+  if (k === 'mode') applyMode();
+  if (k === 'lang') toast(`${LANGS.find(l => l[0] === v)[2]} — restart Schemax to apply`);
+  if (k === 'theme') toast(`${v} applied to the board`);
+  draw();
+}
+function applyMode() { document.documentElement.dataset.theme = ST.mode; }
+/* shared controls */
+const TG = (k, dis) => `<button class="tg${gv(k) ? ' on' : ''}${dis ? ' dis' : ''}" data-k="${k}" data-v="!" role="switch" aria-checked="${!!gv(k)}"></button>`;
+const SEG = (k, opts) => `<div class="seg">${opts.map(([v, l]) => `<button class="${ST[k] === v ? 'on' : ''}" data-k="${k}" data-v="${v}">${l}</button>`).join('')}</div>`;
+const STP = () => `<div class="stp"><button data-k="px" data-v="-1" title="Smaller">${I('minus')}</button><b>${ST.px}px</b><button data-k="px" data-v="+1" title="Larger">${I('plus')}</button></div>`;
+const RESET = () => `<button class="gbtn" data-k="px" data-v="reset">Reset (13 px)</button>`;
+const STRIPE = t => t.p.map(c => `<span style="background:${c}"></span>`).join('');
+const CONIC = t => `conic-gradient(${t.p.map((c, i) => `${c} ${i * 72}deg ${(i + 1) * 72}deg`).join(',')})`;
+const TREE = ['Apple', 'iPhone 15 Pro', 'A3102 · 820-02924', 'Samsung', 'Galaxy S24'];
+const NOTE = 'Changes apply instantly and are saved automatically.';
+const XB = `<button class="xb" data-act="toast" data-m="Closed (Esc)" title="Close · Esc">${I('x')}</button>`;
+
+/* flattened settings, for search + list designs */
+function SROWS() {
+  const r = [];
+  const A = (tab, grp, ic, label, desc, ctl, extra = {}) => r.push({tab, grp, ic, label, desc, ctl, ...extra});
+  A('appearance', 'Appearance', 'sun', 'Theme', 'Light: bright panels, navy text · Dark: easy on the eyes at the bench', SEG('mode', [['light', 'Light'], ['dark', 'Dark']]));
+  A('appearance', 'Appearance', 'type', 'File tree text size', 'Range 10–24 · also Ctrl + mouse wheel on the tree', STP());
+  A('pcb', 'PCB Viewer', 'eye', 'Show info card on hover', 'Part name, nets and voltage under the cursor', TG('hover'));
+  A('pcb', 'PCB Viewer', 'hand', 'Panning', 'Floating keeps gliding after you let go · Standard stops', SEG('pcbPan', PANS));
+  A('pcb', 'PCB Viewer', 'zap', 'Animations', 'Master switch for every effect below', TG('anim'));
+  SUBS.forEach(([k, l]) => A('pcb', 'PCB Viewer', 'zap', l, 'Animation', TG('sub.' + k, !ST.anim), {sub: 1, off: !ST.anim}));
+  A('pdf', 'PDF Viewer', 'hand', 'Panning', 'Floating keeps gliding after you let go · Standard stops', SEG('pdfPan', PANS));
+  A('pdf', 'PDF Viewer', 'zap', 'Smooth jump to search results & pages', 'Glide to each result instead of jumping', TG('pdfFly'));
+  A('ptheme', 'PCB Theme', 'pal', 'Board colour theme', 'Click a theme to put it on the board', `<div class="s1-th">${THEMES.map(t => `<button class="${t.n === ST.theme ? 'on' : ''}" data-k="theme" data-v="${t.n}" title="${t.n}">${STRIPE(t)}</button>`).join('')}</div>`);
+  A('ptheme', 'PCB Theme', 'pencil', 'Edit or create a theme', 'Opens the PCB Theme Editor', `<button class="gbtn" data-act="te">${I('plus')}New theme</button>`);
+  A('lang', 'Language', 'lang', 'App language', 'Restart needed after a change', `<select data-k="lang">${LANGS.map(l => `<option value="${l[0]}"${l[0] === ST.lang ? ' selected' : ''}>${l[1]}</option>`).join('')}</select>`);
+  A('lang', 'Language', 'chat', 'Suggest a wording fix', 'Opens WhatsApp with a ready template', `<button class="gbtn" data-act="toast" data-m="WhatsApp opened with a template">Suggest</button>`);
+  return r;
+}
+
+/* ================= SETTINGS 01 — Spotlight search ================= */
+const U = {s1: {q: '', cat: 'all'}, s2: {tab: 'appearance', f: 0}, s3: {tab: 'pcb'}, s5: {pg: null, dir: ''},
+  h1: {tab: null, q: ''}, h2: {i: 0, seen: [0]}, h3: {tab: 'start', fb: null, toc: 0}, h4: {tp: 'start', msgs: [], q: '', typing: false}, h5: {tab: 'keys'},
+  t1: {sec: 'board'}, t2: {sec: 'board'}, t4: {sec: 'pins', k: 'pinFill'}, t5: {sec: 'all', pop: null, pre: null}};
+function S1() {
+  const u = U.s1, q = u.q.trim().toLowerCase(), all = SROWS();
+  const rows = all.filter(r => (u.cat === 'all' || r.tab === u.cat) && (!q || (r.label + ' ' + r.desc + ' ' + r.grp).toLowerCase().includes(q)));
+  const cnt = k => all.filter(r => r.tab === k).length;
+  const groups = STABS.map(t => [t, rows.filter(r => r.tab === t[0])]).filter(g => g[1].length);
+  return `<div class="mdl s1">
+  <div class="s1-h">${I('search')}<input data-q="s1" placeholder="Search settings — try “blink”, “pan” or “size”" value="${esc(u.q)}"><kbd>Ctrl</kbd><kbd>,</kbd>${XB}</div>
+  <div class="s1-c"><button class="${u.cat === 'all' ? 'on' : ''}" data-u="s1.cat" data-v="all">All <b>${all.length}</b></button>${STABS.map(t => `<button class="${u.cat === t[0] ? 'on' : ''}" style="--tint:${t[3]}" data-u="s1.cat" data-v="${t[0]}"><i></i>${t[2]} <b>${cnt(t[0])}</b></button>`).join('')}</div>
+  <div class="s1-b scr" data-scroll="s1">${groups.length ? groups.map(([t, rs]) => `<div class="s1-gh" style="--tint:${t[3]}"><i></i>${t[2]}</div>${rs.map(r => `
+    <div class="s1-r${r.sub ? ' sub' : ''}${r.off ? ' off' : ''}"><span class="ico" style="--tint:${t[3]}">${I(r.ic)}</span><div class="tx"><b>${markQ(r.label, u.q.trim())}</b>${r.sub ? '' : `<span>${markQ(r.desc, u.q.trim())}</span>`}</div>${r.ctl}</div>`).join('')}`).join('')
+      : `<div class="s1-empty">${I('search')}<b style="color:var(--text)">No setting matches “${esc(u.q)}”</b><span>Try “theme”, “zoom” or “language”.</span><button class="lbtn" data-u="s1.q" data-v="">Clear search</button></div>`}</div>
+  <div class="s1-f"><i class="live"></i>${NOTE}<div class="r"><span>${rows.length} shown</span></div></div>
+</div>`;
+}
+
+/* ================= SETTINGS 02 — Sliding tabs + tiles ================= */
+function S2() {
+  const u = U.s2, i = STABS.findIndex(t => t[0] === u.tab), t = STABS[i];
+  let b = '';
+  if (u.tab === 'appearance') b = `<div class="eyb">Theme</div><div class="s2-grid">${[['light', 'Light', 'Bright panels, navy text'], ['dark', 'Dark', 'Easy on the eyes at the bench']].map(([v, l, d]) => `
+      <button class="s2-tile${ST.mode === v ? ' on' : ''}" data-k="mode" data-v="${v}"><span class="ck">${I('check')}</span><div class="s2-win ${v[0]}"><i></i><u></u><s></s></div><b>${l}</b><span class="d">${d}</span></button>`).join('')}</div>
+    <div class="eyb">File tree text size</div>
+    <div class="s2-size"><div><b>Text size</b><div class="d" style="font-size:11.5px;color:var(--t3)">Range 10–24 px · also Ctrl + mouse wheel on the tree</div>
+      <div class="rr"><span class="val" data-pxv>${ST.px}px</span><input type="range" class="rng" min="10" max="24" value="${ST.px}" data-k="px" style="--p:${(ST.px - 10) / 14 * 100}%">${RESET()}</div></div>
+      <div class="s2-tree" data-pxt style="font-size:${ST.px}px">${TREE.map((n, j) => `<div style="padding-left:${j % 3 * 10}px">${I('folder')}${n}</div>`).join('')}</div></div>`;
+  if (u.tab === 'pcb') b = `<div class="eyb">Display</div>
+    <div class="s2-tile"><div class="tt"><span class="ico" style="--tint:#2563eb">${I('eye')}</span><div><b>Show info card on hover</b><div class="d" style="font-size:11.5px;color:var(--t3)">Part name, nets and voltage under the cursor</div></div>${TG('hover')}</div></div>
+    <div class="eyb">Panning</div><div class="s2-grid">${PANS.map(([v, l, d]) => `<button class="s2-tile${ST.pcbPan === v ? ' on' : ''}" data-k="pcbPan" data-v="${v}"><span class="ck">${I('check')}</span><div class="s2-motion ${v[0]}"><i></i></div><b>${l}</b><span class="d">${d}</span></button>`).join('')}</div>
+    <div class="eyb">Animation &amp; blinking</div>
+    <div class="s2-tile"><div class="tt"><span class="ico" style="--tint:#d97706">${I('zap')}</span><div><b>Animations</b><div class="d" style="font-size:11.5px;color:var(--t3)">Master switch · ${ST.anim ? onCount() + ' of 7 effects on' : 'all effects off'}</div></div>${TG('anim')}</div>
+      <div class="s2-chips${ST.anim ? '' : ' dis'}">${SUBS.map(([k, l]) => `<button class="${ST.subs[k] ? 'on' : ''}" data-k="sub.${k}"><i>${I('check')}</i>${l}</button>`).join('')}</div></div>`;
+  if (u.tab === 'pdf') b = `<div class="eyb">Panning</div><div class="s2-grid">${PANS.map(([v, l, d]) => `<button class="s2-tile${ST.pdfPan === v ? ' on' : ''}" data-k="pdfPan" data-v="${v}"><span class="ck">${I('check')}</span><div class="s2-motion ${v[0]}"><i></i></div><b>${l}</b><span class="d">${d}</span></button>`).join('')}</div>
+    <div class="eyb">Animation</div>
+    <div class="s2-tile"><div class="tt"><span class="ico" style="--tint:#dc2626">${I('search')}</span><div><b>Smooth jump to search results &amp; pages</b><div class="d" style="font-size:11.5px;color:var(--t3)">Glide to each result instead of jumping</div></div>${TG('pdfFly')}</div></div>`;
+  if (u.tab === 'ptheme') b = `<div class="eyb" style="display:flex;justify-content:space-between">All themes · ${THEMES.length}<span style="letter-spacing:0;text-transform:none;font-weight:500">Click a theme to apply it</span></div>
+    <div class="s2-grid c3">${THEMES.map(x => `<div class="s2-thm${x.n === ST.theme ? ' on' : ''}" role="button" data-k="theme" data-v="${x.n}">${x.n === ST.theme ? '<span class="on-tag">ON THE BOARD</span>' : ''}<div class="acts"><span data-act="te" title="Edit colours">${I('pencil')}</span>${x.b ? '' : `<span class="del" data-act="thdel" data-n="${x.n}" title="Delete theme">${I('trash')}</span>`}</div><div class="strip">${STRIPE(x)}</div><div class="nm"><b>${x.n}</b><span>${x.b ? 'Built-in' : 'Your theme'}${x.n === ST.theme ? ' · applied' : ''}</span></div></div>`).join('')}
+      <button class="s2-new" data-act="te"><span class="ico" style="--tint:#7c3aed">${I('plus')}</span>New theme<small>Pick a colour per board part</small></button></div>
+    <p style="font-size:11.5px;color:var(--t3);margin-top:12px">The board background follows <em>Light / Dark</em> in Appearance. Built-in themes can't be deleted; editing one saves your own copy.</p>`;
+  if (u.tab === 'lang') b = `<div class="eyb">App language · restart needed</div><div class="s2-grid c4">${LANGS.map(l => `<button class="s2-lang${ST.lang === l[0] ? ' on' : ''}" data-k="lang" data-v="${l[0]}"><span class="ck">${I('check')}</span><b>${l[1]}</b><span>${l[2]}</span></button>`).join('')}</div>
+    ${ST.lang !== ST.langBoot ? `<div class="s2-note">${I('refresh')}<span><b>Restart to switch to ${LANGS.find(l => l[0] === ST.lang)[2]}.</b> Your open tabs come back.</span><button class="gbtn" style="margin-left:auto" data-act="toast" data-m="Restarting Schemax…">Restart now</button></div>` : ''}
+    <div class="eyb">Help us translate</div><div class="s2-tile"><div class="tt"><span class="ico" style="--tint:#16a34a">${I('chat')}</span><div><b>Suggest a wording fix</b><div class="d" style="font-size:11.5px;color:var(--t3)">Opens WhatsApp with a ready template</div></div><button class="gbtn" style="margin-left:auto" data-act="toast" data-m="WhatsApp opened with a template">Suggest</button></div></div>`;
+  const out = `<div class="mdl s2">
+  <div class="s2-h"><div><h2>Settings</h2><p>${t[2]} · ${NOTE}</p></div>${XB}</div>
+  <div class="s2-tabs"><i class="th" style="--i:${i};--f:${u.f}"></i>${STABS.map((x, j) => `<button class="${j === i ? 'on' : ''}" style="--tint:${x[3]}" data-act="s2tab" data-v="${x[0]}">${I(x[1])}${x[2]}</button>`).join('')}</div>
+  <div class="s2-b scr" data-scroll="s2">${b}</div>
+</div>`;
+  u.f = i;
+  return out;
+}
+
+/* ================= SETTINGS 03 — Rail + live preview ================= */
+function S3() {
+  const u = U.s3, t = TABOF(u.tab), th = thm();
+  const row = (label, desc, ctl, cls = '') => `<div class="s3-row ${cls}"><div class="tx"><b>${label}</b>${desc ? `<span>${desc}</span>` : ''}</div>${ctl}</div>`;
+  let b = '', pv = '', cap = '';
+  if (u.tab === 'appearance') {
+    b = `<div class="s3-sec">Theme</div>${row('Light or dark', 'Light: bright panels · Dark: easy on the eyes at the bench', SEG('mode', [['light', 'Light'], ['dark', 'Dark']]))}
+      <div class="s3-sec">File tree text size</div>${row('Text size', 'Range 10–24 · also Ctrl + mouse wheel on the tree', STP())}${row('Back to default', '13 px', RESET())}`;
+    pv = `<div class="pv-win ${ST.mode}"><div class="tb"><i></i><i></i><i></i></div><div class="tr" style="font-size:${(ST.px * .62).toFixed(1)}px">${TREE.concat(['Pixel 8', 'Xiaomi']).map((n, j) => `<div style="padding-left:${j % 3 * 6}px">${I('folder')}${n}</div>`).join('')}</div><div class="pg"><i></i><i></i><u></u><i></i><i></i></div></div>`;
+    cap = `<b>${ST.mode === 'dark' ? 'Dark' : 'Light'}</b> window · library text at <b>${ST.px} px</b>.`;
+  }
+  if (u.tab === 'pcb') {
+    b = `<div class="s3-sec">Display</div>${row('Show info card on hover', 'Part name, nets and voltage under the cursor', TG('hover'))}
+      <div class="s3-sec">Panning</div>${row('Pan style', ST.pcbPan === 'float' ? 'Keeps gliding after you let go' : 'Stops when you let go', SEG('pcbPan', PANS))}
+      <div class="s3-sec">Animation &amp; blinking</div>${row('Animations', 'Master switch for everything below', TG('anim'))}
+      ${SUBS.map(([k, l]) => row(l, '', TG('sub.' + k, !ST.anim), 'sub' + (ST.anim ? '' : ' off'))).join('')}`;
+    pv = `<div class="pv-board${ST.anim && ST.subs.netPulse ? ' blink' : ''}">${boardSVG(themeColors(th))}${ST.hover ? '<div class="card"><b>U2 · PMIC</b>PP_VBAT <span>3.80 V</span></div>' : ''}<i class="cur ${ST.pcbPan[0]}"></i></div>`;
+    cap = `Hover card <b>${ST.hover ? 'on' : 'off'}</b> · <b>${ST.pcbPan === 'float' ? 'Floating' : 'Standard'}</b> pan · ${ST.anim ? `<b>${onCount()} of 7</b> effects` : '<b>no</b> animation'}.`;
+  }
+  if (u.tab === 'pdf') {
+    b = `<div class="s3-sec">Panning</div>${row('Pan style', ST.pdfPan === 'float' ? 'Keeps gliding after you let go' : 'Stops when you let go', SEG('pdfPan', PANS))}
+      <div class="s3-sec">Animation</div>${row('Smooth jump to search results &amp; pages', 'Glide to each result instead of jumping', TG('pdfFly'))}`;
+    pv = `<div class="pv-pdf">${[90, 60, 100, 0, 75, 85, 50, 0, 95, 70, 40, 88, 0, 66].map(w => w ? `<i style="width:${w}%"></i>` : '<i class="h"></i>').join('')}<span class="lens ${ST.pdfFly ? 'f' : 's'}"></span></div>`;
+    cap = `Search results: <b>${ST.pdfFly ? 'glides' : 'jumps'}</b> from hit to hit.`;
+  }
+  if (u.tab === 'ptheme') {
+    b = `<div class="s3-sec">All themes · ${THEMES.length}</div>${THEMES.map(x => row(`<span style="display:inline-flex;align-items:center;gap:9px"><i style="width:22px;height:22px;border-radius:50%;background:${CONIC(x)}"></i>${x.n}</span>`, x.b ? 'Built-in' : 'Your theme', x.n === ST.theme ? `<span class="lbtn" style="color:var(--ok)">${I('check')}On the board</span>` : `<button class="gbtn" data-k="theme" data-v="${x.n}">Apply</button>`)).join('')}
+      ${row('New theme', 'Pick a colour per board part', `<button class="gbtn" data-act="te">${I('pencil')}Open editor</button>`)}`;
+    pv = `<div class="pv-board">${boardSVG(themeColors(th))}</div><div class="pv-pal">${STRIPE(th)}</div>`;
+    cap = `<b>${th.n}</b> on the board. Board background follows Light / Dark.`;
+  }
+  if (u.tab === 'lang') {
+    b = `<div class="s3-sec">App language · restart needed</div>${LANGS.map(l => row(l[1], l[2], ST.lang === l[0] ? `<span class="lbtn">${I('check')}</span>` : `<button class="gbtn" data-k="lang" data-v="${l[0]}">Use</button>`)).join('')}
+      <div class="s3-sec">Help us translate</div>${row('Suggest a wording fix', 'Opens WhatsApp with a ready template', `<button class="gbtn" data-act="toast" data-m="WhatsApp opened">Suggest</button>`)}`;
+    const L = LANGS.find(l => l[0] === ST.lang), rtl = ['ar', 'fa'].includes(ST.lang);
+    pv = `<div class="pv-lang" dir="${rtl ? 'rtl' : 'ltr'}"><div class="b p">${I('doc')}${L[3]}</div><div class="b">${I('search')}${L[1]}</div><div class="b">${I('lang')}${L[2]}</div></div>`;
+    cap = `Buttons read in <b>${L[2]}</b>${rtl ? ', right to left' : ''}. Applies after a restart.`;
+  }
+  return `<div class="mdl s3">
+  <nav class="s3-rail"><span class="mk">${I('sliders')}</span>${STABS.map(x => `<button class="${x[0] === u.tab ? 'on' : ''}" style="--tint:${x[3]}" data-u="s3.tab" data-v="${x[0]}" data-tip="${x[2]}">${I(x[1])}</button>`).join('')}<span class="sp"></span><button data-act="grp" data-v="help" data-tip="Help · F1">${I('info')}</button></nav>
+  <section class="s3-mid"><div class="s3-hd"><span class="ico" style="--tint:${t[3]}">${I(t[1])}</span><div><h2>${t[2]}</h2><p>Settings</p></div></div><div class="s3-body scr" data-scroll="s3">${b}</div><div class="s3-ft foot"><i class="live"></i>${NOTE}</div></section>
+  <aside class="s3-pv">${XB}<div class="eyb">Live preview</div>${pv}<p class="s3-cap">${cap}</p></aside>
+</div>`;
+}
+
+/* ================= SETTINGS 04 — Bento ================= */
+function S4() {
+  const H = (tab, sub) => { const t = TABOF(tab); return `<div class="ch"><span class="ico" style="--tint:${t[3]}">${I(t[1])}</span><div><b>${t[2]}</b><small>${sub}</small></div></div>`; };
+  return `<div class="mdl s4">
+  <div class="s4-h"><div><h2>Settings</h2><p>Everything on one board — no tabs to dig through.</p></div><div class="foot"><i class="live"></i>Saved automatically</div>${XB}</div>
+  <div class="s4-g">
+    <div class="s4-c s4-app">${H('appearance', ST.mode === 'dark' ? 'Dark' : 'Light')}
+      <div class="s4-dn${ST.mode === 'dark' ? ' dk' : ''}"><button class="${ST.mode === 'light' ? 'on' : ''}" data-k="mode" data-v="light">${I('sun')}Light</button><button class="${ST.mode === 'dark' ? 'on' : ''}" data-k="mode" data-v="dark">${I('moon')}Dark</button></div>
+      <div class="s4-aa"><div class="aa"><span style="font-size:${ST.px}px">Aa</span><small>Tree text</small></div>${STP()}</div></div>
+    <div class="s4-c s4-pcb">${H('pcb', ST.anim ? onCount() + ' of 7 effects on' : 'Animations off')}
+      <div class="ln"><span>Info card on hover</span>${TG('hover')}</div>
+      <div class="ln"><span>Panning</span>${SEG('pcbPan', PANS.map(p => [p[0], p[1]]))}</div>
+      <div class="ln"><span><b style="color:var(--text)">Animations</b> · master</span>${TG('anim')}</div>
+      <div class="s4-list${ST.anim ? '' : ' dis'}">${SUBS.map(([k, l]) => `<button class="${ST.subs[k] ? 'on' : ''}" data-k="sub.${k}"><span class="bx">${I('check')}</span>${l}</button>`).join('')}</div></div>
+    <div class="s4-c s4-pdf">${H('pdf', ST.pdfFly ? 'Smooth jumps' : 'Instant jumps')}
+      <div class="ln"><span>Panning</span>${SEG('pdfPan', PANS.map(p => [p[0], p[1]]))}</div>
+      <div class="ln"><span>Smooth jump to results &amp; pages</span>${TG('pdfFly')}</div></div>
+    <div class="s4-c s4-thm">${H('ptheme', ST.theme + ' on the board')}
+      <div class="s4-orbs">${THEMES.map(x => `<button class="s4-orb${x.n === ST.theme ? ' on' : ''}" data-k="theme" data-v="${x.n}"><i style="background:${CONIC(x)}"></i>${x.n}</button>`).join('')}</div>
+      <div class="row2"><button class="gbtn" data-act="te">${I('pencil')}Edit</button><button class="gbtn" data-act="te">${I('plus')}New</button></div></div>
+    <div class="s4-c s4-lng">${H('lang', 'Restart needed after a change')}
+      <div class="s4-lg">${LANGS.map(l => `<button class="${ST.lang === l[0] ? 'on' : ''}" data-k="lang" data-v="${l[0]}" title="${l[2]}">${l[1]}</button>`).join('')}</div>
+      <button class="lbtn" data-act="toast" data-m="WhatsApp opened">${I('chat')}Suggest a wording fix</button></div>
+  </div>
+</div>`;
+}
+
+/* ================= SETTINGS 05 — Drill-in stack ================= */
+const S5SUM = {appearance: () => `${ST.mode === 'dark' ? 'Dark' : 'Light'} · ${ST.px} px`, pcb: () => `${ST.pcbPan === 'float' ? 'Floating' : 'Standard'} · ${ST.anim ? onCount() + '/7' : 'no'} effects`, pdf: () => `${ST.pdfPan === 'float' ? 'Floating' : 'Standard'}${ST.pdfFly ? ' · smooth' : ''}`, ptheme: () => ST.theme, lang: () => LANGS.find(l => l[0] === ST.lang)[1]};
+const S5C = {appearance: '#0d847d', pcb: '#2563eb', pdf: '#ef4444', ptheme: '#8b5cf6', lang: '#f59e0b'};
+function S5() {
+  const u = U.s5, R = (tab) => { const t = TABOF(tab); return `<button class="s5-row" data-act="s5go" data-v="${tab}"><span class="sq" style="--tint:${S5C[tab]}">${I(t[1])}</span><span class="tx"><b>${t[2]}</b></span><span class="vl">${S5SUM[tab]()}</span>${I('chev', 'cv')}</button>`; };
+  const radio = (k, v, l, d) => `<button class="s5-row noi" data-k="${k}" data-v="${v}"><span class="tx"><b>${l}</b>${d ? `<small>${d}</small>` : ''}</span>${ST[k] === v ? I('check', 'tick') : ''}</button>`;
+  const sw = (k, l, d, cls = '', dis) => `<div class="s5-row noi ${cls}"><span class="tx"><b>${l}</b>${d ? `<small>${d}</small>` : ''}</span>${TG(k, dis)}</div>`;
+  let body;
+  if (!u.pg) body = `<h2>Settings</h2>
+    <div class="s5-me"><span class="lg">${I('board')}</span><div><b>Schemax Schematics</b><span>${VER} · ${NOTE.split('.')[0]}</span></div></div>
+    <div class="s5-cap">Look</div><div class="s5-grp">${R('appearance')}${R('ptheme')}${R('lang')}</div>
+    <div class="s5-cap">Viewers</div><div class="s5-grp">${R('pcb')}${R('pdf')}</div>
+    <p class="s5-note">${NOTE}</p>`;
+  else {
+    const t = TABOF(u.pg);
+    body = `<h2>${t[2]}</h2>`;
+    if (u.pg === 'appearance') body += `<div class="s5-cap">Theme</div><div class="s5-grp">${radio('mode', 'light', 'Light', 'Bright panels, navy text')}${radio('mode', 'dark', 'Dark', 'Easy on the eyes at the bench')}</div>
+      <div class="s5-cap">File tree text size</div><div class="s5-grp"><div class="s5-row noi"><span class="tx"><b>Text size</b><small>Also Ctrl + mouse wheel on the tree</small></span>${STP()}</div><button class="s5-row noi" data-k="px" data-v="reset"><span class="tx"><b style="color:var(--accent)">Reset to 13 px</b></span></button></div>`;
+    if (u.pg === 'pcb') body += `<div class="s5-cap">Display</div><div class="s5-grp">${sw('hover', 'Info card on hover', 'Part name, nets and voltage')}</div>
+      <div class="s5-cap">Panning</div><div class="s5-grp">${PANS.map(p => radio('pcbPan', ...p)).join('')}</div>
+      <div class="s5-cap">Animation &amp; blinking</div><div class="s5-grp">${sw('anim', 'Animations', 'Master switch')}${SUBS.map(([k, l]) => sw('sub.' + k, l, '', ST.anim ? '' : 'off', !ST.anim)).join('')}</div>`;
+    if (u.pg === 'pdf') body += `<div class="s5-cap">Panning</div><div class="s5-grp">${PANS.map(p => radio('pdfPan', ...p)).join('')}</div>
+      <div class="s5-cap">Animation</div><div class="s5-grp">${sw('pdfFly', 'Smooth jump to results & pages', 'Glide instead of jumping')}</div>`;
+    if (u.pg === 'ptheme') body += `<div class="s5-cap">All themes</div><div class="s5-grp">${THEMES.map(x => `<button class="s5-row" data-k="theme" data-v="${x.n}"><span class="sq" style="background:${CONIC(x)}"></span><span class="tx"><b>${x.n}</b><small>${x.b ? 'Built-in' : 'Your theme'}</small></span>${x.n === ST.theme ? I('check', 'tick') : ''}</button>`).join('')}</div>
+      <div class="s5-grp" style="margin-top:12px"><button class="s5-row" data-act="te"><span class="sq" style="--tint:#8b5cf6">${I('plus')}</span><span class="tx"><b style="color:var(--accent)">New theme…</b></span></button></div>
+      <p class="s5-note">The board background follows Light / Dark. Built-in themes can't be deleted.</p>`;
+    if (u.pg === 'lang') body += `<div class="s5-cap">App language</div><div class="s5-grp">${LANGS.map(l => `<button class="s5-row noi" data-k="lang" data-v="${l[0]}"><span class="tx"><b>${l[1]}</b><small>${l[2]}</small></span>${ST.lang === l[0] ? I('check', 'tick') : ''}</button>`).join('')}</div>
+      <p class="s5-note">Restart Schemax after changing the language.</p>
+      <div class="s5-grp" style="margin-top:14px"><button class="s5-row noi" data-act="toast" data-m="WhatsApp opened"><span class="tx"><b style="color:var(--accent)">Suggest a wording fix</b><small>Opens WhatsApp with a ready template</small></span>${I('chev', 'cv')}</button></div>`;
+  }
+  const out = `<div class="mdl s5"><div class="s5-top">${u.pg ? `<button class="bk" data-act="s5go" data-v="">${I('back')}Settings</button>` : ''}${XB}</div><div class="s5-pg scr ${u.dir}" data-scroll="s5">${body}</div></div>`;
+  u.dir = '';
+  return out;
+}
+
+/* ================= Help data (mirrors HelpDialog) ================= */
+const K = s => s.split('+').map(k => `<kbd>${k}</kbd>`).join('');
+const BD = c => `<span class="bdg ${c}">${c}</span>`;
+const HELP = [
+  {k: 'start', ic: 'rocket', l: 'Quick start', c: '#0d847d', blurb: 'Find a board, open it and put schematic and board side by side.', b: [
+    ['p', 'Schemax keeps the <em>schematic</em>, the <em>boardview</em> and the repair solutions for a board in one window. Four steps get you going:'],
+    ['steps', [['Find the board', `Type a model or part number in the library search (${K('Ctrl+F')}). The badges show what exists: ${BD('S')} schematic, ${BD('B')} boardview, ${BD('H')} hardware solution.`],
+      ['Open it', 'Double-click a file. It downloads and opens in its own tab. Select several and open them together.'],
+      ['Put them side by side', `Open a schematic and a boardview, then choose <em>View layout</em> → <em>PDF × PCB</em> (${K('Alt+3')}).`],
+      ['Cross-search', 'Double-click a net or part name in the schematic: the board highlights it and zooms to it — and the other way round.']]],
+    ['tip', 'Can’t find a button?', 'The placement guide drops numbered pins on every control on screen and lists what each one does.', 'Show placement guide']]},
+  {k: 'files', ic: 'folder', l: 'Library & tabs', c: '#d97706', blurb: 'The cloud library, badges, the PDF ⇄ PCB switch and view layouts.', b: [
+    ['p', 'Every file comes from the library on the left — it lives in the cloud and opens on demand.'],
+    ['eb', 'The library'],
+    ['defs', [['Click a folder', 'Opens or closes it.'], ['Double-click a file', `Downloads it and opens it in a tab. ${K('Esc')} cancels a download.`],
+      ['Search', `${K('Ctrl+F')} jumps to the search box. Results come as a flat list; double-click a folder result to jump to it in the tree.`],
+      ['Badges', `${BD('S')} schematic · ${BD('B')} boardview · ${BD('H')} hardware solution. A dot on a folder means something inside has one.`],
+      ['Hide the library', `${K('Ctrl+T')} shows or hides it; ${K('F11')} gives the schematic the full screen.`]]],
+    ['eb', 'The tab row'],
+    ['defs', [['PDF ⇄ PCB switch', `Shows your open schematics or your open boards, with a count of each. Click the other side or press ${K('Alt+S')}.`],
+      ['View layout', `<em>Single</em>, <em>PDF × PDF</em> or <em>PDF × PCB</em> (${K('Alt+1')} / 2 / 3). While two panes are shown it also offers <em>Swap sides</em>.`],
+      ['File chips', 'The active file shows its full name; the others show a short code — hover for the full name, middle-click to close.'],
+      ['Next / previous tab', `${K('Ctrl+Tab')} and ${K('Ctrl+Shift+Tab')}.`]]],
+    ['tip', 'Good to know', 'Up to 10 schematics and 10 boards can be open at once. Opened files are held in memory, so switching tabs is instant.']]},
+  {k: 'viewers', ic: 'board', l: 'The viewers', c: '#2563eb', blurb: 'Zoom, pan, select and search in the schematic and on the board.', b: [
+    ['eb', 'Schematic · PDF'],
+    ['defs', [['Mouse wheel', 'Zooms at the cursor — point at what you want and scroll.'], ['Drag', 'Drag a blank area to pan; drag over text to select it.'],
+      ['Double-click a word', 'Finds that net or part on the linked board.'], ['Right-click', 'Copy, <em>Find Component in…</em> and <em>Find Net in…</em> — say exactly what the text is.'],
+      ['Search', `${K('Ctrl+F')}, then ${K('Enter')} / ${K('Shift+Enter')} for next and previous. The occurrences panel lists every hit.`]]],
+    ['eb', 'Boardview · PCB'],
+    ['defs', [['Hover', 'Shows the part, pin and net under the cursor.'], ['Click', 'Selects a pin or part and highlights its whole net.'],
+      ['Double-click a pin', 'Finds that net in the linked schematic.'], ['Previous / Next pin', 'Walks the selected net from pin to pin, zooming to each.'],
+      ['Layer bar', 'Click a number to see one copper layer; <em>ALL</em> brings them all back.'], ['Toolbar', 'Rotate, flip, diode readings, ratsnest, RFFE blink, colour theme and the Properties panel.']]],
+    ['tip', 'Lost on the board?', `Press ${K('Home')} to fit the whole board in the window. ${K('+')} / ${K('−')} zoom, ${K('Ctrl+←')} / ${K('→')} rotates.`]]},
+  {k: 'solutions', ic: 'wrench', l: 'Repair solutions', c: '#16a34a', blurb: 'Read a procedure traced on the board, or publish your own.', b: [
+    ['p', 'A repair solution is a procedure pinned to the nets and parts it concerns, drawn right on the board.'],
+    ['eb', 'Reading a solution'],
+    ['steps', [['Open the Solutions menu', 'It appears on the board toolbar when solutions exist for the board: <em>Official</em> ones first, then the community’s.'],
+      ['Pick a section', 'Its nets are traced on the board and a legend lists every line as a pill.'],
+      ['Follow it', 'Click a pill to show and zoom to that net. <em>One-by-One</em> steps through like a checklist; the notes button opens the written procedure.']]],
+    ['eb', 'Writing your own'],
+    ['steps', [['Collect the nets', 'Click <em>Solution</em> on the board toolbar to start editing, then right-click nets → <em>Add Net to Solution</em>.'],
+      ['Write it up', 'Double-click <em>Solution</em> to open the editor. Add a section per fault, entries for its nets, and a note — <em>Insert Net</em> makes names clickable.']]],
+    ['warn', 'Save publishes', 'Saving uploads the solution under your name for everyone with this board. Use <em>Revert</em> if you are not ready.']]},
+  {k: 'keys', ic: 'keys', l: 'Shortcuts', c: '#7c3aed', blurb: 'Every keyboard shortcut — anywhere, tab row, board and schematic.', b: [
+    ['eb', 'Anywhere'], ['keys', [['F1', 'Open Help'], ['Ctrl ,', 'Open Settings'], ['Ctrl F', 'Search the library'], ['Ctrl T', 'Show / hide the library'], ['F11', 'Full-screen schematic'], ['Ctrl Tab', 'Next tab'], ['Ctrl Shift Tab', 'Previous tab'], ['Esc', 'Cancel a download']]],
+    ['eb', 'Tab row'], ['keys', [['Alt S', 'Switch between PDF and PCB files'], ['Alt 1 / 2 / 3', 'Single · PDF × PDF · PDF × PCB']]],
+    ['eb', 'Boardview'], ['keys', [['+ / −', 'Zoom in / out'], ['Home', 'Fit the board to the window'], ['Ctrl ← / →', 'Rotate left / right']]],
+    ['eb', 'Schematic'], ['keys', [['Ctrl F', 'Search the document'], ['Enter / F3', 'Next result'], ['Shift Enter / Shift F3', 'Previous result'], ['Ctrl ← / →', 'Previous / next page'], ['Home / End', 'First / last page'], ['Ctrl 0', 'Fit page'], ['Ctrl Shift 0', 'Fit width'], ['Ctrl 1 … 6', 'Zoom 50 · 100 · 150 · 200 · 400 · 800 %'], ['Ctrl C', 'Copy selected text']]]]},
+  {k: 'trouble', ic: 'life', l: 'Troubleshooting', c: '#dc2626', blurb: 'Downloads, sign-in, slow boards, crashes — click a problem for the fix.', b: [
+    ['p', 'Click a problem to see the fix.'],
+    ['faq', [['Sign-in works, but files won’t download', 'Downloads come from a different server than sign-in, and a firewall, antivirus or proxy may block it.', 'Check my connection'],
+      ['Downloads stop partway through the day', 'Trial and free plans have a daily download limit. Wait for it to reset, or renew your plan.'],
+      ['A file won’t open', 'Close the tab and open the file again from the library — the download may have been cut short.'],
+      ['Cross-search finds nothing', 'The name in the schematic isn’t in the board file — the two don’t always use identical names. Try <em>Find Net</em> or <em>Find Component</em> with a shorter name.'],
+      ['“Tab limit reached”', 'Ten schematics and ten boards is the maximum. Close one — middle-click its chip in the tab row.'],
+      ['A big board feels slow', 'Turn off the moving effects (blinking, glow, smooth jumps) in Settings → PCB Viewer.', 'Open PCB Viewer settings'],
+      ['“Your session is expired…”', 'Your sign-in went stale. Log out and sign in again.'],
+      ['Hardware-ID or device-limit error at sign-in', 'Your licence is tied to another computer (or this one after a disk, board or Windows change). Use <em>HD Reset</em> on the sign-in window to release it.'],
+      ['The app won’t start on Windows 11', 'Smart App Control is blocking it. Windows Security → App & browser control → Smart App Control settings.'],
+      ['“Already running”', 'Only one copy can run at a time. Look for the open window, or end Schemax in Task Manager if it hung.'],
+      ['The app crashed', 'Choose <em>Send Report &amp; Restart</em> in the crash window — the report helps us fix it.']]]]},
+  {k: 'support', ic: 'chat', l: 'Support & about', c: '#0891b2', blurb: 'WhatsApp support, connection check, version and website.', b: [
+    ['p', 'Account problems — a blocked account, an expired plan, a device reset — are fastest on WhatsApp.'],
+    ['acts', [['chat', '#16a34a', 'WhatsApp support', '+91 77086 84274'], ['info', '#0d847d', 'About Schemax', VER], ['lang', '#2563eb', 'Website', 'schemaxsolutions.com'], ['wifi', '#d97706', 'Check my connection', 'Test sign-in and download servers'], ['pin', '#7c3aed', 'Placement guide', 'Numbered pins on every control'], ['doc', '#0891b2', 'Language & wording', 'Suggest a translation fix']]],
+    ['tip', 'When you message support', 'Include your username, the board model and a screenshot. The app’s own error windows have a copy button.']]},
+];
+const HOF = k => HELP.find(h => h.k === k);
+const KS = s => s.split(' ').map(p => p === '/' || p === '…' ? `<span style="color:var(--t3);margin:0 2px">${p}</span>` : `<kbd>${p}</kbd>`).join('');
+function hb(blocks) {
+  return `<div class="hb">${blocks.map(([t, a, b, c]) => {
+    if (t === 'p') return `<p>${a}</p>`;
+    if (t === 'eb') return `<div class="eyb" id="${a.replace(/\W+/g, '-')}">${a}</div>`;
+    if (t === 'steps') return `<ol class="hb-steps">${a.map(([x, d]) => `<li><div><b>${x}</b>${d}</div></li>`).join('')}</ol>`;
+    if (t === 'defs') return `<div class="hb-defs">${a.map(([x, d]) => `<div><b>${x}</b><span>${d}</span></div>`).join('')}</div>`;
+    if (t === 'tip' || t === 'warn') return `<div class="hb-call" style="--tone:${t === 'tip' ? '#0d847d' : '#d97706'}">${I(t === 'tip' ? 'bulb' : 'warn')}<div><b>${a}</b>${b}${c ? `<br><button class="gbtn" data-act="toast" data-m="${c}">${c}</button>` : ''}</div></div>`;
+    if (t === 'keys') return `<div class="hb-keys">${a.map(([k, d]) => `<div><span>${d}</span><span>${KS(k)}</span></div>`).join('')}</div>`;
+    if (t === 'faq') return `<div class="hb-faq">${a.map(([q, d, btn]) => `<details><summary>${q}${I('chev')}</summary><div>${d}${btn ? `<br><button class="gbtn" data-act="toast" data-m="${btn}">${btn}</button>` : ''}</div></details>`).join('')}</div>`;
+    if (t === 'acts') return `<div class="hb-acts">${a.map(([ic, col, x, s]) => `<button style="--tint:${col}" data-act="toast" data-m="${x}"><span class="ico">${I(ic)}</span><span><b>${x}</b><small>${s}</small></span></button>`).join('')}</div>`;
+    return '';
+  }).join('')}</div>`;
+}
+/* flat index for search + chat */
+const HIDX = [];
+HELP.forEach(h => h.b.forEach(([t, a, b, c]) => {
+  if (['steps', 'defs', 'keys', 'faq'].includes(t)) a.forEach(([x, d, btn]) => HIDX.push(t === 'keys' ? {tab: h.k, t: d, d: 'Shortcut: ' + KS(x)} : {tab: h.k, t: x, d, btn}));
+  if (t === 'tip' || t === 'warn') HIDX.push({tab: h.k, t: a, d: b, btn: c});
+}));
+const hcount = h => HIDX.filter(x => x.tab === h.k).length;
+
+/* ================= HELP 01 — Help center ================= */
+function H1() {
+  const u = U.h1, q = u.q.trim();
+  let body;
+  if (q) {
+    const ql = q.toLowerCase(), res = HIDX.filter(x => (x.t + ' ' + strip(x.d)).toLowerCase().includes(ql));
+    body = res.length ? `<div class="eyb" style="margin-bottom:9px">${res.length} answer${res.length > 1 ? 's' : ''} for “${esc(q)}”</div><div class="h1-res">${res.slice(0, 30).map(x => { const h = HOF(x.tab); return `<button data-act="h1open" data-v="${x.tab}" style="--tint:${h.c}"><span class="ico">${I(h.ic)}</span><b>${markQ(x.t, q)}</b><span>${h.l} · ${strip(x.d)}</span></button>`; }).join('')}</div>`
+      : `<div class="s1-empty">${I('search')}<b style="color:var(--text)">Nothing about “${esc(q)}” yet</b><span>Ask support on WhatsApp — usually a reply within the hour.</span></div>`;
+  } else if (u.tab) {
+    const h = HOF(u.tab);
+    body = `<div class="h1-crumb"><button data-u="h1.tab" data-v="">${I('back')}Help</button>/<span>${h.l}</span></div><div class="h1-ttl"><span class="ico" style="--tint:${h.c}">${I(h.ic)}</span><h3>${h.l}</h3></div>${hb(h.b)}`;
+  } else body = `<div class="h1-grid">${HELP.map(h => `<button class="h1-card" style="--tint:${h.c}" data-u="h1.tab" data-v="${h.k}"><span class="ico">${I(h.ic)}</span><b>${h.l}</b><span>${h.blurb}</span><small>${hcount(h)} answers →</small></button>`).join('')}
+    <button class="h1-card" style="--tint:#16a34a;background:color-mix(in srgb,#16a34a 8%,var(--panel))" data-act="toast" data-m="WhatsApp support opened"><span class="ico">${I('chat')}</span><b>Still stuck?</b><span>Message a person on WhatsApp.</span><small>+91 77086 84274</small></button></div>`;
+  return `<div class="mdl h1">
+  <div class="h1-hero"><div class="h1-top">${I('book')}Schemax Help<span class="v">${VER}</span><button class="xb" data-act="toast" data-m="Closed (Esc)">${I('x')}</button></div>
+    <h2>How can we help?</h2>
+    <label class="h1-sr">${I('search')}<input data-q="h1" placeholder="Search answers — “side by side”, “download”, “rotate”…" value="${esc(u.q)}">${q ? `<button data-u="h1.q" data-v="" style="color:#8f9bb0">${I('x')}</button>` : '<kbd>F1</kbd>'}</label>
+    <div class="h1-pop">Popular:${['side by side', 'cross-search', 'download', 'rotate', 'Alt'].map(p => `<button data-u="h1.q" data-v="${p}">${p}</button>`).join('')}</div></div>
+  <div class="h1-b scr" data-scroll="h1">${body}</div>
+  <div class="h1-f foot">Press <kbd>F1</kbd> for Help anywhere.<button class="wa" data-act="toast" data-m="WhatsApp support opened">${I('chat')}WhatsApp support</button></div>
+</div>`;
+}
+
+/* ================= HELP 02 — Guided stepper ================= */
+function H2() {
+  const u = U.h2, h = HELP[u.i], seen = u.seen.length, nx = HELP[u.i + 1], pv = HELP[u.i - 1];
+  return `<div class="mdl h2">
+  <aside class="h2-l"><h2>Help guide</h2><p>Seven short chapters · read in order or jump</p>
+    <div class="h2-pr"><span class="bar"><i style="width:${seen / 7 * 100}%"></i></span>${seen} / 7 read</div>
+    <div class="h2-st">${HELP.map((x, j) => `<button class="${j === u.i ? 'on' : ''}${u.seen.includes(j) && j !== u.i ? ' seen' : ''}${u.seen.includes(j) ? ' seen' : ''}" data-act="h2go" data-v="${j}"><span class="dt">${u.seen.includes(j) && j !== u.i ? I('check') : j + 1}</span><span><b>${x.l}</b><small>${hcount(x)} answers</small></span></button>`).join('')}</div>
+    <div class="wa"><span class="ico" style="--tint:#16a34a">${I('chat')}</span><div><b>Need a person?</b>WhatsApp support</div></div></aside>
+  <section class="h2-r"><div class="h2-hd"><div><div class="eyb">Chapter ${u.i + 1} of 7</div><h3>${h.l}</h3></div><span style="margin-left:auto">${XB}</span></div>
+    <div class="h2-b scr" data-scroll="h2">${hb(h.b)}</div>
+    <div class="h2-nav">${pv ? `<button class="gbtn" data-act="h2go" data-v="${u.i - 1}">${I('back')}${pv.l}</button>` : '<span class="foot">Press <kbd>F1</kbd> anywhere to come back</span>'}
+      ${nx ? `<button class="pbtn nx" data-act="h2go" data-v="${u.i + 1}"><small>Next:</small> ${nx.l}${I('chev')}</button>` : `<button class="pbtn nx" data-act="toast" data-m="All chapters read — nice!">${I('check')}Finish guide</button>`}</div></section>
+</div>`;
+}
+
+/* ================= HELP 03 — Docs + on this page ================= */
+const H3NAV = [['Get started', ['start', 'files', 'viewers']], ['Go further', ['solutions', 'keys']], ['Get help', ['trouble', 'support']]];
+function H3() {
+  const u = U.h3, h = HOF(u.tab);
+  const toc = h.b.filter(b => b[0] === 'eb').map(b => b[1]);
+  const tocItems = toc.length ? toc : h.b.flatMap(b => b[0] === 'steps' || b[0] === 'faq' ? [] : []).concat([h.l]);
+  return `<div class="mdl h3">
+  <div class="h3-top"><span class="lg"><i>${I('book')}</i>Docs</span><span class="cr">Help ${I('chev')} <b>${h.l}</b></span><button class="sk" data-act="grp" data-v="help" data-go="h1">${I('search')}Search the docs<kbd>/</kbd></button>${XB}</div>
+  <div class="h3-m">
+    <nav class="h3-nav">${H3NAV.map(([g, ks]) => `<div class="eyb">${g}</div>${ks.map(k => { const x = HOF(k); return `<button class="${k === u.tab ? 'on' : ''}" data-act="h3go" data-v="${k}">${I(x.ic)}${x.l}</button>`; }).join('')}`).join('')}</nav>
+    <article class="h3-art scr" data-scroll="h3" id="h3art"><h1>${h.l}</h1><p class="lead">${h.blurb}</p>${hb(h.b)}
+      <div class="h3-fb">Was this page helpful?${u.fb ? `<span class="lbtn" style="color:var(--ok)">${I('check')}Thanks for telling us</span>` : `<button class="gbtn" data-u="h3.fb" data-v="y">${I('thumb')}Yes</button><button class="gbtn" data-u="h3.fb" data-v="n"><span style="transform:scaleY(-1);display:inline-flex">${I('thumb')}</span>No</button>`}</div></article>
+    <aside class="h3-toc"><div class="eyb">On this page</div>${(toc.length ? toc : [h.l]).map((t, j) => `<button class="${j === u.toc ? 'on' : ''}" data-act="h3toc" data-v="${j}" data-id="${t.replace(/\W+/g, '-')}">${t}</button>`).join('')}
+      <button class="up" data-act="h3toc" data-v="0" data-id="">${I('up')}Back to top</button></aside>
+  </div>
+</div>`;
+}
+
+/* ================= HELP 04 — Assistant chat ================= */
+function H4() {
+  const u = U.h4, h = HOF(u.tp);
+  const sugg = HIDX.filter(x => x.tab === u.tp).slice(0, 6);
+  const bot = (inner) => `<div class="h4-m"><span class="av">${I('spark')}</span><div class="bb">${inner}</div></div>`;
+  const msgs = u.msgs.map(m => m.me ? `<div class="h4-m me"><div class="bb">${esc(m.t)}</div></div>` : bot(m.x ? `<b class="t">${m.x.t}</b>${m.x.d}${m.x.btn ? `<br><button class="gbtn" data-act="toast" data-m="${m.x.btn}">${m.x.btn}</button>` : ''}` : m.t)).join('');
+  return `<div class="mdl h4">
+  <div class="h4-top"><span class="h4-av">${I('spark')}</span><div><b>Schemax guide</b><small>Answers from the help pages · instant</small></div>${XB}</div>
+  <div class="h4-tp">${HELP.map(x => `<button class="${x.k === u.tp ? 'on' : ''}" style="--tint:${x.c}" data-act="h4tp" data-v="${x.k}">${I(x.ic)}${x.l}</button>`).join('')}</div>
+  <div class="h4-b scr" data-scroll="h4" id="h4b">
+    ${bot(`<b class="t">Hi! What do you need help with?</b>Pick a question below, choose a topic above, or just type.`)}
+    ${msgs}
+    ${u.typing ? `<div class="h4-m"><span class="av">${I('spark')}</span><div class="bb h4-typ"><i></i><i></i><i></i></div></div>` : ''}
+    ${u.typing ? '' : `<div class="h4-sg">${sugg.map((x) => `<button data-act="h4ask" data-v="${HIDX.indexOf(x)}">${x.t}</button>`).join('')}</div>`}
+  </div>
+  <div class="h4-in"><input data-q="h4" placeholder="Ask about ${h.l.toLowerCase()}…" value="${esc(u.q)}"><button data-act="h4send" title="Send">${I('send')}</button></div>
+</div>`;
+}
+function h4answer(x, qText) {
+  const u = U.h4;
+  u.msgs.push({me: 1, t: qText || x.t}); u.typing = true; u.q = ''; draw(); scrollChat();
+  setTimeout(() => { u.typing = false; u.msgs.push(x ? {x} : {t: '<b class="t">I couldn’t find that one.</b>Try other words, or message support on WhatsApp — <b>+91 77086 84274</b>.'}); draw(); scrollChat(); }, 650);
+}
+function h4send() {
+  const q = U.h4.q.trim(); if (!q) return;
+  const w = q.toLowerCase().split(/\W+/).filter(s => s.length > 2);
+  let best = null, bs = 0;
+  HIDX.forEach(x => { const t = (x.t + ' ' + strip(x.d)).toLowerCase(); const s = w.reduce((a, k) => a + (t.includes(k) ? (x.t.toLowerCase().includes(k) ? 2 : 1) : 0), 0); if (s > bs) { bs = s; best = x; } });
+  if (best) U.h4.tp = best.tab;
+  h4answer(best, q);
+}
+const scrollChat = () => { const b = $('#h4b'); if (b) b.scrollTop = b.scrollHeight; };
+
+/* ================= HELP 05 — Key map + cards ================= */
+const KBROWS = [[['Esc'], ['gap', .4], ['F1'], ['F3'], ['F11'], ['gap', .4], ['Home'], ['End']],
+  [['1'], ['2'], ['3'], ['4'], ['5'], ['6'], ['0'], ['−'], ['+'], [',']],
+  [['Tab', 1.5], ['T'], ['F'], ['S'], ['C'], ['gap', 1], ['Enter', 1.8]],
+  [['Ctrl', 1.5], ['Shift', 1.8], ['Alt', 1.3], ['gap', 1.2], ['←'], ['→']]];
+function keysOf(s) {
+  const p = s.split(' ').filter(x => x !== '/'), out = [];
+  p.forEach((x, j) => { if (x === '…') { for (let n = +p[j - 1] + 1; n < +p[j + 1]; n++) out.push(String(n)); } else out.push(x); });
+  return out;
+}
+function H5() {
+  const u = U.h5, h = HOF(u.tab);
+  let body;
+  if (u.tab === 'keys') {
+    const groups = h.b.reduce((a, b) => { if (b[0] === 'eb') a.push([b[1], []]); else a[a.length - 1][1].push(...b[1]); return a; }, []);
+    body = `<div class="h5-km"><div><div class="kb"><div class="cap"><span>SCHEMAX KEY MAP</span><b id="kbcap">Hover a shortcut</b></div>${KBROWS.map(r => `<div class="row">${r.map(([k, w]) => k === 'gap' ? `<span class="k gap" style="--w:${w}"></span>` : `<span class="k" data-key="${k}" style="--w:${w || 1}">${k}</span>`).join('')}</div>`).join('')}</div>
+      <p class="h5-hint">${I('info')}Hover a key to see what it does, or a shortcut to light up its keys.</p></div>
+      <div class="h5-sl scr" style="max-height:360px">${groups.map(([g, ks]) => `<div class="eyb">${g}</div>${ks.map(([k, d]) => `<div data-sk="${keysOf(k).join('|')}" data-d="${esc(d)}"><span>${d}</span><span>${KS(k)}</span></div>`).join('')}`).join('')}</div></div>`;
+  } else body = `<div class="h5-cards">${hb(h.b)}</div>`;
+  return `<div class="mdl h5">
+  <div class="h5-hd"><span class="ico" style="--tint:${h.c}">${I(h.ic)}</span><div><h2>Help</h2><p>${h.blurb}</p></div>${XB}</div>
+  <div class="h5-tabs">${HELP.map(x => `<button class="${x.k === u.tab ? 'on' : ''}" style="--tint:${x.c}" data-u="h5.tab" data-v="${x.k}">${I(x.ic)}${x.l}</button>`).join('')}</div>
+  <div class="h5-b scr" data-scroll="h5">${body}</div>
+</div>`;
+}
+
+/* ================= Theme editor data (mirrors PCBThemeEditor / PcbThemeDraft) ================= */
+const hsl2hex = (h, s, l) => { s /= 100; l /= 100; const k = n => (n + h / 30) % 12, a = s * Math.min(l, 1 - l), f = n => l - a * Math.max(-1, Math.min(k(n) - 3, Math.min(9 - k(n), 1))); return '#' + [f(0), f(8), f(4)].map(x => Math.round(x * 255).toString(16).padStart(2, '0')).join(''); };
+const cuGen = (off = 10, s = 68, l = 55) => Array.from({length: 16}, (_, i) => hsl2hex((off + i * 22.5) % 360, s, l));
+const hex2rgb = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16));
+const rgb2hex = a => '#' + a.map(x => (+x).toString(16).padStart(2, '0')).join('');
+const ink = h => { const [r, g, b] = hex2rgb(h); return (r * .299 + g * .587 + b * .114) / 255 > .58 ? '#0e2140' : '#ffffff'; };
+const DEF = {boardFill: '#16202c', boardSubstrate: '#2d4a6b', boardOutline: '#3fb950', silkscreen: '#c0dddd', ratsnest: '#e5484d',
+  componentOutline: '#ffc933', componentFill: '#3b3355', componentNameText: '#ffffff', highlightBorder: '#fff700', highlightFill: '#2fa1a1', refPlate: '#030e16', refEdge: '#ffffff',
+  pinFill: '#ffd700', pinOutline: '#0a0a0a', pinLabelText: '#ff6b6b', ncPin: '#478cc8', groundPin: '#a9a9a9', sameNetHighlight: '#ff3b3b', selectedPin: '#ff2f2f', netText: '#123246'};
+const SEC = [
+  {k: 'board', l: 'Board', a: '#5b7fff', ic: 'frame', f: [['boardFill', 'Board fill'], ['boardSubstrate', 'Board substrate (base layer)'], ['boardOutline', 'Board outline / edge cuts'], ['silkscreen', 'Silkscreen'], ['ratsnest', 'Ratsnest / airwires']]},
+  {k: 'comps', l: 'Components', a: '#e0a63c', ic: 'comps', f: [['componentOutline', 'Component outline'], ['componentFill', 'Component fill'], ['componentNameText', 'Component name text'], ['highlightBorder', 'Highlight border'], ['highlightFill', 'Highlight fill'], ['refPlate', 'Reference plate'], ['refEdge', 'Reference plate edge']]},
+  {k: 'pins', l: 'Pins & nets', a: '#e2596b', ic: 'pins', f: [['pinFill', 'Pin fill'], ['pinOutline', 'Pin outline'], ['pinLabelText', 'Pin label text'], ['ncPin', 'NC pin'], ['groundPin', 'Ground pin'], ['sameNetHighlight', 'Same-net highlight'], ['selectedPin', 'Selected pin'], ['netText', 'Net name text']]},
+  {k: 'copper', l: 'Copper layers', a: '#d98a4f', ic: 'layers', f: Array.from({length: 16}, (_, i) => ['L' + (i + 1), 'Layer ' + (i + 1)])},
+];
+const SECOF = k => SEC.find(s => s.k === k);
+const DESC = {boardFill: 'The board surface between parts', boardSubstrate: 'Base layer under the copper', boardOutline: 'Edge cuts around the board', silkscreen: 'Printed markings and part outlines', ratsnest: 'Unrouted connection lines',
+  componentOutline: 'Edge of every part', componentFill: 'Body of every part', componentNameText: 'Part names like U2 or C14', highlightBorder: 'Edge of a selected or found part', highlightFill: 'Body of a selected or found part', refPlate: 'Pill behind a reference name', refEdge: 'Edge of that pill',
+  pinFill: 'Pad colour when “Override pin colours” is on', pinOutline: 'Edge of every pad', pinLabelText: 'Pin number / name text', ncPin: 'Pins that connect to nothing', groundPin: 'Pins on GND', sameNetHighlight: 'Other pins on the selected net', selectedPin: 'The pin you clicked', netText: 'Net name drawn inside a pad'};
+const desc = k => DESC[k] || `Traces and pours on copper layer ${k.slice(1)}`;
+let TE = {name: 'Dark Pro', ov: true, c: {...DEF}, cu: cuGen()};
+let TE0 = JSON.parse(JSON.stringify(TE));
+const col = k => k[0] === 'L' ? TE.cu[+k.slice(1) - 1] : TE.c[k];
+const setCol = (k, v) => { v = v.toLowerCase(); if (k[0] === 'L') TE.cu[+k.slice(1) - 1] = v; else TE.c[k] = v; };
+const CV = (k, extra = '') => `data-c="${k}" style="--c:${col(k)};--ink:${ink(col(k))};${extra}"`;
+const fieldLabel = k => SEC.flatMap(s => s.f).find(f => f[0] === k)[1];
+const secOfField = k => SEC.find(s => s.f.some(f => f[0] === k));
+const themeColors = th => ({...DEF, boardFill: th.p[0], boardSubstrate: th.p[1], componentFill: th.p[2], pinFill: th.p[3], sameNetHighlight: th.p[4], ratsnest: th.p[4]});
+const PRESETS = [
+  {n: 'Dark Pro', c: {}, h: 10},
+  {n: 'Graphite', c: {boardFill: '#26292e', boardSubstrate: '#4b5563', componentFill: '#3f4651', componentOutline: '#cbd5e1', pinFill: '#f5c542', boardOutline: '#9aa4b1'}, h: 190},
+  {n: 'Navy', c: {boardFill: '#0d1b2a', boardSubstrate: '#1a3a5c', componentFill: '#23426b', componentOutline: '#7cc4ff', pinFill: '#ffd166', boardOutline: '#06d6a0'}, h: 170},
+  {n: 'Plum', c: {boardFill: '#2a1430', boardSubstrate: '#5b2a6e', componentFill: '#5a2d63', componentOutline: '#f0abfc', pinFill: '#ffcf56', boardOutline: '#ff6b9a'}, h: 280},
+  {n: 'Forest', c: {boardFill: '#0f2418', boardSubstrate: '#1f5135', componentFill: '#2b3d2e', componentOutline: '#a3e635', pinFill: '#facc15', boardOutline: '#4ade80', silkscreen: '#ecfccb'}, h: 80},
+  {n: 'Paper', c: {boardFill: '#e8e4d8', boardSubstrate: '#cfc6ad', componentFill: '#f8f5ec', componentOutline: '#334155', pinFill: '#b45309', pinOutline: '#1f2937', boardOutline: '#475569', silkscreen: '#334155', componentNameText: '#0f172a', refPlate: '#ffffff', refEdge: '#334155', netText: '#ffffff'}, h: 200},
+];
+const QP = ['#ef4444', '#f97316', '#f59e0b', '#facc15', '#84cc16', '#22c55e', '#10b981', '#14b8a6', '#06b6d4', '#0ea5e9', '#3b82f6', '#6366f1', '#8b5cf6', '#a855f7', '#d946ef', '#ec4899', '#ffffff', '#94a3b8', '#475569', '#1e293b', '#0b1220', '#000000', '#ffd700', '#3fb950', '#2fa1a1', '#7a2f2f', '#c0dddd'];
+
+/* ---------- live board preview ---------- */
+function boardSVG(C = TE.c, cu = TE.cu, ov = TE.ov, hl = '') {
+  const A = k => `data-pk="${k}"${hl && k.split(' ').includes(hl) ? ' class="hl"' : ''}`;
+  const NET = ['#f472b6', '#60a5fa', '#34d399', '#fbbf24', '#a78bfa', '#f87171'];
+  const pf = i => ov ? C.pinFill : NET[i % NET.length];
+  let pins = '';
+  for (let i = 0; i < 6; i++) {
+    const x = 114 + i * 11;
+    const top = i === 1 ? C.ncPin : i === 4 ? C.groundPin : pf(i), topK = i === 1 ? 'ncPin' : i === 4 ? 'groundPin' : 'pinFill';
+    const same = i === 2 || i === 5;
+    pins += `<rect x="${x}" y="43" width="7" height="7" rx="1.5" fill="${top}" stroke="${same ? C.sameNetHighlight : C.pinOutline}" stroke-width="${same ? 2 : 1}" ${A(topK + ' pinOutline' + (same ? ' sameNetHighlight' : ''))}/>`;
+    const sel = i === 3;
+    pins += `<rect x="${x}" y="106" width="7" height="7" rx="1.5" fill="${sel ? C.selectedPin : pf(i + 2)}" stroke="${C.pinOutline}" ${A(sel ? 'selectedPin pinOutline' : 'pinFill pinOutline')}/>`;
+  }
+  const plate = (x, y, t) => `<rect x="${x - 12}" y="${y - 6}" width="24" height="12" rx="6" fill="${C.refPlate}" fill-opacity=".82" stroke="${C.refEdge}" stroke-opacity=".3" ${A('refPlate refEdge')}/><text x="${x}" y="${y + 3}" text-anchor="middle" font-size="7.5" font-weight="700" font-family="Inter" fill="${C.componentNameText}" ${A('componentNameText')}>${t}</text>`;
+  const tr = (i, d, w = 3) => `<path d="${d}" fill="none" stroke="${cu[i]}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round" opacity=".92" ${A('L' + (i + 1))}/>`;
+  return `<svg class="bsvg" viewBox="0 0 300 190">
+  <rect x="4" y="4" width="292" height="182" rx="14" fill="${C.boardFill}" stroke="${C.boardOutline}" stroke-width="2.5" ${A('boardFill boardOutline')}/>
+  <rect x="14" y="14" width="272" height="162" rx="10" fill="${C.boardSubstrate}" opacity=".38" ${A('boardSubstrate')}/>
+  ${tr(0, 'M22 152H92L112 132H150')}${tr(1, 'M30 34H84L102 52')}${tr(2, 'M196 26V62L216 82H282')}${tr(3, 'M150 176V146L168 128H200')}${tr(4, 'M240 160H282', 5)}${tr(5, 'M60 100H38V164', 2)}${tr(6, 'M262 100V140', 2)}${tr(7, 'M24 120H60L76 136', 2)}
+  <path d="M120 70 L232 140M78 118 L196 40" stroke="${C.ratsnest}" stroke-width="1.3" stroke-dasharray="4 3" fill="none" ${A('ratsnest')}/>
+  <path d="M104 36h-6v6M192 36h6v6M104 120h-6v-6M192 120h6v-6" stroke="${C.silkscreen}" stroke-width="1.3" fill="none" ${A('silkscreen')}/>
+  <text x="270" y="178" text-anchor="end" font-size="7" font-weight="700" font-family="Inter" fill="${C.silkscreen}" ${A('silkscreen')}>W2R · REV B</text>
+  <text x="24" y="28" font-size="7" font-weight="700" font-family="Inter" fill="${C.silkscreen}" ${A('silkscreen')}>Q1</text>
+  <rect x="110" y="50" width="72" height="56" rx="4" fill="${C.componentFill}" stroke="${C.componentOutline}" stroke-width="1.5" ${A('componentFill componentOutline')}/>
+  ${pins}${plate(146, 78, 'U2')}
+  <rect x="36" y="48" width="38" height="18" rx="3" fill="${C.componentFill}" stroke="${C.componentOutline}" stroke-width="1.3" ${A('componentFill componentOutline')}/>
+  <rect x="38" y="52" width="7" height="10" rx="1.5" fill="${pf(1)}" stroke="${C.pinOutline}" ${A('pinFill pinOutline')}/><rect x="65" y="52" width="7" height="10" rx="1.5" fill="${pf(3)}" stroke="${C.pinOutline}" ${A('pinFill pinOutline')}/>${plate(55, 57, 'C14')}
+  <rect x="206" y="104" width="46" height="20" rx="3" fill="${C.highlightFill}" fill-opacity=".6" stroke="${C.highlightBorder}" stroke-width="2" ${A('highlightFill highlightBorder')}/>
+  <rect x="209" y="108" width="7" height="12" rx="1.5" fill="${pf(0)}" stroke="${C.pinOutline}" ${A('pinFill pinOutline')}/><rect x="242" y="108" width="7" height="12" rx="1.5" fill="${pf(2)}" stroke="${C.pinOutline}" ${A('pinFill pinOutline')}/>${plate(229, 114, 'R7')}
+  <rect x="226" y="36" width="44" height="22" rx="4" fill="${C.groundPin}" stroke="${C.pinOutline}" ${A('groundPin')}/><text x="248" y="50" text-anchor="middle" font-size="8" font-weight="800" font-family="JetBrains Mono,monospace" fill="${C.netText}" ${A('netText')}>GND</text>
+  <circle cx="150.5" cy="109.5" r="8" fill="none" stroke="${C.selectedPin}" stroke-width="1.2" opacity=".7" ${A('selectedPin')}/>
+  <text x="160" y="128" font-size="7.5" font-weight="700" font-family="JetBrains Mono,monospace" fill="${C.pinLabelText}" ${A('pinLabelText')}>PP_VBAT · 7</text>
+</svg>`;
+}
+const PREV = (hl = '') => `<div data-prev="${hl}">${boardSVG(TE.c, TE.cu, TE.ov, hl)}</div>`;
+const SWI = k => `<label class="swi" ${CV(k)} title="Change ${fieldLabel(k)}"><input type="color" value="${col(k)}" data-col="${k}"></label>`;
+const HXI = k => `<input class="hxi" data-hx="${k}" value="${col(k).toUpperCase()}" maxlength="7" spellcheck="false">`;
+const NAMEI = (cls = 'inp') => `<input class="${cls}" data-te="name" value="${esc(TE.name)}" placeholder="e.g. Dark Pro">`;
+const OVT = () => `<button class="tg${TE.ov ? ' on' : ''}" data-act="teov" role="switch"></button>`;
+const TEH = () => `<div class="te-hd"><span class="te-mk">${I('pal')}</span><div><h2>PCB Theme Editor</h2><small>Editing <b data-tname>${esc(TE.name || 'Untitled')}</b> · every change previews live on the board</small></div>${XB}</div>`;
+const TEF = (left = `<span class="foot">${I('eye')}Changes preview live on the board</span>`) => `<div class="te-ft">${left}<span class="sp"></span><button class="gbtn" data-act="tecancel">Cancel</button><button class="pbtn" data-act="tesave">${I('check')}Save theme</button></div>`;
+const TABS = (d, cur) => `<div class="te-tabs">${SEC.map(s => `<button class="${s.k === cur ? 'on' : ''}" style="--tint:${s.a}" data-u="${d}.sec" data-v="${s.k}"><span class="ci">${I(s.ic)}</span>${s.l}<em>${s.f.length}</em></button>`).join('')}</div>`;
+
+
+/* ================= PCB theme FLOW (mirrors PCBNewViewerWidget + PCBThemeEditor) ================= */
+Object.assign(IC, {
+  rot: '<path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 4v7h-7"/>',
+  flip: '<path d="M12 3v18M8 7 3 12l5 5zM16 7l5 5-5 5z"/>',
+  zin: '<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5M8 11h6M11 8v6"/>',
+  zout: '<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5M8 11h6"/>',
+  fit: '<path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/>',
+  diode: '<path d="M3 12h6M15 12h6M9 6v12l6-6zM15 6v12"/>',
+  rats: '<circle cx="5" cy="6" r="2"/><circle cx="19" cy="18" r="2"/><path d="M7 7l10 10" stroke-dasharray="2 3"/>',
+  drop2: '<path d="m14.5 4.5 5 5M17 2l5 5-3 3-5-5zM14 7l-9 9-1 4 4-1 9-9"/>',
+});
+const mkT = (n, b, over = {}, h = 10) => ({n, b, ed: 0, ov: true, c: {...DEF, ...over}, cu: cuGen(h)});
+let TH = [
+  mkT('Graphite', 1, {boardFill: '#26292e', boardSubstrate: '#4b5563', componentFill: '#3f4651', componentOutline: '#cbd5e1', pinFill: '#f5c542', boardOutline: '#9aa4b1'}, 190),
+  mkT('Navy', 1, {boardFill: '#0d1b2a', boardSubstrate: '#1a3a5c', componentFill: '#23426b', componentOutline: '#7cc4ff', pinFill: '#ffd166', boardOutline: '#06d6a0'}, 170),
+  mkT('Plum', 1, {boardFill: '#2a1430', boardSubstrate: '#5b2a6e', componentFill: '#5a2d63', componentOutline: '#f0abfc', pinFill: '#ffcf56', boardOutline: '#ff6b9a'}, 280),
+  mkT('Dark Pro', 0, {}, 10),
+  mkT('Bench Green', 0, {boardFill: '#0f2418', boardSubstrate: '#1f5135', componentFill: '#2b3d2e', componentOutline: '#a3e635', pinFill: '#facc15', boardOutline: '#4ade80', silkscreen: '#ecfccb'}, 80),
+];
+ST.theme = 'Graphite';
+const TOF = n => TH.find(t => t.n === n);
+function syncThemes() { if (!TOF(ST.theme)) ST.theme = TH[0].n; THEMES = TH.map(t => ({n: t.n, b: t.b, p: [t.c.boardFill, t.c.boardSubstrate, t.c.componentFill, t.c.pinFill, t.cu[0]]})); }
+const clone = o => JSON.parse(JSON.stringify(o));
+const TS = {};
+['t1', 't2', 't3', 't4', 't5'].forEach(d => TS[d] = {ed: null, base: null, orig: '', mode: '', err: '', sec: 'board', acc: 'board', del: null, open: false, hov: null, chg: [], noPcb: false, split: 50, flip: false});
+const tc = (t, k) => k[0] === 'L' ? t.cu[+k.slice(1) - 1] : t.c[k];
+const ts = (t, k, v) => { v = v.toLowerCase(); if (k[0] === 'L') t.cu[+k.slice(1) - 1] = v; else t.c[k] = v; };
+const liveT = d => TS[d].ed || (TS[d].hov && TOF(TS[d].hov)) || TOF(ST.theme);
+const BOARD = (d, hl = '') => { const t = liveT(d); return boardSVG(t.c, t.cu, t.ov, hl); };
+const ORB = t => `conic-gradient(${[t.c.boardFill, t.cu[0], t.c.componentFill, t.c.pinFill, t.cu[2]].map((c, i) => `${c} ${i * 72}deg ${(i + 1) * 72}deg`).join(',')})`;
+const SW3 = t => `<span class="sw3"><i style="background:${t.c.boardFill}"></i><i style="background:${t.cu[0]}"></i><i style="background:${t.c.pinFill}"></i></span>`;
+const BADGE = t => t.b ? (t.ed ? 'Built-in · edited' : 'Built-in') : 'Your theme';
+const STATUS = s => s.mode === 'new' ? 'New · starts from a copy of Graphite' : TOF(s.orig)?.b ? 'Built-in · saving keeps your own version' : 'Your theme';
+const HEXT = (d, k) => tc(TS[d].ed, k).toUpperCase();
+const SWB = (d, k, cls = '') => `<button class="sw ${cls}" data-pick="${k}" style="--c:${tc(TS[d].ed, k)}" title="Change ${fieldLabel(k)}"></button>`;
+const CHG = (d, k) => TS[d].chg.includes(k) ? '<i class="chg" title="Changed"></i>' : '';
+const NAMEIN = (d, cls = 'inp') => `<input class="${cls}${TS[d].err ? ' err' : ''}" data-tn value="${esc(TS[d].ed.n)}" placeholder="${TS[d].mode === 'new' ? 'Name your theme' : 'e.g. Dark Pro'}" spellcheck="false">`;
+const ERR = d => TS[d].err ? `<div class="terr">${I('warn')}${esc(TS[d].err)}</div>` : '';
+const OVTG = d => `<button class="tg${TS[d].ed.ov ? ' on' : ''}" data-act="tov" role="switch" title="Override pin colours"></button>`;
+const OVR = d => `<div class="ovr"><span>Override pin colours<small>Theme colours instead of net-based colouring</small></span>${OVTG(d)}</div>`;
+const CONF = d => TS[d].del ? `<div class="cf-scrim"><div class="cf"><span class="ico" style="--tint:#dc2626;width:46px;height:46px;border-radius:14px">${I('trash')}</span><b>Delete theme?</b><p>Delete theme “${esc(TS[d].del)}”? This cannot be undone.</p><div><button class="gbtn" data-act="tdelno">Cancel</button><button class="dbtn" data-act="tdelyes" data-v="${esc(TS[d].del)}">${I('trash')}Delete</button></div></div></div>` : '';
+const CFROW = (d, n) => `<div class="mr cfm"><span>Delete <b>“${esc(n)}”</b>? This cannot be undone.</span><div><button class="gbtn" data-act="tdelno">Cancel</button><button class="dbtn" data-act="tdelyes" data-v="${esc(n)}">Delete</button></div></div>`;
+const TBTN = [['rot', 'Rotate'], ['flip', 'Flip'], ['zout', 'Zoom out'], ['zin', 'Zoom in'], ['fit', 'Fit board · Home']];
+const TBTN2 = [['layers', 'Layers'], ['diode', 'Diode readings'], ['rats', 'Ratsnest']];
+function VW(d, {tb = '', cv = '', cls = '', x = ''}) {
+  const t = liveT(d), s = TS[d];
+  return `<div class="vw ${cls}" data-d="${d}">
+  <div class="vw-tb"><span class="fn"><i>B</i>A3102 · 820-02924.brd</span>${TBTN.map(([k, l]) => `<span class="tb" title="${l}">${I(k)}</span>`).join('')}<span class="sep"></span>${TBTN2.map(([k, l]) => `<span class="tb" title="${l}">${I(k)}</span>`).join('')}<span class="sep"></span>${tb}<span class="sk">${I('search')}Find part or net</span></div>
+  <div class="vw-cv">${cv}</div>
+  <div class="vw-lb"><span class="all">ALL</span>${t.cu.slice(0, 8).map((c, i) => `<span style="--c:${c}">${i + 1}</span>`).join('')}<span class="st">${s.ed ? '<i class="live"></i>Changes preview live on the board' : `${I('pal')}${esc(ST.theme)}`}</span></div>
+  ${x}${d === 't1' || d === 't4' ? '' : CONF(d)}
+</div>`;
+}
+/* ---------- flow ---------- */
+function tEdit(d, n) { const s = TS[d], t = TOF(n); if (!t) return; Object.assign(s, {ed: clone(t), base: clone(t), orig: n, mode: 'edit', err: '', open: false, hov: null, chg: [], del: null, flip: true}); }
+function tNew(d) {
+  const s = TS[d]; if (s.noPcb) { toast('Please open a PCB file first.'); return; }
+  const g = clone(TOF('Graphite') || TH[0]); g.n = ''; g.b = 0; g.ed = 0;
+  Object.assign(s, {ed: g, base: clone(TOF('Graphite') || TH[0]), orig: '', mode: 'new', err: '', open: false, hov: null, chg: [], del: null, flip: true});
+}
+function tCancel(d) { closePick(); const s = TS[d]; s.ed = null; s.err = ''; s.flip = true; toast(`Board back to ${ST.theme}`); draw(); }
+function tSave(d) {
+  const s = TS[d], n = s.ed.n.trim();
+  if (!n) { s.err = 'Please enter a theme name'; draw(); $(`[data-d="${d}"] [data-tn]`)?.focus(); return; }
+  if (n !== s.orig && TOF(n)) { s.err = `A theme named '${n}' already exists.`; draw(); const i = $(`[data-d="${d}"] [data-tn]`); i?.focus(); i?.select(); return; }
+  closePick();
+  const ex = TOF(n), obj = {...clone(s.ed), n};
+  if (ex) { obj.b = ex.b; obj.ed = ex.b ? 1 : 0; TH[TH.indexOf(ex)] = obj; } else { obj.b = 0; obj.ed = 0; TH.push(obj); }
+  ST.theme = n; s.ed = null; s.flip = true;
+  toast(ex && ex.b ? `Saved your version of “${n}” · on the board now` : `Saved “${n}” · on the board now`); draw();
+}
+function tDel(d, n) {
+  const s = TS[d]; if (TOF(n)?.b) return;
+  TH = TH.filter(t => t.n !== n); s.del = null;
+  if (s.ed && s.orig === n) { closePick(); s.ed = null; }
+  if (ST.theme === n) ST.theme = TH[0].n;
+  toast(`Deleted “${n}” · board switched to ${ST.theme}`); draw();
+}
+function markChg(d, k) { const s = TS[d]; s.chg = s.chg.filter(x => x !== k); if (tc(s.ed, k) !== tc(s.base, k)) s.chg.push(k); }
+function refreshBoard(d, hl = '') {
+  const s = TS[d];
+  $$(`[data-d="${d}"] [data-board]`).forEach(e => { const t = e.dataset.board === 'base' ? s.base : liveT(d); e.innerHTML = boardSVG(t.c, t.cu, t.ov, hl); });
+  const chip = $(`[data-d="${d}"] [data-chip]`);
+  if (chip) { const on = s.hov && s.hov !== ST.theme; chip.hidden = !on; if (on) chip.innerHTML = `${I('eye')}Previewing <b>${esc(s.hov)}</b> — click to apply`; }
+}
+function redrawOne(d) {
+  const st = $(`#${d} .stage`); if (!st) return;
+  const sc = {}; st.querySelectorAll('[data-scroll]').forEach(e => sc[e.dataset.scroll] = [e.scrollTop, e.scrollLeft]);
+  st.innerHTML = R[d]();
+  st.querySelectorAll('[data-scroll]').forEach(e => { const v = sc[e.dataset.scroll]; if (v) { e.scrollTop = v[0]; e.scrollLeft = v[1]; } });
+}
+
+/* ---------- colour picker (mirrors ColorPickerDialog: SV square, hue + alpha, hex, eyedropper, palette) ---------- */
+let PK = null, PKDRAG = null, SPL = null;
+function hex2hsv(h) { const [r, g, b] = hex2rgb(h).map(x => x / 255), mx = Math.max(r, g, b), mn = Math.min(r, g, b), dd = mx - mn; let hh = 0; if (dd) { hh = mx === r ? ((g - b) / dd) % 6 : mx === g ? (b - r) / dd + 2 : (r - g) / dd + 4; hh *= 60; if (hh < 0) hh += 360; } return [hh, mx ? dd / mx : 0, mx]; }
+function hsv2hex(h, s, v) { const f = n => { const k = (n + h / 60) % 6; return v - v * s * Math.max(0, Math.min(k, 4 - k, 1)); }; return rgb2hex([f(5), f(3), f(1)].map(x => Math.round(x * 255))); }
+const alphaOf = h => h.length === 9 ? parseInt(h.slice(7), 16) / 255 : 1;
+const clamp01 = v => Math.max(0, Math.min(1, v));
+function pkHex() { const b = hsv2hex(PK.h, PK.s, PK.v); return PK.a >= .995 ? b : b + Math.round(PK.a * 255).toString(16).padStart(2, '0'); }
+function openPick(d, k, at) {
+  const t = TS[d].ed; if (!t) return;
+  const v = tc(t, k), [h, s, vv] = hex2hsv(v.slice(0, 7));
+  PK = {d, k, h, s, v: vv, a: alphaOf(v), old: v, at}; renderPick();
+}
+function closePick() { PK = null; PKDRAG = null; $('#pk')?.remove(); }
+function renderPick() {
+  $('#pk')?.remove(); if (!PK) return;
+  const sec = secOfField(PK.k), t = TS[PK.d].ed;
+  const used = [...new Set([...Object.values(t.c), ...t.cu].map(c => c.slice(0, 7)))].slice(0, 9);
+  const el = document.createElement('div'); el.id = 'pk'; el.className = 'pk';
+  el.innerHTML = `<div class="pk-h"><i data-pkc></i><div><b>${fieldLabel(PK.k)}</b><small>${sec.l} · ${desc(PK.k)}</small></div><button class="xb" data-pka="close" title="Close · Esc">${I('x')}</button></div>
+  <div class="pk-sv" data-pkd="sv"><i></i></div>
+  <div class="pk-mid"><button class="pk-ed" data-pka="eye" title="Pick a colour from the screen">${I('drop2')}</button><div class="pk-bars"><div class="pk-bar pk-hue" data-pkd="h"><i></i></div><div class="pk-bar pk-al" data-pkd="a"><i></i></div></div><div class="pk-cmp"><span data-pka="old" title="Original — click to go back" style="background:${PK.old}"></span><span data-pkc></span></div></div>
+  <div class="pk-in"><label>HEX<input data-pkhex maxlength="7" spellcheck="false"></label><label>A<input data-pkal maxlength="3">%</label></div>
+  <div class="eyb">In this theme</div><div class="pk-pal">${used.map(c => `<button style="background:${c}" data-pkset="${c}" title="${c.toUpperCase()}"></button>`).join('')}</div>
+  <div class="eyb">Swatches</div><div class="pk-pal">${QP.slice(0, 18).map(c => `<button style="background:${c}" data-pkset="${c}" title="${c.toUpperCase()}"></button>`).join('')}</div>
+  <div class="pk-f"><button class="lbtn" data-pka="old">${I('refresh')}Revert</button><button class="pbtn" data-pka="close">Done</button></div>`;
+  document.body.append(el);
+  const w = el.offsetWidth, hh = el.offsetHeight, a = PK.at; let x, y;
+  if (a.r) { const left = a.r.left > innerWidth * .55; x = left ? a.r.left - w - 12 : a.r.right + 12; if (!left && x + w > innerWidth - 8) x = a.r.left - w - 12; if (left && x < 8) x = a.r.right + 12; y = a.r.top - 40; }
+  else { x = a.x + 16; y = a.y - 60; if (x + w > innerWidth - 8) x = a.x - w - 16; }
+  el.style.left = Math.max(8, x) + 'px'; el.style.top = Math.max(8, Math.min(y, innerHeight - hh - 8)) + 'px';
+  syncPick();
+}
+function syncPick() {
+  const el = $('#pk'); if (!el || !PK) return;
+  const cur = pkHex(), c6 = cur.slice(0, 7);
+  el.querySelector('.pk-sv').style.setProperty('--h', PK.h);
+  const dot = el.querySelector('.pk-sv i'); dot.style.left = PK.s * 100 + '%'; dot.style.top = (1 - PK.v) * 100 + '%'; dot.style.background = c6;
+  el.querySelector('.pk-hue i').style.left = PK.h / 360 * 100 + '%';
+  const al = el.querySelector('.pk-al'); al.style.setProperty('--o', c6); al.querySelector('i').style.left = PK.a * 100 + '%';
+  el.querySelectorAll('[data-pkc]').forEach(x => x.style.background = cur);
+  const hx = el.querySelector('[data-pkhex]'); if (hx !== document.activeElement) hx.value = c6.toUpperCase();
+  const ai = el.querySelector('[data-pkal]'); if (ai !== document.activeElement) ai.value = Math.round(PK.a * 100);
+}
+function pkApply() { if (!PK || !TS[PK.d].ed) return; ts(TS[PK.d].ed, PK.k, pkHex()); markChg(PK.d, PK.k); redrawOne(PK.d); syncPick(); }
+function pkSetHex(h) { const [hh, s, v] = hex2hsv(h.slice(0, 7)); if (s > 0) PK.h = hh; PK.s = s; PK.v = v; PK.a = alphaOf(h); pkApply(); }
+function pkDrag(e) {
+  const r = PKDRAG.el.getBoundingClientRect(), x = clamp01((e.clientX - r.left) / r.width), y = clamp01((e.clientY - r.top) / r.height);
+  if (PKDRAG.kind === 'sv') { PK.s = x; PK.v = 1 - y; } else if (PKDRAG.kind === 'h') PK.h = x * 360; else PK.a = x;
+  pkApply();
+}
+
+/* ================= THEME 01 — Toolbar menu + docked inspector ================= */
+function FLIST(d, rowCls = 'dk-r') {
+  const s = TS[d], sec = SECOF(s.sec);
+  if (sec.k === 'copper') return `<div class="dk-cu">${sec.f.map(([k]) => `<div data-hl="${k}">${SWB(d, k)}${k}${CHG(d, k)}</div>`).join('')}</div>`;
+  return sec.f.map(([k, l]) => `<div class="${rowCls}" data-hl="${k}">${SWB(d, k)}<span>${l}</span>${CHG(d, k)}<code>${HEXT(d, k)}</code></div>`).join('');
+}
+function T1() {
+  const d = 't1', s = TS[d], t = TOF(ST.theme);
+  const menu = s.open && !s.ed ? `<div class="t1-menu">
+    <div class="mh"><b>Colour theme</b><small>Hover to preview on the board · click to apply</small></div>
+    ${TH.map(x => s.del === x.n ? CFROW(d, x.n) : `<div class="mr${x.n === ST.theme ? ' on' : ''}" data-hov="${esc(x.n)}" data-act="tapply" data-v="${esc(x.n)}">${SW3(x)}<span class="nm"><b>${esc(x.n)}</b><em>${BADGE(x)}</em></span>${x.n === ST.theme ? I('check', 'ck') : ''}<span class="ra"><button data-act="tedit" data-v="${esc(x.n)}" title="Edit colours">${I('pencil')}</button>${x.b ? '' : `<button class="del" data-act="tdel" data-v="${esc(x.n)}" title="Delete theme">${I('trash')}</button>`}</span></div>`).join('')}
+    <div class="mf"><button class="gbtn" data-act="tnew">${I('plus')}New theme</button><button class="gbtn" data-act="tedit" data-v="${esc(ST.theme)}">${I('pencil')}Edit colours</button></div></div>` : '';
+  const dock = s.ed ? `<aside class="t1-dock">
+    <div class="dk-h"><span class="te-mk">${I('pal')}</span><div><b>${s.mode === 'new' ? 'New theme' : 'Edit theme'}</b><small>${STATUS(s)}</small></div><button class="xb" data-act="tcancel" title="Cancel">${I('x')}</button></div>
+    <div class="dk-top"><div>${NAMEIN(d)}${ERR(d)}</div>${OVR(d)}</div>
+    <div class="dk-tabs">${SEC.map(x => `<button class="${x.k === s.sec ? 'on' : ''}" style="--tint:${x.a}" data-act="tsec" data-v="${x.k}" title="${x.l} · ${x.f.length}">${I(x.ic)}${x.l.split(' ')[0]}</button>`).join('')}</div>
+    <div class="dk-list scr" data-scroll="t1l">${FLIST(d)}</div>
+    <div class="dk-f"><span class="n">${s.chg.length ? `<i class="chg"></i>${s.chg.length} change${s.chg.length > 1 ? 's' : ''}` : 'Hover a colour to find it'}</span><button class="gbtn" data-act="tcancel">Cancel</button><button class="pbtn" data-act="tsave">${I('check')}Save</button></div>
+  </aside>` : '';
+  const btn = `<button class="tb-col${s.open ? ' on' : ''}" data-act="tmenu" title="Colour theme">${SW3(t)}Colour${I('down')}</button>`;
+  return VW(d, {tb: btn, cv: `<div class="vw-board" data-board>${BOARD(d)}</div><div class="prev-chip" data-chip hidden></div>${menu}`, cls: s.ed ? 'dock' : '', x: dock});
+}
+
+/* ================= THEME 02 — Filmstrip + studio ================= */
+const PBAR = [['BOARD', 'boardFill'], ['TRACE', 'L1'], ['COMP', 'componentFill'], ['PIN', 'pinFill'], ['NET', 'sameNetHighlight']];
+function T2() {
+  const d = 't2', s = TS[d], t = TOF(ST.theme);
+  const pill = `<button class="t2-pill${s.open ? ' open' : ''}" data-act="tmenu"><span class="orb" style="background:${ORB(t)}"></span><span>${esc(t.n)}<small>${BADGE(t)}</small></span>${I('up')}</button>`;
+  const film = s.open && !s.ed ? `<div class="t2-film"><div class="hd"><b>Colour themes</b><small>${TH.length} themes · hover to preview, click to apply</small></div><div class="t2-row scr">${TH.map(x => `
+    <div class="t2-card${x.n === ST.theme ? ' on' : ''}" data-hov="${esc(x.n)}" data-act="tapply" data-v="${esc(x.n)}">${x.n === ST.theme ? '<span class="tag">ON BOARD</span>' : ''}<div class="ac"><button data-act="tedit" data-v="${esc(x.n)}" title="Edit colours">${I('pencil')}</button>${x.b ? '' : `<button class="del" data-act="tdel" data-v="${esc(x.n)}" title="Delete">${I('trash')}</button>`}</div><div class="th">${boardSVG(x.c, x.cu, x.ov)}</div><div class="nm"><b>${esc(x.n)}</b><small>${BADGE(x)}</small></div></div>`).join('')}
+    <button class="t2-new" data-act="tnew"><span class="ico" style="--tint:#7c3aed">${I('plus')}</span>New theme<small>Starts from Graphite</small></button></div></div>` : '';
+  const sec = SECOF(s.sec);
+  const md = s.ed ? `<div class="t2-scrim"><div class="t2-md">
+    <div class="te-hd"><span class="te-mk">${I('pal')}</span><div><h2>PCB Theme Editor</h2><small>${STATUS(s)}</small></div><button class="xb" data-act="tcancel">${I('x')}</button></div>
+    <div class="t2-strip"><div>${NAMEIN(d)}</div><div class="ovr sm">${OVTG(d)}<span>Override pins</span></div></div>
+    ${s.err ? `<div style="padding:0 16px 8px">${ERR(d)}</div>` : ''}
+    <div class="pbar">${PBAR.map(([l, k]) => { const c = tc(s.ed, k); return `<span style="--c:${c};--ink:${ink(c)}" data-pick="${k}" data-hl="${k}" title="Change ${fieldLabel(k)}">${l}<b>${c.slice(0, 7).toUpperCase()}</b></span>`; }).join('')}</div>
+    <div class="te-tabs">${SEC.map(x => `<button class="${x.k === s.sec ? 'on' : ''}" style="--tint:${x.a}" data-act="tsec" data-v="${x.k}"><span class="ci">${I(x.ic)}</span>${x.l.split(' ')[0]}<em>${x.f.length}</em></button>`).join('')}</div>
+    <div class="t2-body scr" data-scroll="t2b">${sec.k === 'copper' ? `<div class="t2-cu">${sec.f.map(([k]) => `<div data-hl="${k}">${SWB(d, k)}${k}${CHG(d, k)}</div>`).join('')}</div>`
+      : `<div class="t2-grid">${sec.f.map(([k, l]) => `<div class="t2-f" data-hl="${k}">${SWB(d, k)}<span><b>${l}</b><small>${HEXT(d, k)}</small></span>${CHG(d, k)}</div>`).join('')}</div>`}</div>
+    <div class="te-ft"><span class="foot"><i class="live"></i>Changes preview live on the board</span><span class="sp"></span><button class="gbtn" data-act="tcancel">Cancel</button><button class="pbtn" data-act="tsave">${I('check')}Save theme</button></div>
+  </div></div>` : '';
+  return VW(d, {cv: `<div class="vw-board" data-board>${BOARD(d)}</div><div class="prev-chip" data-chip hidden></div>${s.ed ? '' : pill}${film}`, cls: s.ed ? 'studio' : '', x: md});
+}
+
+/* ================= THEME 03 — Settings page: hero + gallery ================= */
+const LEG = [['Board', ['boardFill']], ['Copper', ['L1', 'L2', 'L3']], ['Pins', ['pinFill']], ['Parts', ['componentFill']], ['Silkscreen', ['silkscreen']], ['Highlight', ['sameNetHighlight']]];
+function T3() {
+  const d = 't3', s = TS[d], t = TOF(ST.theme), lt = liveT(d);
+  const top = `<div class="t3-top"><span class="ico" style="--tint:#7c3aed">${I('pal')}</span><span class="cr">Settings ${I('chev')} <b>PCB Theme</b></span><div class="seg" style="margin-left:auto"><button class="${s.noPcb ? '' : 'on'}" data-act="t3pcb" data-v="1">Board open</button><button class="${s.noPcb ? 'on' : ''}" data-act="t3pcb" data-v="0">No board open</button></div>${XB}</div>`;
+  if (s.noPcb) return `<div class="t3w" data-d="t3">${top}<div class="t3-empty"><div class="gb">${boardSVG(DEF, cuGen(), true)}</div><h3>Open a board to theme it</h3><p>Themes colour the board on screen — copper layers, pins, parts and highlights. Open a PCB file, then come back here.</p><button class="gbtn" data-act="tnew">${I('plus')}New theme</button></div></div>`;
+  const acc = x => { const open = s.acc === x.k; return `<div class="acc${open ? ' open' : ''}"><button data-act="tacc" data-v="${x.k}"><span class="ico" style="--tint:${x.a};width:24px;height:24px">${I(x.ic)}</span>${x.l}<em>${x.f.length}</em><span class="dots">${x.f.slice(0, 6).map(([k]) => `<i style="background:${tc(s.ed, k)}"></i>`).join('')}</span>${I('down')}</button>${open ? `<div class="bd${x.k === 'copper' ? ' cu' : ''}">${x.f.map(([k, l]) => `<div data-hl="${k}">${SWB(d, k)}<span>${x.k === 'copper' ? k : l}</span>${CHG(d, k)}</div>`).join('')}</div>` : ''}</div>`; };
+  const info = !s.ed ? `<div class="t3-info"><div class="eyb">${t.b ? 'Built-in theme' : 'Your theme'}</div><h2>${esc(t.n)}</h2><p>${t.b ? 'Built-in · your edits are saved as your own version' : 'Yours · edit or delete it any time'}</p>
+      <div class="t3-leg">${LEG.map(([l, ks]) => `<div>${ks.map(k => `<i style="background:${tc(lt, k)}"></i>`).join('')}<span>${l}</span></div>`).join('')}</div>
+      <div class="t3-act"><button class="pbtn" data-act="tedit" data-v="${esc(t.n)}">${I('pencil')}Edit colours</button>${t.b ? '' : `<button class="gbtn danger" data-act="tdel" data-v="${esc(t.n)}">${I('trash')}Delete</button>`}</div></div>`
+    : `<div class="t3-info t3-ed"><div class="row"><span class="eyb">${s.mode === 'new' ? 'New theme' : 'Editing'}</span><small>${STATUS(s)}</small></div>${NAMEIN(d)}${ERR(d)}${OVR(d)}
+      <div class="t3-accs scr" data-scroll="t3a">${SEC.map(acc).join('')}</div>
+      <div class="t3-act"><button class="gbtn" data-act="tcancel">Cancel</button><button class="pbtn" data-act="tsave">${I('check')}Save theme</button></div></div>`;
+  const out = `<div class="t3w" data-d="t3">${top}<div class="t3-in">
+    <div class="t3-hero${s.flip ? ' flip' : ''}"><div class="t3-pv"><span class="tag"><i class="live"></i>${s.ed ? 'LIVE PREVIEW' : 'ON THE BOARD NOW'}</span><div data-board style="width:100%">${BOARD(d)}</div></div>${info}</div>
+    <div class="t3-gh"><span class="eyb">All themes · ${TH.length}</span><span>${s.ed ? 'Save or cancel to switch themes' : 'Click a theme to apply it'}</span></div>
+    <div class="t3-grid${s.ed ? ' dim' : ''}">${TH.map(x => `<div class="t2-card${x.n === ST.theme ? ' on' : ''}" data-act="tapply" data-v="${esc(x.n)}">${x.n === ST.theme ? '<span class="tag">ON BOARD</span>' : ''}<div class="ac"><button data-act="tedit" data-v="${esc(x.n)}" title="Edit colours">${I('pencil')}</button>${x.b ? '' : `<button class="del" data-act="tdel" data-v="${esc(x.n)}" title="Delete">${I('trash')}</button>`}</div><div class="th">${boardSVG(x.c, x.cu, x.ov)}</div><div class="nm"><b>${esc(x.n)}</b><small>${BADGE(x)}</small></div></div>`).join('')}
+      <button class="t2-new" data-act="tnew"><span class="ico" style="--tint:#7c3aed">${I('plus')}</span>New theme<small>Pick a colour per board part</small></button></div>
+    <p class="t3-note">The board background follows <em>Light / Dark</em> in Appearance. Built-in themes can’t be deleted; editing one saves your own version.</p>
+  </div>${CONF(d)}</div>`;
+  s.flip = false;
+  return out;
+}
+
+/* ================= THEME 04 — Click the board to recolour ================= */
+function T4() {
+  const d = 't4', s = TS[d], t = TOF(ST.theme);
+  const bar = !s.ed ? `<div class="t4-bar"><button class="cur" data-act="tmenu"><span class="orb" style="background:${ORB(t)}"></span>${esc(t.n)}${I('down')}</button><span class="vs"></span><button class="gbtn flat" data-act="tedit" data-v="${esc(t.n)}">${I('drop2')}Recolour</button><button class="gbtn flat" data-act="tnew">${I('plus')}New</button></div>` : '';
+  const dd = s.open && !s.ed ? `<div class="t4-dd">${TH.map(x => s.del === x.n ? CFROW(d, x.n) : `<div class="mr${x.n === ST.theme ? ' on' : ''}" data-hov="${esc(x.n)}" data-act="tapply" data-v="${esc(x.n)}"><span class="orb" style="background:${ORB(x)};width:22px;height:22px"></span><span class="nm"><b>${esc(x.n)}</b><em>${BADGE(x)}</em></span>${x.n === ST.theme ? I('check', 'ck') : ''}<span class="ra"><button data-act="tedit" data-v="${esc(x.n)}" title="Recolour">${I('drop2')}</button>${x.b ? '' : `<button class="del" data-act="tdel" data-v="${esc(x.n)}" title="Delete theme">${I('trash')}</button>`}</span></div>`).join('')}</div>` : '';
+  const edit = s.ed ? `<div class="t4-edit"><span class="msg">${I('drop2')}<span>${s.mode === 'new' ? 'New theme' : 'Recolouring ' + esc(s.orig)}<small>Click any part of the board to change its colour</small></span></span><span class="sp"></span>${NAMEIN(d, '')}<div class="ovr">${OVTG(d)}<span>Override pins</span></div><button class="gbtn" data-act="tcancel">Cancel</button><button class="pbtn" data-act="tsave">${I('check')}Save</button></div>${s.err ? `<div class="t4-err">${ERR(d)}</div>` : ''}` : '';
+  const side = s.ed ? `<aside class="t4-side"><div class="hd"><span class="eyb">Changed · ${s.chg.length}</span>${s.chg.length ? '<button class="lbtn" data-act="trevall">Reset all</button>' : ''}</div><div class="bd scr" data-scroll="t4s">
+    ${s.chg.length ? s.chg.map(k => `<div class="t4-chg" data-hl="${k}">${SWB(d, k)}<span>${fieldLabel(k)}<code>${tc(s.base, k).toUpperCase()} → ${HEXT(d, k)}</code></span><button class="rv" data-act="trev" data-v="${k}" title="Undo this colour">${I('refresh')}</button></div>`).join('') : '<p class="t4-empty">Nothing changed yet. Point at a pin, a part, a trace or a label — its name shows up — then click it.</p>'}
+    <div class="eyb" style="margin:12px 6px 4px">All colours</div>${SEC.map(x => `<div class="t4-sg"><small style="color:${x.a}">${x.l}</small><div class="t4-mini">${x.f.map(([k]) => `<span data-hl="${k}">${SWB(d, k)}</span>`).join('')}</div></div>`).join('')}</div></aside>` : '';
+  return VW(d, {cv: `<div class="vw-board" data-board>${BOARD(d)}</div><div class="prev-chip" data-chip hidden></div>${bar}${dd}${edit}${side}<div class="t4-tip" id="t4tip" hidden></div>`, cls: s.ed ? 'pick' : ''});
+}
+
+/* ================= THEME 05 — Theme rail + before / after ================= */
+function T5() {
+  const d = 't5', s = TS[d];
+  const rail = !s.ed ? `<div class="t5-rail">${TH.map(x => `<button class="o${x.n === ST.theme ? ' on' : ''}" style="background:${ORB(x)}" data-act="tapply" data-v="${esc(x.n)}" data-hov="${esc(x.n)}" data-tip="${esc(x.n)} · ${BADGE(x)}"></button>`).join('')}<span class="ln"></span><button class="rb" data-act="tedit" data-v="${esc(ST.theme)}" data-tip="Edit ${esc(ST.theme)}">${I('pencil')}</button><button class="rb" data-act="tnew" data-tip="New theme">${I('plus')}</button></div>` : '';
+  const boards = s.ed ? `<div class="vw-board" data-board="base">${boardSVG(s.base.c, s.base.cu, s.base.ov)}</div><div class="vw-board t5-b2" data-board style="--s:${s.split}%">${BOARD(d)}</div><div class="t5-hd" style="--s:${s.split}%" data-split><i>${I('sliders')}</i></div><span class="t5-lab l">BEFORE · ${esc(s.base.n)}</span><span class="t5-lab r">AFTER · <span data-tnl>${esc(s.ed.n || 'Untitled')}</span></span>`
+    : `<div class="vw-board" data-board>${BOARD(d)}</div><div class="prev-chip" data-chip hidden></div>`;
+  const ownTheme = s.mode === 'edit' && !TOF(s.orig)?.b;
+  const dock = s.ed ? `<div class="t5-dock"><div class="t5-dh"><span class="te-mk sm">${I('pal')}</span>${NAMEIN(d)}<div class="ovr">${OVTG(d)}<span>Override pins</span></div><span class="cnt">${s.chg.length ? `<i class="chg"></i>${s.chg.length} changed · <button class="lbtn" data-act="trevall">Reset all</button>` : STATUS(s)}</span><span class="sp"></span>${ownTheme ? `<button class="gbtn danger" data-act="tdel" data-v="${esc(s.orig)}">${I('trash')}Delete</button>` : ''}<button class="gbtn" data-act="tcancel">Cancel</button><button class="pbtn" data-act="tsave">${I('check')}Save theme</button></div>
+    ${s.err ? `<div style="padding:6px 14px 0">${ERR(d)}</div>` : ''}
+    <div class="t5-db"><div class="t5-secs">${SEC.map(x => `<button class="${x.k === s.sec ? 'on' : ''}" data-act="tsec" data-v="${x.k}"><span class="ico" style="--tint:${x.a};width:22px;height:22px">${I(x.ic)}</span>${x.l.split(' ')[0]}<em>${x.f.length}</em></button>`).join('')}</div>
+    <div class="t5-cards scr" data-scroll="t5c">${SECOF(s.sec).f.map(([k, l]) => `<div class="t5-cd" data-hl="${k}"><button class="big" data-pick="${k}" style="--c:${tc(s.ed, k)}" title="Change ${l}"></button>${CHG(d, k)}<div class="tx"><b>${l}</b><code>${HEXT(d, k)}</code></div></div>`).join('')}</div></div></div>` : '';
+  return VW(d, {cv: boards + rail, cls: s.ed ? 'split' : '', x: dock});
+}
+const META = [
+  {id: 's1', g: 'set', h: 'Spotlight search', p: 'Search first: type “blink”, “pan” or “size” and only the matching settings stay, with the words highlighted. Coloured chips filter by section. Every option is one row with its control on the right.', t: ['Type to filter', 'Section chips', '18 settings, one list']},
+  {id: 's2', g: 'set', h: 'Sliding tabs + tiles', p: 'Five tabs with a sliding thumb. Choices are big picture tiles: mini windows for Light / Dark, motion previews for panning, a live library sample for text size, colour strips for themes and native names for languages.', t: ['Visual choices', 'Text-size slider', 'Restart banner']},
+  {id: 's3', g: 'set', h: 'Icon rail + live preview', p: 'A dark icon rail on the left, clean rows in the middle and a live preview on the right that shows the effect: the window going dark, the tree text growing, the hover card, gliding vs. stopping pans, the theme on the board, buttons in the new language.', t: ['See before you leave', 'Compact rail', 'Tooltips']},
+  {id: 's4', g: 'set', h: 'Bento board', p: 'No tabs — all five sections sit on one board of cards. A sun / moon switch, a stepper with an “Aa” sample, a checklist for the 7 effects, theme orbs and language pills. Good for people who change settings rarely and want to see everything.', t: ['Zero navigation', 'Everything at once']},
+  {id: 's5', g: 'set', h: 'Drill-in stack', p: 'Phone-style: a short list of sections, each showing its current value (“Light · 14 px”, “Floating · 6/7 effects”). Tap to slide into the details, ‹ Settings to come back. Narrow, so it can also sit as a side sheet.', t: ['Values at a glance', 'Slide animation', 'Narrow']},
+  {id: 'h1', g: 'help', h: 'Help center', p: 'A hero with “How can we help?” and one search box over every answer in Help. Popular searches are one click. With no search, seven topic cards plus a WhatsApp card; open a topic to read it with a breadcrumb back.', t: ['Search all answers', 'Topic cards', 'WhatsApp in footer']},
+  {id: 'h2', g: 'help', h: 'Guided chapters', p: 'Help as a short course: a stepper of 7 chapters with a progress bar, ticks on what you have read and Previous / Next buttons at the bottom. Good for new users on their first day.', t: ['Progress', 'Next / Previous', 'Read ticks']},
+  {id: 'h3', g: 'help', h: 'Docs + on this page', p: 'Documentation layout: grouped topics on the left, a readable article in the middle and an “On this page” list on the right that jumps to each section. “Was this page helpful?” at the end.', t: ['3 columns', 'Jump to section', 'Feedback']},
+  {id: 'h4', g: 'help', h: 'Ask the guide', p: 'A chat. Pick a suggested question or type your own; the guide answers from the help pages with the right button (“Check my connection”, “Open PCB Viewer settings”). Topic pills change the suggestions.', t: ['Chat answers', 'Typed questions', 'Suggestions']},
+  {id: 'h5', g: 'help', h: 'Key map + cards', p: 'Underline tabs over the seven topics. Shortcuts become a lit keyboard: hover a shortcut to light its keys, or hover a key to see what it does. Other topics lay out as cards and two-column FAQs.', t: ['Visual keyboard', 'Card layout']},
+  {id: 't1', g: 'te', h: 'Toolbar menu + side inspector', p: 'The board-toolbar <b>Colour</b> button opens the theme menu: hover a theme to preview it on the board, click to apply, pencil to edit, bin to delete (confirmed right in the row). Editing docks an inspector at the side, so the board stays in view and every change shows live. Cancel puts the board back.', t: ['Hover = preview', 'Inline delete', 'Docked editor']},
+  {id: 't2', g: 'te', h: 'Filmstrip + studio', p: 'A theme pill on the board opens a filmstrip of real mini-boards. Edit or New opens the studio beside the board: name, override pins, the BOARD · TRACE · COMP · PIN · NET bar (click a segment to change it) and the four sections.', t: ['Mini-board cards', 'Preview bar', 'Studio']},
+  {id: 't3', g: 'te', h: 'Settings page — hero + gallery', p: 'Settings › PCB Theme: the theme on the board now as a big hero with its palette, then every theme as a tile. <b>Edit colours</b> turns the hero into the editor in place. Switch to “No board open” for the empty state — New theme needs a board, like the app.', t: ['Hero', 'Edit in place', 'Empty state']},
+  {id: 't4', g: 'te', h: 'Click the board to recolour', p: 'Recolour mode turns the board itself into the editor: point at a pin, part, trace or label to see its name and colour, click it to change it. A side list keeps what you changed, each with its own undo, plus every colour for parts too small to click.', t: ['Point & click', 'Per-colour undo', 'Fastest']},
+  {id: 't5', g: 'te', h: 'Theme rail + before / after', p: 'Themes sit as colour orbs on a rail at the board’s edge. Editing splits the board — drag the handle to compare the saved theme with your draft — and a dock below holds big swatch cards, a change counter, Reset all and Delete.', t: ['Before / after', 'Swatch cards', 'Change counter']},
+];
+const R = {s1: S1, s2: S2, s3: S3, s4: S4, s5: S5, h1: H1, h2: H2, h3: H3, h4: H4, h5: H5, t1: T1, t2: T2, t3: T3, t4: T4, t5: T5};
+const GROUPS = [['set', 'Settings', 'sliders'], ['help', 'Help', 'book'], ['te', 'PCB Theme', 'pal']];
+let G = 'set'; try { G = localStorage.getItem('st-g') || 'set'; } catch (e) {}
+const RESETS = new Set();
+function draw() {
+  syncThemes();
+  const a = document.activeElement, fq = a?.dataset?.q, ss = a?.selectionStart;
+  const sc = {}; $$('[data-scroll]').forEach(e => sc[e.dataset.scroll] = [e.scrollTop, e.scrollLeft]);
+  $('#gnav').innerHTML = GROUPS.map(([k, l, ic]) => `<button class="${k === G ? 'on' : ''}" data-act="grp" data-v="${k}">${I(ic)}${l}<b>5</b></button>`).join('');
+  let n = 0;
+  $('#main').innerHTML = META.filter(m => m.g === G).map(m => `<section class="opt" id="${m.id}"><div class="meta"><span class="num">${String(++n).padStart(2, '0')}</span><div><h3>${m.h}</h3><p>${m.p}</p></div><div class="tags">${m.t.map(x => `<span>${x}</span>`).join('')}</div></div><div class="stage">${R[m.id]()}</div></section>`).join('');
+  $$('[data-scroll]').forEach(e => { const k = e.dataset.scroll, v = sc[k]; if (v && !RESETS.has(k)) { e.scrollTop = v[0]; e.scrollLeft = v[1]; } });
+  RESETS.clear();
+  if (fq) { const el = $(`[data-q="${fq}"]`); if (el) { el.focus(); try { el.setSelectionRange(ss, ss); } catch (e) {} } }
+}
+function act(el, e) {
+  const v = el.dataset.v, a = el.dataset.act, d = el.closest('[data-d]')?.dataset.d, s = TS[d];
+  switch (a) {
+    case 'dark': setV('mode', ST.mode === 'dark' ? 'light' : 'dark'); return;
+    case 'toast': toast(el.dataset.m); return;
+    case 'grp': closePick(); G = v; try { localStorage.setItem('st-g', G); } catch (er) {} draw(); window.scrollTo({top: 0, behavior: 'smooth'}); return;
+    case 'te': closePick(); G = 'te'; draw(); window.scrollTo({top: 0}); toast('Opened the PCB Theme designs'); return;
+    case 'thdel': TH = TH.filter(t => t.n !== el.dataset.n || t.b); toast(`Deleted “${el.dataset.n}”`); draw(); return;
+    case 's2tab': U.s2.tab = v; RESETS.add('s2'); draw(); return;
+    case 's5go': U.s5.dir = v ? 'in' : 'out'; U.s5.pg = v || null; RESETS.add('s5'); draw(); return;
+    case 'h1open': U.h1.tab = v; U.h1.q = ''; RESETS.add('h1'); draw(); return;
+    case 'h2go': U.h2.i = +v; if (!U.h2.seen.includes(+v)) U.h2.seen.push(+v); RESETS.add('h2'); draw(); return;
+    case 'h3go': Object.assign(U.h3, {tab: v, toc: 0, fb: null}); RESETS.add('h3'); draw(); return;
+    case 'h3toc': { U.h3.toc = +v; draw(); const art = $('#h3art'), id = el.dataset.id, t = id ? art.querySelector('#' + id) : null;
+      art.scrollTo({top: t ? art.scrollTop + t.getBoundingClientRect().top - art.getBoundingClientRect().top - 12 : 0, behavior: 'smooth'}); return; }
+    case 'h4tp': U.h4.tp = v; draw(); scrollChat(); return;
+    case 'h4ask': h4answer(HIDX[+v]); return;
+    case 'h4send': h4send(); return;
+    /* ---- PCB theme flow ---- */
+    case 'tmenu': s.open = !s.open; s.del = null; s.hov = null; draw(); return;
+    case 'tapply': if (s.ed) return; ST.theme = v; s.hov = null; if (d !== 't2') s.open = false; toast(`${v} is on the board`); draw(); return;
+    case 'tedit': closePick(); tEdit(d, v || ST.theme); RESETS.add(d === 't1' ? 't1l' : d === 't2' ? 't2b' : 't5c'); draw(); return;
+    case 'tnew': closePick(); tNew(d); draw(); return;
+    case 'tdel': s.del = v; draw(); return;
+    case 'tdelno': s.del = null; draw(); return;
+    case 'tdelyes': tDel(d, v); return;
+    case 'tcancel': tCancel(d); return;
+    case 'tsave': tSave(d); return;
+    case 'tov': s.ed.ov = !s.ed.ov; draw(); return;
+    case 'tsec': closePick(); s.sec = v; RESETS.add('t1l').add('t2b').add('t5c'); draw(); return;
+    case 'tacc': s.acc = s.acc === v ? '' : v; draw(); return;
+    case 'trev': ts(s.ed, v, tc(s.base, v)); markChg(d, v); closePick(); draw(); return;
+    case 'trevall': s.ed.c = {...s.base.c}; s.ed.cu = [...s.base.cu]; s.chg = []; closePick(); draw(); return;
+    case 't3pcb': closePick(); TS.t3.noPcb = v === '0'; if (TS.t3.noPcb) TS.t3.ed = null; draw(); return;
+  }
+}
+document.addEventListener('click', e => {
+  const t = e.target;
+  const pa = t.closest('[data-pka]');
+  if (pa) { const k = pa.dataset.pka;
+    if (k === 'close') closePick();
+    if (k === 'old') pkSetHex(PK.old);
+    if (k === 'eye') { if ('EyeDropper' in window) new EyeDropper().open().then(r => pkSetHex(r.sRGBHex)).catch(() => {}); else toast('Eyedropper needs Chrome or Edge'); }
+    return; }
+  const ps = t.closest('[data-pkset]'); if (ps) { pkSetHex(ps.dataset.pkset); return; }
+  if (t.closest('#pk')) return;
+  const bp = t.closest('#t4 .vw.pick .bsvg [data-pk]');
+  if (bp) { openPick('t4', bp.dataset.pk.split(' ')[0], {x: e.clientX, y: e.clientY}); return; }
+  const pk = t.closest('[data-pick]');
+  if (pk) { const d = pk.closest('[data-d]').dataset.d; openPick(d, pk.dataset.pick, {r: pk.getBoundingClientRect()}); return; }
+  const a = t.closest('[data-act]'); if (a) { act(a, e); return; }
+  const u = t.closest('[data-u]');
+  if (u) { const [d, f] = u.dataset.u.split('.'), v = u.dataset.v; U[d][f] = v === '' && f !== 'q' ? null : v; RESETS.add(d); draw(); return; }
+  const k = t.closest('[data-k]');
+  if (k && k.tagName !== 'SELECT' && k.type !== 'range') { e.preventDefault(); setV(k.dataset.k, k.dataset.v ?? '!'); return; }
+  for (const d of ['t1', 't4']) if (TS[d].open && !t.closest(`[data-d="${d}"] .t1-menu, [data-d="${d}"] .t4-dd`)) { TS[d].open = false; TS[d].del = null; TS[d].hov = null; draw(); }
+});
+document.addEventListener('pointerdown', e => {
+  const pd = e.target.closest('[data-pkd]');
+  if (pd) { e.preventDefault(); PKDRAG = {kind: pd.dataset.pkd, el: pd}; pd.setPointerCapture(e.pointerId); pkDrag(e); return; }
+  const sp = e.target.closest('[data-split]');
+  if (sp) { e.preventDefault(); SPL = sp.closest('.vw-cv'); sp.setPointerCapture(e.pointerId); return; }
+  if (PK && !e.target.closest('#pk') && !e.target.closest('[data-pick]') && !e.target.closest('#t4 .vw.pick .bsvg [data-pk]')) closePick();
+});
+document.addEventListener('pointermove', e => {
+  if (PKDRAG) { pkDrag(e); return; }
+  if (SPL) { const r = SPL.getBoundingClientRect(), p = Math.round(clamp01((e.clientX - r.left) / r.width) * 1000) / 10; TS.t5.split = Math.max(4, Math.min(96, p)); SPL.querySelectorAll('.t5-b2,.t5-hd').forEach(x => x.style.setProperty('--s', TS.t5.split + '%')); }
+});
+document.addEventListener('pointerup', () => { PKDRAG = null; SPL = null; });
+document.addEventListener('input', e => {
+  const t = e.target;
+  if (t.dataset.q) { U[t.dataset.q].q = t.value; if (t.dataset.q !== 'h4') draw(); return; }
+  if (t.type === 'range' && t.dataset.k === 'px') { ST.px = +t.value; t.style.setProperty('--p', (ST.px - 10) / 14 * 100 + '%'); $$('[data-pxv]').forEach(x => x.textContent = ST.px + 'px'); $$('[data-pxt]').forEach(x => x.style.fontSize = ST.px + 'px'); return; }
+  if (t.dataset.pkal !== undefined && PK) { const v = parseInt(t.value, 10); if (!isNaN(v)) { PK.a = clamp01(v / 100); pkApply(); } return; }
+  if (t.dataset.tn !== undefined) { const root = t.closest('[data-d]'), s = TS[root.dataset.d]; s.ed.n = t.value; root.querySelectorAll('[data-tnl]').forEach(x => x.textContent = t.value || 'Untitled'); if (s.err) { s.err = ''; t.classList.remove('err'); root.querySelectorAll('.terr').forEach(x => x.remove()); } }
+});
+document.addEventListener('change', e => {
+  const t = e.target;
+  if (t.tagName === 'SELECT' && t.dataset.k) { setV(t.dataset.k, t.value); return; }
+  if (t.type === 'range' && t.dataset.k === 'px') { draw(); return; }
+  if (t.dataset.pkhex !== undefined && PK) { let v = t.value.trim(); if (!v.startsWith('#')) v = '#' + v; if (/^#[0-9a-f]{6}$/i.test(v)) pkSetHex(v.toLowerCase() + (PK.a < .995 ? Math.round(PK.a * 255).toString(16).padStart(2, '0') : '')); else { toast('Use a 6-digit hex like #1A2B3C'); syncPick(); } }
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && e.target.dataset?.q === 'h4') { e.preventDefault(); h4send(); }
+  if (e.key === 'Enter' && e.target.dataset?.pkhex !== undefined) e.target.blur();
+  if (e.key === 'Enter' && e.target.dataset?.tn !== undefined) { e.preventDefault(); tSave(e.target.closest('[data-d]').dataset.d); }
+  if (e.key === 'Escape' && PK) closePick();
+});
+let HOVD = null; const HLD = {};
+document.addEventListener('mouseover', e => {
+  const t = e.target, root = t.closest('[data-d]'), d = root?.dataset.d;
+  if (HOVD && HOVD !== d && TS[HOVD]?.hov) { TS[HOVD].hov = null; refreshBoard(HOVD); }
+  HOVD = d;
+  if (d && TS[d]) {
+    const s = TS[d];
+    if (!s.ed) { const hv = t.closest('[data-hov]')?.dataset.hov || null; if (hv !== s.hov) { s.hov = hv; refreshBoard(d); } }
+    else { const hl = t.closest('[data-hl]')?.dataset.hl || ''; if (hl !== (HLD[d] || '')) { HLD[d] = hl; refreshBoard(d, hl); } }
+  }
+  const kb = $('.h5 .kb'); if (!kb) return;
+  const sk = t.closest('[data-sk]'), key = t.closest('.kb .k[data-key]');
+  $$('.kb .k').forEach(k => k.classList.remove('lit')); $$('.h5-sl [data-sk]').forEach(r => r.classList.remove('lit'));
+  const cap = $('#kbcap');
+  if (sk) { const ks = sk.dataset.sk.split('|'); $$('.kb .k').forEach(k => k.classList.toggle('lit', ks.includes(k.dataset.key))); cap.textContent = sk.dataset.d; }
+  else if (key) { key.classList.add('lit'); const rows = $$('.h5-sl [data-sk]').filter(r => r.dataset.sk.split('|').includes(key.dataset.key)); rows.forEach(r => r.classList.add('lit')); cap.textContent = rows.length ? `${key.dataset.key}: ${rows.length} shortcut${rows.length > 1 ? 's' : ''}` : key.dataset.key; }
+  else cap.textContent = 'Hover a shortcut';
+});
+document.addEventListener('mousemove', e => {
+  const tip = $('#t4tip'); if (!tip) return;
+  const pk = e.target.closest('#t4 .vw.pick .bsvg [data-pk]');
+  $$('#t4 .bsvg .hov').forEach(x => x.classList.remove('hov'));
+  if (!pk) { tip.hidden = true; return; }
+  const k = pk.dataset.pk.split(' ')[0], cv = pk.closest('.vw-cv').getBoundingClientRect(), c = tc(TS.t4.ed, k);
+  $$(`#t4 .bsvg [data-pk~="${k}"]`).forEach(x => x.classList.add('hov'));
+  tip.hidden = false; tip.style.left = (e.clientX - cv.left) + 'px'; tip.style.top = (e.clientY - cv.top) + 'px';
+  tip.innerHTML = `<i style="background:${c}"></i>${fieldLabel(k)}<code>${c.toUpperCase()}</code><small>click to change</small>`;
+});
+window.addEventListener('scroll', () => { if (PK && !PKDRAG) closePick(); }, {passive: true});
+applyMode();
+draw();
+</script>
+</body>
+</html>
