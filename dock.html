@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Viewer controls — 20 shapes</title>
+<title>Viewer controls — 20 designs</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#eef2f7;--card:#fff;--win:#fff;--panel:#f6f8fb;--panel-2:#eef2f7;--hair:#e1e7ef;--hair-2:#d3dbe6;--text:#0e2140;--text-2:#4a5b75;--text-3:#8592a6;--accent:#0d847d;--acc-t:#0d847d;--accent-soft:rgba(13,132,125,.12);--hover:rgba(14,33,64,.06);--glass:rgba(255,255,255,.9);--sh:0 1px 2px rgba(14,33,64,.06),0 12px 30px -18px rgba(14,33,64,.35);--pop:0 0 0 1px rgba(14,33,64,.08),0 2px 4px rgba(14,33,64,.05),0 18px 36px -16px rgba(14,33,64,.5);--mono:'JetBrains Mono',ui-monospace,monospace}
@@ -62,196 +62,214 @@ main{max-width:1180px;margin:auto;padding:18px 24px 80px;display:grid;gap:22px}
 .rb.on{background:var(--accent);color:#fff;box-shadow:0 0 0 3px var(--accent-soft),0 8px 18px -6px var(--accent)}
 .zt{font:800 12px var(--mono);color:var(--text)}
 
-/* 01 dynamic island */
-.isl{position:absolute;z-index:6;top:12px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:3px;padding:6px 10px;border-radius:30px;background:#04070c;box-shadow:0 14px 34px -10px rgba(0,0,0,.8),inset 0 0 0 1px rgba(255,255,255,.07)}
-.isl .ib{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;color:#8b98ad;transition:all .15s}
-.isl .ib:hover{color:#fff;background:rgba(255,255,255,.08)}
-.isl .ib.on{color:#5eead4;background:rgba(45,212,191,.15);box-shadow:inset 0 0 0 1px rgba(45,212,191,.55),0 0 14px -2px rgba(45,212,191,.6)}
-.isl .dt{width:4px;height:4px;border-radius:50%;background:#2a3446;margin:0 5px}
-.isl .zz{display:flex;align-items:center;gap:2px;padding:0 4px;border-radius:20px;background:#0e1520}
-.isl .zz b{font:800 12px var(--mono);color:#fff;min-width:44px;text-align:center}
-.isl .cam{width:10px;height:10px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#2b3b55,#0a0f18);box-shadow:0 0 0 2px #0e1520;margin:0 6px}
-/* 02 spine */
-.spn{position:absolute;z-index:6;left:18px;top:10px;bottom:10px;width:180px;overflow:auto;scrollbar-width:none}
-.spn::before{content:"";position:absolute;left:16px;top:10px;bottom:10px;width:2px;border-radius:2px;background:linear-gradient(var(--accent),var(--line) 30%,var(--line) 70%,var(--accent))}
-.nd{position:relative;display:flex;align-items:center;gap:10px;height:27px}
-.nd .c{flex:none;width:34px;height:24px;display:grid;place-items:center}
-.nd .c i{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:var(--win);color:var(--text-2);box-shadow:0 0 0 3px rgba(5,17,12,.6),var(--pop);transition:all .15s}
-.stage.pdfm .nd .c i{box-shadow:0 0 0 3px rgba(223,229,238,.9),var(--pop)}
-.nd .c svg.i{width:13px;height:13px}
-.nd .t{font-size:11.5px;font-weight:600;color:var(--lc)}
-.nd:hover .c i{transform:scale(1.15)}
-.nd.on .c i{background:var(--accent);color:#fff}.nd.on .t{color:var(--acc-t)}
-.stage:not(.pdfm) .nd.on .t{color:#5eead4}
-.spn .cap{display:block;padding:8px 0 2px 44px}
-/* 03 honeycomb */
-.hc{position:absolute;z-index:6;right:16px;bottom:10px;filter:drop-shadow(0 10px 18px rgba(0,0,0,.4))}
-.hr{display:flex;gap:4px;margin-top:-14px}.hr:first-child{margin-top:0}.hr.off{margin-left:30px}
-.hx{width:56px;height:62px;clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);background:var(--win);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;color:var(--text-2);font-size:8.5px;font-weight:700;transition:background .15s,color .15s}
-.hx:hover{background:color-mix(in srgb,var(--accent) 12%,var(--win));color:var(--text)}
-.hx.on{background:var(--accent);color:#fff}
-.hx.zm{background:#0e2140;color:#fff;font:800 12px var(--mono)}
-.hx svg.i{width:17px;height:17px}
-/* 04 corner arc */
-.ca{position:absolute;z-index:5;left:0;bottom:0;width:0;height:0}
-.ca .disc{position:absolute;left:-305px;bottom:-305px;width:610px;height:610px;border-radius:50%}
-.ca .rb,.qp .rb,.or .rb,.pod .rb{position:absolute;margin:0 0 -20px -20px}
-.ca .lbl,.qp .lbl{position:absolute;transform:translate(-50%,0)}
-/* 05 orbit */
-.or{position:absolute;z-index:6;right:16px;top:16px;width:260px;height:260px}
-.or .ring{position:absolute;inset:26px;border-radius:50%;border:1.5px dashed var(--line)}
-.or .hub{position:absolute;left:50%;top:50%;width:84px;height:84px;margin:-42px 0 0 -42px;border-radius:50%;display:grid;place-items:center;align-content:center;gap:2px}
-.or .hub .zb{display:flex;gap:2px}.or .hub .zb button{width:24px;height:22px;border-radius:7px;display:grid;place-items:center;color:var(--text-2)}.or .hub .zb button:hover{background:var(--hover)}.or .hub svg.i{width:14px;height:14px}
-.or .rb{width:38px;height:38px;margin:-19px 0 0 -19px}
-/* 06 folder tabs */
-.ftw{position:absolute;z-index:6;top:0;left:50%;transform:translateX(-50%);display:flex;gap:12px;align-items:flex-start}
-.ft{position:relative;display:flex;gap:2px;padding:8px 8px 7px;border-radius:0 0 16px 16px}
-.ft .ear{position:absolute;left:50%;bottom:-19px;transform:translateX(-50%);height:20px;padding:0 12px;border-radius:0 0 10px 10px;display:grid;place-items:center;font:800 9px Inter;letter-spacing:.12em;color:var(--text-3);background:var(--glass);box-shadow:0 6px 10px -6px rgba(0,0,0,.4)}
-.ib2{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;color:var(--text-2);transition:all .15s}
-.ib2:hover{background:var(--hover);color:var(--text)}.ib2.on{background:var(--accent);color:#fff}
-.zl2{font:800 11.5px var(--mono);min-width:44px;text-align:center;align-self:center}
-/* 07 curved dock */
-.cd{position:absolute;z-index:6;left:50%;bottom:0;width:960px;height:150px;margin-left:-480px}
-.cd svg.bg{position:absolute;inset:0;width:100%;height:100%}
-.cd .it{position:absolute;display:flex;flex-direction:column;align-items:center;gap:3px;transform:translate(-50%,-50%)}
-/* 08 slanted strip */
-.sk8{position:absolute;z-index:6;top:14px;left:14px;display:flex;gap:10px}
-.skg{display:flex;filter:drop-shadow(0 8px 14px rgba(0,0,0,.35))}
-.sk{height:38px;padding:0 14px;margin-left:-1px;transform:skewX(-16deg);background:var(--win);color:var(--text-2);box-shadow:inset -1px 0 0 var(--hair);transition:all .15s}
-.sk:first-child{border-radius:8px 0 0 8px}.sk:last-child{border-radius:0 8px 8px 0;box-shadow:none}
-.sk>span{display:flex;align-items:center;gap:6px;transform:skewX(16deg);font-size:11.5px;font-weight:700;white-space:nowrap}
-.sk svg.i{width:15px;height:15px}
-.sk:hover{color:var(--text);background:color-mix(in srgb,var(--accent) 10%,var(--win))}
-.sk.on{background:var(--accent);color:#fff}
-/* 09 viewfinder brackets */
-.vf{position:absolute;z-index:6;width:300px;height:110px;pointer-events:none}
-.vf::before{content:"";position:absolute;width:60px;height:60px;border:3px solid var(--line)}
-.vf.tl{top:12px;left:12px}.vf.tl::before{top:0;left:0;border-right:0;border-bottom:0;border-radius:14px 0 0 0}
-.vf.tr{top:12px;right:12px}.vf.tr::before{top:0;right:0;border-left:0;border-bottom:0;border-radius:0 14px 0 0}
-.vf.bl{bottom:12px;left:12px}.vf.bl::before{bottom:0;left:0;border-right:0;border-top:0;border-radius:0 0 0 14px}
-.vf.br{bottom:12px;right:12px;width:480px}.vf.br::before{bottom:0;right:0;border-left:0;border-top:0;border-radius:0 0 14px 0}
-.vf .arm{position:absolute;display:flex;gap:4px;align-items:center;pointer-events:auto}
-.vf.tl .arm{top:12px;left:14px}.vf.tr .arm{top:12px;right:14px}.vf.bl .arm{bottom:14px;left:12px;flex-direction:column;align-items:flex-start}.vf.br .arm{bottom:12px;right:14px}
-.vf .ib2{background:var(--glass);box-shadow:var(--pop);backdrop-filter:blur(10px)}
-.vf .ib2.on{background:var(--accent)}
-/* 10 card deck */
-.dk{position:absolute;z-index:6;right:18px;top:16px;width:220px;display:grid}
-.dc{position:relative;padding:10px;border-radius:14px;margin-top:-6px;transition:transform .2s}
-.dc:first-child{margin-top:0}
-.dc:nth-child(odd){transform:rotate(-1.6deg)}.dc:nth-child(even){transform:rotate(1.2deg) translateX(-6px)}
-.dc:hover{transform:rotate(0) translateX(-10px);z-index:5}
-.dc h6{display:flex;justify-content:space-between;font-size:9.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--text-3);margin-bottom:6px}
-.dc .gr{display:flex;flex-wrap:wrap;gap:3px}
-/* 11 pods */
-.pods{position:absolute;z-index:6;left:50%;bottom:12px;transform:translateX(-50%);display:flex;gap:16px;align-items:flex-end}
-.pod{position:relative;width:140px;height:140px;border-radius:50%}
-.pod.sm{width:100px;height:100px}
-.pod .pn{position:absolute;inset:0;display:grid;place-items:center;font:800 9px Inter;letter-spacing:.14em;color:var(--text-3);text-transform:uppercase;pointer-events:none}
-.pod .rb{width:34px;height:34px;margin:-17px 0 0 -17px;box-shadow:0 0 0 1px var(--hair)}
-.pod .pn b{font:800 13px var(--mono);color:var(--text);letter-spacing:0}
-/* 12 bezel frame */
-.bz{flex:1;min-height:0;display:grid;grid-template-columns:54px 1fr 54px;grid-template-rows:54px 1fr 56px;background:linear-gradient(160deg,#2a3344,#11161f);padding:0}
-.bz .cvw{border-radius:16px;box-shadow:inset 0 0 0 2px #05080d,inset 0 4px 14px rgba(0,0,0,.6)}
-.bz .bt,.bz .bb{display:flex;align-items:center;justify-content:center;gap:4px}
-.bz .bl,.bz .br{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
-.bk{width:36px;height:36px;border-radius:11px;display:grid;place-items:center;color:#a7b4c8;background:linear-gradient(#323c50,#232b3a);box-shadow:inset 0 1px 0 rgba(255,255,255,.1),0 2px 4px rgba(0,0,0,.5);transition:all .12s}
-.bk:hover{color:#fff}.bk.on{color:#5eead4;box-shadow:inset 0 0 0 1px rgba(45,212,191,.6),0 0 12px -2px rgba(45,212,191,.7)}
-.bk svg.i{width:16px;height:16px}
-.bz .zv{font:800 11px var(--mono);color:#e6edf7}
-.bz .gl{font:800 8.5px Inter;letter-spacing:.14em;color:#64748b;margin:0 8px}
-.bz .sfx{width:220px;height:32px;background:#1a2130;box-shadow:inset 0 0 0 1px #2c3648}
-.bz .sfx input{color:#e6edf7}
-/* 13 notched nav */
-.nb{position:absolute;z-index:6;left:12px;right:12px;bottom:12px;height:64px;border-radius:20px;display:flex;align-items:center;padding:0 16px;-webkit-mask:radial-gradient(circle 46px at 50% -6px,transparent 98%,#000);mask:radial-gradient(circle 46px at 50% -6px,transparent 98%,#000)}
-.nb .sd{flex:1;display:flex;align-items:center;gap:2px}.nb .sd.r{justify-content:flex-end}
-.il{display:flex;flex-direction:column;align-items:center;gap:2px;min-width:52px;height:50px;justify-content:center;border-radius:12px;font-size:9.5px;font-weight:600;color:var(--text-2);white-space:nowrap}
+/* 07 curved dock — hangs from the top */
+.cd{position:absolute;z-index:6;top:0;left:50%;height:104px;transform:translateX(-50%)}
+.cd svg.bg{position:absolute;inset:0;width:100%;height:100%;filter:drop-shadow(0 10px 18px rgba(0,0,0,.28))}
+.cd .it{position:absolute;transform:translate(-50%,-50%)}
+.rb.sm{width:32px;height:32px}.rb.sm svg.i{width:16px;height:16px}
+.rb.sm.zpill{width:auto;min-width:50px;padding:0 9px;border-radius:99px;font:800 10.5px var(--mono);color:var(--text)}
+.cd .pgl{font:800 10px var(--mono);color:var(--text-2);background:var(--win);padding:3px 7px;border-radius:99px;box-shadow:var(--pop);white-space:nowrap}
+/* 08 slanted strip — one slim slanted bar at the top */
+.sk8{position:absolute;z-index:6;top:12px;left:50%;display:flex;align-items:center;height:44px;padding:0 4px;border-radius:9px;transform:translateX(-50%) skewX(-14deg);background:var(--win);box-shadow:var(--pop)}
+.sk8 .ed{flex:none;width:9px;height:44px;margin:0 7px 0 -4px;border-radius:9px 0 0 9px;background:linear-gradient(180deg,#2dd4bf,#0d847d)}
+.sk8 .ed.r{margin:0 -4px 0 7px;border-radius:0 9px 9px 0}
+.sk{height:34px;min-width:34px;padding:0 5px;border-radius:6px;display:grid;place-items:center;color:var(--text-2);transition:background .15s,color .15s,box-shadow .15s}
+.sk>span{display:flex;align-items:center;gap:6px;transform:skewX(14deg);font-size:11px;font-weight:700;white-space:nowrap}
+.sk svg.i{width:17px;height:17px}
+.sk:hover{color:var(--text);background:var(--hover)}
+.sk.on{background:var(--accent);color:#fff;box-shadow:0 6px 12px -6px var(--accent)}
+.sk.zv8 span{font:800 11px var(--mono);color:var(--text);min-width:40px;justify-content:center}
+.sdv{flex:none;width:1.5px;height:24px;margin:0 6px;border-radius:1px;background:var(--hair-2)}
+/* 13 notched nav — top bar, zoom dial in the notch */
+.nb{position:absolute;z-index:6;top:10px;left:50%;height:54px;border-radius:16px;display:flex;align-items:center;padding:0 8px;transform:translateX(-50%);-webkit-mask:radial-gradient(circle 40px at 50% calc(100% + 8px),transparent 97%,#000 100%);mask:radial-gradient(circle 40px at 50% calc(100% + 8px),transparent 97%,#000 100%)}
+.nb .sd{display:flex;align-items:center;gap:1px}
+.nb .gapn{flex:none;width:88px}
+.il{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;min-width:46px;height:44px;padding:0 3px;border-radius:10px;font-size:9px;font-weight:600;color:var(--text-2);white-space:nowrap}
+.il svg.i{width:16px;height:16px}
 .il:hover{background:var(--hover);color:var(--text)}.il.on{color:var(--acc-t);background:var(--accent-soft)}
-.dial{position:absolute;z-index:7;left:50%;bottom:44px;width:80px;height:80px;margin-left:-40px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(145deg,var(--accent),#0b5f5a);color:#fff;box-shadow:0 12px 24px -8px rgba(13,132,125,.8),inset 0 1px 0 rgba(255,255,255,.3)}
-.dial b{font:800 15px var(--mono)}
-.dial button{position:absolute;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:var(--win);color:var(--text);box-shadow:var(--pop)}
-.dial button svg.i{width:14px;height:14px}
-.dial .m{left:-14px;top:27px}.dial .p{right:-14px;top:27px}
-/* 14 isometric keys */
-.iso{position:absolute;z-index:6;left:50%;bottom:-20px;width:820px;margin-left:-410px;padding:18px 22px 40px;border-radius:24px;transform:perspective(900px) rotateX(36deg);transform-origin:50% 100%;display:grid;grid-template-columns:repeat(8,1fr);gap:10px}
-.ik{height:50px;border-radius:11px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:10px;font-weight:700;color:var(--text-2);background:linear-gradient(var(--win),var(--panel));box-shadow:0 7px 0 var(--hair-2),0 12px 16px rgba(0,0,0,.35);transition:transform .08s,box-shadow .08s}
-.ik:active{transform:translateY(5px);box-shadow:0 2px 0 var(--hair-2)}
-.ik.on{color:#fff;background:linear-gradient(#14a39a,var(--accent));box-shadow:0 7px 0 #075d58,0 12px 16px rgba(0,0,0,.35)}
-.ik svg.i{width:17px;height:17px}
-/* 15 liquid capsule */
-.lq{position:absolute;z-index:6;top:14px;left:50%;transform:translateX(-50%);display:flex;align-items:center;padding:5px;border-radius:99px;white-space:nowrap}
-.lb .nm{max-width:0;overflow:hidden;white-space:nowrap;transition:max-width .25s}.lb.on .nm{max-width:90px}
-.lb{position:relative;display:flex;align-items:center;gap:6px;height:34px;padding:0 10px;border-radius:99px;font-size:11.5px;font-weight:700;color:var(--text-2);transition:background .2s,color .2s,border-radius .2s}
-.lb svg.i{width:15px;height:15px}
-.lb:hover{color:var(--text);background:var(--hover)}
-.lb.on{color:#fff;background:linear-gradient(180deg,#14a39a,var(--accent))}
-.lb.on.jl{border-top-left-radius:0;border-bottom-left-radius:0}.lb.on.jr{border-top-right-radius:0;border-bottom-right-radius:0}
-.lq .gap{width:10px}
-/* 16 rulers */
-.ru{position:absolute;z-index:6;left:64px;right:0;top:0;height:30px;background:var(--glass);backdrop-filter:blur(10px);border-bottom:1px solid var(--hair-2);background-image:repeating-linear-gradient(90deg,var(--text-3) 0 1px,transparent 1px 10px),repeating-linear-gradient(90deg,var(--text-2) 0 1px,transparent 1px 50px);background-size:100% 6px,100% 12px;background-repeat:no-repeat;background-position:0 100%,0 100%;cursor:pointer}
-.ru .mk{position:absolute;bottom:0;width:0;height:0;border:7px solid transparent;border-bottom:10px solid var(--accent);margin-left:-7px;transition:left .3s}
-.ru .nv{position:absolute;top:3px;font:700 9.5px var(--mono);color:var(--text-2);transform:translateX(-50%);pointer-events:none}
-.ru .vw{position:absolute;right:6px;top:2px;display:flex;gap:2px}
-.ru .vw .ib2{width:26px;height:24px;border-radius:7px}.ru .vw svg.i{width:14px;height:14px}
-.rl{position:absolute;z-index:6;left:0;top:0;bottom:0;width:64px;padding:36px 0 8px;display:flex;flex-direction:column;align-items:center;gap:3px;background:var(--glass);backdrop-filter:blur(10px);border-right:1px solid var(--hair-2);background-image:repeating-linear-gradient(180deg,var(--text-3) 0 1px,transparent 1px 10px);background-size:6px 100%;background-repeat:no-repeat;background-position:100% 0}
-.rl .ib2{width:44px;height:36px}
-.rco{position:absolute;z-index:7;left:0;top:0;width:64px;height:30px;display:grid;place-items:center;font:800 9px var(--mono);color:var(--text-3);background:var(--panel);border-right:1px solid var(--hair-2);border-bottom:1px solid var(--hair-2)}
-/* 17 quarter pies */
-.qp{position:absolute;z-index:5;width:0;height:0}
-.qp .disc{position:absolute;width:300px;height:300px;margin:-150px 0 0 -150px;border-radius:50%}
-.qp .rb{width:36px!important;height:36px!important;margin:-18px 0 0 -18px!important}
-.qp .cap{position:absolute;transform:translate(-50%,-50%)}
-/* 18 grips */
-.gp{position:absolute;z-index:6;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 7px;border-radius:30px}
-.gp.l{left:12px}.gp.r{right:12px}
-.gp .cap{writing-mode:vertical-rl;transform:rotate(180deg);margin:4px 0}
-.gp .ib2{width:40px;height:38px;border-radius:12px}
-/* 19 controller */
-.pad{position:absolute;z-index:6;left:50%;bottom:12px;width:560px;height:170px;margin-left:-280px}
-.pad .body{position:absolute;inset:26px 0 0;border-radius:85px 85px 70px 70px}
-.pad .sh{position:absolute;top:0;display:flex;gap:6px}
-.pad .sh.l{left:40px}.pad .sh.r{right:40px}
-.pad .sh button{height:30px;padding:0 14px;border-radius:12px 12px 6px 6px;font-size:10.5px;font-weight:800;color:var(--text-2);background:var(--win);box-shadow:var(--pop);display:flex;align-items:center;gap:6px}
-.pad .sh button.on{background:var(--accent);color:#fff}.pad .sh svg.i{width:14px;height:14px}
-.dpad{position:absolute;left:62px;top:52px;width:104px;height:104px}
-.dpad button{position:absolute;width:36px;height:36px;display:grid;place-items:center;background:#1f2937;color:#e5e7eb}
-.dpad button:hover{background:#334155}.dpad button svg.i{width:16px;height:16px}
-.dpad .u{left:34px;top:0;border-radius:9px 9px 0 0}.dpad .d{left:34px;bottom:0;border-radius:0 0 9px 9px}.dpad .lf{left:0;top:34px;border-radius:9px 0 0 9px}.dpad .rt{right:0;top:34px;border-radius:0 9px 9px 0}
-.dpad .ct{position:absolute;left:34px;top:34px;width:36px;height:36px;background:#1f2937;pointer-events:none}
-.dpad .lg{position:absolute;font:700 8.5px Inter;color:var(--text-3);white-space:nowrap}
-.face{position:absolute;right:62px;top:52px;width:110px;height:110px}
-.face button{position:absolute;width:38px;height:38px;border-radius:50%;display:grid;place-items:center;color:#fff;box-shadow:0 4px 0 rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.3);opacity:.55;transition:opacity .15s,transform .1s}
-.face button:hover{opacity:.85}.face button.on{opacity:1;box-shadow:0 0 14px -2px currentColor,0 4px 0 rgba(0,0,0,.25)}
-.face button:active{transform:translateY(2px)}
-.face .y{left:36px;top:0}.face .a{left:36px;bottom:0}.face .x{left:0;top:36px}.face .b{right:0;top:36px}
-.face svg.i{width:16px;height:16px}
-.mid{position:absolute;left:50%;top:70px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px}
-.mid .zt{font-size:15px}
-.mid .row{display:flex;gap:8px}
-.mid .row button{height:22px;padding:0 10px;border-radius:99px;font:800 9.5px Inter;letter-spacing:.06em;color:var(--text-2);background:var(--panel);box-shadow:inset 0 0 0 1px var(--hair-2)}
-.mid .row button.on{background:var(--accent);color:#fff}
-/* 20 hanging tags */
-.tg{position:absolute;z-index:6;top:0;left:0;right:0;height:120px;pointer-events:none}
-.tg .rail{position:absolute;left:20px;right:20px;top:14px;height:3px;border-radius:3px;background:linear-gradient(#cbd5e1,#94a3b8);box-shadow:0 2px 4px rgba(0,0,0,.3)}
-.tg .row{position:absolute;left:24px;right:24px;font-size:8px;top:14px;display:flex;justify-content:space-between}
-.tgi{position:relative;display:flex;flex-direction:column;align-items:center;pointer-events:auto;transform-origin:50% 0;transition:transform .3s cubic-bezier(.2,.9,.25,1.4)}
-.tgi:hover{transform:rotate(-5deg)}
-.tgi .st{width:1.5px;height:14px;background:#94a3b8}
-.tgi .tc{position:relative;width:48px;white-space:nowrap;overflow:hidden;padding:14px 0 7px;border-radius:6px 6px 12px 12px;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:9px;font-weight:800;color:var(--text-2);background:var(--win);box-shadow:var(--pop);clip-path:polygon(0 10px,10px 0,calc(100% - 10px) 0,100% 10px,100% 100%,0 100%)}
-.tgi .tc::before{content:"";position:absolute;top:5px;left:50%;width:7px;height:7px;margin-left:-3.5px;border-radius:50%;background:#94a3b8;box-shadow:inset 0 1px 2px rgba(0,0,0,.4)}
-.tgi .tc svg.i{width:16px;height:16px}
-.tgi.on .tc{background:var(--accent);color:#fff}
-.tgi.on{transform:rotate(4deg)}
-.tg .gsp{width:2px}
-
+.dial{position:absolute;z-index:7;left:50%;top:32px;width:64px;height:64px;margin-left:-32px;border-radius:50%;display:grid;place-items:center;align-content:center;background:linear-gradient(145deg,var(--accent),#0b5f5a);color:#fff;box-shadow:0 12px 24px -8px rgba(13,132,125,.8),inset 0 1px 0 rgba(255,255,255,.3)}
+.dial b{font:800 12.5px var(--mono);line-height:1}
+.dial small{font:700 8.5px var(--mono);opacity:.8}
+.dial button{position:absolute;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:var(--win);color:var(--text);box-shadow:var(--pop)}
+.dial button:hover{color:var(--acc-t)}
+.dial button svg.i{width:13px;height:13px}
+.dial .m{left:-8px;top:46px}.dial .p{right:-8px;top:46px}
 .tip{position:fixed;z-index:80;pointer-events:none;padding:6px 9px;border-radius:9px;background:#0e2140;color:#fff;font-size:11.5px;font-weight:600;display:flex;gap:8px;align-items:center;opacity:0;transition:opacity .1s;white-space:nowrap}
 .tip.on{opacity:1}.tip kbd{background:rgba(255,255,255,.14);color:#fff;box-shadow:none}
 .toast{position:fixed;left:50%;bottom:24px;z-index:80;transform:translate(-50%,20px);opacity:0;transition:.25s;background:#0e2140;color:#fff;padding:10px 16px;border-radius:12px;font-weight:600;font-size:12.5px;pointer-events:none}
 .toast.on{opacity:1;transform:translate(-50%,0)}
+
+
+/* ===================== new designs: shared ===================== */
+.tb{position:absolute;z-index:6;top:12px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:2px;padding:5px;border-radius:14px;white-space:nowrap}
+.q{position:relative;flex:none;width:34px;height:34px;border-radius:9px;display:grid;place-items:center;color:var(--text-2);transition:background .15s,color .15s,box-shadow .15s,transform .15s}
+.q svg.i{width:17px;height:17px}
+.q:hover{background:var(--hover);color:var(--text)}
+.q.on{background:var(--accent);color:#fff;box-shadow:0 6px 14px -6px var(--accent)}
+.sep{flex:none;width:1px;height:22px;margin:0 5px;background:var(--hair-2)}
+.zw{display:flex;align-items:center;gap:1px;padding:2px;border-radius:10px;background:var(--panel);box-shadow:inset 0 0 0 1px var(--hair)}
+.zw .q{width:30px;height:30px;border-radius:8px}
+.zr{min-width:52px;height:30px;padding:0 6px;border-radius:8px;font:800 11.5px var(--mono);color:var(--text)}
+.zr:hover{background:var(--hover)}
+.pgx{flex:none;font:800 11px var(--mono);color:var(--text-2);padding:0 6px}
+.trk{position:relative;height:30px;flex:none}
+.trk .ln{position:absolute;left:0;right:0;top:13px;height:4px;border-radius:2px;background:var(--hair-2)}
+.trk .ln i{display:block;height:100%;border-radius:2px;background:linear-gradient(90deg,#2dd4bf,var(--accent))}
+.trk .kn{position:absolute;top:7px;width:16px;height:16px;margin-left:-8px;border-radius:50%;background:#fff;box-shadow:0 0 0 2px var(--accent),0 3px 8px rgba(0,0,0,.3);pointer-events:none;transition:left .25s}
+.trk .tk{position:absolute;top:0;bottom:0;width:14px;margin-left:-7px;cursor:pointer}
+.trk .tk::after{content:"";position:absolute;left:6px;bottom:3px;width:2px;height:4px;border-radius:1px;background:var(--text-3)}
+.trk .tk:hover::after{background:var(--acc-t);height:6px}
+
+/* 01 glass pro */
+.a1{border-radius:16px;padding:6px;box-shadow:var(--pop),inset 0 1px 0 rgba(255,255,255,.55)}
+.a1o.on{background:color-mix(in srgb,var(--c) 16%,transparent);color:var(--c);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--c) 40%,transparent)}
+.a1o.on::after{content:"";position:absolute;bottom:3px;left:50%;width:4px;height:4px;margin-left:-2px;border-radius:50%;background:var(--c)}
+/* 02 three islands */
+.a2{position:absolute;z-index:6;display:flex;align-items:center;gap:2px;padding:5px;border-radius:14px;white-space:nowrap}
+.a2r{display:grid;gap:4px;justify-items:center;padding:3px 10px;border-radius:8px}
+.a2r:hover{background:var(--hover)}
+.a2r b{font:800 12px var(--mono);line-height:1}
+.a2t{display:block;width:70px;height:3px;border-radius:2px;background:var(--hair-2);overflow:hidden}
+.a2t i{display:block;height:100%;background:linear-gradient(90deg,#2dd4bf,var(--accent))}
+/* 03 carbon */
+.a3{background:linear-gradient(180deg,#222b3b,#11161f);box-shadow:0 0 0 1px rgba(255,255,255,.07),inset 0 1px 0 rgba(255,255,255,.09),0 18px 36px -14px rgba(0,0,0,.75)}
+.a3 .q{color:#8b98ad}
+.a3 .q:hover{color:#eef2f7;background:rgba(255,255,255,.06)}
+.a3 .q.on{background:rgba(45,212,191,.12);color:#5eead4;box-shadow:inset 0 0 0 1px rgba(45,212,191,.35)}
+.a3 .q.on::after{content:"";position:absolute;left:9px;right:9px;bottom:-5px;height:2px;border-radius:2px;background:#2dd4bf;box-shadow:0 0 8px #2dd4bf}
+.a3 .sep{background:rgba(255,255,255,.1)}
+.a3 .lcd{height:30px;min-width:64px;padding:0 8px;margin:0 2px;border-radius:7px;background:#05080d;box-shadow:inset 0 1px 3px rgba(0,0,0,.9),0 1px 0 rgba(255,255,255,.06);font:700 12px var(--mono);color:#5eead4;text-shadow:0 0 8px rgba(45,212,191,.6)}
+.a3 .pgx{color:#5eead4;font-weight:700}
+/* 04 chip toolbar */
+.a4c{flex:none;display:flex;align-items:center;gap:6px;height:30px;padding:0 10px 0 9px;margin:0 1px;border-radius:99px;font-size:11.5px;font-weight:600;color:var(--text-2);box-shadow:inset 0 0 0 1px var(--hair-2);transition:.15s}
+.a4c i{width:8px;height:8px;border-radius:50%;box-shadow:inset 0 0 0 1.5px var(--c);transition:.15s}
+.a4c:hover{color:var(--text);background:var(--hover)}
+.a4c.on{background:color-mix(in srgb,var(--c) 14%,var(--win));color:var(--text);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--c) 60%,transparent)}
+.a4c.on i{background:var(--c);box-shadow:0 0 0 3px color-mix(in srgb,var(--c) 28%,transparent)}
+/* 05 tool palette */
+.a5{position:absolute;z-index:6;left:12px;top:50%;transform:translateY(-50%);display:grid;grid-template-columns:repeat(2,32px);gap:2px;padding:6px;border-radius:14px}
+.a5 .q{width:32px;height:32px}
+.a5 .sep{grid-column:1/-1;width:auto;height:1px;margin:4px 2px}
+.a5h,.a5z,.a5 .pgx{grid-column:1/-1;text-align:center}
+.a5h{font:800 8.5px Inter;letter-spacing:.16em;color:var(--text-3);padding:2px 0 4px}
+.a5z{height:26px;margin-bottom:2px;border-radius:7px;font:800 11px var(--mono);color:var(--text);background:var(--panel);box-shadow:inset 0 0 0 1px var(--hair)}
+.a5 .pgx{padding:4px 0}
+/* 06 app header */
+.a6{position:absolute;z-index:6;top:0;left:0;right:0;height:46px;display:flex;align-items:center;gap:2px;padding:0 10px;background:var(--glass);backdrop-filter:blur(18px) saturate(1.4);border-bottom:1px solid var(--hair);box-shadow:0 10px 24px -18px rgba(0,0,0,.6)}
+.a6 .doc{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:650;color:var(--text);white-space:nowrap}
+.a6 .doc b{font:800 9.5px Inter;letter-spacing:.08em;padding:3px 7px;border-radius:6px;background:var(--accent);color:#fff}
+.a6 .doc span{color:var(--text-3);font-weight:500}
+.a6 .ctr{position:absolute;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:2px}
+.a6 .rgt{margin-left:auto;display:flex;align-items:center;gap:2px}
+.a6 .q{width:32px;height:32px}
+/* 09 aurora edge */
+@property --ang{syntax:'<angle>';initial-value:0deg;inherits:false}
+@keyframes a9{to{--ang:360deg}}
+.a9{padding:1.5px;border-radius:16px;background:conic-gradient(from var(--ang),#2dd4bf,#3b82f6,#a855f7,#f43f5e,#f59e0b,#2dd4bf);animation:a9 6s linear infinite;box-shadow:0 18px 40px -16px rgba(45,212,191,.7)}
+.a9 .in{display:flex;align-items:center;gap:2px;padding:5px;border-radius:14.5px;background:#0c111c}
+.a9 .q{color:#94a3b8}
+.a9 .q:hover{color:#fff;background:rgba(255,255,255,.07)}
+.a9 .q.on{background:linear-gradient(135deg,#14b8a6,#3b82f6);color:#fff;box-shadow:0 6px 16px -6px #3b82f6}
+.a9 .sep{background:rgba(255,255,255,.12)}
+.a9 .zr{color:#e2e8f0;background:rgba(255,255,255,.05)}
+.a9 .zr:hover{background:rgba(255,255,255,.1)}
+.a9 .pgx{color:#cbd5e1}
+/* 10 slider bar */
+.b0v{min-width:46px;height:30px;border-radius:8px;font:800 11.5px var(--mono);color:var(--text)}
+.b0v:hover{background:var(--hover)}
+/* 11 two-tier */
+.b1{position:absolute;z-index:6;top:12px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;white-space:nowrap}
+.b1m{position:relative;z-index:2;display:flex;align-items:center;gap:2px;padding:5px;border-radius:14px}
+.b1t{display:flex;align-items:center;gap:2px;padding:10px 7px 5px;margin-top:-5px;border-radius:0 0 12px 12px;background:color-mix(in srgb,var(--panel) 94%,transparent);backdrop-filter:blur(14px);box-shadow:var(--pop)}
+.b1c{display:flex;align-items:center;gap:5px;height:26px;padding:0 9px 0 7px;border-radius:7px;font-size:11px;font-weight:600;color:var(--text-2);transition:.15s}
+.b1c svg.i{width:14px;height:14px;color:var(--c)}
+.b1c:hover{background:var(--hover);color:var(--text)}
+.b1c.on{background:var(--win);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.14),inset 0 -2px 0 var(--c)}
+.b1p{font:800 11px var(--mono);color:var(--text);padding:0 8px}
+/* 12 labelled dock */
+.b2{position:absolute;z-index:6;bottom:12px;left:50%;transform:translateX(-50%);display:flex;align-items:flex-end;gap:1px;padding:6px 8px;border-radius:18px;white-space:nowrap}
+.b2i{display:flex;flex-direction:column;align-items:center;gap:3px;width:50px;padding:2px 0;border-radius:10px;font-size:9.5px;font-weight:600;color:var(--text-2)}
+.b2i .t{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;background:var(--panel);box-shadow:inset 0 0 0 1px var(--hair);transition:.15s}
+.b2i .t svg.i{width:16px;height:16px}
+.b2i:hover{color:var(--text)}.b2i:hover .t{transform:translateY(-2px)}
+.b2i.on{color:var(--acc-t)}.b2i.on .t{background:var(--accent);color:#fff;box-shadow:0 6px 14px -6px var(--accent)}
+.b2 .sep{height:40px;align-self:center}
+.b2z{display:flex;flex-direction:column;align-items:center;gap:3px;padding:0 4px;font-size:9.5px;font-weight:600;color:var(--text-3)}
+.b2z .zw{height:36px}
+.b2pg{align-self:center;font:800 11px var(--mono);color:var(--text);padding:0 4px 14px}
+/* 14 swatch bar */
+.b4s{flex:none;width:32px;height:34px;display:grid;place-items:center}
+.b4s i{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font:800 10px var(--mono);font-style:normal;color:var(--c);box-shadow:inset 0 0 0 2px var(--c);transition:.15s}
+.b4s:hover i{transform:scale(1.12)}
+.b4s.on i{background:var(--c);color:#fff;box-shadow:0 0 0 3px color-mix(in srgb,var(--c) 30%,transparent),0 4px 12px -2px var(--c)}
+.b4n{display:grid;line-height:1.15;margin:0 4px 0 6px;font:800 8.5px Inter;letter-spacing:.12em;text-transform:uppercase;color:var(--text-3)}
+.b4n b{font:800 11px var(--mono);letter-spacing:0;color:var(--acc-t)}
+/* 15 captioned groups */
+.b5{position:absolute;z-index:6;top:12px;left:50%;transform:translateX(-50%);display:flex;align-items:stretch;padding:7px 4px 5px;border-radius:14px;white-space:nowrap}
+.b5g{display:flex;flex-direction:column;gap:4px;padding:0 6px}
+.b5g+.b5g{border-left:1px solid var(--hair)}
+.b5g h6{display:flex;justify-content:space-between;gap:10px;padding:0 4px;font:800 8.5px Inter;letter-spacing:.14em;text-transform:uppercase;color:var(--text-3)}
+.b5g h6 em{font:800 9px var(--mono);font-style:normal;letter-spacing:0;color:var(--acc-t)}
+.b5g .r{display:flex;align-items:center;gap:1px}
+/* 16 wings */
+.b6{position:absolute;z-index:6;top:10px;left:50%;transform:translateX(-50%);display:flex;align-items:center;white-space:nowrap}
+.b6w{display:flex;align-items:center;gap:2px;height:46px;padding:0 6px;border-radius:23px}
+.b6w.l{padding-right:24px;margin-right:-18px}.b6w.r{padding-left:24px;margin-left:-18px}
+.b6c{position:relative;z-index:2;width:66px;height:66px;border-radius:50%;display:grid;place-items:center;align-content:center;background:radial-gradient(circle at 35% 28%,#24324a,#0a101b);color:#fff;box-shadow:0 0 0 4px var(--win),0 14px 28px -8px rgba(0,0,0,.65)}
+.b6c svg{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}
+.b6c b{font:800 13px var(--mono);line-height:1.1}
+.b6c small{font:800 7.5px Inter;letter-spacing:.16em;color:#5eead4}
+/* 17 corner card */
+.b7{position:absolute;z-index:6;top:12px;right:12px;width:238px;padding:11px;border-radius:16px;display:grid;gap:6px}
+.b7h{display:flex;align-items:center;justify-content:space-between;padding:0 2px 2px}
+.b7h b{font-size:12.5px;font-weight:700}
+.b7h span{font:700 10px var(--mono);color:var(--acc-t);background:var(--accent-soft);padding:2px 7px;border-radius:99px}
+.b7c{font:800 8.5px Inter;letter-spacing:.14em;text-transform:uppercase;color:var(--text-3);padding:2px 2px 0}
+.b7r{display:grid;grid-template-columns:repeat(5,1fr);gap:4px}
+.b7 .q{width:auto;height:34px;background:var(--panel);box-shadow:inset 0 0 0 1px var(--hair)}
+.b7 .q:hover{background:var(--hover)}
+.b7 .q.on{background:var(--accent);box-shadow:0 6px 14px -6px var(--accent)}
+.b7o.on{background:var(--c)!important;box-shadow:0 6px 14px -6px var(--c)!important}
+.b7z{display:flex;align-items:center;gap:6px}
+.b7z .q{width:30px;height:30px;flex:none}
+.b7 .pgx{grid-column:span 3;display:grid;place-items:center;border-radius:9px;background:var(--panel);box-shadow:inset 0 0 0 1px var(--hair)}
+/* 18 segmented */
+.b8{gap:8px;padding:6px}
+.seg{display:flex;align-items:center;gap:1px;padding:2px;border-radius:10px;background:var(--panel-2);box-shadow:inset 0 0 0 1px var(--hair)}
+.seg .q{width:32px;height:30px;border-radius:8px}
+.seg .q.on{background:var(--win);color:var(--acc-t);box-shadow:0 1px 3px rgba(14,33,64,.18),0 0 0 .5px rgba(14,33,64,.08)}
+.seg .zr{height:30px}
+/* 19 search-first + navigator */
+.b9 .sfx{width:210px;height:34px;margin-right:4px;background:var(--panel);box-shadow:inset 0 0 0 1px var(--hair);backdrop-filter:none}
+.b9 .sfx:focus-within{box-shadow:0 0 0 2px var(--accent)}
+.b9 .q{width:32px;height:32px}
+.b9m{position:absolute;z-index:6;right:12px;bottom:12px;width:176px;padding:8px;border-radius:14px;display:grid;gap:6px}
+.b9m .mm{position:relative;height:100px;border-radius:9px;overflow:hidden;background:#071b13;display:grid;place-items:center}
+.stage.pdfm .b9m .mm{background:#e6ebf2}
+.b9m .mm svg{width:92%;height:auto}
+.b9m .mm .ph,.b9m .mm .rf,.b9m .mm .nh,.b9m .mm .hl,.b9m .mm .dv,.b9m .mm .rt{display:none}
+.b9m .vp{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);border:2px solid #2dd4bf;border-radius:4px;background:rgba(45,212,191,.12);box-shadow:0 0 0 999px rgba(0,0,0,.28);transition:.3s}
+.b9m .ft{display:flex;align-items:center;justify-content:space-between;font-size:10.5px;font-weight:700;color:var(--text-2);padding:0 2px}
+.b9m .ft b{font:800 10.5px var(--mono);color:var(--acc-t)}
+/* 20 dual bars */
+.c0v{position:absolute;z-index:6;right:12px;top:50%;transform:translateY(-50%);width:162px;padding:6px;border-radius:14px;display:grid;gap:2px}
+.c0h{display:flex;justify-content:space-between;padding:2px 6px 4px;font:800 8.5px Inter;letter-spacing:.14em;text-transform:uppercase;color:var(--text-3)}
+.c0h em{font:800 9.5px var(--mono);font-style:normal;letter-spacing:0;color:var(--acc-t)}
+.c0i{display:flex;align-items:center;gap:8px;height:32px;padding:0 8px;border-radius:9px;font-size:12px;font-weight:600;color:var(--text-2);text-align:left;transition:.15s}
+.c0i svg.i{width:16px;height:16px;color:var(--c)}
+.c0i:hover{background:var(--hover);color:var(--text)}
+.c0i.on{background:color-mix(in srgb,var(--c) 13%,transparent);color:var(--text)}
+.c0i .sw{margin-left:auto;flex:none;position:relative;width:26px;height:15px;border-radius:99px;background:var(--hair-2);transition:.15s}
+.c0i .sw::after{content:"";position:absolute;top:2px;left:2px;width:11px;height:11px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.3);transition:.15s}
+.c0i.on .sw{background:var(--c)}.c0i.on .sw::after{left:13px}
+.c0i kbd{margin-left:auto}
+.c0pg{display:flex;align-items:baseline;justify-content:center;gap:4px;padding:8px 0;font:800 22px var(--mono);color:var(--text)}
+.c0pg small{font-size:11px;color:var(--text-3)}
 </style>
 </head>
 <body>
 <header class="top"><div class="in">
-  <div><h1>Viewer controls — 20 shapes</h1><p>Static: every option always visible. Each design is a different <b>shape</b>. Same controls as the app's <code>BoardToolbar</code>; keys R, D, L, +, − work too.</p></div>
+  <div><h1>Viewer controls — 20 designs</h1><p>Static: every option always visible. Compact, modern toolbars — 07, 08 and 13 kept from before. Same controls as the app's <code>BoardToolbar</code>; keys R, D, L, +, − work too.</p></div>
   <div class="ctl">
     <div class="mode"><button data-a="mode" data-v="pcb">PCB board</button><button data-a="mode" data-v="pdf">PDF schematic</button></div>
     <button class="tbtn" data-a="theme">◐</button>
@@ -375,116 +393,134 @@ const arc = (list, cx, cy, r, a0, a1, cls = 'rb', labels = true) => list.map((id
 }).join('');
 const zoomTrio = cls => `${B('zout', cls)}<button class="${cls} zt" data-run="z100" data-tip="Reset to 100%|0" style="font:800 11px var(--mono)">${D.zoom}%</button>${B('zin', cls)}`;
 
-/* ---------- 20 shapes ---------- */
+/* ---------- 20 designs ---------- */
 const R = {};
-// 01 Dynamic Island
-R[1] = () => { const g = G(); const ib = id => B(id, 'ib');
-  return canvas(`<div class="isl">${g.view.map(ib).join('')}<span class="dt"></span><span class="zz">${ib('zout')}<b>${D.zoom}%</b>${ib('zin')}</span><span class="cam"></span>${g.ov.map(ib).join('')}<span class="dt"></span>${g.tools.map(ib).join('')}</div>${S('bottom:14px;left:50%;margin-left:-125px')}`); };
-// 02 Spine timeline
-R[2] = () => { const g = G(), n = GN(); const nd = id => ok(id) ? `<button class="nd${isOn(id) ? ' on' : ''}" data-run="${id}" ${tipA(id)}><span class="c"><i>${I(icn(id))}</i></span><span class="t">${lab(id)}</span></button>` : '';
-  return canvas(`<div class="spn"><span class="cap">${n.view}</span>${g.view.map(nd).join('')}<span class="cap">Zoom · ${D.zoom}%</span>${nd('zin')}${nd('zout')}<span class="cap">${n.ov}${pageTxt()}</span>${g.ov.map(nd).join('')}<span class="cap">${n.tools}</span>${g.tools.map(nd).join('')}</div>${S('top:14px;right:14px')}`); };
-// 03 Honeycomb
-R[3] = () => { const list = [...ALL()]; const hx = id => B(id, 'hx', `${I(icn(id))}${sl(id)}`);
-  const cells = [...list.map(hx), B('zout', 'hx', `${I('zout')}Out`), `<button class="hx zm" data-run="z100" data-tip="Reset to 100%|0">${D.zoom}%</button>`, B('zin', 'hx', `${I('zin')}In`)];
-  const rows = []; let i = 0, w = 5; while (i < cells.length) { rows.push(cells.slice(i, i + w)); i += w; w = w === 5 ? 4 : 5; }
-  return canvas(`<div class="hc">${rows.map((r, k) => `<div class="hr${k % 2 ? ' off' : ''}">${r.join('')}</div>`).join('')}</div>${S('top:14px;left:14px')}`); };
-// 04 Corner arc
-R[4] = () => { const g = G(), H = 440;
-  return canvas(`<div class="ca" style="top:100%"><div class="disc glass"></div>${arc(g.view.filter(ok), 0, 0, 115, -84, -6, 'rb', false)}${arc(['zout', 'zin', ...g.ov].filter(ok), 0, 0, 195, -85, -5, 'rb', false)}${arc(g.tools.filter(ok), 0, 0, 272, -80, -10, 'rb', false)}<span class="zt" style="position:absolute;left:22px;top:-46px">${D.zoom}%</span><span class="cap" style="position:absolute;left:58px;top:-28px">View</span></div>${S('top:14px;right:14px')}`); };
-// 05 Orbit
-R[5] = () => { const list = ALL();
-  return canvas(`<div class="or"><span class="ring"></span><div class="hub glass"><span class="zt">${D.zoom}%</span><span class="zb"><button data-run="zout" data-tip="Zoom out|−">${I('zout')}</button><button data-run="zin" data-tip="Zoom in|+">${I('zin')}</button></span></div>${list.map((id, k) => { const a = (k / list.length * 360 - 90) * Math.PI / 180; return B(id, 'rb', null, `left:${130 + Math.cos(a) * 104}px;top:${130 + Math.sin(a) * 104}px`); }).join('')}</div>${S('top:14px;left:14px')}`); };
-// 06 Folder tabs
-R[6] = () => { const g = G(), n = GN(); const ft = (name, html) => `<div class="ft glass">${html}<span class="ear">${name.toUpperCase()}</span></div>`;
-  return canvas(`<div class="ftw">${ft(n.view, g.view.map(id => B(id, 'ib2')).join(''))}${ft('Zoom', `${B('zout', 'ib2')}<span class="zl2">${D.zoom}%</span>${B('zin', 'ib2')}`)}${ft(n.ov + pageTxt(), g.ov.map(id => B(id, 'ib2')).join(''))}${ft(n.tools, g.tools.map(id => B(id, 'ib2')).join(''))}</div>${S('bottom:14px;left:14px')}`); };
-// 07 Curved dock
-R[7] = () => { const list = [...G().view, 'zout', 'zin', ...G().ov, ...G().tools].filter(ok), W = 960, N = list.length;
-  const items = list.map((id, k) => { const x = 50 + k * (W - 100) / (N - 1), t = (x - W / 2) / (W / 2), y = 70 + t * t * 44; return `<div class="it" style="left:${x}px;top:${y}px">${B(id, 'rb')}<span class="lbl">${sl(id)}</span></div>`; }).join('');
-  return canvas(`<div class="cd"><svg class="bg" viewBox="0 0 960 150" preserveAspectRatio="none"><path d="M0 150 L0 112 Q480 18 960 112 L960 150 Z" fill="var(--glass)" stroke="var(--line)"/></svg>${items}<span class="zt" style="position:absolute;left:50%;top:116px;transform:translateX(-50%)">${D.zoom}%</span></div>${S('top:14px;left:14px')}`); };
-// 08 Slanted strip
-R[8] = () => { const g = G(); const sk = id => B(id, 'sk', `<span>${I(icn(id))}${sl(id)}</span>`);
-  return canvas(`<div class="sk8" style="flex-wrap:wrap;right:14px"><div class="skg">${g.view.map(sk).join('')}</div><div class="skg">${sk('zout')}<button class="sk" data-run="z100"><span style="font-family:var(--mono)">${D.zoom}%</span></button>${sk('zin')}</div><div class="skg">${g.ov.map(sk).join('')}</div><div class="skg">${g.tools.map(sk).join('')}</div></div>${S('bottom:14px;right:14px')}`); };
-// 09 Viewfinder brackets
-R[9] = () => { const g = G(); const ib = id => B(id, 'ib2');
-  return canvas(`<div class="vf tl"><div class="arm">${g.view.map(ib).join('')}</div></div><div class="vf tr" style="width:320px"><div class="arm">${sf()}</div></div>
-    <div class="vf bl" style="height:170px;width:120px"><div class="arm">${ib('zin')}<span class="zt" style="font-size:11px;color:var(--lc)">${D.zoom}%</span>${ib('zout')}</div></div><div class="vf br"><div class="arm">${g.ov.map(ib).join('')}<span style="width:10px"></span>${g.tools.map(ib).join('')}</div></div>`); };
-// 10 Card deck
-R[10] = () => { const g = G(), n = GN(); const card = (name, html, k) => `<div class="dc glass" style="z-index:${4 - k}"><h6><span>${name}</span><span>${k === 1 ? D.zoom + '%' : ''}</span></h6><div class="gr">${html}</div></div>`;
-  return canvas(`<div class="dk">${card(n.view, g.view.map(id => B(id, 'ib2')).join(''), 0)}${card('Zoom', `${B('zout', 'ib2')}<button class="ib2" data-run="z100" style="width:auto;padding:0 8px;font:800 11px var(--mono)">${D.zoom}%</button>${B('zin', 'ib2')}`, 1)}${card(n.ov + pageTxt(), g.ov.map(id => B(id, 'ib2')).join(''), 2)}${card(n.tools, g.tools.map(id => B(id, 'ib2')).join(''), 3)}</div>${S('top:14px;left:14px')}`); };
-// 11 Group pods
-R[11] = () => { const g = G(), n = GN(); const pod = (name, list, sm) => { const W = sm ? 100 : 140, r = sm ? 34 : 50; return `<div class="pod glass${sm ? ' sm' : ''}"><span class="pn">${name}</span>${list.filter(ok).map((id, k, a) => { const ang = (k / a.length * 360 - 90) * Math.PI / 180; return B(id, 'rb', null, `position:absolute;left:${W / 2 + Math.cos(ang) * r}px;top:${W / 2 + Math.sin(ang) * r}px`); }).join('')}</div>`; };
-  return canvas(`<div class="pods">${pod(n.view, g.view)}${`<div class="pod glass sm"><span class="pn"><b>${D.zoom}%</b></span>${B('zout', 'rb', null, 'position:absolute;left:18px;top:50px')}${B('zin', 'rb', null, 'position:absolute;left:82px;top:50px')}</div>`}${pod(n.ov + pageTxt(), g.ov)}${pod(n.tools, g.tools)}</div>${S('top:14px;left:14px')}`); };
-// 12 Device bezel
-R[12] = () => { const g = G(), n = GN(); const bk = id => B(id, 'bk');
-  return `<div class="bz"><span></span><div class="bt"><span class="gl">${n.view.toUpperCase()}</span>${g.view.map(bk).join('')}<span class="gl">${n.tools.toUpperCase()}</span>${g.tools.map(bk).join('')}</div><span></span>
-    <div class="bl">${bk('zin')}<span class="zv">${D.zoom}</span>${bk('zout')}</div>${canvas()}<div class="br">${g.ov.map(bk).join('')}</div>
-    <span></span><div class="bb">${sf()}</div><span></span></div>`; };
-// 13 Notched nav
-R[13] = () => { const g = G(); const il = id => B(id, 'il', `${I(icn(id))}${sl(id)}`);
-  return canvas(`<div class="nb glass"><div class="sd">${g.view.map(il).join('')}</div><div style="width:110px"></div><div class="sd r">${g.ov.map(il).join('')}${g.tools.map(il).join('')}</div></div>
-    <div class="dial"><b>${D.zoom}%</b><button class="m" data-run="zout" data-tip="Zoom out|−">${I('zout')}</button><button class="p" data-run="zin" data-tip="Zoom in|+">${I('zin')}</button></div>${S('top:14px;left:14px')}`); };
-// 14 Isometric keys
-R[14] = () => { const list = [...ALL(), 'zout', 'zin']; const ik = id => B(id, 'ik', `${I(icn(id))}${sl(id)}`);
-  return canvas(`<div class="iso glass">${list.map(ik).join('')}</div><span class="zt" style="position:absolute;z-index:7;right:18px;bottom:16px;color:var(--lc)">${D.zoom}%</span>${S('top:14px;left:14px')}`); };
-// 15 Liquid capsule
-R[15] = () => { const g = G(); const seq = (list) => list.filter(ok).map((id, k, a) => { const on = isOn(id), jl = on && k > 0 && isOn(a[k - 1]), jr = on && k < a.length - 1 && isOn(a[k + 1]); return `<button class="lb${on ? ' on' : ''}${jl ? ' jl' : ''}${jr ? ' jr' : ''}" data-run="${id}" ${tipA(id)}>${I(icn(id))}<span class="nm">${sl(id)}</span></button>`; }).join('');
-  return canvas(`<div class="lq glass">${seq(g.view)}<span class="gap"></span>${seq(['zout'])}<button class="lb" data-run="z100" style="font-family:var(--mono)">${D.zoom}%</button>${seq(['zin'])}<span class="gap"></span>${seq(g.ov)}<span class="gap"></span>${seq(g.tools)}</div>${S('bottom:14px;left:50%;margin-left:-125px')}`); };
-// 16 Rulers
-R[16] = () => { const g = G(), W = 1030, xz = z => 20 + (Math.log2(z / 25) / 4) * (W - 200);
-  return canvas(`<div class="rco">${D.zoom}%</div><div class="ru" data-ruler>${ZS.map(z => `<span class="nv" style="left:${xz(z)}px">${z}</span>`).join('')}<span class="mk" style="left:${xz(D.zoom)}px"></span><div class="vw">${g.view.map(id => B(id, 'ib2')).join('')}</div></div>
-    <div class="rl">${g.ov.map(id => B(id, 'ib2')).join('')}<span style="height:8px"></span>${g.tools.map(id => B(id, 'ib2')).join('')}</div>${S('bottom:14px;right:14px')}`); };
-// 17 Quarter pies
-R[17] = () => { const g = G(), W = 1094, H = 440;
-  const pie = (x, y, list, a0, a1, cap, cx, cy) => `<div class="qp" style="left:${x};top:${y}"><div class="disc glass"></div>${arc(list.filter(ok), 0, 0, 108, a0, a1, 'rb', false)}<span class="cap" style="left:${cx}px;top:${cy}px">${cap}</span></div>`;
-  return canvas(`${pie('0', '0', g.view, 8, 82, GN().view, 22, 18)}${pie('100%', '0', ['zin', 'zout', 'full'], 95, 175, `${D.zoom}%`, -26, 18)}${pie('0', '100%', g.ov, -82, -8, GN().ov, 30, -16)}${pie('100%', '100%', g.tools, -172, -98, GN().tools, -28, -16)}${S('top:14px;left:50%;margin-left:-125px')}`); };
-// 18 Side grips
-R[18] = () => { const g = G(), n = GN(); const ib = id => B(id, 'ib2');
-  return canvas(`<div class="gp l glass"><span class="cap">${n.view}</span>${g.view.map(ib).join('')}<span class="cap">Zoom</span>${ib('zin')}<span class="zt" style="font-size:10px">${D.zoom}</span>${ib('zout')}</div>
-    <div class="gp r glass"><span class="cap">${n.ov}</span>${g.ov.map(ib).join('')}<span class="cap">${n.tools}</span>${g.tools.map(ib).join('')}</div>${S('top:14px;left:50%;margin-left:-125px')}`); };
-// 19 Controller
-R[19] = () => { const pcb = D.mode === 'pcb';
-  const dp = pcb ? {u:'zin', d:'zout', lf:'rot', rt:'fit'} : {u:'zin', d:'zout', lf:'pgPrev', rt:'pgNext'};
-  const face = pcb ? {y:'layers', x:'rats', b:'rffe', a:'diode'} : {y:'info', x:'rot', b:'full', a:'whole'};
-  const fcol = {y:'#d4a017', x:'#2563eb', b:'#e11d48', a:'#16a34a'};
-  const sh = pcb ? [['l', ['info', 'flipH']], ['r', ['flipV', 'lock', 'sol']]] : [['l', ['info']], ['r', ['full']]];
-  return canvas(`<div class="pad"><div class="body glass"></div>
-    ${sh.map(([s, l]) => `<div class="sh ${s}">${l.map(id => B(id, '', `${I(icn(id))}${sl(id)}`)).join('')}</div>`).join('')}
-    <div class="dpad"><span class="ct"></span>${Object.entries(dp).map(([k, id]) => B(id, k)).join('')}</div>
-    <div class="mid"><span class="zt">${D.zoom}%${pageTxt()}</span><div class="row">${B('full', '', 'FULL')}${B('link', '', 'LINK')}${pcb ? B('photo', '', 'PHOTO') : ''}</div></div>
-    <div class="face">${Object.entries(face).map(([k, id]) => B(id, k, I(icn(id)), `background:${fcol[k]};color:#fff`)).join('')}</div></div>
-    ${S('top:14px;left:14px')}<div style="position:absolute;z-index:6;top:14px;right:14px;font-size:11px;color:var(--lc)" class="lbl">${pcb ? '✚ zoom / rotate / fit · Y layers · X airwires · B RFFE · A diode' : '✚ zoom / page · Y results · X rotate · B full · A whole word'}</div>`); };
-// 20 Hanging tags
-R[20] = () => { const g = G(); const tg = id => ok(id) ? `<button class="tgi${isOn(id) ? ' on' : ''}" data-run="${id}" ${tipA(id)}><span class="st"></span><span class="tc">${I(icn(id))}${sl(id)}</span></button>` : '';
-  return canvas(`<div class="tg"><span class="rail"></span><div class="row">${g.view.map(tg).join('')}<span class="gsp"></span>${tg('zout')}<button class="tgi" data-run="z100"><span class="st"></span><span class="tc" style="font:800 11px var(--mono);padding:16px 0 12px">${D.zoom}%</span></button>${tg('zin')}<span class="gsp"></span>${g.ov.map(tg).join('')}<span class="gsp"></span>${g.tools.map(tg).join('')}</div></div>${S('bottom:14px;left:14px')}`); };
+// 07 Curved dock — hangs from the top edge
+R[7] = () => { const g = G(), pdf = D.mode === 'pdf';
+  const list = [...g.view, 'zout', 'Z', 'zin', ...(pdf ? ['pgPrev', 'P', 'pgNext'] : g.ov), ...g.tools].filter(id => id === 'Z' || id === 'P' || ok(id));
+  const N = list.length, W = Math.min(820, N * 44 + 60);
+  const items = list.map((id, k) => { const x = 30 + k * (W - 60) / (N - 1), t = (x - W / 2) / (W / 2), y = 28 + (1 - t * t) * 30;
+    const inner = id === 'Z' ? `<button class="rb sm zpill" data-run="z100" data-tip="Reset to 100%|0">${D.zoom}%</button>` : id === 'P' ? `<span class="pgl">${D.page}/${D.pages}</span>` : B(id, 'rb sm');
+    return `<div class="it" style="left:${x.toFixed(1)}px;top:${y.toFixed(1)}px">${inner}</div>`; }).join('');
+  return canvas(`<div class="cd" style="width:${W}px"><svg class="bg" viewBox="0 0 ${W} 104" preserveAspectRatio="none"><path d="M0 0H${W}V40Q${W / 2} 128 0 40Z" fill="var(--glass)" stroke="var(--line)"/></svg>${items}</div>${S('bottom:14px;left:14px')}`); };
+// 08 Slanted strip — one slim slanted bar at the top
+R[8] = () => { const g = G(), pdf = D.mode === 'pdf'; const sk = id => B(id, 'sk', `<span>${I(icn(id))}</span>`);
+  const ov = pdf ? `${sk('pgPrev')}<span class="sk zv8"><span>${D.page}/${D.pages}</span></span>${sk('pgNext')}` : g.ov.map(sk).join('');
+  return canvas(`<div class="sk8"><i class="ed"></i>${g.view.map(sk).join('')}<span class="sdv"></span>${sk('zout')}<button class="sk zv8" data-run="z100" data-tip="Reset to 100%|0"><span>${D.zoom}%</span></button>${sk('zin')}<span class="sdv"></span>${ov}<span class="sdv"></span>${g.tools.map(sk).join('')}<i class="ed r"></i></div>${S('bottom:14px;left:14px')}`); };
+// 13 Notched nav — top bar, zoom dial hanging in the notch
+R[13] = () => { const all = ALL(), h = Math.ceil(all.length / 2); const il = id => B(id, 'il', `${I(icn(id))}<span>${sl(id)}</span>`);
+  return canvas(`<div class="nb glass"><div class="sd">${all.slice(0, h).map(il).join('')}</div><div class="gapn"></div><div class="sd">${all.slice(h).map(il).join('')}</div></div>
+    <div class="dial"><b>${D.zoom}%</b>${D.mode === 'pdf' ? `<small>p.${D.page}</small>` : ''}<button class="m" data-run="zout" data-tip="Zoom out|−">${I('zout')}</button><button class="p" data-run="zin" data-tip="Zoom in|+">${I('zin')}</button></div>${S('bottom:14px;left:14px')}`); };
+/* ---------- shared helpers for the new designs ---------- */
+const zp = () => Math.log2(D.zoom / 25) / 4;
+const OC = id => ACT[id].c || 'var(--accent)';
+const ovItems = (b, pgCls) => D.mode === 'pdf' ? [b('pgPrev'), `<span class="${pgCls}">${D.page}/${D.pages}</span>`, b('pgNext')] : G().ov.map(b);
+const zTicks = (cls = 'tk') => ZS.map(z => `<span class="${cls}" data-zoom="${z}" data-tip="${z}%|" style="left:${Math.log2(z / 25) / 4 * 100}%"></span>`).join('');
+const Q = id => B(id, 'q');
+const SP = '<i class="sep"></i>';
+const ZR = (cls = 'zr') => `<button class="${cls}" data-run="z100" data-tip="Reset to 100%|0">${D.zoom}%</button>`;
+const ZW = (b = Q) => `<div class="zw">${b('zout')}${ZR()}${b('zin')}</div>`;
+const TRK = style => { const p = (zp() * 100).toFixed(1); return `<div class="trk" style="${style}"><div class="ln"><i style="width:${p}%"></i></div>${zTicks()}<span class="kn" style="left:${p}%"></span></div>`; };
+const onCount = () => OV.filter(id => D[id]).length;
 
-/* ---------- cards ---------- */
+// 01 Glass Pro
+R[1] = () => { const g = G(); const ov = id => B(id, 'q a1o', null, `--c:${OC(id)}`);
+  return canvas(`<div class="tb glass a1">${g.view.map(Q).join('')}${SP}${ZW()}${SP}${ovItems(ov, 'pgx').join('')}${SP}${g.tools.map(Q).join('')}</div>${S('bottom:14px;left:14px')}`); };
+// 02 Three islands
+R[2] = () => { const g = G();
+  return canvas(`<div class="a2 glass" style="top:12px;left:14px">${g.view.map(Q).join('')}</div>
+    <div class="a2 glass" style="top:12px;left:50%;transform:translateX(-50%)">${Q('zout')}<button class="a2r" data-run="z100" data-tip="Reset to 100%|0"><b>${D.zoom}%</b><span class="a2t"><i style="width:${zp() * 100}%"></i></span></button>${Q('zin')}</div>
+    <div class="a2 glass" style="top:12px;right:14px">${ovItems(Q, 'pgx').join('')}${SP}${g.tools.map(Q).join('')}</div>${S('bottom:14px;left:14px')}`); };
+// 03 Carbon
+R[3] = () => { const g = G();
+  return canvas(`<div class="tb a3">${g.view.map(Q).join('')}${SP}${Q('zout')}${ZR('lcd')}${Q('zin')}${SP}${ovItems(Q, 'pgx').join('')}${SP}${g.tools.map(Q).join('')}</div>${S('bottom:14px;left:14px')}`); };
+// 04 Chip toolbar
+R[4] = () => { const g = G(); const ch = id => OV.includes(id) ? B(id, 'a4c', `<i></i>${sl(id)}`, `--c:${OC(id)}`) : Q(id);
+  return canvas(`<div class="tb glass">${g.view.map(Q).join('')}${SP}${ZW()}${SP}${ovItems(ch, 'pgx').join('')}${SP}${g.tools.map(Q).join('')}</div>${S('bottom:14px;left:14px')}`); };
+// 05 Tool palette
+R[5] = () => { const g = G(), pdf = D.mode === 'pdf';
+  const ov = pdf ? `${Q('pgPrev')}${Q('pgNext')}<span class="pgx">${D.page}/${D.pages}</span>` : g.ov.map(Q).join('');
+  return canvas(`<div class="a5 glass"><span class="a5h">${D.mode.toUpperCase()}</span>${g.view.map(Q).join('')}${SP}${ZR('a5z')}${Q('zout')}${Q('zin')}${SP}${ov}${SP}${g.tools.map(Q).join('')}</div>${S('top:14px;right:14px')}`); };
+// 06 App header
+R[6] = () => { const g = G(), pdf = D.mode === 'pdf';
+  return canvas(`<div class="a6"><div class="doc"><b>${pdf ? 'PDF' : 'PCB'}</b>${pdf ? 'Schematic' : 'Main board'}<span>· A2633</span></div>
+    <div class="ctr">${g.view.map(Q).join('')}${SP}${ovItems(Q, 'pgx').join('')}</div>
+    <div class="rgt">${g.tools.map(Q).join('')}${SP}${ZW()}</div></div>${S('bottom:14px;left:14px')}`); };
+// 09 Aurora edge
+R[9] = () => { const g = G();
+  return canvas(`<div class="tb a9"><div class="in">${g.view.map(Q).join('')}${SP}${Q('zout')}${ZR()}${Q('zin')}${SP}${ovItems(Q, 'pgx').join('')}${SP}${g.tools.map(Q).join('')}</div></div>${S('bottom:14px;left:14px')}`); };
+// 10 Slider bar
+R[10] = () => { const g = G();
+  return canvas(`<div class="tb glass">${g.view.map(Q).join('')}${SP}${Q('zout')}${TRK('width:130px;margin:0 6px')}${Q('zin')}${ZR('b0v')}${SP}${ovItems(Q, 'pgx').join('')}${SP}${g.tools.map(Q).join('')}</div>${S('bottom:14px;left:14px')}`); };
+// 11 Two-tier
+R[11] = () => { const g = G(); const ch = id => B(id, 'b1c', `${I(icn(id))}${sl(id)}`, `--c:${OC(id)}`);
+  return canvas(`<div class="b1"><div class="b1m glass">${g.view.map(Q).join('')}${SP}${ZW()}${SP}${g.tools.map(Q).join('')}</div>
+    <div class="b1t">${ovItems(ch, 'b1p').join('')}</div></div>${S('bottom:14px;left:14px')}`); };
+// 12 Labelled dock
+R[12] = () => { const g = G(); const it = id => B(id, 'b2i', `<span class="t">${I(icn(id))}</span>${sl(id)}`);
+  return canvas(`<div class="b2 glass">${g.view.map(it).join('')}${SP}<div class="b2z">${ZW()}Zoom</div>${SP}${ovItems(it, 'b2pg').join('')}${SP}${g.tools.map(it).join('')}</div>${S('top:14px;left:14px')}`); };
+// 14 Swatch bar
+R[14] = () => { const g = G(), pdf = D.mode === 'pdf'; const sw = id => B(id, 'b4s', `<i>${ACT[id].key}</i>`, `--c:${OC(id)}`);
+  const ov = pdf ? ovItems(Q, 'pgx').join('') : `<span class="b4n">Overlays<b>${onCount()}/5 on</b></span>${g.ov.map(sw).join('')}`;
+  return canvas(`<div class="tb glass">${g.view.map(Q).join('')}${SP}${ZW()}${SP}${ov}${SP}${g.tools.map(Q).join('')}</div>${S('bottom:14px;left:14px')}`); };
+// 15 Captioned groups
+R[15] = () => { const g = G(), n = GN(), pdf = D.mode === 'pdf';
+  const grp = (cap, em, html) => `<div class="b5g"><h6><span>${cap}</span>${em ? `<em>${em}</em>` : ''}</h6><div class="r">${html}</div></div>`;
+  return canvas(`<div class="b5 glass">${grp(n.view, '', g.view.map(Q).join(''))}${grp('Zoom', '', `${Q('zout')}${ZR()}${Q('zin')}`)}${grp(n.ov, pdf ? `${D.page}/${D.pages}` : `${onCount()} on`, G().ov.map(Q).join(''))}${grp(n.tools, '', g.tools.map(Q).join(''))}</div>${S('bottom:14px;left:14px')}`); };
+// 16 Wings
+R[16] = () => { const g = G(), pdf = D.mode === 'pdf', c = 2 * Math.PI * 29;
+  return canvas(`<div class="b6"><div class="b6w l glass">${g.view.map(Q).join('')}${SP}${Q('zout')}</div>
+    <button class="b6c" data-run="z100" data-tip="Reset to 100%|0"><svg viewBox="0 0 66 66"><circle cx="33" cy="33" r="29" fill="none" stroke="rgba(255,255,255,.1)" stroke-width="3"/><circle cx="33" cy="33" r="29" fill="none" stroke="#2dd4bf" stroke-width="3" stroke-linecap="round" stroke-dasharray="${(Math.max(.02, zp()) * c).toFixed(1)} ${c.toFixed(1)}"/></svg><b>${D.zoom}%</b><small>${pdf ? `P.${D.page}` : 'ZOOM'}</small></button>
+    <div class="b6w r glass">${Q('zin')}${SP}${ovItems(Q, 'pgx').join('')}${SP}${g.tools.map(Q).join('')}</div></div>${S('bottom:14px;left:14px')}`); };
+// 17 Corner card
+R[17] = () => { const g = G(), n = GN(), pdf = D.mode === 'pdf'; const ov = id => B(id, 'q b7o', null, `--c:${OC(id)}`);
+  return canvas(`<div class="b7 glass"><div class="b7h"><b>${pdf ? 'Schematic view' : 'Board view'}</b><span>${D.zoom}%</span></div>
+    <span class="b7c">${n.view}</span><div class="b7r">${g.view.map(Q).join('')}</div>
+    <span class="b7c">Zoom</span><div class="b7z">${Q('zout')}${TRK('flex:1')}${Q('zin')}</div>
+    <span class="b7c">${n.ov}</span><div class="b7r">${pdf ? `${Q('pgPrev')}<span class="pgx">${D.page}/${D.pages}</span>${Q('pgNext')}` : g.ov.map(ov).join('')}</div>
+    <span class="b7c">${n.tools}</span><div class="b7r">${g.tools.map(Q).join('')}</div></div>${S('bottom:14px;left:14px')}`); };
+// 18 Segmented
+R[18] = () => { const g = G(); const seg = html => `<div class="seg">${html}</div>`;
+  return canvas(`<div class="tb glass b8">${seg(g.view.map(Q).join(''))}${seg(`${Q('zout')}${ZR()}${Q('zin')}`)}${seg(ovItems(Q, 'pgx').join(''))}${seg(g.tools.map(Q).join(''))}</div>${S('bottom:14px;left:14px')}`); };
+// 19 Search first + navigator
+R[19] = () => { const g = G(), pdf = D.mode === 'pdf', v = Math.min(86, 7000 / D.zoom);
+  return canvas(`<div class="tb glass b9">${sf()}${g.view.map(Q).join('')}${SP}${ZW()}${SP}${ovItems(Q, 'pgx').join('')}${SP}${g.tools.map(Q).join('')}</div>
+    <div class="b9m glass"><div class="mm">${pdf ? PAGE : BOARD}<i class="vp" style="width:${v.toFixed(0)}%;height:${v.toFixed(0)}%"></i></div><div class="ft"><span>Navigator${pdf ? ` · p.${D.page}` : ''}</span><b>${D.zoom}%</b></div></div>`); };
+// 20 Dual bars
+R[20] = () => { const g = G(), pdf = D.mode === 'pdf';
+  const row = id => B(id, 'c0i', `${I(icn(id))}${sl(id)}<span class="sw"></span>`, `--c:${OC(id)}`);
+  const side = pdf ? `<div class="c0h"><span>Page</span></div><div class="c0pg">${D.page}<small>/ ${D.pages}</small></div>${B('pgPrev', 'c0i', `${I('prev')}Previous<kbd>PgUp</kbd>`)}${B('pgNext', 'c0i', `${I('next')}Next<kbd>PgDn</kbd>`)}`
+    : `<div class="c0h"><span>Overlays</span><em>${onCount()}/5</em></div>${g.ov.map(row).join('')}`;
+  return canvas(`<div class="tb glass">${g.view.map(Q).join('')}${SP}${ZW()}${SP}${g.tools.map(Q).join('')}</div><div class="c0v glass">${side}</div>${S('bottom:14px;left:14px')}`); };
+
 const META = [
-  ['Dynamic Island', 'Black capsule', 'A sleek black capsule at the top, like a phone’s Dynamic Island. Groups separated by tiny dots, zoom in the middle; on options glow teal.'],
-  ['Spine timeline', 'Vertical line', 'A glowing line down the left side with round nodes — every option is a node with its name beside it. Reads top to bottom.'],
-  ['Honeycomb', 'Hexagon cluster', 'A cluster of hexagon tiles in the corner, packed like a honeycomb. Zoom lives in the dark centre cell.'],
-  ['Corner arc', 'Quarter circle', 'A big quarter-circle in the bottom-left corner with three arcs of round buttons: inner = view, middle = zoom & overlays, outer = tools.'],
-  ['Orbit', 'Circle around zoom', 'Every option orbits a central zoom hub on a dashed ring — compact, balanced, always visible.'],
-  ['Folder tabs', 'Hanging tabs', 'Groups hang from the top edge like folder tabs, each with its name on a little ear underneath.'],
-  ['Curved dock', 'Arched bottom', 'A dock bent into a gentle arch along the bottom edge — the middle rises, the ends dip, every option labelled.'],
-  ['Slanted strip', 'Parallelograms', 'Sporty slanted buttons with icon + name, grouped into angled segments. Bold and fast-looking.'],
-  ['Viewfinder', 'Camera brackets', 'Camera-viewfinder corner brackets frame the board: view on the top arm, search top-right, zoom down the left, overlays & tools along the bottom.'],
-  ['Card deck', 'Stacked cards', 'Each group is a small card, stacked with a slight tilt on the right. Hover a card and it straightens out.'],
-  ['Group pods', 'Circles', 'Each group is a round pod with its buttons around the rim and the group name in the middle; a small zoom pod sits between.'],
-  ['Device bezel', 'Frame around the board', 'The board sits inside a device-like bezel: view & tools on the top edge, overlays down the right edge, zoom down the left, search at the bottom.'],
-  ['Notched nav', 'Centre zoom dial', 'A bottom bar with a round notch cut out; the zoom dial sits in the notch, view on the left, overlays & tools on the right.'],
-  ['Isometric keys', '3D keyboard', 'A tilted 3D keyboard panel at the bottom — every option is a physical key that presses down; lit keys are on.'],
-  ['Liquid capsule', 'Merging pills', 'One slim capsule of icons; an option that is on grows a teal pill with its name, and neighbours that are both on melt together into one shape.'],
-  ['Rulers', 'CAD rulers', 'CAD-style rulers: the top ruler is the zoom scale (click to jump), the left ruler holds overlays & tools.'],
-  ['Quarter pies', 'Four corners', 'A quarter-circle in each corner: view top-left, zoom top-right, overlays bottom-left, tools bottom-right.'],
-  ['Side grips', 'Two handles', 'Two tall capsules hug the left and right edges like handles: view & zoom on the left, overlays & tools on the right.'],
-  ['Controller', 'Game-pad layout', 'A game-pad: the D-pad zooms / rotates (pages in PDF), coloured face buttons toggle overlays, shoulder buttons for tools.'],
-  ['Hanging tags', 'Tags on a rail', 'Every option is a tag hanging from a rail along the top; on tags turn teal and swing a little.']];
+  ['Glass Pro', 'Frosted top bar', 'One frosted-glass bar at the top centre, like your app toolbar: icon buttons in four groups, an inset zoom well, and overlays that light up in their own colour with a small dot.'],
+  ['Three islands', 'Split across the top', 'Three small floating islands along the top edge: view on the left, a zoom readout with a level bar in the centre, overlays and tools on the right. The board stays clear in the middle.'],
+  ['Carbon', 'Dark premium bar', 'A dark carbon bar at the top centre with a soft top highlight. Active options get a teal glow line underneath, and zoom sits in a black LCD readout.'],
+  ['Chip toolbar', 'Labelled overlay chips', 'A compact top bar where the overlays are labelled chips with a coloured dot — you read at a glance which layers are on. View and tools stay as icons.'],
+  ['Tool palette', 'Two-column side palette', 'A Photoshop-style two-column palette floating on the left edge: view, zoom, overlays and tools stacked in groups, with the mode on top.'],
+  ['App header', 'Attached to the top edge', 'A full-width header attached to the top of the viewer: document badge on the left, view and overlays centred, tools and zoom on the right.'],
+  ['Curved dock', 'Hangs from the top', 'A compact dock hanging from the top edge like your toolbar, bent into a gentle arch — the middle dips, the ends rise. Names show on hover.'],
+  ['Slanted strip', 'One slanted bar at the top', 'One slim slanted bar centred at the top, like the app toolbar: icon buttons, slanted dividers between groups, zoom in the middle and teal end caps.'],
+  ['Aurora edge', 'Animated gradient border', 'A dark top bar framed by a slowly turning aurora gradient border. Active options fill with a teal-to-blue gradient — a bold first impression.'],
+  ['Slider bar', 'Inline zoom slider', 'A top bar with a real zoom slider inside it: drag-style track with a knob and clickable stops from 25 % to 400 %, plus the exact value beside it.'],
+  ['Two-tier', 'Bar + overlay tray', 'A main bar for view, zoom and tools, with a tray tucked underneath it for the overlays — each one labelled, with a coloured underline when on.'],
+  ['Labelled dock', 'Bottom dock with names', 'A floating dock at the bottom centre: rounded icon tiles with their names underneath, zoom in the middle. Tiles lift on hover and fill teal when on.'],
+  ['Notched nav', 'Top bar + zoom dial', 'A compact bar at the top with a round notch cut into its lower edge; the zoom dial hangs in the notch, options split evenly on both sides.'],
+  ['Swatch bar', 'Colour swatches', 'A top bar where each overlay is a colour swatch carrying its shortcut letter: a ring when off, filled and glowing when on, with a live “2/5 on” count.'],
+  ['Captioned groups', 'Keynote-style captions', 'A top bar with tiny captions above each group — View, Zoom, Overlays, Tools — and a live count, so new users know what every cluster does.'],
+  ['Wings', 'Zoom hub with wings', 'A dark zoom hub in the centre with a progress ring that fills with the zoom level; two glass wings carry view on the left and overlays and tools on the right.'],
+  ['Corner card', 'Compact control card', 'A neat control card in the top-right corner: view, a zoom slider, colour-coded overlays and tools in tidy rows, with the zoom level in the header.'],
+  ['Segmented', 'iOS segmented controls', 'Each group is an iOS-style segmented control inside one top bar; the active option lifts into a white raised segment.'],
+  ['Search first', 'Search bar + navigator', 'Search is built into the toolbar as its first item, and a navigator in the corner shows the whole board with a frame for what you are looking at.'],
+  ['Dual bars', 'Top bar + overlay panel', 'View, zoom and tools in a slim top bar; overlays get their own side panel with colour icons and switches (in PDF it becomes a page panel).']];
+
 $('#toc').innerHTML = META.map((m, n) => `<a href="#c${n + 1}">${String(n + 1).padStart(2, '0')} ${m[0]}</a>`).join('');
 $('#main').innerHTML = META.map(([h, tag, p], n) => `<section class="opt" id="c${n + 1}"><div class="meta"><span class="num">${String(n + 1).padStart(2, '0')}</span><div><h3>${h}<span class="tag">${tag}</span></h3><p>${p}</p></div></div><div class="stage" id="s${n + 1}" data-n="${n + 1}"></div></section>`).join('');
 
 /* ---------- draw + events ---------- */
 function draw() {
-  for (let n = 1; n <= 20; n++) { const s = $('#s' + n); s.className = 'stage' + (D.mode === 'pdf' ? ' pdfm' : ''); s.innerHTML = R[n](); }
+  for (let n = 1; n <= META.length; n++) { const s = $('#s' + n); s.className = 'stage' + (D.mode === 'pdf' ? ' pdfm' : ''); s.innerHTML = R[n](); }
   $all('.mode button').forEach(x => x.classList.toggle('on', x.dataset.v === D.mode));
 }
 let tt; function toast(m) { const e = $('#toast'); e.textContent = m; e.classList.add('on'); clearTimeout(tt); tt = setTimeout(() => e.classList.remove('on'), 1400); }
@@ -500,6 +536,7 @@ document.addEventListener('mouseover', e => {
 document.addEventListener('click', e => {
   tip.classList.remove('on');
   const r = e.target.closest('[data-run]'); if (r) return run(r.dataset.run);
+  const zz = e.target.closest('[data-zoom]'); if (zz) { D.zoom = +zz.dataset.zoom; toast(`Zoom ${D.zoom}%`); return draw(); }
   const ru = e.target.closest('[data-ruler]');
   if (ru && !e.target.closest('.vw')) { const x = e.clientX - ru.getBoundingClientRect().left; let best = 100, bd = 1e9; ZS.forEach(z => { const d = Math.abs(20 + (Math.log2(z / 25) / 4) * 830 - x); if (d < bd) { bd = d; best = z; } }); D.zoom = best; return draw(); }
   const a = e.target.closest('[data-a]'); if (!a) return;
