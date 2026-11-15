@@ -1,0 +1,574 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Glass pin card + vertical layers</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--page:#e9edf3;--card:#fff;--hair:#dfe4ec;--text:#0e2140;--text-2:#4a5b75;--text-3:#8592a6;--acc:#0d847d;--acc-soft:rgba(13,132,125,.12);
+  --gl:rgba(255,255,255,.56);--gb:rgba(255,255,255,.6);--ghi:rgba(255,255,255,.95);--gt:#0c1d36;--gs:#3e4f69;--gline:rgba(14,33,64,.13);--gfill:rgba(255,255,255,.4);--gfill2:rgba(255,255,255,.7);--gbg:#fff;--gacc:#0d847d}
+[data-theme=dark]{--page:#070b12;--card:#0f1623;--hair:#1d2738;--text:#e6edf7;--text-2:#a7b4c8;--text-3:#6f7f99;--acc-soft:rgba(45,212,191,.14);
+  --gl:rgba(14,20,32,.5);--gb:rgba(255,255,255,.14);--ghi:rgba(255,255,255,.2);--gt:#eef3fa;--gs:#a9b6c9;--gline:rgba(255,255,255,.12);--gfill:rgba(255,255,255,.06);--gfill2:rgba(255,255,255,.14);--gbg:#0b1220;--gacc:#2dd4bf}
+*{box-sizing:border-box;margin:0}
+body{font:13px/1.45 Inter,system-ui,sans-serif;background:var(--page);color:var(--text);-webkit-font-smoothing:antialiased}
+button,input{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+svg.i{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+kbd{font:600 10px 'JetBrains Mono';padding:1px 5px;border-radius:4px;background:var(--gfill2);box-shadow:inset 0 0 0 1px var(--gline);color:var(--gt)}
+.top{position:sticky;top:0;z-index:30;background:color-mix(in srgb,var(--page) 86%,transparent);backdrop-filter:blur(12px);border-bottom:1px solid var(--hair)}
+.top .in{max-width:1340px;margin:auto;padding:13px 24px;display:flex;align-items:center;gap:16px}
+.top h1{font-size:17px}.top p{font-size:12.5px;color:var(--text-2)}
+.tbtn{margin-left:auto;flex:none;height:34px;padding:0 13px;border-radius:9px;background:var(--card);box-shadow:0 0 0 1px var(--hair);font-weight:600;font-size:12.5px}
+main{max-width:1340px;margin:auto;padding:20px 24px 80px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+@media (max-width:980px){main{grid-template-columns:1fr}}
+.card{background:var(--card);border-radius:16px;padding:12px;box-shadow:0 0 0 1px var(--hair),0 14px 30px -22px rgba(14,33,64,.5);display:grid;gap:10px;min-width:0}
+.meta{display:flex;gap:10px;align-items:flex-start;padding:2px 4px}
+.num{font:700 12px 'JetBrains Mono';color:var(--acc);background:var(--acc-soft);border-radius:7px;padding:3px 7px}
+.meta h3{font-size:14px}.meta p{font-size:12px;color:var(--text-3)}
+.stg{position:relative;height:410px;border-radius:12px;overflow:hidden;background:radial-gradient(ellipse at 50% 45%,#0c2a1f,#050f0b 78%);user-select:none}
+.brd{position:absolute;inset:12px;width:calc(100% - 24px);height:calc(100% - 24px)}
+.brd .ly{transition:opacity .25s}
+.brd .pn{fill:#d9b55c}
+.brd .pn.bt{fill:#8fa3a0}
+.brd .pn.dim{opacity:.25}
+.brd .pn.hl{fill:#fff;stroke:#2dd4bf;stroke-width:1.6}
+.brd .pn.cur{fill:#fff;stroke:#fff;stroke-width:2.2}
+.brd .hit{fill:transparent;cursor:pointer}
+.cd{position:absolute;z-index:20;pointer-events:none}
+.toast{position:fixed;left:50%;bottom:24px;z-index:60;transform:translate(-50%,20px);opacity:0;transition:.25s;background:#0e2140;color:#fff;padding:9px 15px;border-radius:10px;font-weight:600;font-size:12.5px;pointer-events:none}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+.sw{width:9px;height:9px;border-radius:3px;background:var(--c);flex:none}
+
+/* ---------- glass base ---------- */
+.gls{background:var(--gl);-webkit-backdrop-filter:blur(16px) saturate(170%);backdrop-filter:blur(16px) saturate(170%);box-shadow:inset 0 0 0 1px var(--gb),inset 0 1px 0 var(--ghi),0 18px 40px -16px rgba(0,0,0,.75);color:var(--gt)}
+.smk{--gl:rgba(10,15,25,.5);--gb:rgba(255,255,255,.15);--ghi:rgba(255,255,255,.22);--gt:#f1f5fb;--gs:#a7b4c8;--gline:rgba(255,255,255,.12);--gfill:rgba(255,255,255,.07);--gfill2:rgba(255,255,255,.14);--gbg:#0b1220;--gacc:#2dd4bf}
+.vb{position:absolute;z-index:10}
+.mid{top:50%;transform:translateY(-50%)}
+/* leader line: pin → card */
+.ld{position:absolute;z-index:19;height:2px;margin-top:-1px;pointer-events:none;background:linear-gradient(90deg,var(--c),color-mix(in srgb,var(--c) 35%,transparent))}
+.ld.l{background:linear-gradient(270deg,var(--c),color-mix(in srgb,var(--c) 35%,transparent))}
+.ld::before{content:"";position:absolute;left:0;top:50%;width:12px;height:12px;margin:-6px;border-radius:50%;box-shadow:0 0 0 2px var(--c),0 0 12px var(--c)}
+.ld.l::before{left:100%}
+.ld::after{content:"";position:absolute;left:100%;top:50%;width:6px;height:6px;margin:-3px;border-radius:50%;background:var(--c)}
+.ld.l::after{left:0}
+
+/* ======================= LAYER BARS ======================= */
+/* 21 bottom edge tabs */
+.v21{left:50%;bottom:0;transform:translateX(-50%);display:flex;align-items:flex-end;gap:3px}
+.v21 button.gls{display:flex;flex-direction:column;align-items:center;gap:2px;width:42px;height:28px;padding-top:7px;border-radius:10px 10px 0 0;font:800 11.5px Inter;transition:height .2s;box-shadow:inset 0 3px 0 var(--c),inset 0 0 0 1px var(--gb),0 -6px 14px -6px rgba(0,0,0,.6)}
+.v21 button span{display:none;font:600 9px Inter;opacity:.85;white-space:nowrap}
+.v21 button.gls:hover{height:34px}
+.v21 button.gls.on{height:48px;background:color-mix(in srgb,var(--c) 45%,var(--gl));box-shadow:inset 0 3px 0 var(--c),inset 0 0 0 1px var(--c),0 0 16px -4px var(--c)}.v21 button.on span{display:block}
+.v21 .all.gls{width:50px;box-shadow:inset 0 0 0 1px var(--gb),0 -6px 14px -6px rgba(0,0,0,.6)}.v21 .all.gls.on{height:34px;background:var(--gt);color:var(--gbg)}
+/* ======================= BOTTOM LAYER BARS ======================= */
+.bt{left:50%;bottom:12px;transform:translateX(-50%)}
+.vb .all.on,.vb .on.all{background:var(--gt);color:var(--gbg)}
+/* b1 chip row */
+.b1{display:flex;gap:4px;padding:6px;border-radius:14px}
+.b1 button{position:relative;width:36px;height:30px;border-radius:8px;font:800 12.5px Inter;color:var(--gs);background:var(--gfill);overflow:hidden;transition:.15s}
+.b1 button::after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;background:var(--c)}
+.b1 button:hover{color:var(--gt);background:var(--gfill2)}
+.b1 button.on{color:var(--gt);background:color-mix(in srgb,var(--c) 32%,transparent);box-shadow:inset 0 0 0 1.5px var(--c),0 0 14px -3px var(--c)}
+.b1 .all{width:46px;font:800 9px Inter;letter-spacing:.1em;display:grid;place-items:center;align-content:center;gap:3px}
+.b1 .all::after{display:none}.b1 .all i{display:grid;grid-template-columns:repeat(5,3px);gap:1.5px}.b1 .all i b{width:3px;height:3px;border-radius:50%;background:var(--c)}
+/* b2 dot capsule */
+.b2{display:flex;gap:3px;padding:5px;border-radius:99px}
+.b2 button{width:30px;height:28px;border-radius:99px;display:grid;place-items:center;font:700 11px 'JetBrains Mono';color:var(--gs)}
+.b2 button i{width:9px;height:9px;border-radius:50%;background:var(--c);box-shadow:0 0 0 2px rgba(0,0,0,.2)}
+.b2 button span{display:none}
+.b2 button:hover{background:var(--gfill2)}.b2 button:hover i{display:none}.b2 button:hover span{display:block;color:var(--gt)}
+.b2 button.on{background:var(--c);box-shadow:0 0 12px -2px var(--c)}.b2 button.on i{display:none}.b2 button.on span{display:block;color:#0b1220;font-weight:800}
+.b2 .all{width:40px;font:800 9px Inter;color:var(--gt)}
+/* b3 segmented */
+.b3{display:flex;border-radius:12px;overflow:hidden}
+.b3 button{position:relative;width:40px;height:34px;padding-bottom:4px;font:800 12px Inter;color:var(--gs);border-left:1px solid var(--gline)}
+.b3 button:first-child{border:0}
+.b3 button::before{content:"";position:absolute;left:50%;bottom:6px;width:14px;height:2.5px;margin-left:-7px;border-radius:2px;background:var(--c)}
+.b3 button:hover{background:var(--gfill2);color:var(--gt)}
+.b3 button.on{background:var(--c);color:#0b1220;border-color:transparent}.b3 button.on::before{background:#0b1220;opacity:.35}
+.b3 .all{width:52px;font-size:10px;letter-spacing:.08em;color:var(--gt)}.b3 .all::before{background:linear-gradient(90deg,#4f8ff7,#f59e42,#4cc46a,#ef5a5a,#9b7cf2);width:22px;margin-left:-11px}
+/* b4 stack-up strip */
+.b4{display:flex;align-items:flex-end;gap:4px;padding:6px;border-radius:14px}
+.b4 button{display:grid;justify-items:start;align-content:center;width:46px;height:40px;padding:0 7px;border-radius:8px;background:color-mix(in srgb,var(--c) 26%,transparent);box-shadow:inset 0 -3px 0 var(--c);text-align:left;opacity:.75;transition:.15s}
+.b4 button b{font:800 12px 'JetBrains Mono';color:var(--gt)}.b4 button small{font:600 8.5px Inter;color:var(--gs);white-space:nowrap}
+.b4 button:hover{opacity:1;transform:translateY(-2px)}
+.b4 button.on{opacity:1;background:var(--c);transform:translateY(-5px);box-shadow:0 8px 16px -6px var(--c)}.b4 button.on b{color:#0b1220}.b4 button.on small{color:rgba(11,18,32,.75)}
+.b4 .all{width:56px;background:var(--gfill);box-shadow:inset 0 0 0 1px var(--gline);opacity:1}.b4 .all.on b,.b4 .all.on small{color:var(--gbg)}
+/* b5 eye toolbar */
+.b5{display:flex;align-items:center;gap:2px;padding:5px;border-radius:12px}
+.b5 .r{display:flex;align-items:center;gap:5px;height:30px;padding:0 8px;border-radius:8px;font:700 11.5px 'JetBrains Mono';color:var(--gs)}
+.b5 .r svg.i{width:14px;height:14px;color:var(--c)}
+.b5 .r:hover{background:var(--gfill2)}
+.b5 .r.on{color:var(--gt);background:var(--gfill)}.b5 .r:not(.on){opacity:.5}
+.b5 .sa{white-space:nowrap;height:30px;margin-left:4px;padding:0 11px;border-radius:8px;font:700 11px Inter;color:#fff;background:var(--gacc)}
+/* b6 slider */
+.b6{width:380px;padding:8px 14px 9px;border-radius:14px;display:grid;gap:6px}
+.b6 .hd{display:flex;align-items:center;gap:8px;font:600 12px Inter}
+.b6 .hd button{margin-left:auto;height:22px;padding:0 9px;border-radius:6px;font:700 10.5px Inter;color:var(--gs);box-shadow:inset 0 0 0 1px var(--gline)}.b6 .hd button.on{background:var(--gacc);color:#fff;box-shadow:none}
+.b6 .tr{position:relative;display:grid;grid-template-columns:repeat(10,1fr);height:22px;align-items:center}
+.b6 .tr::before{content:"";position:absolute;left:5%;right:5%;top:50%;height:4px;margin-top:-2px;border-radius:2px;background:linear-gradient(90deg,#4f8ff7,#f59e42,#4cc46a,#f5c84b,#3fd0e0,#ef5a5a,#9b7cf2,#a3d65c,#c47c4a,#f7c99a)}
+.b6 .tr button{position:relative;justify-self:center;width:12px;height:12px;border-radius:50%;background:var(--gbg);box-shadow:0 0 0 2px var(--c);transition:.15s}
+.b6 .tr button:hover{transform:scale(1.25)}
+.b6 .tr button.on{width:20px;height:20px;background:var(--c);box-shadow:0 0 0 3px var(--gbg),0 0 12px var(--c)}
+.b6 .lb{display:grid;grid-template-columns:repeat(10,1fr);text-align:center;font:600 9.5px 'JetBrains Mono';color:var(--gs)}
+/* b7 docked toolbar */
+.b7{left:0;right:0;bottom:0;height:44px;display:flex;align-items:center;gap:8px;padding:0 10px;border-radius:0}
+.b7 .lb{display:grid;place-items:center;width:30px;height:28px;border-right:1px solid var(--gline);color:var(--gs)}
+.b7 .ch{display:flex;gap:2px}
+.b7 .ch button{display:flex;align-items:center;gap:5px;height:28px;padding:0 6px;border-radius:7px;font:700 11px 'JetBrains Mono';color:var(--gs)}
+.b7 .ch button .sw{width:8px;height:8px;border-radius:50%}
+.b7 .ch button:hover{background:var(--gfill2);color:var(--gt)}
+.b7 .ch button.on{background:color-mix(in srgb,var(--c) 26%,transparent);color:var(--gt);box-shadow:inset 0 0 0 1.5px var(--c)}
+.b7 .rt{margin-left:auto;display:flex;align-items:center;gap:6px}
+.b7 .rt em{font:600 10px 'JetBrains Mono';font-style:normal;color:var(--gs)}
+.b7 .rt .all{height:26px;padding:0 10px;border-radius:7px;font:700 11px Inter;box-shadow:inset 0 0 0 1px var(--gline)}
+/* b8 keycap row */
+.b8{display:flex;gap:4px;padding:8px 9px 10px;border-radius:14px}
+.b8 button{position:relative;width:32px;height:32px;border-radius:6px;font:800 12px Inter;color:#1f2a3b;background:linear-gradient(#fdfdfd,#dfe4eb);box-shadow:0 3px 0 #8c97a8}
+.b8 button::before{content:"";position:absolute;left:6px;right:6px;top:3px;height:3px;border-radius:2px;background:var(--c);opacity:.45}
+.b8 button:active{transform:translateY(2px);box-shadow:0 1px 0 #8c97a8}
+.b8 button.on{transform:translateY(2px);box-shadow:0 1px 0 #8c97a8,0 0 14px -2px var(--c)}.b8 button.on::before{opacity:1;box-shadow:0 0 6px var(--c)}
+.vb.b8 .all{width:50px;font-size:10px;background:linear-gradient(#fdfdfd,#dfe4eb);color:#1f2a3b}.vb.b8 .all.on{background:linear-gradient(#e6fffb,#c7f2ec);color:#0b1220}.b8 .all::before{display:none}
+/* b9 bottom heat strip */
+.b9{left:0;right:0;bottom:0;height:12px;display:flex;transition:height .2s;border-radius:12px 12px 0 0;overflow:hidden}
+.b9:hover{height:42px}
+.b9 button{flex:1;position:relative;display:grid;place-items:center;font:700 10.5px Inter;white-space:nowrap;opacity:.6;overflow:hidden}
+.b9 button i{position:absolute;left:2px;right:2px;bottom:0;height:4px;border-radius:2px 2px 0 0;background:var(--c)}
+.b9 button span{opacity:0;transition:opacity .15s}.b9:hover button span{opacity:1}
+.b9 button:hover{opacity:1;background:var(--gfill2)}.b9 button.on{opacity:1;background:color-mix(in srgb,var(--c) 30%,transparent)}.b9 button.on i{box-shadow:0 0 8px var(--c)}
+.vb.b9 .all.on{background:color-mix(in srgb,var(--gacc) 30%,transparent);color:var(--gt)}
+.b9 .all i{background:linear-gradient(90deg,#4f8ff7,#f59e42,#4cc46a,#ef5a5a,#9b7cf2)}
+/* b10 swatch row */
+.b10{display:flex;align-items:center;gap:6px;padding:7px 10px;border-radius:14px}
+.b10 .hl{font:800 9px Inter;letter-spacing:.12em;color:var(--gs);text-transform:uppercase;margin-right:2px}
+.b10 button{width:26px;height:26px;border-radius:7px;background:var(--c);color:rgba(11,18,32,.75);font:800 11px Inter;box-shadow:inset 0 -3px 0 rgba(0,0,0,.18);opacity:.55;transition:.15s}
+.b10 button:hover{opacity:.9;transform:translateY(-2px)}.b10 button.on{opacity:1;box-shadow:0 0 0 2px var(--gbg),0 0 0 4px var(--c)}
+.b10 .all{width:auto;padding:0 9px;background:var(--gfill2);color:var(--gt);opacity:1;box-shadow:inset 0 0 0 1px var(--gline)}
+.b10 .nm{min-width:110px;padding-left:10px;border-left:1px solid var(--gline);font:600 11.5px Inter}
+/* b11 filmstrip */
+.b11{display:flex;gap:4px;padding:6px;border-radius:14px}
+.b11 button{display:grid;justify-items:center;gap:2px;padding:3px;border-radius:7px;font:700 9.5px 'JetBrains Mono';color:var(--gs)}
+.b11 button svg{width:42px;height:26px;border-radius:4px;background:#0c2a1f}
+.b11 button:hover{background:var(--gfill2)}.b11 button.on{background:color-mix(in srgb,var(--c) 24%,transparent);color:var(--gt);box-shadow:inset 0 0 0 1.5px var(--c)}
+.b11 .all{width:44px;place-items:center;font:700 11px Inter;color:var(--gt);box-shadow:inset 0 0 0 1px var(--gline)}
+/* b12 fader mixer */
+.b12{display:flex;gap:6px;padding:8px 10px;border-radius:14px}
+.b12 .ch{display:grid;justify-items:center;gap:3px;font:700 10px 'JetBrains Mono';color:var(--gs)}
+.b12 .ch em{font:500 8.5px 'JetBrains Mono';font-style:normal}
+.b12 input{writing-mode:vertical-lr;direction:rtl;width:18px;height:70px;accent-color:var(--c);cursor:pointer}
+.b12 .ch i{width:14px;height:4px;border-radius:2px;background:var(--c)}
+.b12 .rs{align-self:center;display:grid;gap:4px;padding-left:6px;border-left:1px solid var(--gline)}.b12 .rs button{height:24px;padding:0 9px;border-radius:6px;font:700 10px Inter;box-shadow:inset 0 0 0 1px var(--gline)}.b12 .rs button:hover{background:var(--gfill2)}
+/* b13 stepper */
+.b13{display:flex;align-items:center;gap:4px;padding:5px;border-radius:14px}
+.b13 .st{width:32px;height:32px;border-radius:9px;display:grid;place-items:center;color:var(--gs)}.b13 .st:hover{background:var(--gfill2);color:var(--gt)}
+.b13 .cur{display:flex;align-items:center;gap:8px;min-width:170px;height:32px;padding:0 11px;border-radius:9px;background:color-mix(in srgb,var(--c) 22%,transparent);box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--c) 70%,transparent);font:600 12px Inter}
+.b13 .cur b{font:800 12px 'JetBrains Mono'}.b13 .cur em{margin-left:auto;font:500 10px 'JetBrains Mono';font-style:normal;color:var(--gs)}
+.b13 .dots{display:flex;gap:3px;align-items:center;padding:0 8px;border-left:1px solid var(--gline);border-right:1px solid var(--gline);height:22px}
+.b13 .dots button{width:6px;height:16px;border-radius:3px;background:var(--c);opacity:.35;transition:.15s}.b13 .dots button:hover{opacity:.8}.b13 .dots button.on{opacity:1;height:22px;box-shadow:0 0 8px var(--c)}
+.b13 .all{height:32px;padding:0 12px;border-radius:9px;font:700 11px Inter}
+/* b14 metro line */
+.b14{display:flex;align-items:center;gap:12px;padding:9px 14px 7px 9px;border-radius:14px}
+.b14 .all{align-self:flex-start;height:26px;padding:0 10px;border-radius:8px;font:700 11px Inter;box-shadow:inset 0 0 0 1px var(--gline)}
+.b14 .ln{position:relative;display:flex;gap:8px}
+.b14 .ln::before{content:"";position:absolute;left:18px;right:18px;top:11px;height:2px;background:linear-gradient(90deg,#4f8ff7,#f59e42,#4cc46a,#f5c84b,#3fd0e0,#ef5a5a,#9b7cf2,#a3d65c,#c47c4a,#f7c99a)}
+.b14 .ln button{position:relative;display:grid;justify-items:center;gap:3px;width:36px;font:600 9px Inter;color:var(--gs)}
+.b14 .ln button i{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font:800 10px 'JetBrains Mono';font-style:normal;background:var(--gbg);color:var(--gt);box-shadow:inset 0 0 0 2px var(--c);transition:.15s}
+.b14 .ln button span{opacity:.6;white-space:nowrap}
+.b14 .ln button:hover i{transform:scale(1.12)}.b14 .ln button:hover span{opacity:1}
+.b14 .ln button.on{color:var(--gt);font-weight:800}.b14 .ln button.on span{opacity:1}.b14 .ln button.on i{background:var(--c);color:#0b1220;box-shadow:0 0 0 3px var(--gbg),0 0 14px var(--c)}
+/* b15 magnify dock */
+.b15{display:flex;align-items:flex-end;gap:6px;padding:7px 9px;border-radius:99px}
+.b15 button{width:28px;height:28px;border-radius:50%;font:800 11px 'JetBrains Mono';color:var(--gt);background:var(--gfill);box-shadow:inset 0 0 0 2.5px var(--c);transition:transform .15s;transform-origin:center bottom}
+.b15 button:hover{transform:scale(1.45)}.b15 button:hover+button,.b15 button:has(+button:hover){transform:scale(1.2)}
+.b15 button.on{background:var(--c);color:#0b1220;box-shadow:0 0 0 2px var(--gbg),0 0 14px var(--c)}
+.vb.b15 .all{width:32px;height:32px;font:800 8.5px Inter;background:conic-gradient(#4f8ff7,#f59e42,#4cc46a,#f5c84b,#3fd0e0,#ef5a5a,#9b7cf2,#4f8ff7);color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.7);box-shadow:none}.vb.b15 .all.on{box-shadow:0 0 0 2px var(--gbg),0 0 0 4px var(--gt)}
+/* b16 side switch */
+.b16{display:flex;align-items:center;gap:8px;padding:5px;border-radius:14px}
+.b16 .sd{display:flex;padding:2px;border-radius:9px;background:var(--gfill)}
+.b16 .sd button{height:28px;padding:0 12px;border-radius:7px;font:700 11px Inter;color:var(--gs)}.b16 .sd button.on{background:var(--gbg);color:var(--gt);box-shadow:0 1px 4px rgba(0,0,0,.25)}
+.b16 .ls{display:flex;gap:3px}
+.b16 .ls button{display:flex;align-items:center;gap:6px;height:30px;padding:0 9px;border-radius:8px;font:700 11px Inter;color:var(--gs)}
+.b16 .ls button small{font:500 9.5px Inter;opacity:.8;white-space:nowrap}
+.b16 .ls button:hover{background:var(--gfill2)}.b16 .ls button.on{background:color-mix(in srgb,var(--c) 28%,transparent);color:var(--gt);box-shadow:inset 0 -2.5px 0 var(--c)}
+.b16 .all{height:30px;padding:0 11px;border-radius:8px;font:700 11px Inter;box-shadow:inset 0 0 0 1px var(--gline)}
+/* b17 preset groups */
+.b17{display:flex;align-items:center;gap:8px;padding:5px;border-radius:14px}
+.b17 .ps{display:flex;gap:2px;padding:2px;border-radius:9px;background:var(--gfill)}
+.b17 .ps button{height:28px;padding:0 10px;border-radius:7px;font:600 11px Inter;color:var(--gs);white-space:nowrap}
+.b17 .ps button:hover{color:var(--gt)}.b17 .ps button.on{background:var(--gbg);color:var(--gt);box-shadow:0 1px 4px rgba(0,0,0,.25)}
+.vb.b17 .ps .all.on{background:var(--gbg);color:var(--gt)}
+.b17 .nb{display:flex;gap:2px;padding-left:8px;border-left:1px solid var(--gline)}
+.b17 .nb button{width:22px;height:28px;border-radius:6px;font:800 10.5px 'JetBrains Mono';color:var(--gs);box-shadow:inset 0 -2px 0 color-mix(in srgb,var(--c) 45%,transparent)}
+.b17 .nb button:hover{background:var(--gfill2)}.b17 .nb button.on{color:#0b1220;background:var(--c);box-shadow:none}
+/* b18 drop-up picker */
+.b18{display:flex;align-items:center;gap:4px;padding:5px;border-radius:14px}
+.b18 .st{width:30px;height:32px;border-radius:9px;display:grid;place-items:center;color:var(--gs)}.b18 .st:hover{background:var(--gfill2);color:var(--gt)}
+.b18 .dd{display:flex;align-items:center;gap:8px;min-width:190px;height:32px;padding:0 10px;border-radius:9px;font:600 12px Inter;background:var(--gfill2);box-shadow:inset 0 0 0 1px var(--gline)}
+.b18 .dd .sw{border-radius:50%;box-shadow:0 0 8px var(--c)}.b18 .dd svg.i:last-child{margin-left:auto;color:var(--gs);transition:transform .2s}.b18.op .dd svg.i:last-child{transform:rotate(180deg)}
+.b18 .all{height:32px;padding:0 12px;border-radius:9px;font:700 11px Inter;box-shadow:inset 0 0 0 1px var(--gline)}
+.b18 .mn{position:absolute;left:34px;bottom:calc(100% + 8px);width:226px;padding:5px;border-radius:12px;background:color-mix(in srgb,var(--gbg) 86%,transparent);display:grid;gap:1px}
+.b18 .mn h6{padding:3px 8px 5px;font:800 9px Inter;letter-spacing:.12em;color:var(--gs);text-transform:uppercase}
+.b18 .mn .it{display:flex;align-items:center;gap:8px;height:26px;padding:0 8px;border-radius:7px;font:500 11.5px Inter;color:var(--gt);text-align:left}
+.b18 .mn .it kbd{margin-left:auto}
+.b18 .mn .it:hover{background:var(--gfill2)}.vb.b18 .mn .it.on{background:color-mix(in srgb,var(--c, #2dd4bf) 26%,transparent);color:var(--gt);font-weight:700}
+/* b19 pull-up drawer */
+.b19{left:50%;bottom:0;transform:translateX(-50%);width:456px;border-radius:14px 14px 0 0;overflow:hidden}
+.b19 .hd{position:relative;display:flex;align-items:center;gap:8px;width:100%;height:36px;padding:6px 12px 0;font:700 12px Inter}
+.b19 .hd::before{content:"";position:absolute;left:50%;top:5px;width:34px;height:4px;margin-left:-17px;border-radius:2px;background:var(--gline)}
+.b19 .hd em{font:600 10px 'JetBrains Mono';font-style:normal;color:var(--gs);background:var(--gfill2);padding:1px 6px;border-radius:5px}
+.b19 .hd .cu{display:flex;align-items:center;gap:6px;font:600 11px Inter;color:var(--gs)}
+.b19 .hd svg.i:last-child{margin-left:auto;transition:transform .2s}.b19.col .hd svg.i:last-child{transform:rotate(180deg)}
+.b19 .bd{display:grid;grid-template-columns:repeat(6,1fr);gap:5px;padding:6px 10px 10px}.b19.col .bd{display:none}
+.b19 .bd button{position:relative;display:grid;justify-items:start;padding:5px 8px 5px 10px;border-radius:8px;text-align:left;background:var(--gfill);box-shadow:inset 0 0 0 1px var(--gline);overflow:hidden}
+.b19 .bd button::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--c)}
+.b19 .bd button b{font:800 11.5px 'JetBrains Mono'}.b19 .bd button small{font:500 9.5px Inter;color:var(--gs);white-space:nowrap}
+.b19 .bd button:hover{background:var(--gfill2)}.b19 .bd button.on{background:color-mix(in srgb,var(--c) 28%,transparent);box-shadow:inset 0 0 0 1.5px var(--c)}
+.b19 .bd .all::before{background:linear-gradient(#4f8ff7,#f59e42,#4cc46a,#ef5a5a,#9b7cf2)}.vb.b19 .bd .all.on small{color:var(--gbg)}
+/* b20 pro track panel */
+.b20{left:12px;right:12px;bottom:12px;border-radius:14px;overflow:hidden}
+.b20 header{display:flex;align-items:center;gap:7px;height:34px;padding:0 10px;border-bottom:1px solid var(--gline);font:700 12px Inter}
+.b20 header em{font:600 10px 'JetBrains Mono';font-style:normal;color:var(--gs);background:var(--gfill2);padding:1px 6px;border-radius:5px}
+.b20 header .so{font:700 10px Inter;padding:2px 8px;border-radius:99px;background:color-mix(in srgb,var(--c) 30%,transparent);box-shadow:inset 0 0 0 1px var(--c)}
+.b20 header button{height:24px;padding:0 9px;border-radius:6px;font:600 10.5px Inter;color:var(--gs);box-shadow:inset 0 0 0 1px var(--gline)}.b20 header button:first-of-type{margin-left:auto}
+.b20 header button.on{background:var(--gacc);color:#fff;box-shadow:none}
+.b20 .cols{display:grid;grid-template-columns:repeat(10,1fr)}
+.b20 .c{position:relative;display:grid;justify-items:center;gap:1px;padding:7px 2px 6px;font:500 10px Inter;color:var(--gs)}
+.b20 .c+.c{border-left:1px solid var(--gline)}
+.b20 .c .bar{position:absolute;left:0;right:0;top:0;height:3px;background:var(--c);opacity:.35}
+.b20 .c b{font:800 11.5px 'JetBrains Mono';color:var(--c)}
+.b20 .c em{font:500 9.5px 'JetBrains Mono';font-style:normal;opacity:.7}
+.b20 .c .tl{display:flex;gap:2px;margin:2px 0}
+.b20 .c .tl button{width:22px;height:20px;border-radius:5px;display:grid;place-items:center;color:var(--gs);font:800 9px Inter}
+.b20 .c .tl button:hover{background:var(--gfill2);color:var(--gt)}
+.b20 .c.on{color:var(--gt)}.b20 .c.on .bar{opacity:1}.b20 .c:not(.on) b{opacity:.45}
+.b20 .c.solo{background:color-mix(in srgb,var(--c) 18%,transparent)}.b20 .c.solo .so{background:var(--c);color:#0b1220}
+
+/* ======================= GLASS HOVER CARDS ======================= */
+.cd .n{font-family:'JetBrains Mono';font-weight:800}
+.cd .s{font-size:11.5px;color:var(--gs);line-height:1.55}
+/* k1 frosted classic */
+.k1{width:218px;border-radius:12px;overflow:hidden;font-size:12px}
+.k1 .h{display:flex;align-items:center;gap:7px;padding:7px 11px;background:linear-gradient(90deg,color-mix(in srgb,var(--c) 34%,transparent),transparent);border-bottom:1px solid var(--gline);font:800 10px Inter;letter-spacing:.1em}
+.k1 .h i{width:9px;height:9px;border-radius:2px;background:var(--c);box-shadow:0 0 8px var(--c)}
+.k1 .b{padding:8px 11px 10px}.k1 .n{font-size:14px;margin-bottom:5px}
+.k1 .rw{display:flex;justify-content:space-between;color:var(--gs);line-height:1.8}.k1 .rw b{font-weight:600;color:var(--gt)}
+/* k2 smoked hero */
+.k2{width:238px;padding:13px 14px;border-radius:16px}
+.k2 .k{font:700 9.5px Inter;letter-spacing:.14em;color:var(--gs)}.k2 .n{font-size:21px;letter-spacing:-.02em;margin:2px 0 9px}
+.k2 .ch{display:flex;gap:6px;flex-wrap:wrap}.k2 .ch span{padding:3px 9px;border-radius:99px;background:var(--gfill2);font:600 11px 'JetBrains Mono'}
+.k2 .ch span:first-child{background:color-mix(in srgb,var(--c) 45%,transparent)}
+.k2 .ft{display:flex;align-items:center;gap:8px;margin-top:11px;font-size:11px;color:var(--gs)}.k2 .ft i{flex:1;height:4px;border-radius:2px;background:var(--gfill2);overflow:hidden}.k2 .ft i b{display:block;height:100%;background:linear-gradient(90deg,#2dd4bf,var(--c))}
+/* k3 aurora */
+.k3{position:relative;width:234px;padding:12px 14px;border-radius:16px;overflow:hidden}
+.k3::before{content:"";position:absolute;right:-40px;top:-50px;width:150px;height:150px;border-radius:50%;background:radial-gradient(circle,var(--c),transparent 68%);opacity:.6}
+.k3>*{position:relative}
+.k3 .k{display:flex;align-items:center;gap:6px;font:800 9.5px Inter;letter-spacing:.12em;color:var(--gs)}.k3 .k i{width:7px;height:7px;border-radius:50%;background:var(--c);box-shadow:0 0 8px var(--c)}
+.k3 .n{font-size:17px;margin:3px 0 9px}
+.k3 .row{display:flex;gap:16px;padding-top:8px;border-top:1px solid var(--gline)}.k3 .row div{font-size:10px;color:var(--gs)}.k3 .row b{display:block;font:700 12.5px 'JetBrains Mono';color:var(--gt)}
+/* k4 inspector */
+.k4{width:224px;padding:6px;border-radius:14px}
+.k4 .rw{display:flex;align-items:center;gap:9px;height:30px;padding:0 6px;border-radius:8px;font-size:12px;color:var(--gs)}
+.k4 .rw:first-child{background:var(--gfill2)}
+.k4 .rw .ic{width:22px;height:22px;border-radius:6px;display:grid;place-items:center;background:color-mix(in srgb,var(--c) 30%,transparent);color:var(--gt)}
+.k4 .rw b{margin-left:auto;font:700 12px 'JetBrains Mono';color:var(--gt)}
+/* k5 diode gauge */
+.k5{display:flex;width:256px;border-radius:14px;overflow:hidden}
+.k5 .bar{width:4px;background:var(--c);box-shadow:0 0 12px var(--c)}.k5 .bd{flex:1;padding:10px 12px;display:grid;grid-template-columns:1fr auto;gap:2px 10px;align-items:center}
+.k5 .n{font-size:14px}
+.k5 .g{grid-row:1/3;grid-column:2;display:grid;justify-items:center;font:800 11px 'JetBrains Mono'}
+.k5 .g svg{width:54px;height:30px}.k5 .g small{font:700 8.5px Inter;letter-spacing:.1em;color:var(--gs)}
+/* k6 badge capsule */
+.k6{display:flex;align-items:center;gap:10px;padding:7px 16px 7px 7px;border-radius:99px;white-space:nowrap}
+.k6 .av{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:var(--c);color:#0b1220;font:800 14px 'JetBrains Mono';box-shadow:0 0 0 3px color-mix(in srgb,var(--c) 35%,transparent),0 0 16px var(--c)}
+.k6 .n{font-size:13px}
+/* k7 glass terminal */
+.k7{width:236px;border-radius:12px;overflow:hidden}
+.k7 .tb{display:flex;align-items:center;gap:5px;padding:7px 10px;border-bottom:1px solid var(--gline)}.k7 .tb i{width:8px;height:8px;border-radius:50%;background:#ef5a5a}.k7 .tb i+i{background:#f5c84b}.k7 .tb i+i+i{background:#4cc46a}.k7 .tb span{margin-left:auto;font:600 10px 'JetBrains Mono';color:var(--gs)}
+.k7 .tx{padding:8px 12px 10px;font:500 11.5px/1.7 'JetBrains Mono';color:var(--gs);white-space:pre}
+.k7 b{color:#4ade80}.k7 em{font-style:normal;color:var(--gt)}.k7 .tx i{font-style:normal;color:var(--c);font-weight:800}
+/* k8 mini-map */
+.k8{display:flex;gap:11px;width:276px;padding:10px;border-radius:14px}
+.k8 .mm{position:relative;flex:none;width:80px;height:52px;border-radius:7px;background:rgba(15,61,43,.85);box-shadow:inset 0 0 0 1px #c9a24a}
+.k8 .mm i{position:absolute;width:8px;height:8px;margin:-4px;border-radius:50%;background:#fff;box-shadow:0 0 0 3px color-mix(in srgb,var(--c) 70%,transparent),0 0 10px var(--c)}
+.k8 .n{font-size:13px}
+/* k9 shortcuts */
+.k9{width:240px;border-radius:14px;overflow:hidden}
+.k9 .b{padding:10px 12px}.k9 .n{font-size:14px}
+.k9 .ft{display:flex;gap:10px;padding:7px 12px;background:var(--gfill);border-top:1px solid var(--gline);font-size:10.5px;color:var(--gs)}
+/* k10 split */
+.k10{display:flex;width:244px;border-radius:14px;overflow:hidden}
+.k10 .pn{width:60px;flex:none;display:grid;place-items:center;align-content:center;gap:1px;background:color-mix(in srgb,var(--c) 34%,transparent);border-right:1px solid var(--gline)}
+.k10 .pn small{font:800 8.5px Inter;letter-spacing:.12em;color:var(--gt);opacity:.75}.k10 .pn b{font:800 24px 'JetBrains Mono';line-height:1.1}
+.k10 .bd{flex:1;padding:10px 12px}.k10 .n{font-size:13.5px}
+.k10 .tg{display:inline-block;margin-top:4px;padding:1px 7px;border-radius:5px;font:800 9px Inter;letter-spacing:.08em;background:var(--gfill2);box-shadow:inset 0 0 0 1px var(--gline)}
+/* k11 net list */
+.k11{width:254px;padding:11px 12px;border-radius:14px}
+.k11 .n{display:flex;align-items:center;gap:7px;font-size:13px}.k11 .n i{width:9px;height:9px;border-radius:50%;background:var(--c);box-shadow:0 0 8px var(--c)}
+.k11 .s{margin:2px 0 8px}
+.k11 .pl{display:flex;flex-wrap:wrap;gap:4px}.k11 .pl span{padding:2px 7px;border-radius:5px;background:var(--gfill2);box-shadow:inset 0 0 0 1px var(--gline);font:600 10.5px 'JetBrains Mono'}.k11 .pl span.m{color:var(--gs)}
+/* k12 spec table */
+.k12{width:226px;border-radius:12px;font-size:11.5px;overflow:hidden}
+.k12 .h{padding:7px 11px;background:color-mix(in srgb,var(--c) 34%,transparent);font:800 12.5px 'JetBrains Mono';display:flex;justify-content:space-between;align-items:center}.k12 .h em{font:800 9px Inter;font-style:normal;letter-spacing:.1em;opacity:.75}
+.k12 table{width:100%;border-collapse:collapse}.k12 td{padding:5px 11px;border-top:1px solid var(--gline);color:var(--gs)}.k12 td+td{text-align:right;color:var(--gt);font:600 11.5px 'JetBrains Mono';border-left:1px solid var(--gline)}
+/* k13 3D glass */
+.gls.k13{width:224px;padding:13px;border-radius:14px;transform:perspective(600px) rotateX(8deg) rotateY(-10deg);box-shadow:inset 0 0 0 1px var(--gb),inset 0 1px 0 var(--ghi),0 3px 0 color-mix(in srgb,var(--c) 65%,transparent),0 6px 0 color-mix(in srgb,var(--c) 30%,transparent),0 24px 30px -10px rgba(0,0,0,.65)}
+.k13 .n{font-size:15px}.k13 .g{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:9px}
+.k13 .g div{padding:5px 8px;border-radius:8px;background:var(--gfill2);box-shadow:inset 0 0 0 1px var(--gline);font-size:10px;color:var(--gs)}.k13 .g b{display:block;font:700 12px 'JetBrains Mono';color:var(--gt)}
+/* k14 actions */
+.k14{width:248px;border-radius:14px;overflow:hidden;pointer-events:auto}
+.k14 .b{padding:10px 12px}.k14 .n{font-size:14px}
+.k14 .ac{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--gline)}
+.k14 .ac button{display:grid;justify-items:center;gap:2px;padding:7px 0;font:600 10px Inter;color:var(--gs)}.k14 .ac button+button{border-left:1px solid var(--gline)}.k14 .ac button:hover{background:var(--gfill2);color:var(--gt)}
+/* k15 side label */
+.k15{display:flex;align-items:center;gap:8px;height:32px;padding:0 14px 0 11px;border-radius:99px;white-space:nowrap;font-size:11.5px}
+.k15 i{width:8px;height:8px;border-radius:50%;background:var(--c);box-shadow:0 0 8px var(--c)}
+.k15 .n{font-size:12.5px}.k15 span{color:var(--gs)}.k15 span b{color:var(--gt);font-weight:700}
+/* k16 pad preview */
+.k16{display:flex;gap:11px;width:256px;padding:10px;border-radius:14px}
+.k16 .pv{flex:none;width:58px;height:58px;border-radius:10px;background:rgba(15,61,43,.85);display:grid;place-items:center;box-shadow:inset 0 0 0 1px rgba(255,255,255,.12)}
+.k16 .pv i{width:22px;height:22px;background:#d9b55c;box-shadow:0 0 0 4px rgba(217,181,92,.25)}
+.k16 .n{font-size:13px}
+.k16 .bd{display:inline-block;margin-top:3px;padding:1px 6px;border-radius:4px;font:800 9px Inter;letter-spacing:.08em;color:#0b1220;background:var(--c)}
+/* k17 neon glass */
+.gls.k17{width:226px;padding:11px 13px;border-radius:12px;font-size:11.5px;box-shadow:inset 0 0 0 1px var(--c),inset 0 0 20px -8px var(--c),0 0 22px -4px var(--c),0 16px 30px -10px rgba(0,0,0,.9)}
+.k17 .n{font-size:15px;color:var(--c);text-shadow:0 0 10px var(--c)}.k17 .rw{display:flex;justify-content:space-between;line-height:1.8;color:var(--gs)}.k17 .rw b{font:600 11.5px 'JetBrains Mono';color:var(--gt)}
+/* k18 tiles */
+.k18{width:244px;padding:8px;border-radius:14px;display:grid;grid-template-columns:1fr 1fr;gap:5px}
+.k18 .n{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;padding:3px 4px 5px;font-size:14px}.k18 .n em{font:800 9px Inter;font-style:normal;letter-spacing:.1em;padding:2px 6px;border-radius:5px;background:color-mix(in srgb,var(--c) 35%,transparent)}
+.k18 div:not(.n){padding:6px 8px;border-radius:9px;background:var(--gfill2);box-shadow:inset 0 0 0 1px var(--gline);font-size:10px;color:var(--gs)}.k18 div b{display:block;font:700 13px 'JetBrains Mono';color:var(--gt)}
+/* k19 liquid glass */
+.gls.k19{width:248px;padding:14px 16px;border-radius:24px;background:linear-gradient(160deg,var(--ghi),transparent 42%),var(--gl);-webkit-backdrop-filter:blur(26px) saturate(210%) brightness(1.06);backdrop-filter:blur(26px) saturate(210%) brightness(1.06);box-shadow:inset 0 1px 1px rgba(255,255,255,.75),inset 0 -12px 22px -14px rgba(255,255,255,.45),inset 0 0 0 1px var(--gb),0 26px 46px -16px rgba(0,0,0,.75)}
+.k19 .k{display:flex;align-items:center;gap:7px;font:700 10px Inter;color:var(--gs)}.k19 .k span{padding:2px 8px;border-radius:99px;background:color-mix(in srgb,var(--c) 40%,transparent);color:var(--gt);font-weight:800;letter-spacing:.06em}
+.k19 .n{font-size:19px;margin:6px 0 10px}
+.k19 .st{display:flex;border-radius:14px;background:var(--gfill2);box-shadow:inset 0 0 0 1px var(--gline)}.k19 .st div{flex:1;padding:6px 9px;font-size:10px;color:var(--gs)}.k19 .st div+div{border-left:1px solid var(--gline)}.k19 .st b{display:block;font:700 12.5px 'JetBrains Mono';color:var(--gt)}
+/* k20 pro */
+.k20{width:272px;border-radius:14px;overflow:hidden;font-size:12px;pointer-events:auto}
+.k20 .h{display:flex;align-items:center;gap:7px;padding:7px 12px;background:linear-gradient(90deg,color-mix(in srgb,var(--c) 34%,transparent),transparent);border-bottom:1px solid var(--gline);font:800 10px Inter;letter-spacing:.1em}
+.k20 .h i{width:9px;height:9px;border-radius:2px;background:var(--c);box-shadow:0 0 8px var(--c)}.k20 .h em{margin-left:auto;font:600 10px 'JetBrains Mono';font-style:normal;letter-spacing:0;color:var(--gs)}
+.k20 .hero{display:flex;align-items:center;gap:8px;padding:9px 12px 4px}.k20 .hero b{font:800 16px 'JetBrains Mono'}
+.k20 .hero button{margin-left:auto;width:24px;height:24px;border-radius:6px;display:grid;place-items:center;color:var(--gs)}.k20 .hero button:hover{background:var(--gfill2);color:var(--gt)}
+.k20 .g{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;padding:4px 12px 8px}.k20 .g div{font-size:10px;color:var(--gs)}.k20 .g b{display:block;font:700 12.5px 'JetBrains Mono';color:var(--gt)}
+.k20 .cn{padding:0 12px 9px;font-size:10.5px;color:var(--gs)}.k20 .cn i{display:block;height:4px;margin-top:4px;border-radius:2px;background:var(--gfill2);overflow:hidden}.k20 .cn i b{display:block;height:100%;background:var(--c)}
+.k20 .ac{display:flex;gap:5px;padding:8px 12px;border-top:1px solid var(--gline);background:var(--gfill)}
+.k20 .ac button{display:flex;align-items:center;gap:5px;height:26px;padding:0 9px;border-radius:7px;font:600 11px Inter;background:var(--gfill2);box-shadow:inset 0 0 0 1px var(--gline)}.k20 .ac button:first-child{background:var(--gacc);color:#fff;box-shadow:none}
+.k20 .ac kbd{margin-left:auto;align-self:center}
+/* k21 glass app card (paired with right edge tabs) */
+.k21{width:258px;border-radius:16px;overflow:hidden;pointer-events:auto}
+.k21 .h{display:flex;align-items:center;gap:8px;padding:10px 12px 0}
+.k21 .h .tg{display:flex;align-items:center;gap:6px;height:22px;padding:0 9px;border-radius:99px;background:color-mix(in srgb,var(--c) 30%,transparent);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--c) 60%,transparent);font:800 9.5px Inter;letter-spacing:.1em}
+.k21 .h .tg i{width:7px;height:7px;border-radius:50%;background:var(--c);box-shadow:0 0 8px var(--c)}
+.k21 .h em{margin-left:auto;font:600 10px 'JetBrains Mono';font-style:normal;color:var(--gs)}
+.k21 .hero{display:flex;align-items:center;gap:8px;padding:8px 12px 10px}
+.k21 .hero .n{font-size:19px;letter-spacing:-.01em}
+.k21 .hero button{margin-left:auto;width:26px;height:26px;border-radius:8px;display:grid;place-items:center;color:var(--gs);background:var(--gfill);box-shadow:inset 0 0 0 1px var(--gline)}.k21 .hero button:hover{color:var(--gt);background:var(--gfill2)}
+.k21 .rows{margin:0 8px;border-radius:11px;background:var(--gfill2);box-shadow:inset 0 0 0 1px var(--gline)}
+.k21 .rw{display:flex;align-items:center;gap:9px;height:31px;padding:0 10px;font-size:12px;color:var(--gs)}
+.k21 .rw+.rw{border-top:1px solid var(--gline)}
+.k21 .rw svg.i{width:13px;height:13px;color:var(--c)}
+.k21 .rw b{margin-left:auto;font:700 12px 'JetBrains Mono';color:var(--gt)}
+.k21 .cn{padding:9px 12px 0;font-size:10.5px;color:var(--gs);display:flex;justify-content:space-between}.k21 .cn b{color:var(--gt);font-weight:700}
+.k21 .bar{display:block;height:4px;margin:5px 12px 0;border-radius:2px;background:var(--gfill2);overflow:hidden}.k21 .bar b{display:block;height:100%;background:linear-gradient(90deg,var(--c),#2dd4bf)}
+.k21 .ac{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:10px 8px 8px}
+.k21 .ac button{display:flex;align-items:center;justify-content:center;gap:6px;height:28px;border-radius:8px;font:600 11px Inter;background:var(--gfill);box-shadow:inset 0 0 0 1px var(--gline)}.k21 .ac button:hover{background:var(--gfill2)}
+.k21 .ac button:first-child{background:var(--c);color:#0b1220;box-shadow:0 0 14px -4px var(--c)}
+</style>
+</head>
+<body>
+<header class="top"><div class="in">
+  <div><h1>Glass pin card + bottom layer bar — 21 designs</h1><p>Every layer bar sits along the bottom. Click a number to show only that layer, ALL for every layer. Rest the mouse on a gold pin: a glass card opens beside it, joined by a line in the layer colour.</p></div>
+  <button class="tbtn" data-a="theme">◐ Light / Dark</button>
+</div></header>
+<main id="main"></main>
+<div class="toast" id="toast"></div>
+<script>
+const $ = s => document.querySelector(s);
+const I = d => `<svg class="i" viewBox="0 0 24 24"><path d="${d}"/></svg>`;
+const IC = {eye:'M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12zM12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6z', eyeOff:'M3 3l18 18M10.6 5.1A10 10 0 0 1 12 5c6.5 0 10 7 10 7a17 17 0 0 1-3.1 4M6.6 6.6C3.8 8.4 2 12 2 12s3.5 7 10 7a9.6 9.6 0 0 0 5.4-1.6',
+  chip:'M7 7h10v10H7zM10 3v4M14 3v4M10 17v4M14 17v4M3 10h4M3 14h4M17 10h4M17 14h4', pin:'M12 3a4 4 0 1 0 0 8 4 4 0 0 0 0-8zM12 11v10', net:'M4 12h5M15 12h5M9 12a3 3 0 1 0 6 0 3 3 0 0 0-6 0', link:'M10 14a4.5 4.5 0 0 0 6.4 0l3-3a4.5 4.5 0 0 0-6.4-6.4l-1 1M14 10a4.5 4.5 0 0 0-6.4 0l-3 3a4.5 4.5 0 0 0 6.4 6.4l1-1',
+  copy:'M9 9h11v11H9zM5 15H4V4h11v1', hl:'M12 3v3M12 18v3M3 12h3M18 12h3M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8z', doc:'M6 3h9l4 4v14H6zM14 3v5h5', search:'M10.5 4a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13zM20 20l-4.8-4.8', prev:'M15 6l-6 6 6 6', next:'M9 6l6 6-6 6', diode:'M3 12h5M16 12h5M8 6.5l8 5.5-8 5.5zM16 6.5v11'};
+const LC = ['', '#4f8ff7', '#f59e42', '#4cc46a', '#f5c84b', '#3fd0e0', '#ef5a5a', '#9b7cf2', '#a3d65c', '#c47c4a', '#f7c99a'];
+const LN = l => l === 1 ? 'Top' : l === 10 ? 'Bottom' : `Inner ${l}`;
+const L10 = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+/* ---------- demo board data ---------- */
+let sd = 11; const R = () => (sd = sd * 16807 % 2147483647) / 2147483647, ri = (a, b) => a + Math.floor(R() * (b - a + 1));
+const TR = {};
+for (const l of L10) TR[l] = Array.from({length: ri(7, 11)}, () => { let x = ri(30, 610), y = ri(30, 370), d = `M${x} ${y}`; for (let k = 0; k < 4; k++) { if (k % 2) { y = Math.max(24, Math.min(376, y + (R() < .5 ? -1 : 1) * ri(20, 110))); d += `V${y}`; } else { x = Math.max(24, Math.min(616, x + (R() < .5 ? -1 : 1) * ri(30, 160))); d += `H${x}`; } } return d; });
+const NETS = ['NET39', 'PP3V0_S2', 'GND', 'PP1V8_AON', 'I2C0_SCL', 'I2C0_SDA', 'USB_DP', 'USB_DN', 'PPBUS_G3H', 'SPI_CLK', 'PP5V_S0', 'CLK_32K'];
+const NCNT = {GND: 312}; NETS.forEach(n => NCNT[n] = NCNT[n] || ri(4, 120)); NCNT.NET39 = 75;
+const REFS = ['U2400', 'C6005', 'R2101', 'L1203', 'Q3101', 'C2810', 'U3300', 'R6020', 'J4500', 'D1700', 'C7712', 'U1100'];
+const COMPS = [], PINS = [];
+const SPOTS = [[70, 60], [210, 70], [380, 60], [520, 80], [90, 190], [250, 200], [420, 190], [560, 210], [110, 310], [280, 315], [440, 300], [570, 320]];
+REFS.forEach((ref, k) => {
+  const two = /^[CRLD]/.test(ref), w = two ? ri(26, 34) : ri(46, 72), h = two ? 14 : ri(30, 46), [cx, cy] = SPOTS[k], side = k % 4 === 3 ? 'BOTTOM' : 'TOP';
+  const c = {ref, x: cx - w / 2, y: cy - h / 2, w, h, side}; COMPS.push(c);
+  const np = ri(3, 5);
+  const pts = two ? [[c.x, cy], [c.x + w, cy]] : Array.from({length: np}, (_, i) => [[c.x, c.y + h * (i + 1) / (np + 1)], [c.x + w, c.y + h * (i + 1) / (np + 1)]]).flat();
+  pts.forEach(([x, y], i) => { const net = ref === 'C6005' && i === 0 ? 'NET39' : two && i === 1 ? 'GND' : NETS[ri(0, NETS.length - 1)];
+    PINS.push({x, y, part: ref, pin: String(i + 1), net, conn: NCNT[net] - 1, diode: R() < .7 ? (0.3 + R() * .4).toFixed(3) : '', side, layer: side === 'TOP' ? 1 : 10}); });
+});
+const DEF = PINS.findIndex(p => p.part === 'C6005' && p.pin === '1');
+const partsOn = net => [...new Set(PINS.filter(p => p.net === net).map(p => p.part))];
+
+/* ---------- state ---------- */
+const ST = {};
+const st = n => ST[n] || (ST[n] = {op: Array(11).fill(1), hov: null, side: 'TOP'});
+const isAll = s => L10.every(l => s.op[l] > 0);
+const soloOf = s => { const v = L10.filter(l => s.op[l] > 0); return v.length === 1 ? v[0] : null; };
+const vis = (s, l) => s.op[l] > 0;
+const on = (s, l) => isAll(s) ? false : vis(s, l);
+
+/* ---------- board ---------- */
+function board(s) {
+  let h = `<svg class="brd" viewBox="0 0 640 400" preserveAspectRatio="xMidYMid meet"><rect x="6" y="6" width="628" height="388" rx="20" fill="#0f3d2b" stroke="#c9a24a" stroke-width="2"/>`;
+  for (const l of [...L10].reverse()) h += `<g class="ly" data-l="${l}" style="opacity:${s.op[l] > 0 ? s.op[l] : .05}" fill="none" stroke="${LC[l]}" stroke-width="${l === 1 || l === 10 ? 2 : 1.4}" stroke-linejoin="round">${TR[l].map(d => `<path d="${d}"/>`).join('')}</g>`;
+  h += COMPS.map(c => `<rect x="${c.x}" y="${c.y}" width="${c.w}" height="${c.h}" rx="2" fill="${c.side === 'TOP' ? '#0d1215' : 'none'}" stroke="${c.side === 'TOP' ? '#3b4b45' : '#6b7f79'}" ${c.side === 'BOTTOM' ? 'stroke-dasharray="3 2"' : ''}/><text x="${c.x + c.w / 2}" y="${c.y - 4}" text-anchor="middle" font-size="8" font-family="JetBrains Mono" fill="rgba(255,255,255,.45)">${c.ref}</text>`).join('');
+  h += PINS.map((p, i) => `<circle class="pn ${p.side === 'BOTTOM' ? 'bt' : ''} ${vis(s, p.layer) ? '' : 'dim'}" data-pv="${i}" cx="${p.x}" cy="${p.y}" r="3.4"/><circle class="hit" data-pin="${i}" cx="${p.x}" cy="${p.y}" r="9"/>`).join('');
+  return h + '</svg>';
+}
+const cnt = l => TR[l].length;
+IC.up = 'M6 15l6-6 6 6'; IC.down = 'M6 9l6 6 6-6'; IC.layers = 'M12 3l9 5-9 5-9-5 9-5zM3 13l9 5 9-5M3 17.5l9 5 9-5'; IC.chev = 'M6 9l6 6 6-6';
+const SN = l => l === 1 ? 'TOP' : l === 10 ? 'BOT' : 'IN' + l;
+
+/* ---------- 20 vertical layer bars ---------- */
+const B = (s, l, cls, inner, extra = '') => `<button class="${cls || ''}${on(s, l) ? ' on' : ''}" data-solo="${l}" style="--c:${LC[l]}" title="Show layer ${l} only (${LN(l)})" ${extra}>${inner}</button>`;
+const ALLB = (s, cls = 'all', inner = 'ALL') => `<button class="${cls}${isAll(s) ? ' on' : ''}" data-all title="Show all layers">${inner}</button>`;
+const DOTS = `<i>${L10.map(l => `<b style="--c:${LC[l]}"></b>`).join('')}</i>`;
+const SN2 = l => l === 1 ? 'Top' : l === 10 ? 'Bottom' : 'In ' + l;
+const PRE = [['Outer', [1, 10]], ['Inner', [2, 3, 4, 5, 6, 7, 8, 9]], ['Top half', [1, 2, 3, 4, 5]], ['Bottom half', [6, 7, 8, 9, 10]]];
+const RAINBOW = 'conic-gradient(#4f8ff7,#f59e42,#4cc46a,#f5c84b,#3fd0e0,#ef5a5a,#9b7cf2,#4f8ff7)';
+const nVis = s => L10.filter(l => vis(s, l)).length;
+const U = {
+  1: s => `<div class="vb bt b1 gls">${ALLB(s, 'all', 'ALL' + DOTS)}${L10.map(l => B(s, l, '', l)).join('')}</div>`,
+  2: s => `<div class="vb bt b2 gls">${ALLB(s)}${L10.map(l => B(s, l, '', `<i></i><span>${l}</span>`)).join('')}</div>`,
+  3: s => `<div class="vb bt b3 gls">${ALLB(s)}${L10.map(l => B(s, l, '', l)).join('')}</div>`,
+  4: s => `<div class="vb bt b4 gls">${ALLB(s, 'all', '<b>ALL</b><small>10 layers</small>')}${L10.map(l => B(s, l, '', `<b>L${l}</b><small>${SN2(l)}</small>`)).join('')}</div>`,
+  5: s => `<div class="vb bt b5 gls">${L10.map(l => `<button class="r${vis(s, l) ? ' on' : ''}" data-eye="${l}" style="--c:${LC[l]}" title="Show / hide layer ${l} · ${LN(l)}">${I(vis(s, l) ? IC.eye : IC.eyeOff)}${l}</button>`).join('')}<button class="sa" data-all>Show all</button></div>`,
+  6: s => { const so = soloOf(s); return `<div class="vb bt b6 gls"><div class="hd">${so ? `<i class="sw" style="--c:${LC[so]}"></i>Layer ${so} · ${LN(so)}` : 'All layers visible'}${ALLB(s, '', 'All')}</div><div class="tr">${L10.map(l => B(s, l, '', '')).join('')}</div><div class="lb">${L10.map(l => `<span>${l}</span>`).join('')}</div></div>`; },
+  7: s => `<div class="vb b7 gls"><span class="lb" title="Layers">${I(IC.layers)}</span><div class="ch">${L10.map(l => B(s, l, '', `<i class="sw"></i>L${l}`)).join('')}</div><div class="rt"><em>${nVis(s)}/10</em>${ALLB(s, 'all', 'All')}</div></div>`,
+  8: s => `<div class="vb bt b8 gls">${L10.map(l => B(s, l, '', l === 10 ? '0' : l, `title="Key ${l === 10 ? 0 : l} · layer ${l}"`)).join('')}${ALLB(s, 'all', 'A · All')}</div>`,
+  9: s => `<div class="vb b9 gls">${ALLB(s, 'all', '<i></i><span>All</span>')}${L10.map(l => B(s, l, '', `<i></i><span>L${l} ${SN2(l)}</span>`)).join('')}</div>`,
+  10: s => { const so = soloOf(s); return `<div class="vb bt b10 gls"><span class="hl">Layer</span>${L10.map(l => B(s, l, '', l)).join('')}${ALLB(s, 'all', 'All')}<span class="nm">${so ? `L${so} · ${LN(so)}` : 'All visible'}</span></div>`; },
+  11: s => `<div class="vb bt b11 gls">${ALLB(s, 'all', 'All')}${L10.map(l => B(s, l, '', `<svg viewBox="0 0 640 400" preserveAspectRatio="none"><g fill="none" stroke="${LC[l]}" stroke-width="14">${TR[l].map(d => `<path d="${d}"/>`).join('')}</g></svg>L${l}`)).join('')}</div>`,
+  12: s => `<div class="vb bt b12 gls">${L10.map(l => `<label class="ch" style="--c:${LC[l]}"><em>${Math.round(s.op[l] * 100)}</em><input type="range" min="0" max="100" value="${Math.round(s.op[l] * 100)}" data-op="${l}" title="Layer ${l} opacity"><i></i>${l}</label>`).join('')}<div class="rs"><button data-all>All</button><button data-none>None</button></div></div>`,
+  13: s => { const so = soloOf(s); return `<div class="vb bt b13 gls" style="--c:${so ? LC[so] : '#2dd4bf'}"><button class="st" data-step="-1" title="Previous layer">${I(IC.prev)}</button><div class="cur">${so ? `<i class="sw"></i><b>L${so}</b>${LN(so)}<em>${cnt(so)} traces</em>` : '<b>ALL</b>Every layer<em>10 layers</em>'}</div><button class="st" data-step="1" title="Next layer">${I(IC.next)}</button><div class="dots">${L10.map(l => B(s, l, '', '')).join('')}</div>${ALLB(s, 'all', 'All')}</div>`; },
+  14: s => `<div class="vb bt b14 gls">${ALLB(s, 'all', 'All')}<div class="ln">${L10.map(l => B(s, l, '', `<i>${l}</i><span>${SN2(l)}</span>`)).join('')}</div></div>`,
+  15: s => `<div class="vb bt b15 gls">${L10.map(l => B(s, l, '', l)).join('')}${ALLB(s)}</div>`,
+  16: s => { const ls = s.side === 'TOP' ? [1, 2, 3, 4, 5] : [6, 7, 8, 9, 10]; return `<div class="vb bt b16 gls"><div class="sd"><button class="${s.side === 'TOP' ? 'on' : ''}" data-side="TOP">Top</button><button class="${s.side === 'BOTTOM' ? 'on' : ''}" data-side="BOTTOM">Bottom</button></div><div class="ls">${ls.map(l => B(s, l, '', `<i class="sw"></i>L${l}<small>${SN2(l)}</small>`)).join('')}</div>${ALLB(s, 'all', 'All')}</div>`; },
+  17: s => `<div class="vb bt b17 gls"><div class="ps">${ALLB(s, 'all', 'All')}${PRE.map(([t, v]) => `<button class="${!isAll(s) && L10.every(l => vis(s, l) === v.includes(l)) ? 'on' : ''}" data-set="${v}">${t}</button>`).join('')}</div><div class="nb">${L10.map(l => `<button class="${vis(s, l) ? 'on' : ''}" data-eye="${l}" style="--c:${LC[l]}" title="Show / hide layer ${l} · ${LN(l)}">${l}</button>`).join('')}</div></div>`,
+  18: s => { const so = soloOf(s); return `<div class="vb bt b18 gls${s.dd ? ' op' : ''}"><button class="st" data-step="-1" title="Previous layer">${I(IC.prev)}</button><button class="dd" data-dd style="--c:${so ? LC[so] : '#2dd4bf'}"><i class="sw"></i>${so ? `Layer ${so} · ${LN(so)}` : 'All layers'}${I(IC.up)}</button><button class="st" data-step="1" title="Next layer">${I(IC.next)}</button>${ALLB(s, 'all', 'All')}${s.dd ? `<div class="mn gls"><h6>Show layer</h6>${ALLB(s, 'it', `<i class="sw" style="background:${RAINBOW};border-radius:50%"></i>All layers<kbd>A</kbd>`)}${L10.map(l => B(s, l, 'it', `<i class="sw"></i>L${l} · ${LN(l)}<kbd>${l % 10}</kbd>`)).join('')}</div>` : ''}</div>`; },
+  19: s => { const so = soloOf(s); return `<div class="vb b19 gls${s.col ? ' col' : ''}"><button class="hd" data-col>${I(IC.layers)}Layers<em>${nVis(s)}/10</em>${so ? `<span class="cu"><i class="sw" style="--c:${LC[so]}"></i>L${so} · ${LN(so)}</span>` : ''}${I(IC.chev)}</button><div class="bd">${ALLB(s, 'all', '<b>ALL</b><small>10 layers</small>')}${L10.map(l => B(s, l, '', `<b>L${l}</b><small>${LN(l)} · ${cnt(l)}</small>`)).join('')}</div></div>`; },
+  20: s => { const so = soloOf(s); return `<div class="vb b20 gls"><header>${I(IC.layers)}Layers<em>${nVis(s)}/10 visible</em>${so ? `<span class="so" style="--c:${LC[so]}">Solo · L${so} ${LN(so)}</span>` : ''}<button class="${isAll(s) ? 'on' : ''}" data-all>All</button><button data-none>None</button></header><div class="cols">${L10.map(l => `<div class="c${vis(s, l) ? ' on' : ''}${so === l ? ' solo' : ''}" style="--c:${LC[l]}"><i class="bar"></i><b>L${l}</b>${SN2(l)}<div class="tl"><button class="ey" data-eye="${l}" title="Show / hide">${I(vis(s, l) ? IC.eye : IC.eyeOff)}</button><button class="so" data-solo="${l}" title="Solo">S</button></div><em>${cnt(l)} tr</em></div>`).join('')}</div></div>`; }
+};
+U[21] = s => `<div class="vb v21">${ALLB(s, 'all gls', 'All')}${L10.map(l => B(s, l, 'gls', `${l}<span>${LN(l)}</span>`)).join('')}</div>`;
+
+/* ---------- 20 glass hover cards ---------- */
+const sub = p => `${p.part} · Pin ${p.pin}`;
+const gauge = v => { const t = v ? Math.min(1, +v / .8) : 0, a = Math.PI * (1 - t); return `<svg viewBox="0 0 54 30"><path d="M5 27A22 22 0 0 1 49 27" fill="none" stroke="var(--gline)" stroke-width="5" stroke-linecap="round"/>${v ? `<path d="M5 27A22 22 0 0 1 ${(27 + Math.cos(a) * 22).toFixed(1)} ${(27 - Math.sin(a) * 22).toFixed(1)}" fill="none" stroke="var(--c)" stroke-width="5" stroke-linecap="round"/>` : ''}</svg>`; };
+const C = {
+  1: p => `<div class="gls k1"><div class="h"><i></i>PIN · ${p.side}</div><div class="b"><div class="n">${p.net}</div><div class="rw">Part<b>${p.part}</b></div><div class="rw">Pin<b>${p.pin}</b></div>${p.diode ? `<div class="rw">Diode<b>${p.diode}</b></div>` : ''}<div class="rw">Connected Pins<b>${p.conn}</b></div></div></div>`,
+  2: p => `<div class="gls smk k2"><div class="k">PIN · ${p.side} · L${p.layer}</div><div class="n">${p.net}</div><div class="ch"><span>${p.part}</span><span>Pin ${p.pin}</span>${p.diode ? `<span>◇ ${p.diode}</span>` : ''}</div><div class="ft">${p.conn} connected<i><b style="width:${Math.min(100, p.conn / 3)}%"></b></i></div></div>`,
+  3: p => `<div class="gls k3"><div class="k"><i></i>PIN · ${p.side} · L${p.layer}</div><div class="n">${p.net}</div><div class="row"><div>Part<b>${p.part}</b></div><div>Pin<b>${p.pin}</b></div><div>Connected<b>${p.conn}</b></div></div></div>`,
+  4: p => `<div class="gls k4"><div class="rw"><span class="ic">${I(IC.net)}</span>Net<b>${p.net}</b></div><div class="rw"><span class="ic">${I(IC.chip)}</span>Part<b>${p.part}</b></div><div class="rw"><span class="ic">${I(IC.pin)}</span>Pin<b>${p.pin}</b></div><div class="rw"><span class="ic">${I(IC.diode)}</span>Diode<b>${p.diode || '—'}</b></div><div class="rw"><span class="ic">${I(IC.link)}</span>Connected<b>${p.conn}</b></div></div>`,
+  5: p => `<div class="gls k5"><i class="bar"></i><div class="bd"><div class="n">${p.net}</div><div class="g">${gauge(p.diode)}${p.diode || '—'}<small>DIODE</small></div><div class="s">${sub(p)} · ${p.conn} connected</div></div></div>`,
+  6: p => `<div class="gls k6"><span class="av">${p.pin}</span><div><div class="n">${p.net}</div><div class="s">${p.part} · ${p.conn} connected · ${p.side}</div></div></div>`,
+  7: p => `<div class="gls smk k7"><div class="tb"><i></i><i></i><i></i><span>pin.info</span></div><div class="tx"><b>›</b> pin <em>${p.part}.${p.pin}</em>\n  net   <i>${p.net}</i>\n  conn  <em>${p.conn}</em>\n  diode <em>${p.diode || '--'}</em>\n  side  <em>${p.side.toLowerCase()}</em></div></div>`,
+  8: p => `<div class="gls k8"><div class="mm"><i style="left:${(p.x / 640 * 100).toFixed(1)}%;top:${(p.y / 400 * 100).toFixed(1)}%"></i></div><div><div class="n">${p.net}</div><div class="s">${sub(p)}<br>${p.conn} connected · ${p.side}</div></div></div>`,
+  9: p => `<div class="gls k9"><div class="b"><div class="n">${p.net}</div><div class="s">${sub(p)} · ${p.conn} connected${p.diode ? ` · ${p.diode} V` : ''}</div></div><div class="ft"><span><kbd>C</kbd> copy</span><span><kbd>H</kbd> highlight</span><span><kbd>F</kbd> find in PDF</span></div></div>`,
+  10: p => `<div class="gls k10"><div class="pn"><small>PIN</small><b>${p.pin}</b></div><div class="bd"><div class="n">${p.net}</div><div class="s">${p.part} · ${p.conn} connected${p.diode ? `<br>Diode ${p.diode}` : ''}</div><span class="tg">${p.side} · L${p.layer}</span></div></div>`,
+  11: p => { const ps = partsOn(p.net).filter(x => x !== p.part); return `<div class="gls k11"><div class="n"><i></i>${p.net}</div><div class="s">${sub(p)} · connected to ${p.conn} pins</div><div class="pl">${ps.slice(0, 5).map(x => `<span>${x}</span>`).join('')}${p.conn > ps.length ? `<span class="m">+${p.conn - Math.min(5, ps.length)} more</span>` : ''}</div></div>`; },
+  12: p => `<div class="gls k12"><div class="h">${p.net}<em>PIN</em></div><table><tr><td>Part</td><td>${p.part}</td></tr><tr><td>Pin</td><td>${p.pin}</td></tr><tr><td>Side</td><td>${p.side}</td></tr><tr><td>Diode</td><td>${p.diode || '—'}</td></tr><tr><td>Connected</td><td>${p.conn}</td></tr></table></div>`,
+  13: p => `<div class="gls k13"><div class="n">${p.net}</div><div class="g"><div>Part<b>${p.part}</b></div><div>Pin<b>${p.pin}</b></div><div>Connected<b>${p.conn}</b></div><div>Diode<b>${p.diode || '—'}</b></div></div></div>`,
+  14: p => `<div class="gls k14"><div class="b"><div class="n">${p.net}</div><div class="s">${sub(p)} · ${p.conn} connected</div></div><div class="ac"><button data-act="Net highlighted">${I(IC.hl)}Highlight</button><button data-act="Net name copied">${I(IC.copy)}Copy</button><button data-act="Opening schematic…">${I(IC.doc)}Find in PDF</button></div></div>`,
+  15: p => `<div class="gls k15"><i></i><span class="n">${p.net}</span><span><b>${p.part}</b>.${p.pin} · ${p.conn} pins</span></div>`,
+  16: p => `<div class="gls k16"><div class="pv"><i style="border-radius:${/^[CRLD]/.test(p.part) ? '3px' : '50%'}"></i></div><div><div class="n">${p.net}</div><div class="s">${sub(p)}<br>${p.conn} connected${p.diode ? ` · ${p.diode} V` : ''}</div><span class="bd">${p.side} · L${p.layer}</span></div></div>`,
+  17: p => `<div class="gls smk k17"><div class="n">${p.net}</div><div class="rw">Part<b>${p.part}</b></div><div class="rw">Pin<b>${p.pin}</b></div><div class="rw">Diode<b>${p.diode || '—'}</b></div><div class="rw">Connected<b>${p.conn}</b></div></div>`,
+  18: p => `<div class="gls k18"><div class="n">${p.net}<em>${p.side}</em></div><div>Part<b>${p.part}</b></div><div>Pin<b>${p.pin}</b></div><div>Connected<b>${p.conn}</b></div><div>Diode<b>${p.diode || '—'}</b></div></div>`,
+  19: p => `<div class="gls k19"><div class="k"><span>PIN · ${p.side}</span>L${p.layer} · ${LN(p.layer)}</div><div class="n">${p.net}</div><div class="st"><div>Part<b>${p.part}</b></div><div>Pin<b>${p.pin}</b></div><div>Conn<b>${p.conn}</b></div></div></div>`,
+  20: p => `<div class="gls k20"><div class="h"><i></i>PIN · ${p.side}<em>L${p.layer} · ${LN(p.layer)}</em></div><div class="hero"><b>${p.net}</b><button data-act="Net name copied" title="Copy net">${I(IC.copy)}</button></div><div class="g"><div>Part<b>${p.part}</b></div><div>Pin<b>${p.pin}</b></div><div>Diode<b>${p.diode || '—'}</b></div></div><div class="cn">Connected to ${p.conn} pins<i><b style="width:${Math.min(100, p.conn / 3)}%"></b></i></div><div class="ac"><button data-act="Net highlighted">${I(IC.hl)}Highlight</button><button data-act="Opening schematic…">${I(IC.doc)}Schematic</button><kbd>Ctrl C</kbd></div></div>`,
+  21: p => `<div class="gls k21"><div class="h"><span class="tg"><i></i>PIN · ${p.side}</span><em>L${p.layer} · ${LN(p.layer)}</em></div><div class="hero"><span class="n">${p.net}</span><button data-act="Net name copied" title="Copy net name">${I(IC.copy)}</button></div><div class="rows"><div class="rw">${I(IC.chip)}Part<b>${p.part}</b></div><div class="rw">${I(IC.pin)}Pin<b>${p.pin}</b></div><div class="rw">${I(IC.diode)}Diode<b>${p.diode || '—'}</b></div></div><div class="cn">Connected Pins<b>${p.conn}</b></div><i class="bar"><b style="width:${Math.min(100, p.conn / 3)}%"></b></i><div class="ac"><button data-act="Net highlighted">${I(IC.hl)}Highlight net</button><button data-act="Opening schematic…">${I(IC.doc)}Find in PDF</button></div></div>`
+};
+
+const META = [
+  ['Glass chip row + frosted classic card', 'Chips 1–10 with a colour base and ALL with dots; the app card as glass'],
+  ['Dot capsule + smoked glass card', 'Colour dots that turn into numbers; big net, chips and a connection bar'],
+  ['Segmented bar + aurora card', 'One joined control with colour ticks; card with a soft colour glow'],
+  ['Stack-up strip + glass inspector', 'Layer tiles with names that lift when chosen; icon rows for net, part, pin, diode'],
+  ['Eye toolbar + diode gauge', 'Toggle several layers on and off; colour-edge card with a diode gauge'],
+  ['Layer slider + pin badge', 'Scrub along a colour track; capsule card with the pin number'],
+  ['Docked toolbar + glass terminal', 'A full-width bar docked to the bottom edge with count and All; terminal readout'],
+  ['Keycap row + mini-map card', 'Physical keys 1–0 with LEDs; card shows where the pin sits'],
+  ['Edge strip + shortcut card', 'A 12 px colour strip that opens to labels on hover; card with C / H / F keys'],
+  ['Swatch row + split card', 'Colour swatches with the current layer name; big pin number on the card'],
+  ['Filmstrip + net list', 'A preview of each layer; card lists the other parts on the net'],
+  ['Fader mixer + spec table', 'A fader per layer for partial opacity; glass spec table'],
+  ['Stepper + 3D card', '◀ L3 ▶ with a bar index; tilted card with layer-colour depth'],
+  ['Metro line + action card', 'Layers as stations on a colour line; Highlight / Copy / Find in PDF'],
+  ['Magnify dock + side label', 'Dock that magnifies under the mouse; a one-line label beside the pin'],
+  ['Top / Bottom switch + pad preview', 'Pick the board side, then its layers; card shows pad shape and side'],
+  ['Preset groups + neon glass', 'Outer / Inner / Top half / Bottom half presets plus 1–10 toggles; neon card'],
+  ['Drop-up picker + tiles', 'One compact picker that opens a layer menu upward, with ◀ ▶; 2×2 tiles'],
+  ['Pull-up drawer + liquid glass', 'A drawer with a grip that folds down to one line; liquid-glass card'],
+  ['Pro track panel + pro card', 'Ten columns with eye + SOLO and trace counts, All / None; full card with actions'],
+  ['Bottom edge tabs + glass app card', 'Glass tabs rise from the bottom edge (the chosen tab grows and shows its name); glass card with net + copy, Part / Pin / Diode, connected bar, actions']];
+
+/* ---------- render ---------- */
+$('#main').innerHTML = META.map(([t, d], k) => `<section class="card"><div class="meta"><span class="num">${String(k + 1).padStart(2, '0')}</span><div><h3>${t}</h3><p>${d}</p></div></div><div class="stg" id="s${k + 1}" data-n="${k + 1}"></div></section>`).join('');
+function render(n) { const s = st(n), el = $('#s' + n); el.innerHTML = board(s) + U[n](s) + '<i class="ld"></i><div class="cd"></div>'; card(n); }
+const GAP = 30, DEFN = {};
+function card(n) {
+  const s = st(n), el = $('#s' + n), i = s.hov ?? (DEFN[n] ?? DEF), p = PINS[i], cd = el.querySelector('.cd'), ld = el.querySelector('.ld');
+  el.querySelectorAll('.pn').forEach(c => { const q = PINS[+c.dataset.pv]; c.classList.toggle('hl', q.net === p.net && +c.dataset.pv !== i); c.classList.toggle('cur', +c.dataset.pv === i); });
+  cd.innerHTML = C[n](p); cd.style.setProperty('--c', LC[p.layer]); ld.style.setProperty('--c', LC[p.layer]);
+  cd.style.left = '0px'; cd.style.top = '0px';
+  const pr = el.querySelector(`[data-pv="${i}"]`).getBoundingClientRect(), er = el.getBoundingClientRect(), px = pr.left + pr.width / 2 - er.left, py = pr.top + pr.height / 2 - er.top;
+  const w = cd.offsetWidth, h = cd.offsetHeight; let x = px + GAP, right = true;
+  if (x + w > er.width - 8) { x = px - GAP - w; right = false; }
+  const vb = el.querySelector('.vb'), vr = vb.getBoundingClientRect(), lim = vr.bottom > er.bottom - 30 ? vr.top - er.top - 10 : er.height - 8;
+  let y = Math.max(8, Math.min(lim - h, py - h / 2));
+  cd.style.left = x + 'px'; cd.style.top = y + 'px';
+  ld.classList.toggle('l', !right); ld.style.top = py + 'px';
+  ld.style.left = (right ? px : x + w) + 'px'; ld.style.width = (right ? x - px : px - x - w) + 'px';
+}
+for (let n = 1; n <= 21; n++) render(n);
+
+let tt; const toast = m => { const e = $('#toast'); e.textContent = m; e.classList.add('on'); clearTimeout(tt); tt = setTimeout(() => e.classList.remove('on'), 1500); };
+const HT = {};
+document.addEventListener('mouseover', e => {
+  const stg = e.target.closest('.stg'); if (!stg) return;
+  const h = e.target.closest('[data-pin]'), n = +stg.dataset.n, s = st(n);
+  if (h) { clearTimeout(HT[n]); const i = +h.dataset.pin; if (s.hov !== i) { s.hov = i; card(n); } }
+  else if (e.target.closest('.cd')) clearTimeout(HT[n]);
+  else if (s.hov !== null) { clearTimeout(HT[n]); HT[n] = setTimeout(() => { s.hov = null; card(n); }, 280); }
+});
+document.addEventListener('click', e => {
+  const a = e.target.closest('[data-a]'); if (a) { const d = document.documentElement; d.dataset.theme = d.dataset.theme === 'dark' ? 'light' : 'dark'; return; }
+  const act = e.target.closest('[data-act]'); if (act) return toast(act.dataset.act);
+  const stg = e.target.closest('.stg'); if (!stg) return; const n = +stg.dataset.n, s = st(n);
+  const b = e.target.closest('[data-solo],[data-all],[data-none],[data-eye],[data-step],[data-side],[data-col],[data-set],[data-dd]'); if (!b) return;
+  if (b.dataset.solo) { const l = +b.dataset.solo; L10.forEach(k => s.op[k] = k === l ? 1 : 0); toast(`Layer ${l} only · ${LN(l)}`); }
+  else if ('all' in b.dataset) { L10.forEach(k => s.op[k] = 1); toast('All layers'); }
+  else if ('none' in b.dataset) { L10.forEach(k => s.op[k] = 0); }
+  else if (b.dataset.eye) { const l = +b.dataset.eye; s.op[l] = s.op[l] > 0 ? 0 : 1; }
+  else if (b.dataset.step) { const cur = soloOf(s) || (b.dataset.step > 0 ? 0 : 11), l = ((cur - 1 + +b.dataset.step + 10) % 10) + 1; L10.forEach(k => s.op[k] = k === l ? 1 : 0); }
+  else if (b.dataset.side) { s.side = b.dataset.side; }
+  else if ('col' in b.dataset) { s.col = !s.col; }
+  else if (b.dataset.set) { const v = b.dataset.set.split(',').map(Number); L10.forEach(k => s.op[k] = v.includes(k) ? 1 : 0); }
+  else if ('dd' in b.dataset) { s.dd = !s.dd; }
+  if (!('dd' in b.dataset)) s.dd = false;
+  render(n);
+});
+document.addEventListener('input', e => {
+  const r = e.target.closest('[data-op]'); if (!r) return; const stg = r.closest('.stg'), n = +stg.dataset.n, s = st(n), l = +r.dataset.op;
+  s.op[l] = +r.value / 100; stg.querySelector(`.ly[data-l="${l}"]`).style.opacity = s.op[l] > 0 ? s.op[l] : .05;
+  const em = r.parentElement.querySelector('em'); if (em) em.textContent = r.value + (r.closest('.b12') ? '' : '%');
+  stg.querySelectorAll('.pn').forEach(c => c.classList.toggle('dim', !vis(s, PINS[+c.dataset.pv].layer)));
+});
+document.addEventListener('keydown', e => {
+  if (e.target.matches('input')) return; const stg = document.querySelector('.stg:hover'); if (!stg) return; const n = +stg.dataset.n, s = st(n);
+  if (/^[0-9]$/.test(e.key)) { const l = e.key === '0' ? 10 : +e.key; L10.forEach(k => s.op[k] = k === l ? 1 : 0); render(n); }
+  if (e.key.toLowerCase() === 'a') { L10.forEach(k => s.op[k] = 1); render(n); }
+});
+</script>
+</body>
+</html>
