@@ -210,9 +210,10 @@ main{max-width:1220px;margin:auto;padding:22px 24px 80px;display:grid;gap:22px}
 .chips2{flex:1;min-width:0;display:flex;align-items:center;gap:4px;overflow-x:auto;scrollbar-width:none;-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 28px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 28px),transparent);padding-right:6px;gap:2px}
 .chips2::-webkit-scrollbar{display:none}
 .ch2{flex:none;white-space:nowrap;position:relative}
-.ch2:not(.sel){padding:0 5px!important}
-.ch2:not(.sel) .x{position:absolute;top:-5px;right:-5px;width:15px;height:15px;font-size:11px;background:var(--win);box-shadow:0 0 0 1px var(--hair);display:none}
-.ch2:not(.sel):hover .x{display:grid;opacity:1}
+.ch2:not(.sel){padding:0 3px 0 7px!important}
+.ch2 .x{opacity:.55;width:15px;height:15px;font-size:12px}
+.ch2:hover .x,.ch2.sel .x{opacity:1}
+.ch2 .x:hover{background:var(--tc);color:#fff}
 .ch2 .sc{font:700 10.5px var(--mono);color:var(--text)}
 .ch2{display:flex;align-items:center;gap:4px;height:26px;padding:0 4px 0 10px;border-radius:8px;font-size:11.5px;color:var(--text-2);background:color-mix(in srgb,var(--ts) 55%,var(--win))}
 .ch2 .tx b{color:var(--text)}
@@ -236,6 +237,38 @@ main{max-width:1220px;margin:auto;padding:22px 24px 80px;display:grid;gap:22px}
 .i6:hover{background:var(--hover)}
 .i6.sel .av{background:var(--tc);color:#fff}.i6.sel{background:var(--win)}
 
+/* design A: two tab rows — PCB on top, PDF below */
+.p2r{position:relative;z-index:4;flex:none;display:grid;background:var(--panel-2);border-bottom:1px solid var(--hair)}
+.trw{position:relative;display:flex;align-items:center;gap:8px;height:42px;padding:0 10px 0 12px;transition:background .2s}
+.trw+.trw{border-top:1px solid var(--hair)}
+.trw.act{background:color-mix(in srgb,var(--ts) 50%,var(--panel-2))}
+.trw.act::before{content:"";position:absolute;left:0;top:7px;bottom:7px;width:3px;border-radius:0 3px 3px 0;background:var(--tc)}
+.trw:not(.act) .chips2{opacity:.78}.trw:not(.act):hover .chips2{opacity:1}
+.trw:not(.act) .ch2.sel{box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--tc) 60%,transparent)}
+.rl{flex:none;display:flex;align-items:center;gap:6px;width:82px;height:28px;padding:0 6px 0 8px;border-radius:8px;font:800 11.5px Inter;letter-spacing:.04em;color:var(--tc);background:var(--win);box-shadow:inset 0 0 0 1px var(--hair);transition:.15s}
+.rl svg.i{width:14px;height:14px}
+.rl{width:92px!important;letter-spacing:.02em!important}
+.rl .n{margin-left:auto;min-width:24px;height:18px;padding:0 4px;display:grid;place-items:center;line-height:1;letter-spacing:0;font:700 10px var(--mono);border-radius:6px;background:var(--ts);color:var(--tc)}
+.rl:hover{box-shadow:inset 0 0 0 1px var(--tc)}
+.trw.act .rl{color:#fff;background:linear-gradient(180deg,color-mix(in srgb,var(--tc) 82%,#fff),var(--tc));box-shadow:0 4px 10px -5px var(--tc),inset 0 1px 0 rgba(255,255,255,.25)}
+.trw.act .rl .n{background:rgba(255,255,255,.22);color:#fff}
+.p2r.hid{height:4px}
+.hdl{position:absolute;z-index:5;left:50%;bottom:-14px;transform:translateX(-50%);display:flex;align-items:center;gap:4px;height:14px;padding:0 10px 1px 8px;border-radius:0 0 9px 9px;font:700 9.5px Inter;color:var(--text-3);background:var(--panel-2);box-shadow:0 1px 0 var(--hair),1px 0 0 var(--hair),-1px 0 0 var(--hair),0 6px 10px -6px rgba(14,33,64,.35);white-space:nowrap;transition:color .15s,background .15s}
+.hdl svg.i{width:11px;height:11px;transition:transform .2s}
+.hdl.hid svg.i{transform:rotate(180deg)}
+.hdl:hover{color:var(--text);background:var(--win)}
+.hdl.hid{bottom:-16px;height:16px;color:var(--acc-t)}
+.endw{margin-left:auto}
+.endw .lay.named{height:26px;gap:5px!important;padding:0 5px 0 7px!important;font-size:11px!important;border-radius:8px}
+.endw .lay.named .mg{width:15px;height:11px}
+.endw .lay.named svg.i{width:11px!important;height:11px!important}
+.endw .lay[data-tt]:hover::after{display:none}
+.endw .lpop{left:auto;right:-2px}
+.swb{flex:none;margin-left:auto;display:flex;align-items:center;gap:5px;height:26px;padding:0 9px 0 7px;border-radius:8px;font:700 11px Inter;color:var(--text-2);background:var(--win);box-shadow:inset 0 0 0 1px var(--hair);white-space:nowrap;transition:background .15s,color .15s,box-shadow .15s}
+.swb svg.i{width:13px;height:13px;color:var(--tc);transition:transform .3s cubic-bezier(.2,.9,.25,1.2)}
+.swb kbd{font:600 9.5px var(--mono);padding:1px 5px;border-radius:5px;background:var(--panel);box-shadow:0 0 0 1px var(--hair);color:var(--text-3)}
+.swb:hover{color:var(--tc);box-shadow:inset 0 0 0 1px var(--tc);background:var(--ts)}
+.swb:hover svg.i{transform:rotate(180deg)}
 .toast{position:fixed;left:50%;bottom:24px;z-index:60;transform:translate(-50%,20px);opacity:0;transition:.25s;background:#0e2140;color:#fff;padding:10px 16px;border-radius:10px;font-weight:600;font-size:12.5px;pointer-events:none}
 .toast.on{opacity:1;transform:translate(-50%,0)}
 </style>
@@ -432,16 +465,24 @@ R[1] = () => {
   const chip = i => { const on = i === selI, f = F(t, i);
     return `<button class="ch2 ${t}${on ? ' sel' : ''}" data-a="actA" data-t="${t}" data-i="${i}" title="${esc(TT[t] + ' · ' + f.c + ' — ' + f.n)}">${on ? `<span class="tx"><b style="margin:0">${f.c}</b></span>` : `<span class="sc">${f.s}</span>`}${X(t, i)}</button>`; };
   const cur = LAYS.find(l => l[0] === LY.lay);
-  return `${tree(1)}<div class="content"><div class="p2"><div class="capw">${switchHTML(SW, true)}
-      ${LY.pop ? `<div class="lpop"><div class="lh"><b>View layout</b><span>Alt 1 · 2 · 3</span></div><div class="lcards">${LAYS.map(([k, l, d, kb]) => `<button class="lc${LY.lay === k ? ' on' : ''}" data-a="lay" data-v="${k}" title="${d}">${LY.lay === k ? '<span class="ck">✓</span>' : ''}<span class="pv">${k === 'single' ? `<i class="${t === 'pcb' ? 'b' : ''}"></i>` : k === 'pp' ? '<i></i><i></i>' : '<i></i><i class="b"></i>'}</span><b>${l}</b></button>`).join('')}</div></div>` : ''}</div>
-    <div class="chips2" data-keep="ch1">${S.o[t].length ? S.o[t].map(chip).join('') : `<span class="nochip">No ${TT[t]} open — pick one in the tree</span>`}</div></div>${viewA()}</div>`;
+  /* two rows: PCB tabs on top (View layout at the right end), PDF tabs below (Swap at the right end) */
+  const chipT = (tt, i) => { const sI = LY.lay === 'pp' && LY.pane === 'R' && tt === 'pdf' ? a2() : S.a[tt], on = i === sI, f = F(tt, i);
+    return `<button class="ch2 ${tt}${on ? ' sel' : ''}" data-a="actA" data-t="${tt}" data-i="${i}" title="${esc(TT[tt] + ' · ' + f.c + ' — ' + f.n)}">${on ? `<span class="tx"><b style="margin:0">${f.c}</b></span>` : `<span class="sc">${f.s}</span>`}${X(tt, i)}</button>`; };
+  const pop = LY.pop ? `<div class="lpop"><div class="lh"><b>View layout</b><span>Alt 1 · 2 · 3</span></div><div class="lcards">${LAYS.map(([k, l, d, kb]) => `<button class="lc${LY.lay === k ? ' on' : ''}" data-a="lay" data-v="${k}" title="${d}">${LY.lay === k ? '<span class="ck">✓</span>' : ''}<span class="pv">${k === 'single' ? `<i class="${t === 'pcb' ? 'b' : ''}"></i>` : k === 'pp' ? '<i></i><i></i>' : '<i></i><i class="b"></i>'}</span><b>${l}</b></button>`).join('')}</div></div>` : '';
+  const layB = `<div class="capw endw"><button class="lay named${LY.pop ? ' open' : ''}" data-a="laym" data-tt="${cur[1]} · Alt 1–3">${mg(LY.lay)}<span>Layout</span>${I('M6 9l6 6 6-6')}</button>${pop}</div>`;
+  const o = other(t), swapB = `<button class="swb ${o}" data-a="typeA" data-t="${o}" title="Swap to ${TT[o]} · Alt S">${I(SWAP)}<span>${TT[o]}</span></button>`;
+  const row = (tt, end) => `<div class="trw ${tt}${t === tt ? ' act' : ''}"><button class="rl ${tt}" data-a="typeA" data-t="${tt}" title="Show ${TT[tt]} files">${I(tt === 'pdf' ? DOC : CHIP)}${TT[tt]}<span class="n">${S.o[tt].length}</span></button>
+    <div class="chips2" data-keep="ch1${tt}">${S.o[tt].length ? S.o[tt].map(i => chipT(tt, i)).join('') : `<span class="nochip">No ${TT[tt]} open — pick one in the tree</span>`}</div>${end}</div>`;
+  const nOpen = S.o.pdf.length + S.o.pcb.length;
+  const hdl = `<button class="hdl${LY.hide ? ' hid' : ''}" data-a="hide" title="${LY.hide ? 'Show tabs' : 'Hide tabs'}">${I('M6 15l6-6 6 6')}<span>${LY.hide ? `Show tabs · ${nOpen}` : 'Hide'}</span></button>`;
+  return `${tree(1)}<div class="content"><div class="p2r${LY.hide ? ' hid' : ''}">${LY.hide ? '' : row('pcb', layB) + row('pdf', swapB)}${hdl}</div>${viewA()}</div>`;
 };
 
 R[2] = u => `${tree(2)}<div class="content" style="flex-direction:row"><div class="r6${u.pin ? ' pin' : ''}"><div class="r6in">${TYPES.map(t => `<div class="r6h ${t}"><span class="tl">${TT[t]}</span><span class="ct">${S.o[t].length} open</span>${t === 'pdf' ? `<button class="pinb" data-a="pin">${u.pin ? '⇤ Unpin' : '📌 Keep open'}</button>` : ''}</div>${S.o[t].map(i => `<button class="i6 ${t}${st(t, i)}" ${A(t, i)}><span class="av">${F(t, i).k.slice(0, 5)}</span>${lab(t, i)}${X(t, i)}</button>`).join('')}`).join('')}</div></div>${view()}</div>`;
 
 /* ---------- cards ---------- */
 const META = [
-  {h:'Smart swap + tree', p:'Tree on the left. Above the page, the <b>current type</b> sits in a bold colour block with its count, and the other type waits beside it — one click (or <kbd>Alt</kbd>+<kbd>S</kbd>) swaps them. The layout button next to it gives Single · PDF | PDF · PDF | PCB.', w:['One row even with 10 open','Click the grey side or Alt+S to swap','Layout button: Alt 1/2/3','Hover a chip for its full name']},
+  {h:'Two tab rows + tree', p:'Tree on the left. Above the page, <b>PCB tabs sit on the top row</b> and <b>PDF tabs on the row below</b>, so both types are always visible. <b>View layout</b> is at the right end of the PCB row (Single · PDF | PDF · PDF | PCB), and <b>Swap</b> is at the right end of the PDF row (or <kbd>Alt</kbd>+<kbd>S</kbd>). The row that is showing on the page is highlighted.', w:['PCB on top, PDF below','View layout: right end of PCB row · Alt 1/2/3','Swap: right end of PDF row · Alt+S','Click any chip to show it']},
   {h:'Expanding strip + tree', p:'Tree on the left, then a thin 52-pixel strip of short codes. Rest the mouse on it and it slides open with every full name. <b>📌 Keep open</b> pins it as a real column.', w:['Page keeps almost full width','PDF and PCB both visible','Pin it when you need it']}];
 $('#main').innerHTML = META.map((m, n) => `<section class="opt" data-n="${n + 1}"><div class="meta"><span class="num">${String.fromCharCode(65 + n)}</span><div><h3>${m.h}</h3><p>${m.p}</p><div class="why">${m.w.map(x => `<span>${x}</span>`).join('')}</div></div></div><div class="win" id="w${n + 1}"></div></section>`).join('') +
   `<section class="opt ask"><div class="meta"><span class="num">?</span><div><h3>How to compare</h3></div></div><ul>
@@ -457,7 +498,7 @@ function draw() {
   $all('[data-keep]').forEach(n => { if (keep[n.dataset.keep] != null) n.scrollTop = keep[n.dataset.keep]; });
   $('#cnt').textContent = `PDF ${S.o.pdf.length}/10 · PCB ${S.o.pcb.length}/10`;
   const th = $('#w1 .thumb'), on = $('#w1 .cap .ty.on');
-  const lp = $('#w1 .lpop'), lb = $('#w1 .capw .lay'); if (lp && lb) { const cr = $('#w1 .capw').getBoundingClientRect(), br = lb.getBoundingClientRect(); lp.style.setProperty('--ax', (br.left - cr.left + br.width / 2 + 2) + 'px'); }
+  const lp = $('#w1 .lpop'), lb = $('#w1 .capw .lay'); if (lp && lb) { const cr = lp.getBoundingClientRect(), br = lb.getBoundingClientRect(); lp.style.setProperty('--ax', (br.left - cr.left + br.width / 2) + 'px'); }
   if (th && on) { th.style.left = on.offsetLeft + 'px'; th.style.width = on.offsetWidth + 'px';
     if (prev && prev[0] !== on.offsetLeft) th.animate([{left:prev[0] + 'px', width:prev[1] + 'px'}, {left:on.offsetLeft + 'px', width:on.offsetWidth + 'px'}], {duration:280, easing:'cubic-bezier(.2,.8,.2,1)'}); }
 }
@@ -466,8 +507,9 @@ let tt; function toast(m) { const e = $('#toast'); e.textContent = m; e.classLis
 document.addEventListener('click', e => {
   if (LY.pop && !e.target.closest('.capw')) { LY.pop = false; if (!e.target.closest('[data-a]')) return draw(); }
   const el = e.target.closest('[data-a]'); if (!el) return;
-  if (el.dataset.a === 'actA') return actA(el.dataset.t, +el.dataset.i);
+  if (el.dataset.a === 'actA') { if (el.dataset.t !== S.t) typeA(el.dataset.t); return actA(el.dataset.t, +el.dataset.i); }
   if (el.dataset.a === 'typeA') return typeA(el.dataset.t);
+  if (el.dataset.a === 'hide') { LY.hide = !LY.hide; LY.pop = false; return draw(); }
   if (el.dataset.a === 'laym') { LY.pop = !LY.pop; return draw(); }
   if (el.dataset.a === 'lay') return setLay(el.dataset.v);
   if (el.dataset.a === 'pane') { if (LY.lay === 'pp') LY.pane = el.dataset.v; else S.t = el.dataset.v === 'L' ? 'pdf' : 'pcb'; return draw(); }
