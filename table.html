@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Viewer Panel Layouts</title>
+<style>
+:root{
+  --ui:"Segoe UI Variable Text","Segoe UI",Inter,system-ui,sans-serif;
+  --disp:"Segoe UI Variable Display","Segoe UI",Inter,system-ui,sans-serif;
+  --mono:"JetBrains Mono","Cascadia Mono",Consolas,ui-monospace,monospace;
+  --hand:"Segoe Print","Bradley Hand","Comic Sans MS",cursive;
+  --ease:cubic-bezier(.2,.8,.2,1); --spring:cubic-bezier(.34,1.4,.64,1);
+}
+:root,[data-theme="dark"]{--page:#0b0c11;--c-panel:#171922;--c-soft:#262938;--c-t1:#f2f3f8;--c-t2:#b2b7c9;--c-t3:#8a8fa4;--c-acc:#4d74f8;color-scheme:dark}
+[data-theme="light"]{--page:#e8eaf0;--c-panel:#fff;--c-soft:#dfe2ea;--c-t1:#15161d;--c-t2:#555a6e;--c-t3:#6b6f84;--c-acc:#3b5cd8;color-scheme:light}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--page);color:var(--c-t1);font:400 14px/20px var(--ui);-webkit-font-smoothing:antialiased}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer}
+[hidden]{display:none!important}
+
+/* ---------- page chrome ---------- */
+.top{position:sticky;top:0;z-index:100;display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:12px 24px;background:color-mix(in srgb,var(--page) 88%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--c-soft)}
+.top h1{margin:0;font:600 17px var(--disp)}.top p{margin:1px 0 0;color:var(--c-t3);font-size:12px}
+.grow{flex:1}
+.tabs{display:flex;gap:3px;flex-wrap:wrap;padding:3px;border-radius:10px;background:var(--c-panel);border:1px solid var(--c-soft)}
+.tabs button{border:0;background:none;padding:5px 10px;border-radius:7px;color:var(--c-t2);font-size:12.5px;font-weight:500}
+.tabs button:hover{color:var(--c-t1)}
+.tabs button.sel{background:var(--c-acc);color:#fff}
+.chip{border:1px solid var(--c-soft);background:var(--c-panel);border-radius:8px;padding:6px 11px;font-size:12.5px;color:var(--c-t2)}
+.chip:hover{color:var(--c-t1);border-color:var(--c-acc)}
+.wrap{max-width:1400px;margin:0 auto;padding:20px 24px 50px}
+.cap{display:flex;gap:16px;align-items:flex-start;margin-bottom:14px;flex-wrap:wrap}
+.cap .n{font:700 34px/1 var(--disp);color:var(--c-acc)}
+.cap h2{margin:0;font:600 20px var(--disp)}
+.cap p{margin:4px 0 0;color:var(--c-t2);max-width:1000px}
+.cap .ideas{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.cap .ideas div{background:var(--c-panel);border:1px solid var(--c-soft);border-radius:10px;padding:8px 12px;font-size:12.5px;color:var(--c-t2)}
+.cap .ideas b{color:var(--c-t1)}
+.stages{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.stagebox h3{margin:0 0 8px;font:600 13px var(--ui);color:var(--c-t2)}
+.stagebox h3 small{color:var(--c-t3);font-weight:400}
+.how{margin-top:14px;font-size:12.5px;color:var(--c-t3)}
+
+/* ---------- viewers ---------- */
+.viewer{position:relative;height:640px;border-radius:12px;overflow:hidden;border:1px solid var(--c-soft);user-select:none}
+.pdf{background:#5d6170}
+.pdf .page{position:absolute;inset:18px 34px 46px;background:#fff;box-shadow:0 8px 30px rgba(0,0,0,.35)}
+.pdf .page svg{width:100%;height:100%;display:block}
+.pdf .pbar{position:absolute;left:50%;bottom:10px;transform:translateX(-50%);display:flex;gap:8px;align-items:center;padding:4px 12px;border-radius:20px;background:rgba(20,22,30,.85);color:#fff;font:12px var(--mono)}
+.pdf .pbar.flash b{color:#ffd166}
+.pcb{background:#1d1f24}
+.pcb svg{width:100%;height:100%;display:block}
+.pcb .pad{fill:#e2a35c;stroke:#8a5a26;stroke-width:1;cursor:pointer}
+.pcb .pad.hot{fill:#ffe08a;stroke:#fff;stroke-width:2;filter:drop-shadow(0 0 6px #ffd166)}
+.pcb .pad.focus{stroke:#4d9bff;stroke-width:3}
+.pcb .trace{stroke:#3e6b8f;stroke-width:6;fill:none;stroke-linecap:round;opacity:.85}
+.pcb .trace.hot{stroke:#ffd166;opacity:1}
+.pcb text{font:700 10px var(--mono);fill:#3b2410;pointer-events:none}
+.reopen{position:absolute;left:12px;top:12px;z-index:3;border:0;border-radius:8px;padding:7px 12px;background:rgba(20,22,30,.85);color:#fff;font-size:12.5px}
+.pcb .reopen{left:auto;right:12px}
+
+/* ---------- panel engine (shape-neutral) ---------- */
+.panel{position:absolute;z-index:5;color:var(--t1);font-family:var(--font,var(--ui))}
+.panel.anim{transition:left .38s var(--spring),top .38s var(--spring),height .38s var(--ease)}
+.panel.dragging{filter:drop-shadow(0 18px 30px rgba(0,0,0,.35));cursor:grabbing}
+[data-drag]{cursor:grab}
+.panel .ib{width:26px;height:26px;flex:0 0 auto;display:grid;place-items:center;border:0;background:none;border-radius:7px;color:var(--t3);padding:0}
+.panel .ib:hover{background:var(--hover);color:var(--t1)}
+.panel .ib svg{width:14px;height:14px}
+.panel [data-pin] svg{transform:rotate(45deg);transition:transform .25s var(--ease)}
+.panel.pinned [data-pin]{color:var(--acc)}
+.panel.pinned [data-pin] svg{transform:none}
+.panel.pinned [data-pin] svg path{fill:currentColor}
+.panel [data-close]:hover{color:#e5484d}
+.panel input{border:0;background:none;outline:0;min-width:0}
+.panel input::placeholder{color:var(--t3)}
+.panel mark{background:var(--mark,#ffe08a);color:inherit;border-radius:2px;padding:0 1px}
+.panel .grip{width:8px;height:16px;flex:0 0 auto;opacity:.6;background:radial-gradient(circle,var(--t3) 1.2px,transparent 1.6px) 0 0/4px 4px}
+.panel .scroll{overflow:auto;min-height:0}
+.panel .muted{color:var(--t3)}
+.panel .empty{padding:18px 12px;text-align:center;color:var(--t3);white-space:pre-line;font-size:13px}
+.box{background:var(--bg);border:1px solid var(--bd);border-radius:var(--r);box-shadow:var(--sh)}
+.netw{height:100%;display:flex;flex-direction:column;overflow:hidden}
+.fld{display:flex;align-items:center;gap:6px;padding:5px 9px;border:1px solid var(--inbd,var(--line));background:var(--in);border-radius:var(--inr,8px)}
+.fld:focus-within{border-color:var(--acc)}
+.fld svg{width:13px;height:13px;color:var(--t3);flex:0 0 auto}
+.fld input{flex:1;font-size:12.5px}
+
+/* ========================================================================
+   DESIGN 1 · Capsule + Chips  |  Dual Tables Pro          (light, app blue)
+   ======================================================================== */
+.d1{--bg:#fff;--bd:#e1e4ec;--r:16px;--sh:0 16px 36px rgba(16,24,40,.22);--t1:#15161d;--t2:#4a4f63;--t3:#8a8fa2;--acc:#3b5cd8;--hover:#f2f4f9;--line:#eceef3;--in:#f6f7fa}
+.d1 #sp{width:300px}
+.d1 .cap1{display:flex;align-items:center;gap:6px;height:46px;padding:0 6px 0 12px;border-radius:999px;background:#fff;border:1px solid #e1e4ec;box-shadow:0 10px 26px rgba(16,24,40,.25)}
+.d1 .cap1 svg.s{width:16px;height:16px;color:var(--acc)}
+.d1 .cap1 input{flex:1;font:600 14px var(--ui)}
+.d1 .cap1 .n{min-width:24px;height:24px;border-radius:12px;background:var(--acc);color:#fff;font:700 12px/24px var(--ui);text-align:center;padding:0 7px}
+.d1 .chipsbox{margin-top:8px;padding:10px;border-radius:18px;background:#fff;border:1px solid #e1e4ec;box-shadow:0 10px 26px rgba(16,24,40,.2)}
+.d1 .chips{display:flex;flex-wrap:wrap;gap:6px;max-height:230px;overflow:auto}
+.d1 .pc{display:flex;align-items:center;gap:6px;border:1px solid #e1e4ec;background:#f7f8fb;border-radius:999px;padding:5px 12px 5px 6px;font:600 13px var(--ui)}
+.d1 .pc i{font-style:normal;width:20px;height:20px;border-radius:50%;background:#e8ecf8;color:#3b5cd8;font:700 11px/20px var(--ui);text-align:center}
+.d1 .pc:hover{border-color:#3b5cd8}
+.d1 .pc.sel{background:linear-gradient(110deg,#3b5cd8,#5b7cf0);color:#fff;border-color:transparent}
+.d1 .pc.sel i{background:rgba(255,255,255,.25);color:#fff}
+.d1 .ft1{display:flex;justify-content:space-between;margin-top:8px;padding:0 4px;font-size:12px;color:var(--t3)}
+.d1 .t-hd{display:flex;align-items:center;gap:6px;padding:9px 10px;border-bottom:1px solid var(--line)}
+.d1 .t-hd b{color:var(--acc);font-size:14px}
+.d1 .sec{display:flex;flex-direction:column;padding:8px 10px 4px;min-height:100px}
+.d1 .sec.c{flex:0 0 var(--connH,230px)}.d1 .sec.p{flex:1}
+.d1 .sh{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;font:600 11px var(--ui);letter-spacing:.08em;color:var(--t2)}
+.d1 .sh span{letter-spacing:0;font-weight:400;color:var(--t3)}
+.d1 .th,.d1 .tr{display:grid;grid-template-columns:1fr 60px;padding:4px 10px;font-size:12.5px}
+.d1 .p .th,.d1 .p .tr{grid-template-columns:44px 1fr}
+.d1 .th{font:600 11.5px var(--ui);color:var(--t2);margin-top:6px}
+.d1 .c .th span:last-child,.d1 .c .tr span:last-child{text-align:right}
+.d1 .tr{width:100%;border:0;background:none;text-align:left;border-radius:8px;font-family:var(--mono)}
+.d1 .tr:hover{background:var(--hover)}
+.d1 .tr.sel{background:#e3e8fb}
+.d1 .p .tr span:last-child{color:var(--acc)}
+.d1 .compn{display:flex;justify-content:space-between;padding:4px 10px;font:600 12.5px var(--mono)}.d1 .compn span{font:400 11.5px var(--ui);color:var(--t3)}
+.d1 .split{flex:0 0 12px;cursor:row-resize;display:grid;place-items:center;border-top:1px solid var(--line)}
+.d1 .split::after{content:"";width:40px;height:4px;border-radius:4px;background:#c6cad6}
+
+/* ========================================================================
+   DESIGN 2 · Find Bar  |  Tabs                              (dark IDE)
+   ======================================================================== */
+.d2{--bg:#1f2229;--bd:#353a46;--r:8px;--sh:0 12px 30px rgba(0,0,0,.5);--t1:#d7dae0;--t2:#9ca3b0;--t3:#6f7686;--acc:#3d8bfd;--hover:#2a2e38;--line:#353a46;--in:#181a20;--font:"Segoe UI",system-ui,sans-serif}
+.d2 #sp{width:380px}
+.d2 .bar2{display:flex;align-items:center;gap:4px;height:40px;padding:0 6px}
+.d2 .bar2 .fld{flex:1;height:28px;border-radius:4px}
+.d2 .bar2 input{font:13px var(--mono)}
+.d2 .pos{font:12px var(--mono);color:var(--t2);min-width:42px;text-align:center}
+.d2 .pos.none{color:#f48771}
+.d2 .ib{border-radius:4px}
+.d2 .ib.on{background:#094771;color:#fff}
+.d2 .drop{border-top:1px solid var(--line);max-height:260px}
+.d2 .r2{display:flex;gap:10px;width:100%;border:0;border-left:2px solid transparent;background:none;text-align:left;padding:4px 10px;font:12.5px var(--mono);color:var(--t1)}
+.d2 .r2:nth-child(even){background:rgba(255,255,255,.02)}
+.d2 .r2:hover{background:var(--hover)}
+.d2 .r2.sel{background:#094771;border-left-color:#3d8bfd}
+.d2 .r2 i{font-style:normal;color:var(--t3);min-width:18px}
+.d2 .ft2{display:flex;justify-content:space-between;padding:4px 10px;border-top:1px solid var(--line);font-size:11.5px;color:var(--t3);background:#262a33}
+.d2 .t2hd{display:flex;align-items:center;gap:6px;padding:6px 8px;background:#262a33;border-bottom:1px solid #3d8bfd}
+.d2 .t2hd b{font:600 13px var(--mono);color:#9cdcfe}
+.d2 .tabsx{display:flex;border-bottom:1px solid var(--line)}
+.d2 .tabsx button{flex:1;border:0;background:none;padding:8px;font-size:12.5px;color:var(--t2);border-bottom:2px solid transparent}
+.d2 .tabsx button.sel{color:#fff;border-bottom-color:#3d8bfd;background:rgba(61,139,253,.08)}
+.d2 .tabsx button span{font:11px var(--mono);margin-left:5px;padding:0 5px;border-radius:3px;background:#353a46;color:var(--t2)}
+.d2 .lst{flex:1}
+.d2 .row2{display:grid;grid-template-columns:1fr 1fr;width:100%;border:0;background:none;text-align:left;padding:4px 10px;font:12px var(--mono);color:var(--t1)}
+.d2 .row2:nth-child(even){background:rgba(255,255,255,.025)}
+.d2 .row2:hover{background:var(--hover)}
+.d2 .row2.sel{background:#094771}
+.d2 .row2.hd{font:600 11px var(--ui);color:var(--t2);background:#262a33;position:sticky;top:0}
+.d2 .net{color:#9cdcfe}
+.d2 .sub2{padding:6px 10px;font:600 12px var(--mono);display:flex;justify-content:space-between;color:var(--t1)}
+
+/* ========================================================================
+   DESIGN 3 · Thumbnail Grid  |  Accordion                  (warm paper)
+   ======================================================================== */
+.d3{--bg:#fbf8f2;--bd:#e3dccd;--r:14px;--sh:0 14px 34px rgba(60,40,10,.25);--t1:#2b2418;--t2:#6d6250;--t3:#9a8f7c;--acc:#c2410c;--hover:#f3ede1;--line:#ebe4d6;--in:#fff;--mark:#fde68a}
+.d3 #sp{width:318px}
+.d3 .hd3{display:flex;align-items:center;gap:6px;padding:10px 10px 8px 12px}
+.d3 .hd3 .fld{flex:1;border-radius:20px}
+.d3 .hd3 input{font:600 13px var(--ui)}
+.d3 .hd3 .n{font:700 12px var(--ui);color:var(--acc)}
+.d3 .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:4px 12px 10px;max-height:300px}
+.d3 .thumb{border:0;background:none;padding:0;text-align:center;font:600 11.5px var(--ui);color:var(--t2)}
+.d3 .paper{display:block;position:relative;aspect-ratio:.77;background:#fff;border:1px solid #e3dccd;border-radius:4px;box-shadow:0 2px 6px rgba(60,40,10,.15);margin-bottom:4px;background-image:repeating-linear-gradient(#fff 0 7px,#eee8dc 7px 8px);background-size:70% 100%;background-repeat:no-repeat;background-position:center 10px}
+.d3 .paper i{position:absolute;left:18%;width:44%;height:7px;border-radius:2px;background:#fbbf24;box-shadow:0 0 0 2px rgba(251,191,36,.35)}
+.d3 .paper b{position:absolute;right:4px;top:3px;font:700 9px var(--ui);color:var(--t3)}
+.d3 .thumb:hover .paper{transform:translateY(-2px)}
+.d3 .thumb.sel .paper{outline:2.5px solid var(--acc);outline-offset:2px}
+.d3 .thumb.sel{color:var(--acc)}
+.d3 .ft3{display:flex;justify-content:space-between;padding:8px 12px;border-top:1px solid var(--line);font-size:12px;color:var(--t3)}
+.d3 .nhd{display:flex;align-items:center;gap:6px;padding:10px;border-bottom:1px solid var(--line)}
+.d3 .nhd b{font:700 15px var(--ui);color:var(--acc)}
+.d3 .acc{margin:8px 8px 0;border:1px solid var(--line);border-radius:12px;background:#fff;display:flex;flex-direction:column;min-height:0}
+.d3 .acc.open{flex:1}
+.d3 .acc>button{display:flex;align-items:center;gap:8px;border:0;background:none;padding:10px 12px;font:700 11.5px var(--ui);letter-spacing:.08em;color:var(--t2);text-align:left}
+.d3 .acc>button span{margin-left:auto;font:600 11px var(--ui);letter-spacing:0;background:#f3ede1;border-radius:20px;padding:1px 8px;color:var(--acc)}
+.d3 .acc>button svg{width:12px;height:12px;transition:transform .2s}
+.d3 .acc.open>button svg{transform:rotate(90deg)}
+.d3 .accb{padding:0 10px 10px;display:flex;flex-direction:column;gap:6px;min-height:0;flex:1}
+.d3 .r3{display:flex;justify-content:space-between;width:100%;border:0;background:none;padding:6px 10px;border-radius:8px;font:500 12.5px var(--mono);color:var(--t1)}
+.d3 .r3:hover{background:var(--hover)}
+.d3 .r3.sel{background:#fde7d7;color:#9a3412}
+.d3 .r3 .net{color:var(--acc)}
+.d3 .last{margin-bottom:8px}
+
+/* ========================================================================
+   DESIGN 4 · Document Map  |  Net Graph                  (navy + teal)
+   ======================================================================== */
+.d4{--bg:#0f1b2e;--bd:#22355a;--r:14px;--sh:0 18px 40px rgba(0,0,0,.5);--t1:#e8f0ff;--t2:#a5b7d6;--t3:#6f84a8;--acc:#2dd4bf;--hover:#16263f;--line:#1f3152;--in:#0a1424;--mark:rgba(45,212,191,.35)}
+.d4 #sp{width:350px}
+.d4 .hd4{display:flex;align-items:center;gap:6px;padding:9px 10px;border-bottom:1px solid var(--line)}
+.d4 .hd4 .fld{flex:1}
+.d4 .hd4 input{font:600 13px var(--ui)}
+.d4 .map{padding:14px 14px 4px}
+.d4 .track{position:relative;height:34px;border-radius:6px;background:repeating-linear-gradient(90deg,#16263f 0 4px,#122036 4px 5.4px);border:1px solid var(--line)}
+.d4 .tick{position:absolute;top:-4px;bottom:-4px;width:4px;margin-left:-2px;border:0;padding:0;border-radius:3px;background:#2dd4bf;opacity:.7}
+.d4 .tick:hover{opacity:1}
+.d4 .tick.sel{width:8px;margin-left:-4px;opacity:1;background:#fff;box-shadow:0 0 0 3px rgba(45,212,191,.5)}
+.d4 .scale{display:flex;justify-content:space-between;font:10.5px var(--mono);color:var(--t3);margin-top:4px}
+.d4 .nav4{display:flex;align-items:center;gap:8px;padding:10px 14px}
+.d4 .nav4 b{font:700 22px var(--disp);color:var(--acc)}
+.d4 .nav4 .muted{font-size:12px}
+.d4 .nav4 .ib{border:1px solid var(--line)}
+.d4 .snip{margin:0 14px 12px;padding:10px 12px;border-radius:10px;background:var(--in);border:1px solid var(--line);font:12px/18px var(--mono);color:var(--t2)}
+.d4 .ft4{display:flex;justify-content:space-between;padding:8px 14px;border-top:1px solid var(--line);font-size:12px;color:var(--t3)}
+.d4 .ghd{display:flex;align-items:center;gap:6px;padding:9px 10px;border-bottom:1px solid var(--line)}
+.d4 .graph{flex:0 0 auto;padding:6px 6px 0}
+.d4 .graph svg{width:100%;height:auto;display:block}
+.d4 .graph .edge{stroke:#2a4672;stroke-width:2}
+.d4 .graph .edge.sel{stroke:#2dd4bf}
+.d4 .graph .node{cursor:pointer}
+.d4 .graph .node circle{fill:#16263f;stroke:#2a4672;stroke-width:2}
+.d4 .graph .node.sel circle{fill:#0d3b3a;stroke:#2dd4bf}
+.d4 .graph .node:hover circle{stroke:#5eead4}
+.d4 .graph text{fill:#e8f0ff;font:600 11px var(--mono);pointer-events:none}
+.d4 .graph .pinlbl{fill:#6f84a8;font:10px var(--mono)}
+.d4 .graph .hub{fill:#2dd4bf}
+.d4 .graph .hubt{fill:#06201f;font:700 12px var(--mono)}
+.d4 .pins4{flex:1;display:flex;flex-direction:column;min-height:0;padding:8px 10px 10px;border-top:1px solid var(--line)}
+.d4 .ph4{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}
+.d4 .ph4 b{font:700 13px var(--mono)}
+.d4 .chipg{display:grid;grid-template-columns:1fr 1fr;gap:6px;align-content:start;margin-top:8px}
+.d4 .pchip{display:flex;align-items:center;gap:7px;border:1px solid var(--line);background:#132239;border-radius:8px;padding:5px 7px;text-align:left;font:11.5px var(--mono);color:var(--t2);min-width:0}
+.d4 .pchip i{font-style:normal;width:20px;height:20px;border-radius:5px;background:#1f3152;color:#e8f0ff;display:grid;place-items:center;font:700 10.5px var(--mono);flex:0 0 auto}
+.d4 .pchip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.d4 .pchip:hover{border-color:#2dd4bf}
+.d4 .pchip.sel{background:#0d3b3a;border-color:#2dd4bf;color:#e8f0ff}
+.d4 .pchip.sel i{background:#2dd4bf;color:#06201f}
+
+/* ========================================================================
+   DESIGN 5 · Radial Dial  |  IC Package                      (neon violet)
+   ======================================================================== */
+.d5{--bg:#120f1f;--bd:#3b2d63;--r:16px;--sh:0 0 30px rgba(168,85,247,.35),0 20px 50px rgba(0,0,0,.6);--t1:#f1eaff;--t2:#b9a8d9;--t3:#7d6f9c;--acc:#22e1ff;--hover:rgba(168,85,247,.15);--line:rgba(168,85,247,.28);--in:rgba(255,255,255,.05);--mark:rgba(34,225,255,.35)}
+.d5 #sp{width:250px;height:250px}
+.d5 .dial{position:relative;width:250px;height:250px;border-radius:50%;background:radial-gradient(circle at 50% 40%,#21183a,#0d0a17 70%);box-shadow:0 0 0 2px #3b2d63,0 0 40px rgba(168,85,247,.4),0 20px 50px rgba(0,0,0,.6)}
+.d5 .dial::before{content:"";position:absolute;inset:18px;border-radius:50%;border:1px dashed rgba(168,85,247,.35)}
+.d5 .dot{position:absolute;width:26px;height:26px;margin:-13px 0 0 -13px;border-radius:50%;border:1px solid #6d4bd1;background:#1c1530;color:var(--t2);font:700 10px var(--mono);padding:0;display:grid;place-items:center}
+.d5 .dot:hover{border-color:#22e1ff;color:#fff}
+.d5 .dot.sel{background:linear-gradient(135deg,#ec4899,#22e1ff);color:#0d0a17;border:0;box-shadow:0 0 14px rgba(34,225,255,.7)}
+.d5 .core{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:132px;text-align:center}
+.d5 .core input{width:100%;text-align:center;font:600 11.5px var(--mono);color:#f9a8d4;border-bottom:1px solid #3b2d63;padding-bottom:3px}
+.d5 .core .pg{font:800 34px/40px var(--disp);color:#fff;text-shadow:0 0 16px rgba(34,225,255,.6)}
+.d5 .core .pg small{display:block;font:600 9.5px var(--ui);letter-spacing:.14em;color:var(--t3);text-shadow:none}
+.d5 .core .nv{display:flex;justify-content:center;align-items:center;gap:6px;font:11px var(--mono);color:var(--t2)}
+.d5 .corner{position:absolute;display:flex;gap:2px}
+.d5 .corner.tr{right:2px;top:10px}.d5 .corner.tl{left:6px;top:14px}
+.d5 .corner .ib{background:#1c1530;border:1px solid #3b2d63;border-radius:50%}
+.d5 .netw{background:var(--bg);border:1px solid var(--bd);border-radius:16px;box-shadow:var(--sh)}
+.d5 .ihd{display:flex;align-items:center;gap:6px;padding:9px 10px;border-bottom:1px solid var(--line)}
+.d5 .ihd b{font:700 14px var(--mono);color:#22e1ff;text-shadow:0 0 10px rgba(34,225,255,.6)}
+.d5 .cchips{display:flex;flex-wrap:wrap;gap:5px;padding:8px 10px}
+.d5 .cc{border:1px solid #3b2d63;background:#1c1530;border-radius:20px;padding:3px 10px;font:600 11.5px var(--mono);color:var(--t2)}
+.d5 .cc em{font-style:normal;color:#f472b6;margin-left:4px}
+.d5 .cc.sel{border-color:#22e1ff;color:#fff;box-shadow:0 0 10px rgba(34,225,255,.35)}
+.d5 .pkg{flex:1;padding:6px 10px 10px;display:flex;flex-direction:column;min-height:0}
+.d5 .chip5{position:relative;margin:8px auto 0;width:100%;display:grid;grid-template-columns:1fr 64px 1fr;align-items:stretch}
+.d5 .body5{grid-column:2;grid-row:1/span 20;background:linear-gradient(180deg,#2a2141,#1a1430);border:1px solid #6d4bd1;border-radius:8px;display:grid;place-items:center;writing-mode:vertical-rl;font:800 13px var(--mono);color:#fff;letter-spacing:.2em;position:relative}
+.d5 .body5::before{content:"";position:absolute;top:6px;left:50%;width:10px;height:10px;margin-left:-5px;border-radius:50%;border:1.5px solid #6d4bd1}
+.d5 .lp,.d5 .rp{display:flex;align-items:center;gap:4px;height:26px;border:0;background:none;padding:0;font:11px var(--mono);color:var(--t2);min-width:0}
+.d5 .lp{grid-column:1;justify-content:flex-end;text-align:right}.d5 .rp{grid-column:3}
+.d5 .lp i,.d5 .rp i{font-style:normal;width:22px;height:14px;background:#3b2d63;border-radius:2px;color:#fff;font:700 9.5px/14px var(--mono);text-align:center;flex:0 0 auto}
+.d5 .lp span,.d5 .rp span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.d5 .lp:hover span,.d5 .rp:hover span{color:#22e1ff}
+.d5 .lp.sel i,.d5 .rp.sel i{background:#22e1ff;color:#0d0a17;box-shadow:0 0 8px #22e1ff}
+.d5 .lp.sel span,.d5 .rp.sel span{color:#22e1ff}
+.d5 .dim{opacity:.25}
+
+/* ========================================================================
+   DESIGN 6 · Index Tabs  |  Component Cards                   (book)
+   ======================================================================== */
+.d6{--bg:#fffdf8;--bd:#d9cfbd;--r:6px;--sh:0 14px 30px rgba(60,40,10,.3);--t1:#2a2116;--t2:#6b5d48;--t3:#9b8d76;--acc:#7c3aed;--hover:#f5efe3;--line:#e9e0cf;--in:#fff;--mark:#ddd6fe}
+.d6 #sp{width:330px}
+.d6 .book{display:flex;align-items:flex-start}
+.d6 .leaf{flex:1;min-width:0;background:var(--bg);border:1px solid var(--bd);border-radius:6px 0 6px 6px;box-shadow:var(--sh);min-height:270px;display:flex;flex-direction:column}
+.d6 .hd6{display:flex;align-items:center;gap:6px;padding:9px 10px;border-bottom:2px solid #2a2116}
+.d6 .hd6 input{flex:1;font:italic 700 15px Georgia,serif}
+.d6 .body6{padding:12px 14px;flex:1}
+.d6 .body6 .pg{font:700 26px Georgia,serif}
+.d6 .body6 .pg small{font:500 12px var(--ui);color:var(--t3);margin-left:6px}
+.d6 .body6 p{margin:8px 0 12px;font:13px/20px Georgia,serif;color:var(--t2)}
+.d6 .go6{border:0;border-radius:6px;background:#2a2116;color:#fff;padding:7px 14px;font:600 12.5px var(--ui)}
+.d6 .ft6{padding:7px 12px;border-top:1px solid var(--line);font-size:11.5px;color:var(--t3);display:flex;justify-content:space-between}
+.d6 .tabs6{display:flex;flex-direction:column;gap:3px;padding-top:44px;max-height:330px;overflow:auto}
+.d6 .tab6{border:1px solid var(--bd);border-left:0;border-radius:0 8px 8px 0;padding:6px 8px 6px 7px;font:700 11px var(--ui);color:#fff;text-align:left;min-width:44px;box-shadow:2px 3px 6px rgba(60,40,10,.2);transition:padding .15s}
+.d6 .tab6:hover{padding-left:11px}
+.d6 .tab6.sel{padding-left:13px;outline:2px solid #2a2116;outline-offset:-2px}
+.d6 .nw6{background:var(--bg);border:1px solid var(--bd);border-radius:6px;box-shadow:var(--sh)}
+.d6 .nhd6{display:flex;align-items:center;gap:6px;padding:9px 10px;border-bottom:2px solid #2a2116}
+.d6 .nhd6 b{font:italic 700 16px Georgia,serif}
+.d6 .cards{flex:1;padding:8px;display:flex;flex-direction:column;gap:8px}
+.d6 .card6{border:1px solid var(--line);border-radius:10px;background:#fff;overflow:hidden;flex:0 0 auto}
+.d6 .card6>button{display:flex;align-items:center;gap:10px;width:100%;border:0;background:none;padding:9px 10px;text-align:left}
+.d6 .ico6{width:34px;height:34px;border-radius:9px;display:grid;place-items:center;font:800 11px var(--mono);color:#fff;flex:0 0 auto}
+.d6 .card6 b{display:block;font:700 13px var(--mono)}
+.d6 .card6 small{color:var(--t3);font-size:11.5px}
+.d6 .card6 .pn{margin-left:auto;font:700 12px var(--mono);background:var(--hover);border-radius:6px;padding:2px 7px}
+.d6 .card6.sel{border-color:var(--acc);box-shadow:0 0 0 3px #ede9fe}
+.d6 .in6{padding:0 10px 10px}
+.d6 .pl6{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-top:6px}
+.d6 .pr6{display:flex;gap:6px;align-items:center;border:1px solid var(--line);background:#fffdf8;border-radius:6px;padding:3px 6px;font:11.5px var(--mono);text-align:left;min-width:0}
+.d6 .pr6 i{font-style:normal;color:var(--t3);min-width:12px}
+.d6 .pr6 span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--acc)}
+.d6 .pr6.sel{background:#ede9fe;border-color:var(--acc)}
+
+/* ========================================================================
+   DESIGN 7 · Grouped Snippets  |  Tree                   (clean editorial)
+   ======================================================================== */
+.d7{--bg:#ffffff;--bd:#1d1d1f;--r:0;--sh:0 3px 0 #1d1d1f,0 18px 36px rgba(0,0,0,.2);--t1:#1d1d1f;--t2:#55555a;--t3:#8e8e93;--acc:#e0442b;--hover:#f4f4f5;--line:#e5e5ea;--in:#fff;--mark:#ffe1db}
+.d7 #sp{width:330px}
+.d7 .box{border-left:4px solid var(--acc)}
+.d7 .hd7{display:flex;align-items:center;gap:6px;padding:10px 10px 8px 12px;border-bottom:1px solid var(--bd)}
+.d7 .hd7 input{flex:1;font:800 15px var(--ui);letter-spacing:-.01em}
+.d7 .hd7 .n{font:800 12px var(--ui);color:var(--acc)}
+.d7 .groups{max-height:330px}
+.d7 .g7h{display:flex;justify-content:space-between;padding:10px 12px 4px;font:800 10.5px var(--ui);letter-spacing:.16em;text-transform:uppercase}
+.d7 .g7h span{color:var(--t3);letter-spacing:.04em}
+.d7 .sn{display:block;width:100%;border:0;background:none;text-align:left;padding:6px 12px 6px 22px;font:12.5px/18px var(--ui);color:var(--t2);position:relative}
+.d7 .sn::before{content:attr(data-n);position:absolute;left:8px;top:6px;font:700 10px var(--ui);color:var(--t3)}
+.d7 .sn:hover{background:var(--hover)}
+.d7 .sn.sel{color:var(--t1);box-shadow:inset 3px 0 0 var(--acc);background:#fff6f4}
+.d7 .ft7{display:flex;justify-content:space-between;padding:7px 12px;border-top:1px solid var(--bd);font:600 11px var(--ui);color:var(--t3)}
+.d7 .tree{flex:1;padding:6px 4px 10px}
+.d7 .tn{display:flex;align-items:center;gap:6px;width:100%;border:0;background:none;text-align:left;padding:4px 8px;font:12.5px var(--mono);color:var(--t1);position:relative}
+.d7 .tn:hover{background:var(--hover)}
+.d7 .tn .tw{width:12px;color:var(--t3);font-size:10px}
+.d7 .tn.l1{padding-left:22px}.d7 .tn.l2{padding-left:40px;font-size:12px;color:var(--t2)}
+.d7 .tn.l2::before{content:"";position:absolute;left:30px;top:0;bottom:0;border-left:1px dotted #c7c7cc}
+.d7 .tn.root{font:800 13px var(--mono)}
+.d7 .tn .badge{margin-left:auto;font:600 10.5px var(--ui);color:var(--t3)}
+.d7 .tn.sel{box-shadow:inset 3px 0 0 var(--acc);background:#fff6f4;font-weight:700}
+.d7 .tn .net{color:var(--acc)}
+.d7 .tn .net.cur{background:var(--acc);color:#fff;padding:0 4px}
+
+/* ========================================================================
+   DESIGN 8 · Console  |  Drill-down                         (terminal green)
+   ======================================================================== */
+.d8{--bg:#050a07;--bd:#1e3a2a;--r:10px;--sh:0 0 0 1px #0f2418,0 20px 44px rgba(0,0,0,.6);--t1:#c8f7d8;--t2:#7fbf95;--t3:#4a7a5c;--acc:#39ff8a;--hover:#0c1f14;--line:#14301f;--in:#050a07;--font:var(--mono);--mark:rgba(57,255,138,.3)}
+.d8 #sp{width:340px}
+.d8 .box{background-image:repeating-linear-gradient(0deg,rgba(0,0,0,.25) 0 1px,transparent 1px 3px)}
+.d8 .hd8{display:flex;align-items:center;gap:6px;padding:8px 10px;border-bottom:1px dashed var(--line);font-size:12.5px}
+.d8 .hd8 .pr{color:var(--acc)}
+.d8 .hd8 input{flex:1;font:12.5px var(--mono);color:#fff;caret-color:var(--acc)}
+.d8 .lines{padding:6px 0;max-height:300px;font-size:12px}
+.d8 .cl{display:block;width:100%;border:0;background:none;text-align:left;padding:2px 10px;font:12px/18px var(--mono);color:var(--t2);white-space:pre}
+.d8 .cl:hover{background:var(--hover)}
+.d8 .cl.sel{background:var(--acc);color:#04120a}
+.d8 .cl.sys{color:var(--t3)}
+.d8 .ft8{padding:6px 10px;border-top:1px dashed var(--line);font-size:11px;color:var(--t3);display:flex;justify-content:space-between}
+.d8 .dd{position:relative;flex:1;overflow:hidden}
+.d8 .view{position:absolute;inset:0;display:flex;flex-direction:column;transition:transform .28s var(--ease)}
+.d8 .view.v2{transform:translateX(100%)}
+.d8 .dd.deep .v1{transform:translateX(-100%)}.d8 .dd.deep .v2{transform:none}
+.d8 .ttl{padding:12px 12px 8px}
+.d8 .ttl small{color:var(--t3);font-size:10.5px;letter-spacing:.14em}
+.d8 .ttl b{display:block;font:700 20px var(--mono);color:var(--acc);text-shadow:0 0 8px rgba(57,255,138,.5)}
+.d8 .drow{display:flex;align-items:center;gap:8px;width:100%;border:0;border-bottom:1px dashed var(--line);background:none;text-align:left;padding:9px 12px;font:12.5px var(--mono);color:var(--t1)}
+.d8 .drow:hover{background:var(--hover)}
+.d8 .drow .r{margin-left:auto;color:var(--t3)}
+.d8 .drow.sel{color:var(--acc)}
+.d8 .drow .net{color:#7fdcff}
+.d8 .back{border:1px solid var(--line);background:none;border-radius:6px;color:var(--acc);font:12px var(--mono);padding:3px 8px}
+.d8 .fld{margin:0 12px 6px;border-style:dashed}
+
+/* ========================================================================
+   DESIGN 9 · Vertical Rail  |  Spreadsheet                  (bench amber)
+   ======================================================================== */
+.d9{--bg:linear-gradient(180deg,#2a2d34,#1b1d22);--bd:#41454f;--r:12px;--sh:0 18px 44px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.08);--t1:#e4e6ec;--t2:#a9aeb9;--t3:#7a7f8a;--acc:#ffb020;--hover:#2f333b;--line:#33363e;--in:#0c0d10;--inbd:#3a3e48;--font:var(--mono);--mark:rgba(255,176,32,.35)}
+.d9 #sp{width:96px;height:470px}
+.d9 .rail{height:100%;display:flex;flex-direction:column;align-items:stretch;gap:6px;padding:8px 7px}
+.d9 .rail .tb{display:flex;justify-content:space-between}
+.d9 .rail .tb .ib{width:24px;height:24px}
+.d9 .rail .led{width:8px;height:8px;border-radius:50%;background:#3fd07a;box-shadow:0 0 8px #3fd07a;margin:0 auto}
+.d9 .rail .fld{padding:4px 5px;border-radius:6px}
+.d9 .rail .fld input{font:600 10px var(--mono);width:100%}
+.d9 .rail .cnt{text-align:center;font:800 26px/28px var(--mono);color:var(--acc);text-shadow:0 0 10px rgba(255,176,32,.4)}
+.d9 .rail .cnt small{display:block;font:700 8.5px var(--mono);letter-spacing:.14em;color:var(--t3);text-shadow:none}
+.d9 .tiles{flex:1;display:flex;flex-direction:column;gap:5px}
+.d9 .tile{border:1px solid #3a3e48;background:#111317;border-radius:7px;padding:5px 0;font:800 15px var(--mono);color:var(--t1);text-align:center}
+.d9 .tile small{display:block;font:700 8.5px var(--mono);color:var(--t3)}
+.d9 .tile:hover{border-color:var(--acc)}
+.d9 .tile.sel{background:var(--acc);color:#1b1406;border-color:#000}
+.d9 .tile.sel small{color:#4a3306}
+.d9 .rail .rowno{text-align:center;font:700 9px var(--mono);color:var(--t3);letter-spacing:.08em}
+.d9 .shd{display:flex;align-items:center;gap:6px;padding:8px 10px;background:#14161a;border-bottom:1px solid #000;border-radius:12px 12px 0 0}
+.d9 .shd b{color:var(--acc);font:700 14px var(--mono);text-shadow:0 0 8px rgba(255,176,32,.45)}
+.d9 .shd .led{width:8px;height:8px;border-radius:50%;background:#3fd07a;box-shadow:0 0 8px #3fd07a}
+.d9 .sheet{flex:1;font:11.5px var(--mono)}
+.d9 table{width:100%;border-collapse:collapse}
+.d9 th{position:sticky;top:0;background:#14161a;color:var(--t3);font:700 9.5px var(--mono);letter-spacing:.1em;text-align:left;padding:6px 8px;border-bottom:1px solid #000;z-index:1}
+.d9 td{padding:0;border-bottom:1px solid #2a2d34}
+.d9 td button{width:100%;border:0;background:none;text-align:left;padding:4px 8px;font:11.5px var(--mono);color:var(--t1)}
+.d9 td button:hover{background:var(--hover)}
+.d9 tr.grp td{background:#111317;color:var(--acc);font:700 11px var(--mono);padding:5px 8px;letter-spacing:.06em}
+.d9 tr.grp td span{color:var(--t3);float:right;font-weight:400}
+.d9 tr.grp.sel td{background:#2b2112}
+.d9 tr.on td{background:rgba(255,176,32,.14)}
+.d9 tr.on td button{color:var(--acc)}
+.d9 td.netc button{color:#7fdcff}
+.d9 .stat{display:flex;gap:10px;padding:6px 10px;border-top:1px solid #000;color:var(--t3);font-size:10.5px;background:#14161a;border-radius:0 0 12px 12px}
+.d9 .stat b{color:var(--acc)}
+
+/* ========================================================================
+   DESIGN 10 · Sticky Note  |  Rail + Flyout                  (soft colour)
+   ======================================================================== */
+.d10{--bg:#fff;--bd:#e5e1f5;--r:16px;--sh:0 16px 36px rgba(60,40,120,.25);--t1:#231c3d;--t2:#5d557a;--t3:#958db0;--acc:#7c5cff;--hover:#f3f0ff;--line:#ece8fa;--in:#f7f5ff;--mark:#ffe58a}
+.d10 #sp{width:270px}
+.d10 .note{position:relative;margin-top:14px;padding:26px 16px 14px;background:linear-gradient(180deg,#fff59d,#ffee6e);box-shadow:0 2px 0 rgba(0,0,0,.05),6px 14px 24px rgba(80,60,0,.35);transform:rotate(-1.4deg);border-radius:2px 2px 16px 2px;font-family:var(--hand);color:#3b3000}
+.d10 .note::after{content:"";position:absolute;right:0;bottom:0;width:22px;height:22px;background:linear-gradient(135deg,#e8d24a 50%,transparent 50%);border-radius:0 0 16px 0}
+.d10 .tack{position:absolute;left:50%;top:-14px;margin-left:-15px;width:30px;height:30px;border-radius:50%;border:0;padding:0;background:radial-gradient(circle at 35% 30%,#ff8a8a,#d92f2f 60%,#8f1414);box-shadow:0 4px 6px rgba(0,0,0,.35);cursor:pointer}
+.d10 .panel:not(.pinned) .tack{background:radial-gradient(circle at 35% 30%,#d6d6d6,#9a9a9a 60%,#5c5c5c)}
+.d10 .note .x{position:absolute;right:6px;top:4px;color:#7a6a00}
+.d10 .note .x:hover{background:rgba(0,0,0,.06)}
+.d10 .nq{display:flex;align-items:baseline;gap:6px;border-bottom:1.5px solid rgba(59,48,0,.4);padding-bottom:4px;margin-bottom:8px}
+.d10 .nq span{font-size:13px}
+.d10 .nq input{flex:1;font:700 15px var(--hand);color:#3b3000}
+.d10 .nq b{font-size:13px;color:#a03030}
+.d10 .todo{max-height:250px}
+.d10 .td{display:flex;align-items:center;gap:8px;width:100%;border:0;background:none;text-align:left;padding:4px 2px;font:15px var(--hand);color:#3b3000;border-bottom:1px dashed rgba(59,48,0,.2)}
+.d10 .td i{font-style:normal;width:16px;height:16px;border:1.5px solid #3b3000;border-radius:3px;display:grid;place-items:center;font-size:12px;line-height:1;flex:0 0 auto}
+.d10 .td.v i{background:rgba(59,48,0,.1)}
+.d10 .td.sel{font-weight:700;color:#a03030}
+.d10 .td.sel i{border-color:#a03030;color:#a03030}
+.d10 .nf{margin-top:8px;font-size:12px;color:#7a6a00;display:flex;justify-content:space-between}
+.d10 .rf{height:100%;display:flex;gap:0;filter:drop-shadow(0 16px 30px rgba(60,40,120,.3))}
+.d10 .fly{flex:1;min-width:0;margin:20px 0;background:#fff;border:1px solid var(--bd);border-right:0;border-radius:16px 0 0 16px;display:flex;flex-direction:column;overflow:hidden}
+.d10 .fh{padding:12px 12px 8px}
+.d10 .fh small{font:700 10px var(--ui);letter-spacing:.12em;color:var(--t3)}
+.d10 .fh b{display:block;font:800 18px var(--mono)}
+.d10 .fh .muted{font-size:12px}
+.d10 .fly .fld{margin:0 12px 8px;border-radius:20px}
+.d10 .pl{flex:1;padding:0 8px 10px}
+.d10 .pr{display:flex;align-items:center;gap:8px;width:100%;border:0;background:none;text-align:left;padding:5px 6px;border-radius:10px;font:12px var(--mono);color:var(--t1)}
+.d10 .pr i{font-style:normal;width:22px;height:22px;border-radius:7px;background:var(--hover);display:grid;place-items:center;font:700 10.5px var(--mono);color:var(--acc);flex:0 0 auto}
+.d10 .pr:hover{background:var(--hover)}
+.d10 .pr.sel{background:var(--acc);color:#fff}.d10 .pr.sel i{background:rgba(255,255,255,.25);color:#fff}
+.d10 .rail10{flex:0 0 74px;background:linear-gradient(180deg,#7c5cff,#5b3fd9);border-radius:18px;display:flex;flex-direction:column;align-items:center;gap:6px;padding:8px 0;color:#fff}
+.d10 .rail10 .ib{color:rgba(255,255,255,.75)}.d10 .rail10 .ib:hover{background:rgba(255,255,255,.15);color:#fff}
+.d10 .panel.pinned .rail10 [data-pin]{color:#fff;background:rgba(255,255,255,.22)}
+.d10 .vnet{writing-mode:vertical-rl;transform:rotate(180deg);font:800 14px var(--mono);letter-spacing:.06em;padding:6px 0}
+.d10 .vnet small{font:600 9.5px var(--ui);letter-spacing:.16em;opacity:.7;margin-bottom:6px}
+.d10 .badges{flex:1;display:flex;flex-direction:column;gap:7px;align-items:center;overflow:auto;width:100%;padding:4px 0}
+.d10 .bd{position:relative;width:50px;height:50px;border-radius:15px;border:0;background:rgba(255,255,255,.14);color:#fff;font:800 11px var(--mono);flex:0 0 auto}
+.d10 .bd em{position:absolute;right:-4px;bottom:-4px;font-style:normal;min-width:18px;height:18px;border-radius:9px;background:#ffe58a;color:#3b3000;font:800 9.5px/18px var(--mono);padding:0 4px}
+.d10 .bd:hover{background:rgba(255,255,255,.25)}
+.d10 .bd.sel{background:#fff;color:#5b3fd9;box-shadow:0 4px 12px rgba(0,0,0,.25)}
+.d10 .bd.sel::before{content:"";position:absolute;left:-14px;top:50%;margin-top:-7px;border:7px solid transparent;border-right-color:#fff}
+.d10 .link.off{opacity:.45}
+
+/* viewer tints */
+.d2 .pdf{background:#3a3d45}.d2 .pcb{background:#16181d}
+.d4 .pdf,.d4 .pcb{background:#0a1424}
+.d5 .pdf{background:#1a1428}.d5 .pcb{background:#0b0912}
+.d6 .pdf{background:#cfc4ae}
+.d8 .pdf{background:#0b1a11}.d8 .pcb{background:#08110b}
+.d10 .pdf{background:#d9d3f2}
+
+@media (max-width:1100px){.stages{grid-template-columns:1fr}.cap .ideas{grid-template-columns:1fr}}
+@media (max-width:600px){.wrap{padding:14px 16px 40px}.top{padding:10px 16px}.viewer{height:600px}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div><h1>Viewer Panels — 10 shapes &amp; ideas</h1><p>Point 5 · PDF search panel &nbsp;·&nbsp; Point 9 · Pin Information panel</p></div>
+  <span class="grow"></span>
+  <nav class="tabs" id="tabs"></nav>
+  <button class="chip" id="resetPos" title="Put both panels back to their pinned positions">⟲ Reset positions</button>
+  <button class="chip" id="theme">◐ Page theme</button>
+</header>
+
+<div class="wrap">
+  <div class="cap"><div class="n" id="capN">01</div><div style="flex:1;min-width:280px"><h2 id="capT"></h2><p id="capD"></p>
+    <div class="ideas"><div><b>Search (Point 5):</b> <span id="capS"></span></div><div><b>Pin Info (Point 9):</b> <span id="capP"></span></div></div></div></div>
+
+  <div class="stages" id="app">
+    <div class="stagebox">
+      <h3>PDF Viewer · Search panel <small>starts top-left · drag anywhere inside · 📌 returns it to top-left</small></h3>
+      <div class="viewer pdf" id="pdfV">
+        <div class="page"><svg viewBox="0 0 600 560" aria-hidden="true">
+          <g stroke="#1b1b1b" stroke-width="1.6" fill="none">
+            <rect x="200" y="150" width="150" height="230"/>
+            <path d="M120 180H200M120 210H200M120 240H200M120 270H200M120 300H200M120 330H200M350 180H450M350 220H450M350 260H450M350 300H450M350 340H450"/>
+            <path d="M450 180V120H520M450 300V420H520M120 180V100M60 330H120"/>
+          </g>
+          <g font-family="Arial" font-size="10" fill="#1b1b1b">
+            <text x="230" y="140" font-weight="700">U2300  PMU</text>
+            <text x="206" y="184">AMUX_PMU_FRONT</text><text x="206" y="214">AMUX_A1</text><text x="206" y="244">VDD_MAIN_SNS</text><text x="206" y="274">PMU_TO_AP_IRQ</text><text x="206" y="304">I2C0_SCL</text><text x="206" y="334">I2C0_SDA</text>
+            <text x="360" y="176">BUCK0_LX</text><text x="360" y="216">BUCK1_LX</text><text x="360" y="256">LDO3_OUT</text><text x="360" y="296">VBAT</text><text x="360" y="336">GND</text>
+            <text x="40" y="96">PP_VDD_MAIN</text><text x="455" y="116">PP1V8</text><text x="20" y="326">AMUX_PMU_FRONT</text>
+          </g>
+          <rect id="hlBox" x="203" y="174" width="90" height="13" fill="rgba(255,200,0,.45)"/>
+          <text x="20" y="540" font-family="Arial" font-size="9" fill="#888">SCHEMAX · BOARD 820-02536 · SHEET <tspan id="sheetNo">22</tspan></text>
+        </svg></div>
+        <div class="pbar" id="pbar">Page <b id="pageNo">22</b> / 64</div>
+        <button class="reopen" id="reopenS" hidden>⌕ Search (Ctrl+F)</button>
+        <div class="panel pinned" id="sp" role="dialog" aria-label="Search results"></div>
+      </div>
+    </div>
+    <div class="stagebox">
+      <h3>PCB Viewer · Pin Information <small>docked right · drag inside · 📌 snaps back to the right</small></h3>
+      <div class="viewer pcb" id="pcbV">
+        <svg viewBox="0 0 600 640" id="board" aria-hidden="true"></svg>
+        <button class="reopen" id="reopenN" hidden>ⓘ Pin info</button>
+        <div class="panel pinned" id="ni" role="dialog" aria-label="Pin information"></div>
+      </div>
+    </div>
+  </div>
+  <p class="how">Drag a panel by its header (or the dial ring, rail or note). Moving it unpins it; 📌 snaps it back (search → top-left, Pin Info → right side, full height). ↑/↓ in the search box steps through matches. Click a component to load its pins; click a net to follow it; click a pad on the board to focus it. ← / → switch design.</p>
+</div>
+
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const hl = (txt, q) => { const e = esc(txt); if (!q) return e; const i = txt.toLowerCase().indexOf(q.toLowerCase()); return i < 0 ? e : esc(txt.slice(0,i)) + '<mark>' + esc(txt.slice(i, i+q.length)) + '</mark>' + esc(txt.slice(i+q.length)); };
+  const IC = {
+    s:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>',
+    pin:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M9 3h6l-1 6 4 4H6l4-4-1-6zM12 13v8"/></svg>',
+    link:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg>',
+    chev:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>',
+  };
+  const PINS = t => `<button class="ib" data-pin title="${t}">${IC.pin}</button>`;
+  const PIN_S = PINS('Pin to top-left'), PIN_N = PINS('Pin to right side');
+  const CLOSE = '<button class="ib" data-close title="Close">✕</button>';
+  const GRIP = '<span class="grip" title="Drag"></span>';
+  const fld = (key, val, ph) => `<label class="fld">${IC.s}<input data-in="${key}" value="${esc(val)}" placeholder="${ph}" spellcheck="false"></label>`;
+
+  // ================= data =================
+  const COMPS = {
+    N108:[['1','Net52'],['2','GND'],['3','Net59'],['4','Net58'],['5','Net57'],['6','Net56'],['7','PP_VDD_MAIN'],['8','Net60'],['9','GND']],
+    N7:[['1','Net52'],['2','Net57'],['3','GND']],
+    R1:[['1','Net59'],['2','Net57']],
+    L1:[['1','PP_VDD_MAIN'],['2','Net58']],
+    K1:[['1','Net56'],['2','GND']],
+    K3:[['1','Net60'],['2','Net59']],
+    C12:[['1','PP_VDD_MAIN'],['2','GND']],
+    U2:[['1','Net52'],['2','Net58'],['3','Net60'],['4','GND'],['5','Net56'],['6','PP_VDD_MAIN']],
+  };
+  const KIND = c => ({N:['Connector','#0ea5e9'],R:['Resistor','#f59e0b'],L:['Inductor','#10b981'],K:['Test point','#ef4444'],C:['Capacitor','#8b5cf6'],U:['IC','#334155']})[c[0]] || ['Part','#64748b'];
+  const POS = {N108:[300,300],N7:[150,140],R1:[460,150],L1:[470,460],K1:[130,470],K3:[480,300],C12:[300,560],U2:[150,300]};
+  const netConns = net => Object.entries(COMPS).flatMap(([c, pins]) => pins.filter(p => p[1] === net).map(p => ({c, pin:p[0]})));
+
+  const N = {net:'Net57', comp:'N108', pin:'5', linked:true, cq:'', pq:'', tab:'conn', open:{c:true, p:true}, deep:false};
+  const S = {term:'AMUX_PMU_FRONT', res:[], sel:0, busy:false, list:true, visited:new Set([0])};
+
+  const conns = () => netConns(N.net).filter(x => !N.cq || x.c.toLowerCase().includes(N.cq.toLowerCase()));
+  const pinsOf = c => (COMPS[c] || []).filter(p => !N.pq || (p[0] + ' ' + p[1]).toLowerCase().includes(N.pq.toLowerCase()));
+  const nComp = () => new Set(netConns(N.net).map(x => x.c)).size;
+  const plural = (n, w) => `${n} ${w}${n === 1 ? '' : 's'}`;
+
+  const CTX = ['U2300 pin A12 → R2310 (10K) → {T}', '{T} test point TP2311 near the PMU', 'J4500 pin 7 ← {T} (front sensor flex)', '{T} sense line to AP ADC ch4', '{T} via to layer 3, 0.1 mm'];
+  const snip = i => CTX[i % CTX.length].replace('{T}', S.term);
+  function hashPages(t) {
+    if (t.toUpperCase().includes('AMUX_PMU_FRO')) return [22, 22, 25];
+    let h = 0; for (const c of t.toUpperCase()) h = (h * 31 + c.charCodeAt(0)) >>> 0;
+    const n = h % 13; const out = []; let p = 2 + (h % 9);
+    for (let i = 0; i < n; i++) { p += (h >> (i % 16)) % 5; out.push(Math.min(64, p)); }
+    return out;
+  }
+  const LIMIT = 12;
+  const shown = () => S.res.slice(0, LIMIT);
+  const page = () => S.res[S.sel];
+
+  // ============ the 10 designs: each returns its own markup & shape ============
+  const D = [];
+
+  // ---- 1 · Capsule + Chips | Dual Tables Pro ----
+  D.push({
+    name:'Capsule + Tables', desc:'Lightest change from today. The search becomes a floating pill with the matches as page chips under it. Pin Info keeps the two stacked tables, tidied up, with a draggable split between them.',
+    s:'Floating capsule search bar; results as numbered page chips in a separate bubble below.', p:'Two stacked tables (Net Connections / Component Pins) with a resizable split — today\'s panel, refined.',
+    search(){ const r = shown(); return `
+      <div class="cap1" data-drag>${GRIP}<svg class="s" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+        <input data-in="q" value="${esc(S.term)}" placeholder="Search schematic…" spellcheck="false"><span class="n">${S.busy ? '…' : S.res.length}</span>${PIN_S}${CLOSE}</div>
+      <div class="chipsbox">${emptyS() || `<div class="chips">${r.map((p, i) => `<button class="pc${i === S.sel ? ' sel' : ''}" data-act="jump" data-i="${i}" title="Click to go to page ${p}"><i>${i+1}</i>Page ${p}</button>`).join('')}</div>${more()}`}
+        <div class="ft1"><span>ⓘ Click to jump to page</span><span>${rowTxt()}</span></div></div>`; },
+    netCls:'box netw',
+    net(){ const c = conns(), p = pinsOf(N.comp); return `
+      <div class="t-hd" data-drag>${GRIP}${linkBtn()}<span class="muted" style="font-size:12px;font-weight:600">NET</span><b>${esc(N.net)}</b><span class="grow"></span>${PIN_N}${CLOSE}</div>
+      <div class="sec c"><div class="sh">NET CONNECTIONS <span>${plural(nComp(), 'component')}</span></div>${fld('cq', N.cq, 'Search components')}
+        <div class="th"><span>Component</span><span>Pin</span></div>
+        <div class="scroll">${c.map(x => `<button class="tr${x.c === N.comp ? ' sel' : ''}" data-act="comp" data-c="${x.c}" data-p="${x.pin}"><span>${hl(x.c, N.cq)}</span><span>${x.pin}</span></button>`).join('') || '<div class="empty">No components match</div>'}</div></div>
+      <div class="split" data-split title="Drag to resize (double-click to reset)"></div>
+      <div class="sec p"><div class="sh">COMPONENT PINS</div>${fld('pq', N.pq, 'Search pin or net')}
+        <div class="th"><span>Pin</span><span>Net</span></div><div class="compn">${esc(N.comp)}<span>${plural((COMPS[N.comp]||[]).length, 'pin')}</span></div>
+        <div class="scroll">${p.map(x => pinRow('tr', x)).join('') || '<div class="empty">No pins match</div>'}</div></div>`; },
+  });
+
+  // ---- 2 · Find Bar | Tabs ----
+  D.push({
+    name:'Find Bar + Tabs', desc:'Built for speed and small screens. Search is a slim browser-style find bar (term · 2/3 · ▲ ▼) with an optional drop-down list. Pin Info shows one table at a time behind two tabs, so each list gets the full height.',
+    s:'One-line find bar with match position and ▲/▼; ≡ opens the page list below.', p:'Segmented tabs — Connections | Pins — one full-height list at a time; picking a component jumps to its Pins tab.',
+    search(){ const n = S.res.length; return `<div class="box">
+      <div class="bar2" data-drag>${GRIP}${fld('q', S.term, 'Find in document')}
+        <span class="pos${S.term && !S.busy && !n ? ' none' : ''}">${S.busy ? '…' : n ? `${S.sel+1}/${n}` : S.term ? 'No results' : ''}</span>
+        <button class="ib" data-act="prev" title="Previous match (↑)">▲</button><button class="ib" data-act="next" title="Next match (↓)">▼</button>
+        <button class="ib${S.list ? ' on' : ''}" data-act="list" title="Show all matches">≡</button>${PIN_S}${CLOSE}</div>
+      ${S.list ? `<div class="drop scroll">${emptyS() || shown().map((p, i) => `<button class="r2${i === S.sel ? ' sel' : ''}" data-act="jump" data-i="${i}"><i>${i+1}</i>Page ${p}<span class="muted" style="margin-left:auto">${esc(snip(i).slice(0, 18))}…</span></button>`).join('') + more()}</div>
+      <div class="ft2"><span>Click to jump to page</span><span>${rowTxt()}</span></div>` : ''}</div>`; },
+    netCls:'box netw',
+    net(){ const tab = N.tab; return `
+      <div class="t2hd" data-drag>${GRIP}${linkBtn()}<span class="muted" style="font-size:11px">NET</span><b>${esc(N.net)}</b><span class="grow"></span>${PIN_N}${CLOSE}</div>
+      <div class="tabsx"><button class="${tab === 'conn' ? 'sel' : ''}" data-act="tab" data-t="conn">Connections<span>${nComp()}</span></button><button class="${tab === 'pins' ? 'sel' : ''}" data-act="tab" data-t="pins">${esc(N.comp)} pins<span>${(COMPS[N.comp]||[]).length}</span></button></div>
+      <div style="padding:8px">${tab === 'conn' ? fld('cq', N.cq, 'Search components') : fld('pq', N.pq, 'Search pin or net')}</div>
+      ${tab === 'pins' ? `<div class="sub2">${esc(N.comp)}<span class="muted">${plural((COMPS[N.comp]||[]).length, 'pin')}</span></div>` : ''}
+      <div class="lst scroll">${tab === 'conn'
+        ? `<div class="row2 hd"><span>Component</span><span>Pin</span></div>` + (conns().map(x => `<button class="row2${x.c === N.comp ? ' sel' : ''}" data-act="comp" data-c="${x.c}" data-p="${x.pin}" data-goto="pins"><span>${hl(x.c, N.cq)}</span><span>${x.pin}</span></button>`).join('') || '<div class="empty">No components match</div>')
+        : `<div class="row2 hd"><span>Pin</span><span>Net</span></div>` + (pinsOf(N.comp).map(x => `<button class="row2${x[0] === N.pin && x[1] === N.net ? ' sel' : ''}" data-act="net" data-net="${esc(x[1])}" data-p="${x[0]}"><span>${hl(x[0], N.pq)}</span><span class="net">${hl(x[1], N.pq)}</span></button>`).join('') || '<div class="empty">No pins match</div>')}</div>`; },
+  });
+
+  // ---- 3 · Thumbnail Grid | Accordion ----
+  D.push({
+    name:'Thumbnails + Accordion', desc:'Visual and friendly. Each match is a small page thumbnail with a yellow mark where the hit sits on the page. Pin Info is two collapsible cards with count badges, so you can close the one you don\'t need.',
+    s:'Grid of mini page thumbnails with the hit position marked; click a thumbnail to jump.', p:'Two collapsible cards (accordion) with count badges; close one to give the other the full height.',
+    search(){ return `<div class="box">
+      <div class="hd3" data-drag>${GRIP}${fld('q', S.term, 'Search…')}<span class="n">${S.busy ? '…' : S.res.length}</span>${PIN_S}${CLOSE}</div>
+      ${emptyS() || `<div class="grid3 scroll">${shown().map((p, i) => `<button class="thumb${i === S.sel ? ' sel' : ''}" data-act="jump" data-i="${i}" title="Click to go to page ${p}"><span class="paper"><b>${i+1}</b><i style="top:${18 + (i * 23) % 62}%"></i></span>Page ${p}</button>`).join('')}</div>${more()}`}
+      <div class="ft3"><span>Click a page to jump</span><span>${rowTxt()}</span></div></div>`; },
+    netCls:'box netw',
+    net(){ return `
+      <div class="nhd" data-drag>${GRIP}${linkBtn()}<span class="muted" style="font-size:11px;font-weight:700">NET</span><b>${esc(N.net)}</b><span class="grow"></span>${PIN_N}${CLOSE}</div>
+      <div class="acc${N.open.c ? ' open' : ''}"><button data-act="acc" data-k="c">${IC.chev}NET CONNECTIONS<span>${nComp()}</span></button>
+        ${N.open.c ? `<div class="accb">${fld('cq', N.cq, 'Search components')}<div class="scroll">${conns().map(x => `<button class="r3${x.c === N.comp ? ' sel' : ''}" data-act="comp" data-c="${x.c}" data-p="${x.pin}"><span>${hl(x.c, N.cq)}</span><span>pin ${x.pin}</span></button>`).join('') || '<div class="empty">No components match</div>'}</div></div>` : ''}</div>
+      <div class="acc last${N.open.p ? ' open' : ''}"><button data-act="acc" data-k="p">${IC.chev}COMPONENT PINS · ${esc(N.comp)}<span>${(COMPS[N.comp]||[]).length}</span></button>
+        ${N.open.p ? `<div class="accb">${fld('pq', N.pq, 'Search pin or net')}<div class="scroll">${pinsOf(N.comp).map(x => `<button class="r3${x[0] === N.pin && x[1] === N.net ? ' sel' : ''}" data-act="net" data-net="${esc(x[1])}" data-p="${x[0]}"><span>${hl(x[0], N.pq)}</span><span class="net">${hl(x[1], N.pq)}</span></button>`).join('') || '<div class="empty">No pins match</div>'}</div></div>` : ''}</div>`; },
+  });
+
+  // ---- 4 · Document Map | Net Graph ----
+  D.push({
+    name:'Map + Graph', desc:'Shows where things are. The search draws the whole document (64 pages) as a bar with a tick at every hit, plus a context snippet. Pin Info draws the net as a hub-and-spoke graph, with pins as chips underneath.',
+    s:'A whole-document bar (pages 1–64) with a tick at each hit; ‹ › step and a context snippet show the current hit.', p:'Net drawn as a hub with spokes to each component (click a node); the component\'s pins are a chip grid below.',
+    search(){ const p = page(); return `<div class="box">
+      <div class="hd4" data-drag>${GRIP}${fld('q', S.term, 'Search…')}${PIN_S}${CLOSE}</div>
+      ${emptyS() || `<div class="map"><div class="track">${S.res.map((pg, i) => `<button class="tick${i === S.sel ? ' sel' : ''}" style="left:${(pg - 1) / 63 * 100}%" data-act="jump" data-i="${i}" title="Match ${i+1} · page ${pg}"></button>`).join('')}</div><div class="scale"><span>p.1</span><span>p.32</span><span>p.64</span></div></div>
+      <div class="nav4"><button class="ib" data-act="prev" title="Previous match">‹</button><b>p.${p}</b><span class="muted">match ${S.sel+1} of ${S.res.length}</span><span class="grow"></span><button class="ib" data-act="next" title="Next match">›</button></div>
+      <div class="snip">${hl(snip(S.sel), S.term)}</div>`}
+      <div class="ft4"><span>Click a tick to jump</span><span>${rowTxt()}</span></div></div>`; },
+    netCls:'box netw',
+    net(){ const all = netConns(N.net); const vis = conns(); const W = 280, H = 214, cx = W/2, cy = 66;
+      const nodes = vis.map((x, i) => { const a = Math.PI * (0.15 + 0.7 * (vis.length === 1 ? .5 : i / (vis.length - 1))); return {...x, x: cx + Math.cos(a) * 105, y: cy + Math.sin(a) * 95}; });
+      return `
+      <div class="ghd" data-drag>${GRIP}${linkBtn()}<span class="muted" style="font-size:11px;font-weight:700">NET</span><b style="color:var(--acc)">${esc(N.net)}</b><span class="muted" style="font-size:11.5px">· ${plural(nComp(),'component')}</span><span class="grow"></span>${PIN_N}${CLOSE}</div>
+      <div style="padding:8px 10px 0">${fld('cq', N.cq, 'Search components')}</div>
+      <div class="graph"><svg viewBox="0 0 ${W} ${H}">
+        ${nodes.map(n => `<line class="edge${n.c === N.comp ? ' sel' : ''}" x1="${cx}" y1="${cy}" x2="${n.x}" y2="${n.y}"/>`).join('')}
+        <rect class="hub" x="${cx-44}" y="${cy-14}" width="88" height="28" rx="14"/><text class="hubt" x="${cx}" y="${cy+4}" text-anchor="middle">${esc(N.net)}</text>
+        ${nodes.map(n => `<g class="node${n.c === N.comp ? ' sel' : ''}" data-act="comp" data-c="${n.c}" data-p="${n.pin}"><circle cx="${n.x}" cy="${n.y}" r="24"/><text x="${n.x}" y="${n.y+4}" text-anchor="middle">${n.c}</text><text class="pinlbl" x="${n.x}" y="${n.y+38}" text-anchor="middle">pin ${n.pin}</text></g>`).join('')}
+        ${!all.length ? `<text x="${cx}" y="${cy+60}" text-anchor="middle" class="pinlbl">no connections</text>` : ''}
+      </svg></div>
+      <div class="pins4"><div class="ph4"><b>${esc(N.comp)}</b><span class="muted" style="font-size:11.5px">${plural((COMPS[N.comp]||[]).length,'pin')}</span></div>${fld('pq', N.pq, 'Search pin or net')}
+        <div class="chipg scroll">${pinsOf(N.comp).map(x => `<button class="pchip${x[1] === N.net ? ' sel' : ''}" data-act="net" data-net="${esc(x[1])}" data-p="${x[0]}" title="Go to ${esc(x[1])}"><i>${x[0]}</i><span>${hl(x[1], N.pq)}</span></button>`).join('') || '<div class="empty">No pins match</div>'}</div></div>`; },
+  });
+
+  // ---- 5 · Radial Dial | IC Package ----
+  D.push({
+    name:'Dial + Chip', desc:'The most unusual shapes. Search is a round dial: matches sit around the ring and the current page is shown large in the centre. Pin Info draws the selected part as a real chip package with its pins and nets on both sides.',
+    s:'Circular dial: each match is a dot on the ring, the centre shows the current page large with ‹ › to step.', p:'Connections as glowing component chips; the selected part drawn as an IC package with pins + nets left and right.',
+    search(){ const r = shown(), n = r.length, R = 104; return `
+      <div class="dial" data-drag>
+        ${r.map((p, i) => { const a = -Math.PI/2 + (n === 1 ? 0 : i / n * Math.PI * 2); return `<button class="dot${i === S.sel ? ' sel' : ''}" style="left:${125 + Math.cos(a)*R}px;top:${125 + Math.sin(a)*R}px" data-act="jump" data-i="${i}" title="Match ${i+1} · page ${p}">${p}</button>`; }).join('')}
+        <div class="core"><input data-in="q" value="${esc(S.term)}" placeholder="search…" spellcheck="false">
+          ${S.busy ? '<div class="pg">…</div>' : n ? `<div class="pg"><small>PAGE</small>${page()}</div><div class="nv"><button class="ib" data-act="prev">‹</button>${S.sel+1} / ${S.res.length}<button class="ib" data-act="next">›</button></div>` : `<div class="pg" style="font-size:13px;line-height:18px;margin-top:10px">${S.term ? 'No matches' : 'Select text or<br>type to search'}</div>`}</div>
+        <div class="corner tr">${PIN_S}${CLOSE}</div>
+      </div>`; },
+    netCls:'netw',
+    net(){ const pins = COMPS[N.comp] || []; const half = Math.ceil(pins.length / 2); const q = N.pq.toLowerCase();
+      const pinBtn = (x, side, row) => `<button class="${side}${x[1] === N.net ? ' sel' : ''}${q && !(x[0]+' '+x[1]).toLowerCase().includes(q) ? ' dim' : ''}" style="grid-row:${row}" data-act="net" data-net="${esc(x[1])}" data-p="${x[0]}" title="Go to ${esc(x[1])}">${side === 'lp' ? `<span>${esc(x[1])}</span><i>${x[0]}</i>` : `<i>${x[0]}</i><span>${esc(x[1])}</span>`}</button>`;
+      return `
+      <div class="ihd" data-drag>${GRIP}${linkBtn()}<span class="muted" style="font-size:11px">NET</span><b>${esc(N.net)}</b><span class="grow"></span>${PIN_N}${CLOSE}</div>
+      <div style="padding:8px 10px 0">${fld('cq', N.cq, 'Search components')}</div>
+      <div class="cchips">${conns().map(x => `<button class="cc${x.c === N.comp ? ' sel' : ''}" data-act="comp" data-c="${x.c}" data-p="${x.pin}">${hl(x.c, N.cq)}<em>.${x.pin}</em></button>`).join('') || '<span class="muted" style="font-size:12px">No components match</span>'}</div>
+      <div class="pkg"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><span class="muted" style="font-size:11px;letter-spacing:.1em">PACKAGE</span><span class="muted" style="font-size:11px">${plural(pins.length,'pin')}</span></div>${fld('pq', N.pq, 'Search pin or net')}
+        <div class="scroll" style="flex:1"><div class="chip5"><div class="body5" style="grid-row:1/span ${Math.max(half,2)}">${esc(N.comp)}</div>
+          ${pins.slice(0, half).map((x, i) => pinBtn(x, 'lp', i + 1)).join('')}${pins.slice(half).map((x, i) => pinBtn(x, 'rp', i + 1)).join('')}</div></div></div>`; },
+  });
+
+  // ---- 6 · Index Tabs | Component Cards ----
+  D.push({
+    name:'Index Tabs + Cards', desc:'Feels like a reference book. Each match is a coloured index tab sticking out of the page edge, and the page shows the selected hit\'s context with a Go button. Pin Info shows every component as a card; the selected card opens to show its pins.',
+    s:'Results as coloured book index tabs on the right edge; the leaf shows the hit\'s page, context and a "Go to page" button.', p:'One card per component (type icon, which pin is on the net); the selected card expands to show all its pins.',
+    search(){ const COL = ['#e11d48','#f59e0b','#10b981','#0ea5e9','#7c3aed','#db2777','#65a30d','#ea580c']; return `
+      <div class="book"><div class="leaf">
+        <div class="hd6" data-drag>${GRIP}<input data-in="q" value="${esc(S.term)}" placeholder="Search…" spellcheck="false"><span style="font:700 12px var(--ui)">${S.busy ? '…' : S.res.length}</span>${PIN_S}${CLOSE}</div>
+        ${emptyS() || `<div class="body6"><div class="pg">Page ${page()}<small>match ${S.sel+1} of ${S.res.length}</small></div><p>${hl(snip(S.sel), S.term)}</p><button class="go6" data-act="jump" data-i="${S.sel}">Go to page ${page()} →</button></div>`}
+        <div class="ft6"><span>Pick a tab · Click to jump</span><span>${rowTxt()}</span></div></div>
+        <div class="tabs6">${S.busy ? '' : shown().map((p, i) => `<button class="tab6${i === S.sel ? ' sel' : ''}" style="background:${COL[i % COL.length]}" data-act="pick" data-i="${i}" title="Match ${i+1}">${p}</button>`).join('')}</div></div>`; },
+    netCls:'nw6 netw',
+    net(){ return `
+      <div class="nhd6" data-drag>${GRIP}${linkBtn()}<span class="muted" style="font-size:11px;font-weight:700">NET</span><b>${esc(N.net)}</b><span class="grow"></span>${PIN_N}${CLOSE}</div>
+      <div style="padding:8px 8px 0">${fld('cq', N.cq, 'Search components')}</div>
+      <div class="cards scroll">${conns().map(x => { const [k, col] = KIND(x.c); const sel = x.c === N.comp; return `
+        <div class="card6${sel ? ' sel' : ''}"><button data-act="comp" data-c="${x.c}" data-p="${x.pin}"><span class="ico6" style="background:${col}">${x.c.replace(/\d+/,'')}</span><span><b>${hl(x.c, N.cq)}</b><small>${k} · ${plural((COMPS[x.c]||[]).length,'pin')}</small></span><span class="pn">pin ${x.pin}</span></button>
+        ${sel ? `<div class="in6">${fld('pq', N.pq, 'Search pin or net')}<div class="pl6">${pinsOf(x.c).map(p => `<button class="pr6${p[0] === N.pin && p[1] === N.net ? ' sel' : ''}" data-act="net" data-net="${esc(p[1])}" data-p="${p[0]}"><i>${p[0]}</i><span>${hl(p[1], N.pq)}</span></button>`).join('') || '<span class="muted" style="font-size:12px">No pins match</span>'}</div></div>` : ''}</div>`; }).join('') || '<div class="empty">No components match</div>'}</div>`; },
+  });
+
+  // ---- 7 · Grouped Snippets | Tree ----
+  D.push({
+    name:'Snippets + Tree', desc:'Reads like a document outline. Search results are grouped by page, and each hit shows a line of context with the term highlighted. Pin Info is a single tree: net → components → the selected component\'s pins.',
+    s:'Results grouped by page ("Page 22 · 2 hits") with a context line per hit and the term highlighted.', p:'One tree: Net ▾ → each component (pin) ▾ → its pins → net; follow any net from inside the tree.',
+    search(){ const groups = []; shown().forEach((p, i) => { const g = groups.find(x => x.p === p); g ? g.items.push(i) : groups.push({p, items:[i]}); }); return `<div class="box">
+      <div class="hd7" data-drag>${GRIP}<input data-in="q" value="${esc(S.term)}" placeholder="Search…" spellcheck="false"><span class="n">${S.busy ? '…' : S.res.length + ' hits'}</span>${PIN_S}${CLOSE}</div>
+      ${emptyS() || `<div class="groups scroll">${groups.map(g => `<div class="g7h">Page ${g.p}<span>${plural(g.items.length,'hit')}</span></div>${g.items.map(i => `<button class="sn${i === S.sel ? ' sel' : ''}" data-n="${i+1}" data-act="jump" data-i="${i}">${hl(snip(i), S.term)}</button>`).join('')}`).join('')}${more()}</div>`}
+      <div class="ft7"><span>CLICK TO JUMP TO PAGE</span><span>${rowTxt().toUpperCase()}</span></div></div>`; },
+    netCls:'box netw',
+    net(){ return `
+      <div class="hd7" data-drag>${GRIP}${linkBtn()}<span style="font:800 15px var(--ui)">${esc(N.net)}</span><span class="grow"></span>${PIN_N}${CLOSE}</div>
+      <div style="padding:8px 8px 2px">${fld('cq', N.cq, 'Filter components, pins or nets')}</div>
+      <div class="tree scroll">
+        <button class="tn root"><span class="tw">▾</span>⦿ ${esc(N.net)}<span class="badge">${plural(nComp(),'component')}</span></button>
+        ${netConns(N.net).filter(x => !N.cq || x.c.toLowerCase().includes(N.cq.toLowerCase()) || (COMPS[x.c]||[]).some(p => (p[0]+' '+p[1]).toLowerCase().includes(N.cq.toLowerCase()))).map(x => { const open = x.c === N.comp; return `
+          <button class="tn l1${open ? ' sel' : ''}" data-act="comp" data-c="${x.c}" data-p="${x.pin}"><span class="tw">${open ? '▾' : '▸'}</span>${hl(x.c, N.cq)} <span class="muted">· pin ${x.pin}</span><span class="badge">${plural((COMPS[x.c]||[]).length,'pin')}</span></button>
+          ${open ? (COMPS[x.c]||[]).map(p => `<button class="tn l2" data-act="net" data-net="${esc(p[1])}" data-p="${p[0]}">${p[0]} <span class="net${p[1] === N.net ? ' cur' : ''}">${hl(p[1], N.cq)}</span></button>`).join('') : ''}`; }).join('') || '<div class="empty">Nothing matches</div>'}
+      </div>`; },
+  });
+
+  // ---- 8 · Console | Drill-down ----
+  D.push({
+    name:'Console + Drill-down', desc:'Keyboard-first and focused. Search reads like a command line (find › term) with numbered result lines. Pin Info is a two-level drill-down: the net\'s components first, then tap one to slide into its pins, with ‹ back.',
+    s:'Terminal look: "find ›" prompt, numbered result lines with page and context; ↑/↓ + Enter.', p:'iOS-style drill-down: level 1 = components on the net, tap → slides to level 2 = that part\'s pins (‹ back).',
+    search(){ return `<div class="box">
+      <div class="hd8" data-drag>${GRIP}<span class="pr">find ›</span><input data-in="q" value="${esc(S.term)}" placeholder="term" spellcheck="false">${PIN_S}${CLOSE}</div>
+      <div class="lines scroll">${!S.term ? '<span class="cl sys">  select text or type to search_</span>' : S.busy ? '<span class="cl sys">  searching…</span>' : !S.res.length ? '<span class="cl sys">  0 matches</span>'
+        : `<span class="cl sys">  ${S.res.length} match${S.res.length === 1 ? '' : 'es'} for "${esc(S.term)}"</span>` + shown().map((p, i) => `<button class="cl${i === S.sel ? ' sel' : ''}" data-act="jump" data-i="${i}">${i === S.sel ? '▸' : ' '} [${String(i+1).padStart(2,'0')}] p.${String(p).padStart(3,'0')}  ${esc(snip(i).slice(0, 22))}</button>`).join('') + more()}</div>
+      <div class="ft8"><span>↑↓ select · enter jump</span><span>${rowTxt().toLowerCase()}</span></div></div>`; },
+    netCls:'box netw',
+    net(){ return `
+      <div class="hd8" data-drag>${GRIP}${linkBtn()}<span class="pr">net ›</span><span style="color:#fff">${esc(N.net)}</span><span class="grow"></span>${PIN_N}${CLOSE}</div>
+      <div class="dd${N.deep ? ' deep' : ''}">
+        <div class="view v1"><div class="ttl"><small>NET · ${plural(nComp(),'COMPONENT').toUpperCase()}</small><b>${esc(N.net)}</b></div>${fld('cq', N.cq, 'search components')}
+          <div class="scroll" style="flex:1">${conns().map(x => `<button class="drow${x.c === N.comp ? ' sel' : ''}" data-act="comp" data-c="${x.c}" data-p="${x.pin}" data-deep="1">${hl(x.c, N.cq)}<span class="r">pin ${x.pin} ›</span></button>`).join('') || '<div class="empty">no components match</div>'}</div></div>
+        <div class="view v2"><div class="ttl"><button class="back" data-act="back">‹ ${esc(N.net)}</button><small style="display:block;margin-top:8px">COMPONENT · ${plural((COMPS[N.comp]||[]).length,'PIN').toUpperCase()}</small><b>${esc(N.comp)}</b></div>${fld('pq', N.pq, 'search pin or net')}
+          <div class="scroll" style="flex:1">${pinsOf(N.comp).map(x => `<button class="drow${x[1] === N.net ? ' sel' : ''}" data-act="net" data-net="${esc(x[1])}" data-p="${x[0]}" data-deep="0">pin ${hl(x[0], N.pq)}<span class="r net">${hl(x[1], N.pq)} ›</span></button>`).join('') || '<div class="empty">no pins match</div>'}</div></div>
+      </div>`; },
+  });
+
+  // ---- 9 · Vertical Rail | Spreadsheet ----
+  D.push({
+    name:'Rail + Sheet', desc:'Uses the Bench look you liked. Search is a slim vertical rail on the left that takes almost no width (big page tiles, count on top). Pin Info is one spreadsheet: each component is a group header with all of its pins and nets in rows.',
+    s:'Ultra-narrow vertical rail (96 px): count, mini search field, page tiles stacked top-to-bottom.', p:'One spreadsheet: every component on the net is a group header with all its pins and nets as rows; rows on the current net glow.',
+    search(){ return `<div class="box" style="height:100%">
+      <div class="rail" data-drag><div class="tb">${PIN_S}${CLOSE}</div><span class="led"></span>
+        <label class="fld"><input data-in="q" value="${esc(S.term)}" placeholder="find…" spellcheck="false" title="${esc(S.term)}"></label>
+        <div class="cnt">${S.busy ? '…' : S.res.length}<small>MATCHES</small></div>
+        <div class="tiles scroll">${!S.term ? '<div class="muted" style="font-size:10px;text-align:center">type to search</div>' : shown().map((p, i) => `<button class="tile${i === S.sel ? ' sel' : ''}" data-act="jump" data-i="${i}" title="Click to go to page ${p}"><small>#${i+1}</small>${p}</button>`).join('')}</div>
+        <div class="rowno">${rowTxt().toUpperCase()}</div></div></div>`; },
+    netCls:'box netw',
+    net(){ const list = conns(); return `
+      <div class="shd" data-drag><span class="led"></span>${linkBtn()}<span class="muted" style="font-size:10px;letter-spacing:.12em">NET</span><b>${esc(N.net)}</b><span class="grow"></span>${PIN_N}${CLOSE}</div>
+      <div style="padding:7px 8px">${fld('cq', N.cq, 'Filter components')}</div>
+      <div class="sheet scroll"><table><thead><tr><th>PIN</th><th>NET</th></tr></thead><tbody>
+        ${list.map(x => `<tr class="grp${x.c === N.comp ? ' sel' : ''}"><td colspan="2"><button data-act="comp" data-c="${x.c}" data-p="${x.pin}" style="padding:0;color:inherit;font:inherit">${hl(x.c, N.cq)}</button><span>${plural((COMPS[x.c]||[]).length,'pin')}</span></td></tr>`
+          + (COMPS[x.c]||[]).map(p => `<tr class="${p[1] === N.net ? 'on' : ''}"><td><button data-act="comp" data-c="${x.c}" data-p="${p[0]}">${p[0]}</button></td><td class="netc"><button data-act="net" data-net="${esc(p[1])}" data-p="${p[0]}" data-c="${x.c}">${esc(p[1])}</button></td></tr>`).join('')).join('') || '<tr><td colspan="2" class="empty">No components match</td></tr>'}
+      </tbody></table></div>
+      <div class="stat"><span><b>${nComp()}</b> PARTS</span><span><b>${list.reduce((a, x) => a + (COMPS[x.c]||[]).length, 0)}</b> ROWS</span><span><b>${esc(N.comp)}.${esc(N.pin)}</b> FOCUS</span></div>`; },
+  });
+
+  // ---- 10 · Sticky Note | Rail + Flyout ----
+  D.push({
+    name:'Sticky + Flyout', desc:'Playful but practical. Search is a sticky note held on by a real push-pin: grey when floating, red when pinned, and clicking the pin snaps it home. Visited pages get ticked off. Pin Info is a colour rail of component badges on the right edge, with that part\'s pins in a flyout beside it.',
+    s:'Sticky note held by a push-pin (the pin IS the Pin button); pages tick off as you visit them.', p:'Colour rail of component badges along the right edge (pin number in a dot); the selected part\'s pins open in a flyout beside it.',
+    search(){ return `<div class="note" data-drag><button class="tack" data-pin title="Pin to top-left"></button><button class="ib x" data-close title="Close">✕</button>
+      <div class="nq"><span>find:</span><input data-in="q" value="${esc(S.term)}" placeholder="something…" spellcheck="false"><b>${S.busy ? '…' : S.res.length}</b></div>
+      ${!S.term ? '<div style="padding:10px 0">Select text or type to search ✎</div>' : S.busy ? '<div style="padding:10px 0">searching…</div>' : !S.res.length ? '<div style="padding:10px 0">nothing found ☹</div>'
+        : `<div class="todo scroll">${shown().map((p, i) => `<button class="td${i === S.sel ? ' sel' : ''}${S.visited.has(i) ? ' v' : ''}" data-act="jump" data-i="${i}"><i>${S.visited.has(i) ? '✓' : ''}</i>page ${p}${i === S.sel ? ' ←' : ''}</button>`).join('')}</div>${more()}`}
+      <div class="nf"><span>tap a page to jump</span><span>${rowTxt().toLowerCase()}</span></div></div>`; },
+    netCls:'rf',
+    net(){ return `
+      <div class="fly"><div class="fh"><small>COMPONENT PINS</small><b>${esc(N.comp)}</b><span class="muted">${KIND(N.comp)[0]} · ${plural((COMPS[N.comp]||[]).length,'pin')} · on ${esc(N.net)} via pin ${esc(N.pin)}</span></div>
+        ${fld('pq', N.pq, 'Search pin or net')}
+        <div class="pl scroll">${pinsOf(N.comp).map(x => `<button class="pr${x[0] === N.pin && x[1] === N.net ? ' sel' : ''}" data-act="net" data-net="${esc(x[1])}" data-p="${x[0]}"><i>${x[0]}</i>${hl(x[1], N.pq)}</button>`).join('') || '<div class="empty">No pins match</div>'}</div></div>
+      <div class="rail10" data-drag>${PIN_N}${CLOSE}${linkBtn()}
+        <div class="vnet"><small>NET</small> ${esc(N.net)}</div>
+        <div class="badges">${netConns(N.net).map(x => `<button class="bd${x.c === N.comp ? ' sel' : ''}" data-act="comp" data-c="${x.c}" data-p="${x.pin}" title="${x.c} · pin ${x.pin}">${x.c}<em>${x.pin}</em></button>`).join('')}</div>
+        <span style="font:700 9px var(--ui);opacity:.75;letter-spacing:.1em">${nComp()} PARTS</span></div>`; },
+    netNoSearchConn:true,
+  });
+
+  // ---------- shared fragments ----------
+  function emptyS() {
+    if (!S.term) return '<div class="empty">Select text or\ntype to search</div>';
+    if (S.busy) return '<div class="empty">Searching…</div>';
+    if (!S.res.length) return '<div class="empty">No matches</div>';
+    return '';
+  }
+  const more = () => S.res.length > LIMIT ? `<div class="muted" style="padding:6px 12px;font-size:12px">… and ${S.res.length - LIMIT} more matches</div>` : '';
+  const rowTxt = () => S.res.length && !S.busy ? `Row ${S.sel + 1}` : '';
+  const linkBtn = () => `<button class="ib link${N.linked ? '' : ' off'}" data-act="unlink" title="${N.linked ? 'Unlink net' : 'Link net'}">${IC.link}</button>`;
+  const pinRow = (cls, x) => `<button class="${cls}${x[0] === N.pin && x[1] === N.net ? ' sel' : ''}" data-act="net" data-net="${esc(x[1])}" data-p="${x[0]}"><span>${hl(x[0], N.pq)}</span><span>${hl(x[1], N.pq)}</span></button>`;
+
+  // ---------- board ----------
+  const board = $('board');
+  function drawBoard() {
+    let s = '';
+    const pinXY = (c, i, n) => { const [x, y] = POS[c]; const cols = Math.min(n, 3); const r = Math.floor(i / cols), k = i % cols; return [x - (cols-1)*22 + k*44, y - 22 + r*30]; };
+    const nets = {};
+    Object.entries(COMPS).forEach(([c, pins]) => pins.forEach((p, i) => (nets[p[1]] = nets[p[1]] || []).push(pinXY(c, i, pins.length))));
+    Object.entries(nets).forEach(([net, pts]) => { if (net === 'GND') return; for (let i = 1; i < pts.length; i++) s += `<path class="trace${N.linked && net === N.net ? ' hot' : ''}" d="M${pts[i-1][0]} ${pts[i-1][1]} L${pts[i-1][0]} ${pts[i][1]} L${pts[i][0]} ${pts[i][1]}"/>`; });
+    Object.entries(COMPS).forEach(([c, pins]) => {
+      const [x, y] = POS[c];
+      s += `<text x="${x}" y="${y - 44}" text-anchor="middle" style="fill:#c9ccd4;font-size:11px">${c}</text>`;
+      pins.forEach((p, i) => { const [px, py] = pinXY(c, i, pins.length);
+        s += `<rect class="pad${N.linked && p[1] === N.net ? ' hot' : ''}${c === N.comp && p[0] === N.pin ? ' focus' : ''}" data-c="${c}" data-p="${p[0]}" x="${px-17}" y="${py-11}" width="34" height="22" rx="4"/><text x="${px}" y="${py+4}" text-anchor="middle">${p[0]}</text>`; });
+    });
+    board.innerHTML = s;
+  }
+  board.addEventListener('click', e => { const pad = e.target.closest('.pad'); if (!pad) return; N.comp = pad.dataset.c; N.pin = pad.dataset.p; N.net = COMPS[N.comp].find(p => p[0] === N.pin)[1]; N.linked = true; N.cq = ''; N.pq = ''; renderNet(); });
+
+  // ---------- render (keeps focus inside re-rendered inputs) ----------
+  const sp = $('sp'), ni = $('ni');
+  let cur = 0;
+  function withFocus(panel, html) {
+    const a = document.activeElement, key = a && panel.contains(a) && a.dataset ? a.dataset.in : null;
+    const pos = key ? [a.selectionStart, a.selectionEnd] : null;
+    const scrolls = [...panel.querySelectorAll('.scroll')].map(x => x.scrollTop);
+    panel.innerHTML = html;
+    [...panel.querySelectorAll('.scroll')].forEach((x, i) => { if (scrolls[i] != null) x.scrollTop = scrolls[i]; });
+    if (key) { const n = panel.querySelector(`[data-in="${key}"]`); if (n) { n.focus(); try { n.setSelectionRange(pos[0], pos[1]); } catch (_) {} } }
+  }
+  function renderSearch() {
+    withFocus(sp, D[cur].search());
+    const s = sp.querySelector('.scroll .sel'), sc = s && s.closest('.scroll');
+    if (sc) { const top = s.offsetTop - sc.offsetTop; if (top < sc.scrollTop) sc.scrollTop = top; else if (top + s.offsetHeight > sc.scrollTop + sc.clientHeight) sc.scrollTop = top + s.offsetHeight - sc.clientHeight; }
+    fit(sp);
+  }
+  function renderNet() { ni.className = 'panel' + (ni.classList.contains('pinned') ? ' pinned' : '') + ' ' + D[cur].netCls; withFocus(ni, D[cur].net()); drawBoard(); }
+
+  function jump(i) {
+    if (!S.res.length) return;
+    S.sel = Math.max(0, Math.min(Math.min(S.res.length, LIMIT) - 1, i)); S.visited.add(S.sel);
+    const p = page(); $('pageNo').textContent = p; $('sheetNo').textContent = p;
+    const bar = $('pbar'); bar.classList.remove('flash'); void bar.offsetWidth; bar.classList.add('flash');
+    $('hlBox').setAttribute('y', 174 + (S.sel % 3) * 30);
+    renderSearch();
+  }
+  let timer;
+  function runSearch(v) {
+    S.term = v.trim(); S.sel = 0; S.visited = new Set([0]); clearTimeout(timer);
+    if (!S.term) { S.res = []; S.busy = false; renderSearch(); return; }
+    S.busy = true; renderSearch();
+    timer = setTimeout(() => { S.busy = false; S.res = hashPages(S.term); renderSearch(); if (S.res.length) jump(0); }, 260);
+  }
+
+  // ---------- events ----------
+  sp.addEventListener('input', e => { if (e.target.dataset.in === 'q') runSearch(e.target.value); });
+  sp.addEventListener('keydown', e => {
+    if (e.key === 'ArrowDown' || (e.key === 'Enter' && !e.shiftKey)) { e.preventDefault(); jump(S.sel + 1 >= Math.min(S.res.length, LIMIT) && e.key === 'Enter' ? 0 : S.sel + 1); }
+    else if (e.key === 'ArrowUp' || (e.key === 'Enter' && e.shiftKey)) { e.preventDefault(); jump(S.sel - 1); }
+    else if (e.key === 'Escape') closePanel(sp);
+  });
+  sp.addEventListener('click', e => {
+    const b = e.target.closest('[data-act]'); if (!b) return;
+    const a = b.dataset.act;
+    if (a === 'jump') jump(+b.dataset.i);
+    else if (a === 'pick') { S.sel = +b.dataset.i; renderSearch(); }
+    else if (a === 'prev') jump(S.sel - 1);
+    else if (a === 'next') jump(S.sel + 1);
+    else if (a === 'list') { S.list = !S.list; renderSearch(); }
+  });
+  ni.addEventListener('input', e => { const k = e.target.dataset.in; if (k === 'cq' || k === 'pq') { N[k] = e.target.value; renderNet(); } });
+  ni.addEventListener('click', e => {
+    const b = e.target.closest('[data-act]'); if (!b) return;
+    const a = b.dataset.act;
+    if (a === 'comp') { N.comp = b.dataset.c; N.pin = b.dataset.p; N.pq = ''; if (b.dataset.goto) N.tab = b.dataset.goto; if (b.dataset.deep) N.deep = true; }
+    else if (a === 'net') { N.net = b.dataset.net; N.pin = b.dataset.p; if (b.dataset.c) N.comp = b.dataset.c; N.linked = true; N.cq = ''; if (b.dataset.deep) N.deep = false;
+      // keep the focused component if it's on the new net, else take the first part on it
+      if (!netConns(N.net).some(x => x.c === N.comp)) { const f = netConns(N.net)[0]; if (f) { N.comp = f.c; N.pin = f.pin; } } }
+    else if (a === 'unlink') N.linked = !N.linked;
+    else if (a === 'tab') N.tab = b.dataset.t;
+    else if (a === 'acc') N.open[b.dataset.k] = !N.open[b.dataset.k];
+    else if (a === 'back') N.deep = false;
+    renderNet();
+  });
+
+  // ---------- drag / pin / close ----------
+  const PAD = 12;
+  const homeOf = p => p === sp ? {left:PAD, top:PAD} : {left:p.parentElement.clientWidth - p.offsetWidth - PAD, top:PAD, height:p.parentElement.clientHeight - PAD*2};
+  function place(p, pos, anim) {
+    p.classList.toggle('anim', !!anim);
+    p.style.left = pos.left + 'px'; p.style.top = pos.top + 'px';
+    if (pos.height) p.style.height = pos.height + 'px';
+    if (anim) setTimeout(() => p.classList.remove('anim'), 420);
+  }
+  function pin(p, anim) { p.classList.add('pinned'); place(p, homeOf(p), anim); }
+  function fit(p) { if (p.hidden) return; p.classList.contains('pinned') ? pin(p, false) : clampInto(p); }
+  function clampInto(p) {
+    const v = p.parentElement;
+    p.style.left = Math.max(0, Math.min(v.clientWidth - p.offsetWidth, p.offsetLeft)) + 'px';
+    p.style.top = Math.max(0, Math.min(v.clientHeight - p.offsetHeight, p.offsetTop)) + 'px';
+  }
+  [sp, ni].forEach(p => {
+    let sx = null, sy, ox, oy, moved, splitY = null, splitH;
+    p.addEventListener('pointerdown', e => {
+      if (e.button !== 0) return;
+      const sb = e.target.closest('[data-split]');
+      if (sb) { splitY = e.clientY; splitH = p.querySelector('.sec.c').getBoundingClientRect().height; sb.setPointerCapture(e.pointerId); return; }
+      if (!e.target.closest('[data-drag]') || e.target.closest('button, input, [data-act]')) return;
+      sx = e.clientX; sy = e.clientY; ox = p.offsetLeft; oy = p.offsetTop; moved = false;
+      p.setPointerCapture(e.pointerId);
+    });
+    p.addEventListener('pointermove', e => {
+      if (splitY != null) { p.style.setProperty('--connH', Math.max(110, Math.min(p.clientHeight - 200, splitH + e.clientY - splitY)) + 'px'); return; }
+      if (sx == null) return;
+      const dx = e.clientX - sx, dy = e.clientY - sy;
+      if (!moved && Math.hypot(dx, dy) < 4) return;
+      if (!moved) { moved = true; p.classList.add('dragging'); p.classList.remove('pinned', 'anim'); if (p === ni) p.style.height = Math.min(p.offsetHeight, 520) + 'px'; }
+      const v = p.parentElement;
+      p.style.left = Math.max(0, Math.min(v.clientWidth - p.offsetWidth, ox + dx)) + 'px';
+      p.style.top = Math.max(0, Math.min(v.clientHeight - p.offsetHeight, oy + dy)) + 'px';
+    });
+    const end = () => { sx = null; splitY = null; p.classList.remove('dragging'); };
+    p.addEventListener('pointerup', end); p.addEventListener('pointercancel', end);
+    p.addEventListener('dblclick', e => { if (e.target.closest('[data-split]')) { p.style.setProperty('--connH', '230px'); return; } if (e.target.closest('[data-drag]') && !e.target.closest('button, input, [data-act]')) pin(p, true); });
+    p.addEventListener('click', e => { if (e.target.closest('[data-pin]')) pin(p, true); else if (e.target.closest('[data-close]')) closePanel(p); });
+  });
+  function closePanel(p) { p.hidden = true; $(p === sp ? 'reopenS' : 'reopenN').hidden = false; }
+  function openPanel(p) { p.hidden = false; $(p === sp ? 'reopenS' : 'reopenN').hidden = true; fit(p); }
+  $('reopenS').onclick = () => { openPanel(sp); const q = sp.querySelector('[data-in="q"]'); q && q.focus(); };
+  $('reopenN').onclick = () => openPanel(ni);
+  $('resetPos').onclick = () => [sp, ni].forEach(p => { if (p.hidden) openPanel(p); pin(p, true); });
+  window.addEventListener('resize', () => [sp, ni].forEach(fit));
+
+  // ---------- design switcher ----------
+  const app = $('app'), tabs = $('tabs');
+  D.forEach((d, i) => { const b = document.createElement('button'); b.textContent = `${i+1} ${d.name.split(' ')[0]}`; b.title = d.name; b.onclick = () => setDesign(i); tabs.appendChild(b); });
+  function setDesign(i) {
+    cur = (i + D.length) % D.length;
+    app.className = 'stages d' + (cur + 1);
+    tabs.querySelectorAll('button').forEach((b, k) => b.classList.toggle('sel', k === cur));
+    const d = D[cur];
+    $('capN').textContent = String(cur + 1).padStart(2, '0'); $('capT').textContent = d.name; $('capD').textContent = d.desc;
+    $('capS').textContent = d.s; $('capP').textContent = d.p;
+    sp.style.height = ''; ni.style.removeProperty('--connH');
+    renderSearch(); renderNet();
+    requestAnimationFrame(() => { [sp, ni].forEach(fit); });
+    try { localStorage.setItem('panel-design', cur); } catch (_) {}
+    history.replaceState(null, '', '#d' + (cur + 1));
+  }
+  document.addEventListener('keydown', e => {
+    const typing = e.target.matches && e.target.matches('input');
+    if (!typing && e.key === 'ArrowRight') setDesign(cur + 1);
+    if (!typing && e.key === 'ArrowLeft') setDesign(cur - 1);
+    if (e.ctrlKey && e.key.toLowerCase() === 'f') { e.preventDefault(); if (sp.hidden) openPanel(sp); const q = sp.querySelector('[data-in="q"]'); q && (q.focus(), q.select()); }
+  });
+  $('theme').onclick = () => { const h = document.documentElement; h.dataset.theme = h.dataset.theme === 'dark' ? 'light' : 'dark'; try { localStorage.setItem('panel-theme', h.dataset.theme); } catch (_) {} };
+  try { const th = localStorage.getItem('panel-theme'); if (th) document.documentElement.dataset.theme = th; } catch (_) {}
+
+  S.res = hashPages(S.term);
+  let start = 0; const m = location.hash.match(/^#d(\d+)$/);
+  if (m) start = +m[1] - 1; else { try { start = +(localStorage.getItem('panel-design') || 0); } catch (_) {} }
+  setDesign(start);
+})();
+</script>
+</body>
+</html>
