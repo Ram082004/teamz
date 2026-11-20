@@ -408,50 +408,80 @@ button{cursor:pointer}
 .d9 .stat b{color:var(--acc)}
 
 /* ========================================================================
-   DESIGN 10 · Sticky Note  |  Rail + Flyout                  (soft colour)
+   DESIGN 10 · Sticky Note  |  Rail + Flyout          (teal · compact)
    ======================================================================== */
-.d10{--bg:#fff;--bd:#e5e1f5;--r:16px;--sh:0 16px 36px rgba(60,40,120,.25);--t1:#231c3d;--t2:#5d557a;--t3:#958db0;--acc:#7c5cff;--hover:#f3f0ff;--line:#ece8fa;--in:#f7f5ff;--mark:#ffe58a}
-.d10 #sp{width:270px}
-.d10 .note{position:relative;margin-top:14px;padding:26px 16px 14px;background:linear-gradient(180deg,#fff59d,#ffee6e);box-shadow:0 2px 0 rgba(0,0,0,.05),6px 14px 24px rgba(80,60,0,.35);transform:rotate(-1.4deg);border-radius:2px 2px 16px 2px;font-family:var(--hand);color:#3b3000}
-.d10 .note::after{content:"";position:absolute;right:0;bottom:0;width:22px;height:22px;background:linear-gradient(135deg,#e8d24a 50%,transparent 50%);border-radius:0 0 16px 0}
-.d10 .tack{position:absolute;left:50%;top:-14px;margin-left:-15px;width:30px;height:30px;border-radius:50%;border:0;padding:0;background:radial-gradient(circle at 35% 30%,#ff8a8a,#d92f2f 60%,#8f1414);box-shadow:0 4px 6px rgba(0,0,0,.35);cursor:pointer}
-.d10 .panel:not(.pinned) .tack{background:radial-gradient(circle at 35% 30%,#d6d6d6,#9a9a9a 60%,#5c5c5c)}
-.d10 .note .x{position:absolute;right:6px;top:4px;color:#7a6a00}
-.d10 .note .x:hover{background:rgba(0,0,0,.06)}
-.d10 .nq{display:flex;align-items:baseline;gap:6px;border-bottom:1.5px solid rgba(59,48,0,.4);padding-bottom:4px;margin-bottom:8px}
-.d10 .nq span{font-size:13px}
-.d10 .nq input{flex:1;font:700 15px var(--hand);color:#3b3000}
-.d10 .nq b{font-size:13px;color:#a03030}
-.d10 .todo{max-height:250px}
-.d10 .td{display:flex;align-items:center;gap:8px;width:100%;border:0;background:none;text-align:left;padding:4px 2px;font:15px var(--hand);color:#3b3000;border-bottom:1px dashed rgba(59,48,0,.2)}
-.d10 .td i{font-style:normal;width:16px;height:16px;border:1.5px solid #3b3000;border-radius:3px;display:grid;place-items:center;font-size:12px;line-height:1;flex:0 0 auto}
-.d10 .td.v i{background:rgba(59,48,0,.1)}
-.d10 .td.sel{font-weight:700;color:#a03030}
-.d10 .td.sel i{border-color:#a03030;color:#a03030}
-.d10 .nf{margin-top:8px;font-size:12px;color:#7a6a00;display:flex;justify-content:space-between}
-.d10 .rf{height:100%;display:flex;gap:0;filter:drop-shadow(0 16px 30px rgba(60,40,120,.3))}
-.d10 .fly{flex:1;min-width:0;margin:20px 0;background:#fff;border:1px solid var(--bd);border-right:0;border-radius:16px 0 0 16px;display:flex;flex-direction:column;overflow:hidden}
-.d10 .fh{padding:12px 12px 8px}
-.d10 .fh small{font:700 10px var(--ui);letter-spacing:.12em;color:var(--t3)}
-.d10 .fh b{display:block;font:800 18px var(--mono)}
-.d10 .fh .muted{font-size:12px}
-.d10 .fly .fld{margin:0 12px 8px;border-radius:20px}
-.d10 .pl{flex:1;padding:0 8px 10px}
-.d10 .pr{display:flex;align-items:center;gap:8px;width:100%;border:0;background:none;text-align:left;padding:5px 6px;border-radius:10px;font:12px var(--mono);color:var(--t1)}
-.d10 .pr i{font-style:normal;width:22px;height:22px;border-radius:7px;background:var(--hover);display:grid;place-items:center;font:700 10.5px var(--mono);color:var(--acc);flex:0 0 auto}
+.d10{--bg:#fff;--bd:#cdeae6;--r:14px;--sh:0 14px 30px rgba(6,78,70,.25);--t1:#0f2b29;--t2:#3f5f5b;--t3:#7f9c98;--acc:#0d9488;--hover:#e6f6f3;--line:#d9efec;--in:#f1faf8;--mark:#99f6e4}
+/* search = vertical rail (teal). 1 column for a few matches, 2-column grid when there are many */
+.d10 #sp{width:96px}
+.d10 .rl .tiles.g2{max-height:310px}
+.d10 #sp.wide{width:118px}
+.d10 .rl{height:100%;display:flex;flex-direction:column;gap:6px;padding:8px 7px;border-radius:14px;background:linear-gradient(180deg,#0f2b29,#0a1f1d);box-shadow:0 0 0 1px #1d4a45,0 16px 34px -12px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.06);color:#dff7f3;font-family:var(--mono)}
+.d10 .rl .tb{display:flex;justify-content:space-between}
+.d10 .rl .tb .ib{width:24px;height:24px;color:#7fb5ae}.d10 .rl .tb .ib:hover{background:rgba(255,255,255,.08);color:#fff}
+.d10 .rl .led{width:8px;height:8px;border-radius:50%;background:#2dd4bf;box-shadow:0 0 8px #2dd4bf;margin:0 auto}
+.d10 .panel:not(.pinned) .rl .led{background:#5b6f6c;box-shadow:none}
+.d10 .panel.pinned .rl [data-pin]{color:#2dd4bf}
+.d10 .rl .fld{padding:4px 5px;border-radius:7px;background:#06312d;border-color:#1d4a45}
+.d10 .rl .fld input{font:700 10px var(--mono);width:100%;color:#fff}
+.d10 .rl .cnt{text-align:center;font:800 26px/28px var(--mono);color:#2dd4bf;text-shadow:0 0 10px rgba(45,212,191,.35)}
+.d10 .rl .cnt small{display:block;font:700 8.5px var(--mono);letter-spacing:.14em;color:#6f9a94;text-shadow:none}
+.d10 .rl .tiles{flex:1;display:flex;flex-direction:column;gap:5px;min-height:0;padding:1px}
+.d10 .rl .tiles.g2{display:grid;grid-template-columns:1fr 1fr;gap:4px;align-content:start}
+.d10 .rl .tile{border:1px solid #1d4a45;background:#0c2624;border-radius:8px;padding:5px 0;font:800 15px var(--mono);color:#e6fbf8;text-align:center}
+.d10 .rl .tile small{display:block;font:700 8.5px var(--mono);color:#6f9a94}
+.d10 .rl .tiles.g2 .tile{padding:3px 0;font-size:12px;border-radius:6px}
+.d10 .rl .tiles.g2 .tile small{font-size:7.5px}
+.d10 .rl .tile:hover{border-color:#2dd4bf}
+.d10 .rl .tile.v{border-color:#1f6e66}
+.d10 .rl .tile.sel{background:#2dd4bf;color:#04201d;border-color:#2dd4bf;box-shadow:0 0 12px rgba(45,212,191,.45)}
+.d10 .rl .tile.sel small{color:#0b4a44}
+.d10 .rl .st{display:flex;gap:4px}
+.d10 .rl .st button{flex:1;height:20px;border:1px solid #1d4a45;background:#0c2624;border-radius:6px;color:#7fb5ae;font:700 9px var(--mono);padding:0}
+.d10 .rl .st button:hover{color:#fff;border-color:#2dd4bf}
+.d10 .rl .rowno{text-align:center;font:700 9px var(--mono);color:#6f9a94;letter-spacing:.08em}
+.d10 .rl .hint{font-size:9.5px;color:#6f9a94;text-align:center}
+/* compact Pin Info: rail + flyout, sized to its content */
+.d10 #ni{width:262px;max-height:calc(100% - 24px)}
+.d10 .rf{display:flex;filter:drop-shadow(0 12px 22px rgba(4,60,54,.3))}
+.d10 .fly{flex:1;min-width:0;margin:12px 0;background:#fff;border:1px solid var(--bd);border-right:0;border-radius:12px 0 0 12px;display:flex;flex-direction:column;overflow:hidden}
+.d10 .fh{padding:8px 9px 5px}
+.d10 .fh small{font:700 9px var(--ui);letter-spacing:.12em;color:var(--t3)}
+.d10 .fh b{display:block;font:800 14px/18px var(--mono)}
+.d10 .fh .muted{font-size:10.5px;line-height:14px;display:block}
+.d10 .fly .fld{margin:0 8px 5px;border-radius:16px;padding:3px 8px}
+.d10 .fly .fld input{font-size:11.5px}
+.d10 .pl{padding:0 5px 6px;max-height:232px}
+.d10 .pr{display:flex;align-items:center;gap:6px;width:100%;border:0;background:none;text-align:left;padding:3px 5px;border-radius:8px;font:11.5px var(--mono);color:var(--t1)}
+.d10 .pr i{font-style:normal;width:18px;height:18px;border-radius:5px;background:var(--hover);display:grid;place-items:center;font:700 9.5px var(--mono);color:var(--acc);flex:0 0 auto}
 .d10 .pr:hover{background:var(--hover)}
 .d10 .pr.sel{background:var(--acc);color:#fff}.d10 .pr.sel i{background:rgba(255,255,255,.25);color:#fff}
-.d10 .rail10{flex:0 0 74px;background:linear-gradient(180deg,#7c5cff,#5b3fd9);border-radius:18px;display:flex;flex-direction:column;align-items:center;gap:6px;padding:8px 0;color:#fff}
-.d10 .rail10 .ib{color:rgba(255,255,255,.75)}.d10 .rail10 .ib:hover{background:rgba(255,255,255,.15);color:#fff}
-.d10 .panel.pinned .rail10 [data-pin]{color:#fff;background:rgba(255,255,255,.22)}
-.d10 .vnet{writing-mode:vertical-rl;transform:rotate(180deg);font:800 14px var(--mono);letter-spacing:.06em;padding:6px 0}
-.d10 .vnet small{font:600 9.5px var(--ui);letter-spacing:.16em;opacity:.7;margin-bottom:6px}
-.d10 .badges{flex:1;display:flex;flex-direction:column;gap:7px;align-items:center;overflow:auto;width:100%;padding:4px 0}
-.d10 .bd{position:relative;width:50px;height:50px;border-radius:15px;border:0;background:rgba(255,255,255,.14);color:#fff;font:800 11px var(--mono);flex:0 0 auto}
-.d10 .bd em{position:absolute;right:-4px;bottom:-4px;font-style:normal;min-width:18px;height:18px;border-radius:9px;background:#ffe58a;color:#3b3000;font:800 9.5px/18px var(--mono);padding:0 4px}
-.d10 .bd:hover{background:rgba(255,255,255,.25)}
-.d10 .bd.sel{background:#fff;color:#5b3fd9;box-shadow:0 4px 12px rgba(0,0,0,.25)}
-.d10 .bd.sel::before{content:"";position:absolute;left:-14px;top:50%;margin-top:-7px;border:7px solid transparent;border-right-color:#fff}
+.d10 .rail10 .grow{flex:1}
+.d10 .rail10{flex:0 0 52px;background:linear-gradient(180deg,#14b8a6,#0f766e);border-radius:14px;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 0;color:#fff}
+.d10 .rail10 .ib{width:24px;height:24px;color:rgba(255,255,255,.8)}.d10 .rail10 .ib:hover{background:rgba(255,255,255,.16);color:#fff}
+.d10 .rail10 .ib svg{width:12px;height:12px}
+.d10 .panel.pinned .rail10 [data-pin]{color:#fff;background:rgba(255,255,255,.24)}
+.d10 .vnet{writing-mode:vertical-rl;transform:rotate(180deg);font:800 12px var(--mono);letter-spacing:.05em;padding:4px 0}
+.d10 .vnet small{font:600 8.5px var(--ui);letter-spacing:.14em;opacity:.7;margin-bottom:4px}
+.d10 .badges{display:flex;flex-direction:column;gap:7px;align-items:center;width:100%;padding:5px 0;max-height:236px;overflow-y:auto;overflow-x:hidden;scrollbar-width:none}
+.d10 .badges::-webkit-scrollbar{display:none}
+.d10 .ftabs{display:flex;gap:2px;margin:8px 8px 2px;padding:2px;border-radius:9px;background:var(--hover)}
+.d10 .ftabs button{flex:1;border:0;background:none;border-radius:7px;padding:4px 2px;font:700 11px var(--ui);letter-spacing:0;color:var(--t2);white-space:nowrap}
+.d10 .ftabs button span{margin-left:4px;padding:0 4px;border-radius:6px;background:rgba(13,148,136,.12);font:700 9px/14px var(--mono);color:var(--acc)}
+.d10 .ftabs button.sel{background:#fff;color:var(--t1);box-shadow:0 1px 3px rgba(4,60,54,.2)}
+.d10 .th10{display:flex;justify-content:space-between;padding:0 10px 3px;font:700 9.5px var(--ui);color:var(--t3);letter-spacing:.04em}
+.d10 .cr10{display:flex;align-items:center;gap:7px;width:100%;border:0;background:none;padding:3px 5px;border-radius:8px;font:11.5px var(--mono);color:var(--t1);text-align:left}
+.d10 .cr10 i{font-style:normal;width:22px;height:18px;border-radius:5px;display:grid;place-items:center;font:800 9px var(--mono);flex:0 0 auto}
+.d10 .cr10 em{margin-left:auto;font:600 11px var(--mono);font-style:normal;color:var(--t2);min-width:20px;text-align:right}
+.d10 .cr10:hover{background:var(--hover)}
+.d10 .cr10.sel{background:var(--acc);color:#fff}.d10 .cr10.sel em{color:#e6fbf8}.d10 .cr10.sel i{background:rgba(255,255,255,.22)!important;color:#fff!important}
+.d10 .rail10 .parts{border:0;background:rgba(255,255,255,.12);border-radius:8px;padding:4px 6px;color:#fff;cursor:pointer}
+.d10 .rail10 .parts:hover,.d10 .rail10 .parts.on{background:#fff;color:#0f766e}
+.d10 .bd{position:relative;width:40px;height:30px;padding:0 2px;border-radius:9px;border:0;background:rgba(255,255,255,.16);color:#fff;font:800 9px var(--mono);letter-spacing:-.02em;flex:0 0 auto;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.d10 .bd em{position:absolute;right:-4px;bottom:-4px;font-style:normal;min-width:15px;height:15px;border-radius:8px;background:#fde68a;color:#3b3000;font:800 8.5px/15px var(--mono);padding:0 3px}
+.d10 .bd:hover{background:rgba(255,255,255,.26)}
+.d10 .bd.sel{background:#fff;color:#0f766e;box-shadow:0 3px 8px rgba(0,0,0,.22)}
+.d10 .bd.sel::before{content:"";position:absolute;left:-10px;top:50%;margin-top:-5px;border:5px solid transparent;border-right-color:#fff}
+.d10 .rail10 .parts{font:700 8px var(--ui);opacity:.8;letter-spacing:.08em;margin-top:2px}
 .d10 .link.off{opacity:.45}
 
 /* viewer tints */
@@ -460,8 +490,34 @@ button{cursor:pointer}
 .d5 .pdf{background:#1a1428}.d5 .pcb{background:#0b0912}
 .d6 .pdf{background:#cfc4ae}
 .d8 .pdf{background:#0b1a11}.d8 .pcb{background:#08110b}
-.d10 .pdf{background:#d9d3f2}
+.d10 .pdf{background:#cde9e5}
 
+/* right-click menu on a PCB pad (design 10) — dark teal, matches the rail */
+.cmenu{position:absolute;z-index:40;min-width:250px;max-width:330px;padding:5px;border-radius:11px;background:#0f2b29;border:1px solid #1d4a45;box-shadow:0 18px 40px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.05);font:12.5px var(--ui);color:#dff7f3;animation:cmin .12s ease-out;transform-origin:top left}
+@keyframes cmin{from{opacity:0;transform:scale(.96)}}
+.cm-h{display:flex;align-items:center;gap:7px;padding:5px 9px 6px;font:700 9.5px var(--mono);letter-spacing:.1em;color:#6f9a94}
+.cm-h i{width:7px;height:7px;border-radius:50%;background:#2dd4bf;box-shadow:0 0 6px #2dd4bf}
+.cm-i{display:flex;align-items:center;gap:9px;width:100%;border:0;background:none;padding:7px 9px;border-radius:7px;text-align:left;color:inherit;font:inherit}
+.cm-i svg{width:15px;height:15px;color:#2dd4bf;flex:0 0 auto}
+.cm-i span{white-space:nowrap}
+.cm-i b{font:600 12px var(--mono);color:#5eead4;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.cm-i kbd{margin-left:auto;padding:0 5px;border:1px solid #1d4a45;border-radius:4px;font:600 10px/16px var(--mono);color:#6f9a94;flex:0 0 auto}
+.cm-i:hover,.cm-i.act{background:#0d9488;color:#fff}
+.cm-i:hover svg,.cm-i.act svg,.cm-i:hover b,.cm-i.act b{color:#fff}
+.cm-i:hover kbd,.cm-i.act kbd{border-color:rgba(255,255,255,.4);color:#e6fbf8}
+.cm-i.cancel{color:#9cc3bd}.cm-i.cancel svg{color:#6f9a94}
+.cm-i:focus{outline:none}.cm-i:focus-visible{box-shadow:0 0 0 2px #5eead4}
+.cm-ft{display:flex;align-items:center;justify-content:flex-end;gap:8px;margin:5px -5px -5px;padding:6px 6px 6px 11px;border-top:1px solid #1d4a45;background:#0a201e;border-radius:0 0 11px 11px}
+.cm-hint{display:flex;align-items:center;gap:4px;font:500 10px var(--ui);color:#6f9a94;white-space:nowrap}
+.cm-hint kbd{padding:0 4px;border:1px solid #1d4a45;border-radius:4px;font:600 9.5px/15px var(--mono);color:#9cc3bd}
+.cm-cancel{display:flex;align-items:center;gap:6px;height:24px;padding:0 14px;border:1px solid #2f5f59;border-radius:12px;background:transparent;color:#cfe9e5;font:600 11.5px var(--ui);cursor:pointer}
+.cm-cancel kbd{padding:0 5px;border-radius:8px;background:#163a36;font:600 9.5px/16px var(--mono);color:#9cc3bd}
+.cm-cancel:hover,.cm-cancel:focus-visible{outline:none;border-color:#f87171;background:rgba(248,113,113,.12);color:#fecaca}
+.cm-cancel:hover kbd,.cm-cancel:focus-visible kbd{background:rgba(248,113,113,.2);color:#fecaca}
+.cm-sep{height:1px;background:#1d4a45;margin:4px 6px}
+.pcb .pad.ctx{stroke:#2dd4bf;stroke-width:3;filter:drop-shadow(0 0 6px #2dd4bf)}
+.pcb .pad.flash{animation:padf .5s ease-in-out 3}
+@keyframes padf{50%{fill:#2dd4bf;stroke:#fff}}
 @media (max-width:1100px){.stages{grid-template-columns:1fr}.cap .ideas{grid-template-columns:1fr}}
 @media (max-width:600px){.wrap{padding:14px 16px 40px}.top{padding:10px 16px}.viewer{height:600px}}
 </style>
@@ -471,6 +527,8 @@ button{cursor:pointer}
   <div><h1>Viewer Panels — 10 shapes &amp; ideas</h1><p>Point 5 · PDF search panel &nbsp;·&nbsp; Point 9 · Pin Information panel</p></div>
   <span class="grow"></span>
   <nav class="tabs" id="tabs"></nav>
+  <button class="chip" id="demo26" title="Search PP_VDD_MAIN, which has 26 matches">Try 26 matches</button>
+  <button class="chip" id="demoBig" title="Load GND (about 20 parts) and the 48-pin part U5000">Try big net / 48-pin part</button>
   <button class="chip" id="resetPos" title="Put both panels back to their pinned positions">⟲ Reset positions</button>
   <button class="chip" id="theme">◐ Page theme</button>
 </header>
@@ -509,6 +567,7 @@ button{cursor:pointer}
         <svg viewBox="0 0 600 640" id="board" aria-hidden="true"></svg>
         <button class="reopen" id="reopenN" hidden>ⓘ Pin info</button>
         <div class="panel pinned" id="ni" role="dialog" aria-label="Pin information"></div>
+        <div class="cmenu" id="cmenu" role="menu" hidden></div>
       </div>
     </div>
   </div>
@@ -543,11 +602,15 @@ button{cursor:pointer}
     C12:[['1','PP_VDD_MAIN'],['2','GND']],
     U2:[['1','Net52'],['2','Net58'],['3','Net60'],['4','GND'],['5','Net56'],['6','PP_VDD_MAIN']],
   };
+  // demo "big" data: a 48-pin IC and 14 decoupling caps, so GND becomes a net with ~20 parts
+  { const NN = ['GND','Net52','Net58','Net60','SPI_CLK','SPI_MOSI','SPI_MISO','I2C0_SCL','I2C0_SDA','PP_VDD_MAIN','UART_TX','UART_RX','AMUX_PMU_FRONT','PMU_TO_AP_IRQ','LDO3_OUT','BUCK0_LX'];
+    COMPS.U5000 = Array.from({length:48}, (_, i) => [String(i + 1), i % 6 === 5 ? 'GND' : NN[(i * 7) % NN.length]]);
+    for (let k = 1; k <= 14; k++) COMPS['C' + (2400 + k)] = [['1','PP_VDD_MAIN'],['2','GND']]; }
   const KIND = c => ({N:['Connector','#0ea5e9'],R:['Resistor','#f59e0b'],L:['Inductor','#10b981'],K:['Test point','#ef4444'],C:['Capacitor','#8b5cf6'],U:['IC','#334155']})[c[0]] || ['Part','#64748b'];
   const POS = {N108:[300,300],N7:[150,140],R1:[460,150],L1:[470,460],K1:[130,470],K3:[480,300],C12:[300,560],U2:[150,300]};
   const netConns = net => Object.entries(COMPS).flatMap(([c, pins]) => pins.filter(p => p[1] === net).map(p => ({c, pin:p[0]})));
 
-  const N = {net:'Net57', comp:'N108', pin:'5', linked:true, cq:'', pq:'', tab:'conn', open:{c:true, p:true}, deep:false};
+  const N = {net:'Net57', comp:'N108', pin:'5', linked:true, cq:'', pq:'', tab:'conn', t10:'pins', open:{c:true, p:true}, deep:false};
   const S = {term:'AMUX_PMU_FRONT', res:[], sel:0, busy:false, list:true, visited:new Set([0])};
 
   const conns = () => netConns(N.net).filter(x => !N.cq || x.c.toLowerCase().includes(N.cq.toLowerCase()));
@@ -559,13 +622,15 @@ button{cursor:pointer}
   const snip = i => CTX[i % CTX.length].replace('{T}', S.term);
   function hashPages(t) {
     if (t.toUpperCase().includes('AMUX_PMU_FRO')) return [22, 22, 25];
+    if (t.toUpperCase().includes('PP_VDD_MAIN')) return Array.from({length:26}, (_, i) => 2 + Math.floor(i * 2.35));
     let h = 0; for (const c of t.toUpperCase()) h = (h * 31 + c.charCodeAt(0)) >>> 0;
     const n = h % 13; const out = []; let p = 2 + (h % 9);
     for (let i = 0; i < n; i++) { p += (h >> (i % 16)) % 5; out.push(Math.min(64, p)); }
     return out;
   }
   const LIMIT = 12;
-  const shown = () => S.res.slice(0, LIMIT);
+  const lim = () => D[cur] && D[cur].showAll ? 999 : LIMIT;
+  const shown = () => S.res.slice(0, lim());
   const page = () => S.res[S.sel];
 
   // ============ the 10 designs: each returns its own markup & shape ============
@@ -762,23 +827,39 @@ button{cursor:pointer}
 
   // ---- 10 · Sticky Note | Rail + Flyout ----
   D.push({
-    name:'Sticky + Flyout', desc:'Playful but practical. Search is a sticky note held on by a real push-pin: grey when floating, red when pinned, and clicking the pin snaps it home. Visited pages get ticked off. Pin Info is a colour rail of component badges on the right edge, with that part\'s pins in a flyout beside it.',
-    s:'Sticky note held by a push-pin (the pin IS the Pin button); pages tick off as you visit them.', p:'Colour rail of component badges along the right edge (pin number in a dot); the selected part\'s pins open in a flyout beside it.',
-    search(){ return `<div class="note" data-drag><button class="tack" data-pin title="Pin to top-left"></button><button class="ib x" data-close title="Close">✕</button>
-      <div class="nq"><span>find:</span><input data-in="q" value="${esc(S.term)}" placeholder="something…" spellcheck="false"><b>${S.busy ? '…' : S.res.length}</b></div>
-      ${!S.term ? '<div style="padding:10px 0">Select text or type to search ✎</div>' : S.busy ? '<div style="padding:10px 0">searching…</div>' : !S.res.length ? '<div style="padding:10px 0">nothing found ☹</div>'
-        : `<div class="todo scroll">${shown().map((p, i) => `<button class="td${i === S.sel ? ' sel' : ''}${S.visited.has(i) ? ' v' : ''}" data-act="jump" data-i="${i}"><i>${S.visited.has(i) ? '✓' : ''}</i>page ${p}${i === S.sel ? ' ←' : ''}</button>`).join('')}</div>${more()}`}
-      <div class="nf"><span>tap a page to jump</span><span>${rowTxt().toLowerCase()}</span></div></div>`; },
+    name:'Rail + Flyout · Teal', desc:'Compact and teal. Search is the slim vertical rail: count on top, a mini search field and the matches as page tiles. With a few matches the tiles are one big column; with many (try the 26-matches button) it switches to a 2-column grid that scrolls, with ▲ ▼ steps and ROW 5 / 26. Every match is shown, nothing is cut off. Pin Info is the slim teal badge rail with the part\'s pins in a flyout beside it. Right-click any pad on the board for a teal menu: Find Net \'…\' (loads that net in Pin Info and flashes its pads) or Find Component \'…\' (focuses that part and flashes its pads), plus Cancel.',
+    s:'Vertical rail: count, mini search, page tiles; 1 column for a few matches, scrolling 2-column grid + ▲▼ for many (26+).', p:'Slim teal rail: pin, close, link, the net name and a PARTS button that opens the list. Flyout has two tabs: NET CONNECTIONS (component + pin, searchable) and COMPONENT PINS (pin + net, searchable). Long lists scroll; try the big-net button. Right-click a pad: Find Net / Find Component.',
+    showAll:true, ctxMenu:true,
+    search(){ const r = shown(), n = r.length, many = n > 6; sp.classList.toggle('wide', many); return `<div class="rl" data-drag>
+      <div class="tb">${PIN_S}${CLOSE}</div><span class="led" title="Pinned"></span>
+      <label class="fld"><input data-in="q" value="${esc(S.term)}" placeholder="find…" spellcheck="false" title="${esc(S.term)}"></label>
+      <div class="cnt">${S.busy ? '…' : S.res.length}<small>MATCHES</small></div>
+      ${many ? '<div class="st"><button data-act="prev" title="Previous match (↑)">▲</button><button data-act="next" title="Next match (↓)">▼</button></div>' : ''}
+      <div class="tiles${many ? ' g2' : ''} scroll">${!S.term ? '<div class="hint">type to search</div>' : S.busy ? '<div class="hint">searching…</div>' : !n ? '<div class="hint">no matches</div>'
+        : r.map((p, i) => `<button class="tile${i === S.sel ? ' sel' : ''}${S.visited.has(i) ? ' v' : ''}" data-act="jump" data-i="${i}" title="Match ${i + 1} · click to go to page ${p}"><small>#${i + 1}</small>${p}</button>`).join('')}</div>
+      <div class="rowno">${n ? `ROW ${S.sel + 1}${many ? ' / ' + n : ''}` : ''}</div></div>`; },
     netCls:'rf',
-    net(){ return `
-      <div class="fly"><div class="fh"><small>COMPONENT PINS</small><b>${esc(N.comp)}</b><span class="muted">${KIND(N.comp)[0]} · ${plural((COMPS[N.comp]||[]).length,'pin')} · on ${esc(N.net)} via pin ${esc(N.pin)}</span></div>
+    net(){ const all = netConns(N.net), list = conns(), pins = COMPS[N.comp] || [], tab = N.t10;
+      const kindBox = c => { const [k, col] = KIND(c); return `<i style="background:${col}22;color:${col}" title="${k}">${c.replace(/\d+/, '')}</i>`; };
+      return `
+      <div class="fly">
+        <div class="ftabs"><button class="${tab === 'conn' ? 'sel' : ''}" data-act="t10" data-t="conn">Connections<span>${nComp()}</span></button><button class="${tab === 'pins' ? 'sel' : ''}" data-act="t10" data-t="pins">Pins<span>${pins.length}</span></button></div>
+        ${tab === 'conn' ? `
+        <div class="fh"><small>NET</small><b>${esc(N.net)}</b><span class="muted">${plural(nComp(), 'component')} · ${plural(all.length, 'pin')}</span></div>
+        ${fld('cq', N.cq, 'Search components')}
+        <div class="th10"><span>Component</span><span>Pin</span></div>
+        <div class="pl scroll">${list.map(x => `<button class="cr10${x.c === N.comp && x.pin === N.pin ? ' sel' : ''}" data-act="comp" data-c="${x.c}" data-p="${x.pin}" data-t10="pins" title="Show the pins of ${x.c}">${kindBox(x.c)}<span>${hl(x.c, N.cq)}</span><em>${x.pin}</em></button>`).join('') || '<div class="empty">No components match</div>'}</div>`
+        : `
+        <div class="fh"><small>COMPONENT</small><b>${esc(N.comp)}</b><span class="muted">${KIND(N.comp)[0]} · ${plural(pins.length,'pin')} · on ${esc(N.net)} via pin ${esc(N.pin)}</span></div>
         ${fld('pq', N.pq, 'Search pin or net')}
-        <div class="pl scroll">${pinsOf(N.comp).map(x => `<button class="pr${x[0] === N.pin && x[1] === N.net ? ' sel' : ''}" data-act="net" data-net="${esc(x[1])}" data-p="${x[0]}"><i>${x[0]}</i>${hl(x[1], N.pq)}</button>`).join('') || '<div class="empty">No pins match</div>'}</div></div>
+        <div class="th10"><span>Pin</span><span>Net</span></div>
+        <div class="pl scroll">${pinsOf(N.comp).map(x => `<button class="pr${x[0] === N.pin && x[1] === N.net ? ' sel' : ''}" data-act="net" data-net="${esc(x[1])}" data-p="${x[0]}" title="Go to net ${esc(x[1])}"><i>${x[0]}</i>${hl(x[1], N.pq)}</button>`).join('') || '<div class="empty">No pins match</div>'}</div>`}
+      </div>
       <div class="rail10" data-drag>${PIN_N}${CLOSE}${linkBtn()}
         <div class="vnet"><small>NET</small> ${esc(N.net)}</div>
-        <div class="badges">${netConns(N.net).map(x => `<button class="bd${x.c === N.comp ? ' sel' : ''}" data-act="comp" data-c="${x.c}" data-p="${x.pin}" title="${x.c} · pin ${x.pin}">${x.c}<em>${x.pin}</em></button>`).join('')}</div>
-        <span style="font:700 9px var(--ui);opacity:.75;letter-spacing:.1em">${nComp()} PARTS</span></div>`; },
-    netNoSearchConn:true,
+        <span class="grow"></span>
+        <button class="parts${tab === 'conn' ? ' on' : ''}" data-act="t10" data-t="conn" title="Show all net connections">${nComp()} PARTS</button></div>`; },
+    netAuto:true,
   });
 
   // ---------- shared fragments ----------
@@ -788,7 +869,7 @@ button{cursor:pointer}
     if (!S.res.length) return '<div class="empty">No matches</div>';
     return '';
   }
-  const more = () => S.res.length > LIMIT ? `<div class="muted" style="padding:6px 12px;font-size:12px">… and ${S.res.length - LIMIT} more matches</div>` : '';
+  const more = () => S.res.length > lim() ? `<div class="muted" style="padding:6px 12px;font-size:12px">… and ${S.res.length - lim()} more matches</div>` : '';
   const rowTxt = () => S.res.length && !S.busy ? `Row ${S.sel + 1}` : '';
   const linkBtn = () => `<button class="ib link${N.linked ? '' : ' off'}" data-act="unlink" title="${N.linked ? 'Unlink net' : 'Link net'}">${IC.link}</button>`;
   const pinRow = (cls, x) => `<button class="${cls}${x[0] === N.pin && x[1] === N.net ? ' sel' : ''}" data-act="net" data-net="${esc(x[1])}" data-p="${x[0]}"><span>${hl(x[0], N.pq)}</span><span>${hl(x[1], N.pq)}</span></button>`;
@@ -799,9 +880,10 @@ button{cursor:pointer}
     let s = '';
     const pinXY = (c, i, n) => { const [x, y] = POS[c]; const cols = Math.min(n, 3); const r = Math.floor(i / cols), k = i % cols; return [x - (cols-1)*22 + k*44, y - 22 + r*30]; };
     const nets = {};
-    Object.entries(COMPS).forEach(([c, pins]) => pins.forEach((p, i) => (nets[p[1]] = nets[p[1]] || []).push(pinXY(c, i, pins.length))));
+    Object.entries(COMPS).forEach(([c, pins]) => POS[c] && pins.forEach((p, i) => (nets[p[1]] = nets[p[1]] || []).push(pinXY(c, i, pins.length))));
     Object.entries(nets).forEach(([net, pts]) => { if (net === 'GND') return; for (let i = 1; i < pts.length; i++) s += `<path class="trace${N.linked && net === N.net ? ' hot' : ''}" d="M${pts[i-1][0]} ${pts[i-1][1]} L${pts[i-1][0]} ${pts[i][1]} L${pts[i][0]} ${pts[i][1]}"/>`; });
     Object.entries(COMPS).forEach(([c, pins]) => {
+      if (!POS[c]) return;
       const [x, y] = POS[c];
       s += `<text x="${x}" y="${y - 44}" text-anchor="middle" style="fill:#c9ccd4;font-size:11px">${c}</text>`;
       pins.forEach((p, i) => { const [px, py] = pinXY(c, i, pins.length);
@@ -809,6 +891,55 @@ button{cursor:pointer}
     });
     board.innerHTML = s;
   }
+  const cmenu = $('cmenu'); let ctx = null;
+  const CMI = {
+    net:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 12h5M15 12h5"/><circle cx="12" cy="12" r="3"/></svg>',
+    comp:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="7" y="7" width="10" height="10" rx="1.5"/><path d="M10 3v4M14 3v4M10 17v4M14 17v4M3 10h4M3 14h4M17 10h4M17 14h4"/></svg>',
+    x:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>',
+  };
+  function closeMenu() { if (cmenu.hidden) return; cmenu.hidden = true; board.querySelectorAll('.pad.ctx').forEach(p => p.classList.remove('ctx')); ctx = null; }
+  function openMenu(e, pad) {
+    const c = pad.dataset.c, pin = pad.dataset.p, net = COMPS[c].find(p => p[0] === pin)[1];
+    ctx = {c, pin, net};
+    board.querySelectorAll('.pad.ctx').forEach(p => p.classList.remove('ctx')); pad.classList.add('ctx');
+    cmenu.innerHTML = `<div class="cm-h"><i></i>${esc(c)} · PIN ${esc(pin)}</div>
+      <button class="cm-i act" data-cm="net" role="menuitem" title="Find Net '${esc(net)}'">${CMI.net}<span>Find Net</span><b>'${esc(net)}'</b></button>
+      <button class="cm-i" data-cm="comp" role="menuitem" title="Find Component '${esc(c)}'">${CMI.comp}<span>Find Component</span><b>'${esc(c)}'</b></button>
+      <div class="cm-ft"><button class="cm-cancel" data-cm="cancel" title="Close this menu">Cancel</button></div>`;
+    cmenu.hidden = false;
+    const v = $('pcbV').getBoundingClientRect();
+    let x = e.clientX - v.left, y = e.clientY - v.top;
+    x = Math.min(x, v.width - cmenu.offsetWidth - 6); y = Math.min(y, v.height - cmenu.offsetHeight - 6);
+    cmenu.style.left = Math.max(6, x) + 'px'; cmenu.style.top = Math.max(6, y) + 'px';
+    cmenu.querySelector('.cm-i').focus({preventScroll:true});
+  }
+  function flashPads(sel) { requestAnimationFrame(() => board.querySelectorAll(sel).forEach(p => { p.classList.remove('flash'); void p.getBoundingClientRect(); p.classList.add('flash'); })); }
+  function runMenu(what) {
+    const t = ctx; closeMenu(); if (!t || what === 'cancel') return;
+    if (ni.hidden) openPanel(ni);
+    N.cq = ''; N.pq = ''; N.linked = true;
+    if (what === 'net') { N.net = t.net; N.comp = t.c; N.pin = t.pin; renderNet(); fit(ni); flashPads('.pad.hot'); }
+    else { N.comp = t.c; N.pin = t.pin; N.net = t.net; renderNet(); fit(ni); flashPads(`.pad[data-c="${t.c}"]`); }
+  }
+  board.addEventListener('contextmenu', e => {
+    const pad = e.target.closest('.pad');
+    if (!pad || !D[cur].ctxMenu) return;
+    e.preventDefault(); openMenu(e, pad);
+  });
+  cmenu.addEventListener('click', e => { const b = e.target.closest('[data-cm]'); if (b) runMenu(b.dataset.cm); });
+  cmenu.addEventListener('contextmenu', e => e.preventDefault());
+  cmenu.addEventListener('mousemove', e => { const b = e.target.closest('.cm-i'); if (b && !b.classList.contains('act')) { cmenu.querySelectorAll('.cm-i').forEach(x => x.classList.toggle('act', x === b)); b.focus({preventScroll:true}); } });
+  cmenu.addEventListener('keydown', e => {
+    const items = [...cmenu.querySelectorAll('.cm-i')], i = items.findIndex(x => x.classList.contains('act'));
+    const k = e.key.toLowerCase();
+    if (k === 'arrowdown' || k === 'arrowup') { e.preventDefault(); const n = items[(i + (k === 'arrowdown' ? 1 : -1) + items.length) % items.length]; items.forEach(x => x.classList.toggle('act', x === n)); n.focus({preventScroll:true}); }
+    else if (k === 'enter' || k === ' ') { e.preventDefault(); runMenu(items[Math.max(0, i)].dataset.cm); }
+    else if (k === 'n') runMenu('net'); else if (k === 'c') runMenu('comp'); else if (k === 'escape') closeMenu();
+    e.stopPropagation();
+  });
+  document.addEventListener('pointerdown', e => { if (!cmenu.hidden && !cmenu.contains(e.target)) closeMenu(); }, true);
+  window.addEventListener('resize', closeMenu); window.addEventListener('scroll', closeMenu, true);
+
   board.addEventListener('click', e => { const pad = e.target.closest('.pad'); if (!pad) return; N.comp = pad.dataset.c; N.pin = pad.dataset.p; N.net = COMPS[N.comp].find(p => p[0] === N.pin)[1]; N.linked = true; N.cq = ''; N.pq = ''; renderNet(); });
 
   // ---------- render (keeps focus inside re-rendered inputs) ----------
@@ -828,11 +959,12 @@ button{cursor:pointer}
     if (sc) { const top = s.offsetTop - sc.offsetTop; if (top < sc.scrollTop) sc.scrollTop = top; else if (top + s.offsetHeight > sc.scrollTop + sc.clientHeight) sc.scrollTop = top + s.offsetHeight - sc.clientHeight; }
     fit(sp);
   }
-  function renderNet() { ni.className = 'panel' + (ni.classList.contains('pinned') ? ' pinned' : '') + ' ' + D[cur].netCls; withFocus(ni, D[cur].net()); drawBoard(); }
+  function renderNet() { ni.className = 'panel' + (ni.classList.contains('pinned') ? ' pinned' : '') + ' ' + D[cur].netCls; withFocus(ni, D[cur].net()); keepSelInView(ni); drawBoard(); }
+  function keepSelInView(root) { root.querySelectorAll('.scroll').forEach(sc => { const el = sc.querySelector('.sel'); if (!el) return; const top = el.offsetTop - sc.offsetTop; if (top < sc.scrollTop) sc.scrollTop = top - 4; else if (top + el.offsetHeight > sc.scrollTop + sc.clientHeight) sc.scrollTop = top + el.offsetHeight - sc.clientHeight + 4; }); }
 
   function jump(i) {
     if (!S.res.length) return;
-    S.sel = Math.max(0, Math.min(Math.min(S.res.length, LIMIT) - 1, i)); S.visited.add(S.sel);
+    S.sel = Math.max(0, Math.min(Math.min(S.res.length, lim()) - 1, i)); S.visited.add(S.sel);
     const p = page(); $('pageNo').textContent = p; $('sheetNo').textContent = p;
     const bar = $('pbar'); bar.classList.remove('flash'); void bar.offsetWidth; bar.classList.add('flash');
     $('hlBox').setAttribute('y', 174 + (S.sel % 3) * 30);
@@ -849,7 +981,7 @@ button{cursor:pointer}
   // ---------- events ----------
   sp.addEventListener('input', e => { if (e.target.dataset.in === 'q') runSearch(e.target.value); });
   sp.addEventListener('keydown', e => {
-    if (e.key === 'ArrowDown' || (e.key === 'Enter' && !e.shiftKey)) { e.preventDefault(); jump(S.sel + 1 >= Math.min(S.res.length, LIMIT) && e.key === 'Enter' ? 0 : S.sel + 1); }
+    if (e.key === 'ArrowDown' || (e.key === 'Enter' && !e.shiftKey)) { e.preventDefault(); jump(S.sel + 1 >= Math.min(S.res.length, lim()) && e.key === 'Enter' ? 0 : S.sel + 1); }
     else if (e.key === 'ArrowUp' || (e.key === 'Enter' && e.shiftKey)) { e.preventDefault(); jump(S.sel - 1); }
     else if (e.key === 'Escape') closePanel(sp);
   });
@@ -866,12 +998,13 @@ button{cursor:pointer}
   ni.addEventListener('click', e => {
     const b = e.target.closest('[data-act]'); if (!b) return;
     const a = b.dataset.act;
-    if (a === 'comp') { N.comp = b.dataset.c; N.pin = b.dataset.p; N.pq = ''; if (b.dataset.goto) N.tab = b.dataset.goto; if (b.dataset.deep) N.deep = true; }
+    if (a === 'comp') { N.comp = b.dataset.c; N.pin = b.dataset.p; N.pq = ''; if (b.dataset.t10) N.t10 = b.dataset.t10; if (b.dataset.goto) N.tab = b.dataset.goto; if (b.dataset.deep) N.deep = true; }
     else if (a === 'net') { N.net = b.dataset.net; N.pin = b.dataset.p; if (b.dataset.c) N.comp = b.dataset.c; N.linked = true; N.cq = ''; if (b.dataset.deep) N.deep = false;
       // keep the focused component if it's on the new net, else take the first part on it
       if (!netConns(N.net).some(x => x.c === N.comp)) { const f = netConns(N.net)[0]; if (f) { N.comp = f.c; N.pin = f.pin; } } }
     else if (a === 'unlink') N.linked = !N.linked;
     else if (a === 'tab') N.tab = b.dataset.t;
+    else if (a === 't10') { N.t10 = b.dataset.t; N.cq = ''; N.pq = ''; }
     else if (a === 'acc') N.open[b.dataset.k] = !N.open[b.dataset.k];
     else if (a === 'back') N.deep = false;
     renderNet();
@@ -879,7 +1012,7 @@ button{cursor:pointer}
 
   // ---------- drag / pin / close ----------
   const PAD = 12;
-  const homeOf = p => p === sp ? {left:PAD, top:PAD} : {left:p.parentElement.clientWidth - p.offsetWidth - PAD, top:PAD, height:p.parentElement.clientHeight - PAD*2};
+  const homeOf = p => p === sp ? {left:PAD, top:PAD} : {left:p.parentElement.clientWidth - p.offsetWidth - PAD, top:PAD, height:D[cur].netAuto ? 0 : p.parentElement.clientHeight - PAD*2};
   function place(p, pos, anim) {
     p.classList.toggle('anim', !!anim);
     p.style.left = pos.left + 'px'; p.style.top = pos.top + 'px';
@@ -908,7 +1041,7 @@ button{cursor:pointer}
       if (sx == null) return;
       const dx = e.clientX - sx, dy = e.clientY - sy;
       if (!moved && Math.hypot(dx, dy) < 4) return;
-      if (!moved) { moved = true; p.classList.add('dragging'); p.classList.remove('pinned', 'anim'); if (p === ni) p.style.height = Math.min(p.offsetHeight, 520) + 'px'; }
+      if (!moved) { moved = true; p.classList.add('dragging'); p.classList.remove('pinned', 'anim'); if (p === ni && !D[cur].netAuto) p.style.height = Math.min(p.offsetHeight, 520) + 'px'; }
       const v = p.parentElement;
       p.style.left = Math.max(0, Math.min(v.clientWidth - p.offsetWidth, ox + dx)) + 'px';
       p.style.top = Math.max(0, Math.min(v.clientHeight - p.offsetHeight, oy + dy)) + 'px';
@@ -922,6 +1055,8 @@ button{cursor:pointer}
   function openPanel(p) { p.hidden = false; $(p === sp ? 'reopenS' : 'reopenN').hidden = true; fit(p); }
   $('reopenS').onclick = () => { openPanel(sp); const q = sp.querySelector('[data-in="q"]'); q && q.focus(); };
   $('reopenN').onclick = () => openPanel(ni);
+  $('demo26').onclick = () => { if (sp.hidden) openPanel(sp); runSearch('PP_VDD_MAIN'); };
+  $('demoBig').onclick = () => { if (ni.hidden) openPanel(ni); N.net = 'GND'; N.comp = 'U5000'; N.pin = '6'; N.linked = true; N.cq = ''; N.pq = ''; N.t10 = 'pins'; N.tab = 'pins'; renderNet(); fit(ni); };
   $('resetPos').onclick = () => [sp, ni].forEach(p => { if (p.hidden) openPanel(p); pin(p, true); });
   window.addEventListener('resize', () => [sp, ni].forEach(fit));
 
@@ -935,7 +1070,7 @@ button{cursor:pointer}
     const d = D[cur];
     $('capN').textContent = String(cur + 1).padStart(2, '0'); $('capT').textContent = d.name; $('capD').textContent = d.desc;
     $('capS').textContent = d.s; $('capP').textContent = d.p;
-    sp.style.height = ''; ni.style.removeProperty('--connH');
+    closeMenu(); sp.style.height = ''; sp.classList.remove('wide'); ni.style.height = ''; ni.style.removeProperty('--connH');
     renderSearch(); renderNet();
     requestAnimationFrame(() => { [sp, ni].forEach(fit); });
     try { localStorage.setItem('panel-design', cur); } catch (_) {}

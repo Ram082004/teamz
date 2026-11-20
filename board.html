@@ -1,0 +1,595 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Board Colour Themes</title>
+<style>
+:root{--bg:#f2f4f7;--panel:#ffffff;--line:#e1e5ea;--t1:#15181d;--t2:#525a66;--t3:#87909c;--hover:#eef1f5;--acc:#0d9488;--accT:#ffffff;
+  --ui:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;--mono:ui-monospace,"Cascadia Mono",Consolas,monospace;color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#101216;--panel:#181b20;--line:#292e35;--t1:#e8eaee;--t2:#a6adb7;--t3:#6d7581;--hover:#21252b;--acc:#2dd4bf;--accT:#04201d;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#101216;--panel:#181b20;--line:#292e35;--t1:#e8eaee;--t2:#a6adb7;--t3:#6d7581;--hover:#21252b;--acc:#2dd4bf;--accT:#04201d;color-scheme:dark}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{background:var(--bg);color:var(--t1);font:13px/1.4 var(--ui)}
+button{font:inherit;color:inherit;cursor:pointer}
+.top{display:flex;align-items:center;gap:14px;height:54px;padding:0 16px;border-bottom:1px solid var(--line);background:var(--panel)}
+.top .ttl b{font-size:15px}.top .ttl span{margin-left:10px;color:var(--t3);font-size:12px}
+.top .tools{margin-left:auto;display:flex;gap:6px;align-items:center}
+.btn{height:30px;min-width:30px;padding:0 10px;border:1px solid var(--line);border-radius:8px;background:var(--panel);font-weight:600;font-size:12px;white-space:nowrap}
+.btn:hover{background:var(--hover)}
+.btn.pri{background:var(--acc);border-color:var(--acc);color:var(--accT)}
+.app{display:grid;grid-template-columns:240px minmax(0,1fr) 284px;height:calc(100vh - 54px)}
+.side{overflow-y:auto;padding:12px 10px 20px;background:var(--panel)}
+#left{border-right:1px solid var(--line)}#right{border-left:1px solid var(--line)}
+.side h2{display:flex;align-items:center;gap:6px;margin:4px 4px 8px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--t2)}
+.side h2 em{font-style:normal;padding:0 6px;border-radius:9px;background:var(--hover);color:var(--t1);font:700 10.5px/17px var(--mono)}
+.side h2.gap{margin-top:18px}
+.dc{display:grid;grid-template-columns:64px 1fr;gap:9px;align-items:center;width:100%;padding:6px;margin-bottom:3px;border:1px solid transparent;border-radius:10px;background:none;text-align:left}
+.dc:hover{background:var(--hover)}
+.dc.sel{border-color:var(--acc);background:var(--hover)}
+.dc svg{width:64px;height:38px;border-radius:6px;display:block;box-shadow:0 0 0 1px rgba(0,0,0,.12)}
+.dc b{display:block;font-size:12.5px}.dc small{color:var(--t3);font:600 10px var(--mono)}
+.dc small .kp{margin-left:5px;padding:0 5px;border-radius:6px;background:var(--acc);color:var(--accT);font:700 9px/14px var(--ui)}
+.rgrid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.rc{padding:4px 4px 5px;border:1px solid var(--line);border-radius:9px;background:none;text-align:left}
+.rc:hover{border-color:var(--t3)}
+.rc.sel{border-color:var(--acc);box-shadow:0 0 0 1px var(--acc)}
+.rc svg{width:100%;height:40px;display:block;border-radius:6px}
+.rc span{display:block;padding:3px 3px 0;font-size:11px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rc span .kp{margin-left:5px;padding:0 5px;border-radius:6px;background:var(--acc);color:var(--accT);font:700 9px/14px var(--ui)}
+.rc span i{font-style:normal;color:var(--t3);font:600 9.5px var(--mono);margin-right:4px}
+.sw{display:flex;align-items:center;gap:10px;padding:6px 4px;border-radius:8px;cursor:pointer;user-select:none}
+.sw:hover{background:var(--hover)}
+.sw input{appearance:none;flex:0 0 auto;width:34px;height:20px;margin:0;border-radius:10px;background:var(--line);position:relative;cursor:pointer;transition:background .15s}
+.sw input::after{content:"";position:absolute;left:3px;top:3px;width:14px;height:14px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.3);transition:transform .15s}
+.sw input:checked{background:var(--acc)}.sw input:checked::after{transform:translateX(14px)}
+.sw input:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.sw span b{display:block;font-size:12.5px;font-weight:600}.sw span small{color:var(--t3);font-size:11px}
+.seg{display:flex;gap:2px;padding:2px;margin:4px 4px 6px;border-radius:9px;background:var(--hover)}
+.seg button{flex:1;border:0;background:none;border-radius:7px;padding:5px 4px;font-size:12px;font-weight:600;color:var(--t2)}
+.seg button.on{background:var(--panel);color:var(--t1);box-shadow:0 1px 2px rgba(0,0,0,.15)}
+.seglbl{margin:10px 4px 0;font-size:11px;color:var(--t3)}
+.center{display:flex;flex-direction:column;min-width:0;padding:12px;gap:10px}
+.cap{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.cap b{font-size:15px}.cap span{color:var(--t2);font-size:12.5px}
+.stage{position:relative;flex:1;min-height:360px;border-radius:12px;overflow:hidden;border:1px solid var(--line)}
+.stage svg{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none;cursor:grab}
+.stage svg.panning{cursor:grabbing}
+.stage [data-k]{cursor:pointer}
+.stage text{pointer-events:none}
+.tip{position:absolute;z-index:5;pointer-events:none;padding:6px 9px;border-radius:8px;background:rgba(10,12,16,.92);color:#fff;font-size:12px;box-shadow:0 6px 18px rgba(0,0,0,.35);white-space:nowrap}
+.tip b{font-family:var(--mono)}.tip i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:6px;vertical-align:0}
+.tip small{display:block;color:#aab2bd;font-size:11px}
+.zoom{position:absolute;right:10px;bottom:10px;display:flex;flex-direction:column;gap:4px}
+.zoom button{width:30px;height:30px;border:0;border-radius:8px;background:rgba(10,12,16,.7);color:#fff;font-size:15px;font-weight:700}
+.zoom button:hover{background:rgba(10,12,16,.9)}
+.toast{position:absolute;left:50%;top:12px;transform:translateX(-50%);padding:6px 12px;border-radius:8px;background:rgba(10,12,16,.9);color:#fff;font-size:12px;font-weight:600}
+.info{display:flex;align-items:center;gap:10px;flex-wrap:wrap;min-height:44px;padding:8px 12px;border:1px solid var(--line);border-radius:10px;background:var(--panel)}
+.info .muted{color:var(--t3)}
+.info .net{font:700 13px var(--mono);padding:2px 8px;border-radius:6px}
+.info .chips{display:flex;flex-wrap:wrap;gap:4px;max-height:58px;overflow:auto}
+.chip{padding:2px 7px;border:1px solid var(--line);border-radius:6px;background:none;font:600 11.5px var(--mono)}
+.chip:hover{border-color:var(--acc)}.chip.sel{background:var(--acc);border-color:var(--acc);color:var(--accT)}
+.chip i{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:5px}
+.legend{display:flex;flex-wrap:wrap;gap:4px;align-items:center}
+.legend .lt{font-size:11px;color:var(--t3);margin-right:4px}
+.lg{display:flex;align-items:center;gap:6px;padding:3px 8px 3px 4px;border:1px solid var(--line);border-radius:8px;background:var(--panel);font-size:11.5px}
+.lg:hover{border-color:var(--t3)}.lg.on{border-color:var(--acc);box-shadow:0 0 0 1px var(--acc)}
+.lg svg{width:26px;height:18px;display:block;border-radius:4px}
+.lg em{font-style:normal;color:var(--t3);font:600 10px var(--mono)}
+@keyframes rflow{to{stroke-dashoffset:-34}}
+.rflow{animation:rflow .9s linear infinite}
+@keyframes rpulse{50%{opacity:.2}}
+.rpulse{animation:rpulse 1.2s ease-in-out infinite}
+.still .rflow,.still .rpulse{animation:none}
+@media (max-width:1100px){
+  .app{grid-template-columns:1fr;height:auto}
+  .side{border:0!important;border-bottom:1px solid var(--line)!important}
+  #left .list{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:4px}
+  .rgrid{grid-template-columns:repeat(auto-fill,minmax(120px,1fr))}
+  .stage{min-height:70vh}
+  .top .ttl span{display:none}
+}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="ttl"><b>Board colour themes</b><span>20 PCB themes for bench visibility · 20 ratsnest styles · switches</span></div>
+  <div class="tools">
+    <button class="btn" id="prevD" title="Previous theme (←)">‹</button>
+    <button class="btn" id="nextD" title="Next theme (→)">›</button>
+    <button class="btn" id="clear" title="Clear selection (Esc)">Clear</button>
+    <button class="btn" id="copyT" title="Copy this theme as Schemax pcb_themes.json entry">Copy for Schemax</button>
+    <button class="btn pri" id="saveAll" title="Download all 20 themes in Schemax pcb_themes.json format">Export 20 themes</button>
+    <button class="btn" id="theme" title="Page light / dark">◐</button>
+  </div>
+</header>
+<main class="app">
+  <aside class="side" id="left">
+    <h2>PCB theme <em>20</em></h2>
+    <div class="list" id="dList"></div>
+  </aside>
+  <section class="center">
+    <div class="cap"><b id="capN"></b><span id="capD"></span></div>
+    <div class="stage" id="stage">
+      <svg id="bd" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet" aria-label="Logic board"></svg>
+      <div class="tip" id="tip" hidden></div>
+      <div class="toast" id="toast" hidden></div>
+      <div class="zoom"><button data-z="in" title="Zoom in">+</button><button data-z="out" title="Zoom out">−</button><button data-z="fit" title="Fit board">⤢</button></div>
+    </div>
+    <div class="info" id="info"></div>
+    <div class="legend" id="legend"></div>
+  </section>
+  <aside class="side" id="right">
+    <h2>Ratsnest style <em>20</em></h2>
+    <div class="rgrid" id="rList"></div>
+    <h2 class="gap">Switches</h2>
+    <div id="sws"></div>
+  </aside>
+</main>
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+  /* ---------- colour helpers ---------- */
+  const hx = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16));
+  const toHex = a => '#' + a.map(v => Math.round(Math.max(0, Math.min(255, v))).toString(16).padStart(2, '0')).join('');
+  const mix = (a, b, t) => { const x = hx(a), y = hx(b); return toHex(x.map((v, i) => v + (y[i] - v) * t)); };
+  const lum = h => { const [r, g, b] = hx(h).map(v => { v /= 255; return v <= .03928 ? v / 12.92 : ((v + .055) / 1.055) ** 2.4; }); return .2126 * r + .7152 * g + .0722 * b; };
+  const ink = h => lum(h) > .36 ? '#111418' : '#ffffff';
+  const hsl = (h, s, l) => { s /= 100; l /= 100; const k = n => (n + h / 30) % 12, a = s * Math.min(l, 1 - l);
+    return toHex([0, 8, 4].map(n => 255 * (l - a * Math.max(-1, Math.min(k(n) - 3, 9 - k(n), 1))))); };
+
+  /* ---------- 20 PCB themes (roles match Schemax pcb_themes.json) ----------
+     bg = viewer background, board = board fill, edge = board outline, pad = pin, gnd = ground pin,
+     chip = component fill, ic = highlighted part fill / NC pin, icDot = pins on those parts, rf = part highlight border,
+     cap / diode = small part bodies, hole = screw holes, frame = shield frames / part outline,
+     label / lstroke = component name text, hi = same-net pin, sel = selected pin, rat = ratsnest */
+  const K = ['bg','board','edge','pad','gnd','chip','ic','icDot','rf','cap','diode','hole','frame','label','lstroke','hi','sel','rat'];
+  const T = (n, d, v, x = {}) => Object.assign({n, d}, Object.fromEntries(K.map((k, i) => [k, v[i]])), x);
+  const DES = [
+    T('Classic Black', 'Like the W2R board: black mask, yellow pads, cyan parts, red RF outlines. The net lights magenta so it never mixes with yellow or cyan.',
+      ['#eef1f4','#151515','#2c2c2c','#f5c400','#9a9a9a','#222222','#2aa7e1','#0a5f8a','#e3262b','#2f6fe0','#e3262b','#9b9b9b','#8c8c8c','#ffffff','#000000','#ff2bd6','#ffffff','#ff2bd6']),
+    T('Green Mask', 'Classic green solder mask with silver pads and yellow parts. Familiar for techs who learnt on green boards.',
+      ['#e9efe9','#0e3b20','#1c5a33','#e6e6e6','#7f9c88','#111a14','#ffcf33','#7a5a00','#ff4d4d','#5aa9ff','#ff6b6b','#c9c9c9','#6fa883','#ffffff','#00210f','#ff3df0','#ffffff','#ff3df0']),
+    T('Blue Mask', 'Deep blue mask, gold pads and ice-cyan parts. The net turns bright green, the strongest contrast on blue.',
+      ['#e8edf6','#0b2a66','#1c4594','#f2c14e','#6f86b3','#0a0f1e','#6ef0ff','#00566b','#ff5c5c','#b28cff','#ff5c5c','#aab4c8','#5e7fbf','#ffffff','#00133a','#3dff8b','#ffffff','#3dff8b']),
+    T('Purple Mask', 'Purple mask with warm yellow pads and mint parts; the net glows cyan.',
+      ['#efe9f5','#2a0f45','#47206e','#ffd34d','#8a6bb0','#120720','#4df2c9','#0b6b55','#ff4f7b','#6fb6ff','#ff4f7b','#b9a8cc','#7b55a8','#ffffff','#12001f','#00e5ff','#ffffff','#00e5ff']),
+    T('White Mask', 'White board with dark-gold pads: best in a bright room or for printing. Net is pink, selection black.',
+      ['#d9dde3','#f3f2ee','#c9c6bd','#c48a12','#9a9a9a','#3a3a3a','#1e88e5','#0b3d6b','#e53935','#3949ab','#e53935','#9e9e9e','#a8a8a8','#111111','#ffffff','#e91e63','#000000','#e91e63']),
+    T('Red Mask', 'Dark red mask, pale gold pads, sky-blue parts and white RF outlines. Net turns green.',
+      ['#f1e9ea','#5e0b12','#7d1a22','#ffe08a','#b86a70','#1f0306','#6fd3ff','#00506b','#ffffff','#8fb3ff','#ffb347','#c7a3a6','#b0646b','#ffffff','#200004','#3dff8b','#ffffff','#3dff8b']),
+    T('Amber Flex', 'Polyimide-flex amber with cream pads; the mint net is impossible to miss.',
+      ['#f3ece2','#7a4605','#9a5c0e','#fff1c9','#c79a5c','#2b1600','#3ad1ff','#00506b','#ff3b3b','#8fb3ff','#ff3b3b','#e0c9a6','#c48a3a','#ffffff','#2b1600','#00ffa3','#ffffff','#00ffa3']),
+    T('Slate Grey', 'Mid-grey board: less glare than black, pads and parts still pop. Easy on the eyes for long sessions.',
+      ['#e6e9ed','#353b44','#4a525e','#ffcc33','#8a929e','#1d2026','#00d1ff','#005266','#ff4d4d','#7aa2ff','#ff4d4d','#aab2bd','#7c8693','#ffffff','#0f1115','#ff3df0','#ffffff','#ff3df0']),
+    T('High Contrast', 'Pure black, white outlines, full-strength yellow / cyan / magenta and a green net. For small screens and weak eyesight.',
+      ['#1a1a1a','#000000','#ffffff','#ffff00','#bfbfbf','#000000','#00ffff','#003b3b','#ff00ff','#4d7dff','#ff3030','#ffffff','#ffffff','#ffffff','#000000','#00ff00','#ffffff','#00ff00'], {thick:true}),
+    T('Colour-blind Safe', 'Okabe-Ito colours that red/green colour-blind techs can tell apart; the net is white with a green selection.',
+      ['#e9e9e9','#1b1d21','#3a3f48','#e69f00','#999999','#0f1012','#56b4e9','#0b3d5c','#d55e00','#0072b2','#cc79a7','#bbbbbb','#777777','#ffffff','#000000','#ffffff','#009e73','#ffffff']),
+    T('X-Ray Film', 'Inverted like an X-ray: light film, dark pads. Dense BGAs read clearly; the net shows orange.',
+      ['#0b1118','#cfd8df','#9fb0bd','#1d2a35','#6b7d8c','#8a9aa6','#3a6f99','#cfe3f2','#b0002a','#2e4a7a','#8a0020','#f4f7f9','#7d8f9c','#0b1118','#ffffff','#ff6a00','#000000','#ff6a00']),
+    T('Night Bench · Red', 'Kept from the first set. Red-only shades keep your night vision in a dark workshop; the net is white.',
+      ['#140606','#0a0505','#3a1414','#ff5a4d','#6b2a2a','#1a0808','#8f1d1d','#ff8a80','#ffd2cc','#b3261e','#ff8a80','#5c2b2b','#5c1f1f','#ff8a80','#000000','#ffffff','#ffffff','#ffd2cc'], {kept:true}),
+    T('Bare Copper', 'Brown laminate with copper pads, like a board with the mask scraped off. Net is neon green.',
+      ['#efe8e2','#2a1a10','#4a2e1c','#e8955a','#8a6a55','#140c06','#5ad1c8','#0d4f4a','#ff5050','#6fa8ff','#ff5050','#b8a090','#8a6a55','#ffffff','#140c06','#39ff14','#ffffff','#39ff14']),
+    T('Ocean', 'Kept from the first set. Deep navy board, gold pads, teal parts and a glowing cyan net.',
+      ['#dbe8f2','#06223a','#11507a','#f5d061','#2f6f9a','#031423','#2dd4bf','#064e46','#ef4444','#4f8cff','#ef4444','#8fb3cc','#2f6f9a','#cfe8ff','#031423','#7df9ff','#ffffff','#7df9ff'], {glow:true, kept:true}),
+    T('Teal Bench', 'Matches the teal Pin Info panels: dark teal board, gold pads and a magenta net.',
+      ['#e3f1ef','#0a1f1d','#1d4a45','#f5d061','#2f6b64','#051311','#2dd4bf','#064e46','#fb7185','#60a5fa','#fb7185','#7fb5ae','#2f6b64','#dff7f3','#051311','#ff3df0','#ffffff','#ff3df0']),
+    T('Studio Light', 'Soft light-grey board, amber pads, blue parts; the net is emerald. Clean for screenshots and training.',
+      ['#ffffff','#e3e8ee','#b9c3cf','#d99a00','#98a4b3','#4a5563','#2563eb','#bcd3ff','#dc2626','#7c3aed','#dc2626','#ffffff','#94a3b8','#0f172a','#ffffff','#059669','#000000','#059669']),
+    T('Midnight Neon', 'Near-black with glowing neon: yellow pads, cyan parts, a green glowing net. For dark rooms.',
+      ['#000000','#05050a','#23234a','#ffe600','#3c3c66','#0b0b18','#00f0ff','#003b40','#ff2bd6','#7d5cff','#ff2bd6','#6b6b9a','#2b2b55','#e6e6ff','#000000','#39ff14','#ffffff','#39ff14'], {glow:true}),
+    T('Olive Field', 'Muted olive board with soft gold pads and sky parts. Calm, low-glare, net in magenta.',
+      ['#eceee6','#2e3a1f','#46562f','#f0d36b','#7e8c66','#161c0e','#8fd3ff','#1f4f66','#ff6b4a','#a6b8ff','#ff6b4a','#b9c2a6','#7e8c66','#ffffff','#161c0e','#ff3df0','#ffffff','#ff3df0']),
+    T('Mono Grey', 'All grey, no colour noise: only the net is coloured (yellow), so it jumps out instantly.',
+      ['#e5e5ea','#1c1c1e','#3a3a3e','#d0d0d0','#6a6a6e','#0e0e10','#8a8a90','#2a2a2e','#ffffff','#a0a0a6','#f2f2f2','#7a7a80','#55555a','#ffffff','#000000','#ffd60a','#ffffff','#ffd60a']),
+    T('Daylight Blue', 'Pale blue board for a sunny bench: dark-gold pads, navy parts and a green net.',
+      ['#f4f8fc','#d6e6f5','#9cbad6','#a86f00','#7b95ad','#2b3a4a','#0d47a1','#9cc4ff','#c62828','#6a1b9a','#c62828','#ffffff','#7b95ad','#0b2540','#ffffff','#00a86b','#000000','#00a86b']),
+  ];
+
+  /* ---------- 20 ratsnest (airwire) styles ---------- */
+  let UID = 0, PFX = 'q'; const nid = () => PFX + (UID++);
+  const f1 = n => Math.round(n * 10) / 10;
+  const geo = e => { const dx = e.b.x - e.a.x, dy = e.b.y - e.a.y, L = Math.hypot(dx, dy) || 1; return {dx, dy, L, ux:dx / L, uy:dy / L, nx:-dy / L, ny:dx / L}; };
+  const ln = e => `M${f1(e.a.x)} ${f1(e.a.y)}L${f1(e.b.x)} ${f1(e.b.y)}`;
+  const pth = (d, c, w, x = '') => `<path d="${d}" fill="none" stroke="${c}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round"${x}/>`;
+  const along = (e, step, fn) => { const g = geo(e), n = Math.max(2, Math.round(g.L / step)); let d = '';
+    for (let k = 0; k <= n; k++) { const t = k / n, o = fn(k, t, n, g); d += (k ? 'L' : 'M') + f1(e.a.x + g.dx * t + g.nx * o) + ' ' + f1(e.a.y + g.dy * t + g.ny * o); } return d; };
+  const off = (e, o) => { const g = geo(e); return `M${f1(e.a.x + g.nx * o)} ${f1(e.a.y + g.ny * o)}L${f1(e.b.x + g.nx * o)} ${f1(e.b.y + g.ny * o)}`; };
+
+  const anim = (attr, vals, dur, x = '') => `<animate attributeName="${attr}" values="${vals}" dur="${dur}s" repeatCount="indefinite"${x}/>`;
+  const apth = (d, c, w, x, inner) => `<path d="${d}" fill="none" stroke="${c}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round"${x}>${inner}</path>`;
+  const hash = (i, k) => { const v = Math.sin(i * 12.9898 + k * 78.233) * 43758.5453; return v - Math.floor(v); };
+  const pt = (e, t, o = 0) => { const g = geo(e); return [f1(e.a.x + g.dx * t + g.nx * o), f1(e.a.y + g.dy * t + g.ny * o)]; };
+  const RS = [
+    {n:'Pulse', kept:true, d:'Breathing line that draws the eye.', f:(e, c) => pth(ln(e), c, 2, ' class="rpulse"')},
+    {n:'Comet', kept:true, d:'A dot travels each wire, source to target.', f:(e, c) => { const d = ln(e), g = geo(e);
+      return pth(d, c, 1, ' opacity=".4"') + `<circle r="3" fill="${c}"><animateMotion dur="${f1(.8 + g.L / 260)}s" repeatCount="indefinite" path="${d}"/></circle>`; }},
+    {n:'Sonar', d:'Every target pin sends out radar rings, so you find it even when tiny.', f:(e, c, i) => { const bg = ` begin="-${f1((i * .17) % 1.4)}s"`;
+      return pth(ln(e), c, .8, ' opacity=".45"') + `<circle cx="${e.b.x}" cy="${e.b.y}" r="2" fill="none" stroke="${c}" stroke-width="1.2">${anim('r', '2;11', 1.4, bg)}${anim('opacity', '1;0', 1.4, bg)}</circle><circle cx="${e.b.x}" cy="${e.b.y}" r="1.6" fill="${c}"/>`; }},
+    {n:'Lightning', d:'Flickering electric bolt from pin to pin.', f:(e, c, i) => { const d = along(e, 8, (k, t, n) => (k === 0 || k === n) ? 0 : (hash(i, k) * 2 - 1) * 4);
+      return `<g>${anim('opacity', '1;.35;1;.75;1', f1(.5 + hash(i, 99) * .4))}${pth(d, c, 4, ' opacity=".25"')}${pth(d, c, 1.2)}${pth(d, '#ffffff', .5, ' opacity=".8"')}</g>`; }},
+    {n:'Laser', d:'Hot white core with a beam of light racing along it.', f:(e, c) => pth(ln(e), c, 5, ' opacity=".18"') + pth(ln(e), '#ffffff', .6, ' opacity=".9"') +
+      apth(ln(e), c, 1.6, ' stroke-dasharray="3 13"', anim('stroke-dashoffset', '0;-16', .35))},
+    {n:'Breadcrumbs', d:'A trail of dots lights up one by one toward the target.', f:(e, c) => { const g = geo(e), n = Math.max(2, Math.floor(g.L / 7)); let o = '';
+      for (let k = 1; k < n; k++) { const [x, y] = pt(e, k / n); o += `<circle cx="${x}" cy="${y}" r="1.3" fill="${c}" opacity=".2">${anim('opacity', '.15;1;.15', 1.2, ` begin="${f1(k * .07)}s"`)}</circle>`; }
+      return o; }},
+    {n:'Data packets', d:'Little packets stream along each wire, like data on a bus.', f:(e, c) => { const d = ln(e), dur = f1(1 + geo(e).L / 220);
+      return pth(d, c, .8, ' opacity=".35"') + [0, 1, 2].map(k => `<rect x="-1.8" y="-1.3" width="3.6" height="2.6" rx=".6" fill="${c}"><animateMotion dur="${dur}s" begin="-${f1(dur * k / 3)}s" repeatCount="indefinite" rotate="auto" path="${d}"/></rect>`).join(''); }},
+    {n:'Hanging wire', d:'Loose jumper wire that sags and sways.', f:(e, c) => { const g = geo(e), sg = Math.min(55, g.L * .3) + 4, mx = f1((e.a.x + e.b.x) / 2), my = (e.a.y + e.b.y) / 2;
+      const d = k => `M${f1(e.a.x)} ${f1(e.a.y)}Q${mx} ${f1(my + sg * k)} ${f1(e.b.x)} ${f1(e.b.y)}`;
+      return apth(d(1), c, 1.5, '', anim('d', `${d(1)};${d(.8)};${d(1)}`, 2.4)); }},
+    {n:'Jump arc', d:'Wire hops over the board; a dashed shadow shows where it runs.', f:(e, c) => { const g = geo(e), h = Math.min(70, g.L * .35) + 6, mx = (e.a.x + e.b.x) / 2, my = (e.a.y + e.b.y) / 2;
+      return pth(ln(e), '#000000', 1, ' opacity=".35" stroke-dasharray="2 3"') + pth(`M${f1(e.a.x)} ${f1(e.a.y)}Q${f1(mx)} ${f1(my - h)} ${f1(e.b.x)} ${f1(e.b.y)}`, c, 1.6) + `<circle cx="${e.b.x}" cy="${e.b.y}" r="2" fill="${c}"/>`; }},
+    {n:'Bus trunk', d:'One vertical trunk from the clicked pin, branching to each target.', f:(e, c) => pth(`M${f1(e.a.x)} ${f1(e.a.y)}V${f1(e.b.y)}H${f1(e.b.x)}`, c, 1.4) + `<circle cx="${e.a.x}" cy="${e.b.y}" r="1.7" fill="${c}"/>`},
+    {n:'Crosshair', d:'A target reticle locks onto every pin of the net.', f:(e, c) => { const x = e.b.x, y = e.b.y;
+      return pth(ln(e), c, .8, ' opacity=".55"') + `<circle cx="${x}" cy="${y}" r="5" fill="none" stroke="${c}" stroke-width="1"/>` + pth(`M${f1(x - 8)} ${y}H${f1(x - 3)}M${f1(x + 3)} ${y}H${f1(x + 8)}M${x} ${f1(y - 8)}V${f1(y - 3)}M${x} ${f1(y + 3)}V${f1(y + 8)}`, c, 1); }},
+    {n:'Numbered hops', d:'Each target pin gets a number, nearest first: count and check them one by one.', f:(e, c, i) => pth(ln(e), c, 1, ' opacity=".7"') +
+      `<circle cx="${e.b.x}" cy="${e.b.y}" r="5" fill="${c}"/><text x="${e.b.x}" y="${f1(e.b.y + 2.3)}" text-anchor="middle" font-size="${i < 9 ? 6.5 : 5.2}" font-weight="800" font-family="Arial,sans-serif" fill="${ink(c)}">${i + 1}</text>`},
+    {n:'Heartbeat', d:'ECG blip in the middle: the net is alive.', f:(e, c) => { const g = geo(e); if (g.L < 30) return pth(ln(e), c, 1.4);
+      const u = 6 / g.L, P = [[0, 0], [.5 - 2 * u, 0], [.5 - u, -4], [.5, 7], [.5 + u, -8], [.5 + 2 * u, 0], [1, 0]].map(([t, o]) => pt(e, t, o).join(' '));
+      return apth('M' + P.join('L'), c, 1.4, '', anim('stroke-width', '1.2;2.2;1.2', 1)); }},
+    {n:'Beam cone', d:'A soft light cone shines from the clicked pin onto each target.', f:(e, c) => { const [x1, y1] = pt(e, 1, 5), [x2, y2] = pt(e, 1, -5);
+      return `<polygon points="${f1(e.a.x)},${f1(e.a.y)} ${x1},${y1} ${x2},${y2}" fill="${c}" opacity=".22"/>` + pth(ln(e), c, .7); }},
+    {n:'Spear', d:'Thick at the source, sharp at the target: direction at a glance.', f:(e, c) => { const [x1, y1] = pt(e, 0, 2.6), [x2, y2] = pt(e, 0, -2.6);
+      return `<polygon points="${x1},${y1} ${x2},${y2} ${f1(e.b.x)},${f1(e.b.y)}" fill="${c}" opacity=".85"/>`; }},
+    {n:'Ruler', d:'Tick every 1 mm, long tick every 5 mm: read the distance off the wire.', f:(e, c) => { const g = geo(e), step = 1 / MMPX, n = Math.floor(g.L / step); let d = ln(e);
+      for (let k = 1; k <= n; k++) { const t = k * step / g.L, h = k % 5 ? 2 : 4.5, [x1, y1] = pt(e, t, h), [x2, y2] = pt(e, t, -h); d += `M${x1} ${y1}L${x2} ${y2}`; }
+      return pth(d, c, .9); }},
+    {n:'Two-way', d:'Two lanes flowing opposite ways: the pins talk both directions.', f:(e, c) =>
+      apth(off(e, 1.8), c, 1.1, ' stroke-dasharray="4 5"', anim('stroke-dashoffset', '0;-18', .8)) + apth(off(e, -1.8), c, 1.1, ' stroke-dasharray="4 5" opacity=".6"', anim('stroke-dashoffset', '0;18', .8))},
+    {n:'Draw-on', d:'Each wire draws itself out from the clicked pin, then repeats.', f:(e, c) => { const L = f1(geo(e).L);
+      return apth(ln(e), c, 1.6, ` stroke-dasharray="${L} ${L}" stroke-dashoffset="${L}"`, `<animate attributeName="stroke-dashoffset" values="${L};0;0" keyTimes="0;.55;1" dur="1.8s" repeatCount="indefinite"/>`); }},
+    {n:'Hollow tube', d:'Outlined tube: stays visible on any board colour.', f:(e, c, i, D) => pth(ln(e), c, 4) + pth(ln(e), D ? D.board : '#000000', 1.8)},
+    {n:'Sequence', d:'Wires appear one after another, nearest first: shows the hop order.', f:(e, c, i) => { const st = f1(Math.min(.7, i * .04));
+      return apth(ln(e), c, 1.6, ' opacity="0"', `<animate attributeName="opacity" values="0;0;1;1" keyTimes="0;${st};${f1(st + .08)};1" dur="3s" repeatCount="indefinite"/>`); }},
+  ];
+
+  /* ---------- the logic board (two halves, like the reference image) ---------- */
+  let seed = 20261120;
+  const rnd = () => { seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+  const pick = a => a[Math.floor(rnd() * a.length)];
+  const POWER = ['PP_VDD_MAIN','PP_BATT_VCC','PP1V8','PP1V8_IO','PP3V0_NAND','PP0V9_SOC','PP1V1_SDRAM','PP_CPU','PP_GPU','PP3V3_USB','PP5V0_USB'];
+  const SIG = ['I2C0_SCL','I2C0_SDA','I2C1_SCL','I2C1_SDA','SPI_CLK','SPI_MOSI','SPI_MISO','UART_TX','UART_RX','PMU_IRQ','RESET_L','BUCK0_LX','BUCK1_LX','LDO1_OUT','LDO3_OUT','AMUX_A','CAM_CLK','MIPI_D0_P','MIPI_D0_N','USB_DP','USB_DN','RF_ANT1','RF_ANT2','WLAN_EN','BT_EN','NFC_IRQ','AUDIO_MCLK','SPKR_P','SPKR_N','HAPTIC_EN','TOUCH_INT','LCD_RST','DDR_DQ0','DDR_DQ1','DDR_CLK','BB_RESET_L','TRISTAR_EN','ALS_INT'];
+  const randNet = gnd => rnd() < gnd ? 'GND' : rnd() < .3 ? pick(POWER) : pick(SIG);
+
+  // left half outline (image pixels); the right half is its mirror (x -> 798 - x)
+  const LEFT = [[52,58],[115,58],[122,66],[122,118],[237,118],[237,64],[241,60],[254,60],[258,64],[258,118],[280,118],[280,110],[376,108],[384,116],[384,142],[390,148],[390,454],[386,460],[390,466],[390,640],[384,650],[286,650],[278,642],[278,140],[52,140],[45,133],[45,66]];
+  const RIGHT = LEFT.map(([x, y]) => [798 - x, y]).reverse();
+  const inPoly = (P, x, y) => { let c = false; for (let i = 0, j = P.length - 1; i < P.length; j = i++) { const [xi, yi] = P[i], [xj, yj] = P[j]; if ((yi > y) !== (yj > y) && x < (xj - xi) * (y - yi) / (yj - yi) + xi) c = !c; } return c; };
+  const polyD = P => 'M' + P.map(p => p.join(' ')).join('L') + 'Z';
+  const FRAMES = [[283,150,100,86],[281,240,107,114],[283,354,102,102],[281,458,107,140],[414,122,102,56],[412,182,104,160],[414,346,104,108],[410,460,110,142]];
+
+  const KINDS = {
+    bga:{n:'BGA chip'}, ic:{n:'IC / highlighted part'}, rf:{n:'RF module'}, conn:{n:'Connector'},
+    pass:{n:'Passive pads'}, cap:{n:'Capacitor'}, diode:{n:'Diode / filter'}, tp:{n:'Test pad'}, hole:{n:'Screw hole (GND)'},
+  };
+  const SPEC = [
+    {ref:'U0201', k:'bga', x:283, y:258, w:95, h:90, p:5, r:1.25, lab:19},
+    {ref:'J3101_RF', k:'conn', x:286, y:356, w:96, h:96, lab:13, rfj:true},
+    {ref:'J2001', k:'conn', x:290, y:190, w:82, h:12},
+    {ref:'J2002', k:'conn', x:296, y:156, w:70, h:10},
+    {ref:'U2101', k:'bga', x:318, y:463, w:48, h:44, p:6, sq:true},
+    {ref:'U1801', k:'bga', x:326, y:526, w:58, h:52, p:8, sq:true},
+    {ref:'J2523', k:'conn', x:285, y:600, w:50, h:22, lab:10},
+    {ref:'U2301', k:'ic', x:288, y:494, w:16, h:16},
+    {ref:'U5201_RF', k:'rf', x:427, y:128, w:61, h:42, lab:10},
+    {ref:'U2402', k:'bga', x:432, y:210, w:34, h:24, p:4, r:.9, lab:9},
+    {ref:'U0900', k:'ic', x:469, y:198, w:36, h:42, lab:9},
+    {ref:'U1202', k:'rf', x:427, y:262, w:40, h:56, lab:9},
+    {ref:'U1301', k:'ic', x:483, y:250, w:22, h:22},
+    {ref:'U0604', k:'bga', x:430, y:355, w:86, h:94, p:9, r:2.6, lab:18, nc:.12},
+    {ref:'U1701', k:'ic', x:432, y:480, w:26, h:22},
+    {ref:'U1702', k:'ic', x:480, y:493, w:28, h:14},
+    {ref:'U2201', k:'bga', x:415, y:530, w:105, h:68, p:8, sq:true},
+  ];
+  const HOLES = [[243,126],[385,152],[347,187],[380,224],[379,465],[380,611]].flatMap(([x, y]) => [[x, y], [798 - x, y]]);
+  const TPS = [[57,75],[93,70],[112,69],[57,93],[70,133],[166,135],[370,118]].flatMap(([x, y]) => [[x, y], [798 - x, y]]);
+
+  const PARTS = [], PADS = [];
+  const addPad = (part, pin, net, x, y, w, h, round) => { const p = {k:PADS.length, part, pin, net, x:f1(x), y:f1(y), w, h, r:round ? w / 2 : 0}; PADS.push(p); part.pads.push(p); return p; };
+  const ROWS = 'ABCDEFGHJKLMNPRTUVWY';
+  SPEC.forEach(s => {
+    const part = {...s, pads:[]}; PARTS.push(part);
+    if (s.k === 'bga') {
+      const nx = Math.floor((s.w - 6) / s.p) + 1, ny = Math.floor((s.h - 6) / s.p) + 1, ox = s.x + (s.w - (nx - 1) * s.p) / 2, oy = s.y + (s.h - (ny - 1) * s.p) / 2;
+      for (let j = 0; j < ny; j++) for (let i = 0; i < nx; i++) {
+        const net = s.nc && rnd() < s.nc ? 'NC' : randNet(s.sq ? .55 : .3), pin = (ROWS[j % 20] + (j >= 20 ? ROWS[j / 20 | 0] : '')) + (i + 1);
+        if (s.sq) addPad(part, pin, net, ox + i * s.p, oy + j * s.p, s.p * .55, s.p * .55); else addPad(part, pin, net, ox + i * s.p, oy + j * s.p, s.r * 2, s.r * 2, true);
+      }
+    } else if (s.k === 'ic' || s.k === 'rf') {
+      const nx = Math.floor((s.w - 6) / 4) + 1, ny = Math.floor((s.h - 6) / 4) + 1, ox = s.x + (s.w - (nx - 1) * 4) / 2, oy = s.y + (s.h - (ny - 1) * 4) / 2;
+      for (let j = 0; j < ny; j++) for (let i = 0; i < nx; i++) addPad(part, ROWS[j % 20] + (i + 1), randNet(.3), ox + i * 4, oy + j * 4, 1.8, 1.8, true);
+    } else if (s.rfj) {
+      let n = 1;
+      for (let j = 0; j < 3; j++) for (let x = s.x + 6; x < s.x + s.w - 4; x += 5) addPad(part, String(n++), randNet(.3), x, s.y + 6 + j * 5, 3, 2.4);
+      for (let y = s.y + 50; y < s.y + s.h - 6; y += 6) for (let x = s.x + 26; x < s.x + s.w - 20; x += 6) if (rnd() < .55) addPad(part, String(n++), randNet(.35), x, y, 3.2, 3.2, true);
+    } else if (s.k === 'conn') {
+      const rows = 2, ph = (s.h - 4) / rows - 1.4; let n = 1;
+      for (let j = 0; j < rows; j++) for (let x = s.x + 4; x < s.x + s.w - 2; x += 4.4) addPad(part, String(n++), randNet(.35), x, s.y + 2 + ph / 2 + j * (ph + 1.4), 2.4, ph);
+    }
+  });
+  HOLES.forEach(([x, y], i) => { const part = {ref:'SH' + (i + 1), k:'hole', x:x - 8, y:y - 8, w:16, h:16, pads:[]}; PARTS.push(part); addPad(part, '1', 'GND', x, y, 16, 16, true); });
+  TPS.forEach(([x, y], i) => { const part = {ref:'PP' + (1101 + i), k:'tp', x:x - 6, y:y - 6, w:12, h:12, pads:[]}; PARTS.push(part); addPad(part, '1', randNet(.2), x, y, 12, 12, true); });
+
+  // fill the rest of the board with small passives (seeded, so it is the same every time)
+  const OCC = new Set(), CELL = 2;
+  const cells = (x, y, w, h, f) => { for (let i = Math.floor(x / CELL); i <= Math.floor((x + w) / CELL); i++) for (let j = Math.floor(y / CELL); j <= Math.floor((y + h) / CELL); j++) if (f(i * 1000 + j) === false) return false; return true; };
+  const mark = (x, y, w, h) => cells(x, y, w, h, c => { OCC.add(c); });
+  const free = (x, y, w, h) => cells(x, y, w, h, c => !OCC.has(c));
+  PARTS.forEach(p => mark(p.x - 2, p.y - 2, p.w + 4, p.h + 4));
+  let pn = 1000;
+  function sprinkle(P, x0, x1, y0, y1, tries) {
+    for (let t = 0; t < tries; t++) {
+      const s = pick([1.5, 1.8, 2.2, 2.2, 2.8]), hor = rnd() < .6, w = hor ? s * 2.7 : s, h = hor ? s : s * 2.7;
+      const x = x0 + rnd() * (x1 - x0), y = y0 + rnd() * (y1 - y0);
+      if (![[x, y], [x + w, y], [x, y + h], [x + w, y + h]].every(([a, b]) => inPoly(P, a, b))) continue;
+      if (!free(x - .5, y - .5, w + 1, h + 1)) continue;
+      mark(x - .3, y - .3, w + .6, h + .6);
+      const v = rnd(), k = v < .1 ? 'cap' : v < .17 ? 'diode' : 'pass', ref = (k === 'cap' ? 'C' : k === 'diode' ? pick(['D', 'FL']) : pick(['R', 'C', 'C', 'L'])) + (pn++);
+      const part = {ref, k, x, y, w, h, hor, pads:[]}; PARTS.push(part);
+      const n1 = randNet(.12), n2 = rnd() < .6 ? 'GND' : randNet(0);
+      if (hor) { addPad(part, '1', n1, x + s / 2, y + s / 2, s, s); addPad(part, '2', n2, x + w - s / 2, y + s / 2, s, s); }
+      else { addPad(part, '1', n1, x + s / 2, y + s / 2, s, s); addPad(part, '2', n2, x + s / 2, y + h - s / 2, s, s); }
+    }
+  }
+  sprinkle(LEFT, 279, 391, 109, 650, 9000); sprinkle(LEFT, 124, 278, 119, 140, 260); sprinkle(LEFT, 46, 122, 59, 140, 160);
+  sprinkle(RIGHT, 407, 520, 109, 650, 9000); sprinkle(RIGHT, 520, 674, 119, 140, 260); sprinkle(RIGHT, 676, 752, 59, 140, 160);
+
+  // nets + a minimum spanning tree per net (O(n^2) Prim, edges point parent -> child)
+  function prim(pads, root) {
+    const n = pads.length, inT = new Uint8Array(n), dist = new Float64Array(n).fill(Infinity), par = new Int32Array(n).fill(-1), E = [];
+    let cur = pads.indexOf(root); if (cur < 0) cur = 0; dist[cur] = 0;
+    for (let it = 0; it < n; it++) {
+      let best = -1; for (let i = 0; i < n; i++) if (!inT[i] && (best < 0 || dist[i] < dist[best])) best = i;
+      inT[best] = 1; if (par[best] >= 0) E.push({a:pads[par[best]], b:pads[best]});
+      const b = pads[best]; for (let i = 0; i < n; i++) if (!inT[i]) { const d = Math.hypot(pads[i].x - b.x, pads[i].y - b.y); if (d < dist[i]) { dist[i] = d; par[i] = best; } }
+    }
+    return E;
+  }
+  const NETS = {};
+  PADS.forEach(p => (NETS[p.net] = NETS[p.net] || {pads:[]}).pads.push(p));
+  let mstReady = false;
+  const ensureMst = () => { if (mstReady) return; Object.entries(NETS).forEach(([n, N]) => N.mst = n === 'NC' ? [] : prim(N.pads, N.pads[0])); mstReady = true; };
+  const VIEW0 = {x:36, y:48, w:726, h:612};
+
+  /* ---------- state ---------- */
+  const first = PADS.find(p => p.net === 'I2C0_SCL' && p.part.ref === 'U0201') || PADS.find(p => p.net === 'I2C0_SCL');
+  const S = {d:0, r:0, pad:first.k, kind:null,
+    sw:{rat:true, all:false, topo:'star', anim:true, len:false, gnd:false, frames:true, dim:true, refs:true}};
+  try { const o = JSON.parse(localStorage.getItem('boardThemes2') || '{}'); if (o.d != null) S.d = o.d % DES.length; if (o.r != null) S.r = o.r % RS.length; if (o.sw) Object.assign(S.sw, o.sw); } catch (e) {}
+  const save = () => { try { localStorage.setItem('boardThemes2', JSON.stringify({d:S.d, r:S.r, sw:S.sw})); } catch (e) {} };
+  const netOf = () => S.pad == null ? null : PADS[S.pad].net;
+  const MMPX = .16;  // ~0.16 mm per board unit
+
+  /* ---------- drawing ---------- */
+  function padFill(D, p) {
+    if (p.part.k === 'hole') return D.hole;
+    if (p.part.sq) return D.gnd;
+    if (p.net === 'NC') return D.ic;
+    if (S.sw.gnd && p.net === 'GND') return D.gnd;
+    if (p.part.k === 'ic' || p.part.k === 'rf') return D.icDot;
+    return D.pad;
+  }
+  const padEl = (p, fill, x = '') => p.r ? `<circle cx="${p.x}" cy="${p.y}" r="${p.r}" fill="${fill}"${x}/>` : `<rect x="${f1(p.x - p.w / 2)}" y="${f1(p.y - p.h / 2)}" width="${p.w}" height="${p.h}" rx="${p.w > 2 ? .4 : 0}" fill="${fill}"${x}/>`;
+  function bodyEl(D, p) {
+    const r = (fill, x = '') => `<rect x="${f1(p.x)}" y="${f1(p.y)}" width="${f1(p.w)}" height="${f1(p.h)}" fill="${fill}"${x}/>`;
+    switch (p.k) {
+      case 'bga': case 'conn': return r(D.chip, ` rx="1.5" stroke="${mix(D.chip, D.frame, .4)}" stroke-width=".6"`);
+      case 'ic': return r(D.ic, ' rx="1"');
+      case 'rf': return r(D.ic, ` rx="1" stroke="${D.rf}" stroke-width="2"`);
+      case 'cap': case 'diode': { const s = p.hor ? p.h : p.w; return p.hor ? `<rect x="${f1(p.x + s)}" y="${f1(p.y + .2)}" width="${f1(p.w - 2 * s)}" height="${f1(p.h - .4)}" fill="${D[p.k]}"/>` : `<rect x="${f1(p.x + .2)}" y="${f1(p.y + s)}" width="${f1(p.w - .4)}" height="${f1(p.h - 2 * s)}" fill="${D[p.k]}"/>`; }
+      default: return '';
+    }
+  }
+  function ratEdges(net) {
+    const pads = NETS[net].pads, root = S.pad != null && PADS[S.pad].net === net ? PADS[S.pad] : pads[0];
+    return S.sw.topo === 'star' ? pads.filter(p => p !== root).map(p => ({a:root, b:p})).sort((x, y) => geo(x).L - geo(y).L) : prim(pads, root);
+  }
+
+  const bd = $('bd');
+  let V = {...VIEW0};
+  const setVB = () => bd.setAttribute('viewBox', `${f1(V.x)} ${f1(V.y)} ${f1(V.w)} ${f1(V.h)}`);
+  const fitView = () => { V = {...VIEW0}; setVB(); };
+
+  function renderBoard() {
+    UID = 0; PFX = 'q';
+    const D = DES[S.d], R = RS[S.r], sw = S.sw, net = netOf(), kind = S.kind;
+    const dimNet = sw.dim && !!net;
+    const kOp = p => kind && p.k !== kind ? .15 : 1;
+    let h = `<defs><filter id="fg" x="-100%" y="-100%" width="300%" height="300%"><feGaussianBlur stdDeviation="2.2"/></filter></defs>
+      <rect x="-3000" y="-3000" width="7000" height="7000" fill="${D.bg}"/>`;
+    h += [LEFT, RIGHT].map(P => `<path d="${polyD(P)}" fill="${D.board}" stroke="${D.edge}" stroke-width="${D.thick ? 2 : 1.4}" stroke-linejoin="round"/>`).join('');
+    if (sw.frames) h += FRAMES.map(([x, y, w, ht]) => `<rect x="${x}" y="${y}" width="${w}" height="${ht}" rx="2" fill="none" stroke="${D.frame}" stroke-width="2.4" stroke-dasharray="7 4" opacity=".85"/>`).join('');
+    // bodies
+    h += PARTS.map(p => { const b = bodyEl(D, p); return b && (kOp(p) < 1 ? `<g opacity="${kOp(p)}">${b}</g>` : b); }).join('');
+    // net halo (under the pads)
+    if (net) { let halo = '';
+      NETS[net].pads.forEach(p => { halo += `<circle cx="${p.x}" cy="${p.y}" r="${f1(Math.max(p.w, p.h) / 2 + 2.6)}" fill="${D.hi}" opacity="${D.glow ? .55 : .38}"/>`; });
+      h += D.glow ? `<g filter="url(#fg)">${halo}</g>${halo}` : halo; }
+    // pads
+    let ps = '';
+    PADS.forEach(p => { const on = net && p.net === net;
+      let op = kOp(p.part); if (dimNet && !on) op = Math.min(op, .62);
+      ps += padEl(p, on ? D.hi : padFill(D, p), ` data-k="${p.k}"${op < 1 ? ` opacity="${op}"` : ''}`); });
+    h += ps;
+    // part names
+    if (sw.refs) h += PARTS.filter(p => p.lab).map(p => `<text x="${f1(p.x + p.w / 2)}" y="${f1(p.y + p.h / 2 + p.lab * .36)}" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-weight="800" font-size="${p.lab}" fill="${D.label}" stroke="${D.lstroke}" stroke-width="${f1(p.lab / 5)}" stroke-linejoin="round" paint-order="stroke">${esc(p.ref)}</text>`).join('');
+    // ratsnest
+    if (sw.rat) {
+      if (sw.all) { ensureMst(); let o = ''; Object.entries(NETS).forEach(([n, N]) => { if (n !== net && n !== 'GND' && n !== 'NC') N.mst.forEach((e, i) => o += R.f(e, D.label, i, D)); });
+        h += `<g opacity=".28">${o}</g>`; }
+      if (net && net !== 'NC' && NETS[net].pads.length > 1) { const E = ratEdges(net);
+        h += `<g>${E.map((e, i) => R.f(e, D.rat, i, D)).join('')}</g>`;
+        if (sw.len && E.length <= 80) h += E.map(e => { const mx = (e.a.x + e.b.x) / 2, my = (e.a.y + e.b.y) / 2, t = (geo(e).L * MMPX).toFixed(1) + ' mm', w = t.length * 4.6 + 6;
+          return `<rect x="${f1(mx - w / 2)}" y="${f1(my - 6)}" width="${f1(w)}" height="12" rx="6" fill="${D.board}" stroke="${D.rat}" stroke-width=".8"/><text x="${f1(mx)}" y="${f1(my + 2.8)}" text-anchor="middle" font-size="7.5" font-weight="700" font-family="ui-monospace,Consolas,monospace" fill="${D.rat}">${t}</text>`; }).join('');
+      }
+    }
+    // selected pin rings
+    if (S.pad != null) { const p = PADS[S.pad];
+      h += `<circle cx="${p.x}" cy="${p.y}" r="${f1(Math.max(p.w, p.h) / 2 + 4)}" fill="none" stroke="${D.sel}" stroke-width="1.6"/><circle cx="${p.x}" cy="${p.y}" r="${f1(Math.max(p.w, p.h) / 2 + 9)}" fill="none" stroke="${D.sel}" stroke-width="1.2" class="rpulse"/>`; }
+    bd.innerHTML = h;
+    bd.style.background = D.bg;
+    applyAnim();
+  }
+
+  /* ---------- side lists ---------- */
+  function miniTheme(D) {
+    return `<svg viewBox="0 0 64 38"><rect width="64" height="38" fill="${D.bg}"/>
+      <rect x="6" y="3" width="23" height="32" rx="2" fill="${D.board}" stroke="${D.edge}"/><rect x="35" y="3" width="23" height="32" rx="2" fill="${D.board}" stroke="${D.edge}"/>
+      <rect x="9" y="7" width="14" height="11" fill="${D.chip}"/>${[0, 1, 2].map(j => [0, 1, 2, 3].map(i => `<circle cx="${11 + i * 3.3}" cy="${9 + j * 3.4}" r="1" fill="${D.pad}"/>`).join('')).join('')}
+      <circle cx="25" cy="24" r="2.6" fill="${D.hole}"/><rect x="9" y="22" width="3" height="2" fill="${D.pad}"/><rect x="14" y="27" width="3" height="2" fill="${D.gnd}"/><rect x="9" y="30" width="5" height="2" fill="${D.cap}"/>
+      <rect x="38" y="6" width="12" height="8" fill="${D.ic}" stroke="${D.rf}" stroke-width="1.2"/><rect x="40" y="19" width="14" height="12" fill="${D.chip}"/>
+      <circle cx="44" cy="23" r="1.5" fill="${D.hi}"/><circle cx="50" cy="27" r="1.5" fill="${D.pad}"/><circle cx="18" cy="13" r="1.5" fill="${D.hi}"/>
+      <path d="M18 13L44 23" stroke="${D.rat}" stroke-width="1"/></svg>`;
+  }
+  function renderDList() {
+    $('dList').innerHTML = DES.map((D, i) => `<button class="dc${i === S.d ? ' sel' : ''}" data-d="${i}" title="${esc(D.d)}">${miniTheme(D)}<span><small>${String(i + 1).padStart(2, '0')}${D.kept ? '<span class="kp">kept</span>' : ''}</small><b>${esc(D.n)}</b></span></button>`).join('');
+  }
+  function renderRList() {
+    UID = 0; PFX = 'p';
+    const D = DES[S.d], a = {x:14, y:30}, b = {x:62, y:12}, c = {x:110, y:30};
+    $('rList').innerHTML = RS.map((R, i) => {
+      const pad = p => `<circle cx="${p.x}" cy="${p.y}" r="4" fill="${D.hi}"/>`;
+      return `<button class="rc${i === S.r ? ' sel' : ''}" data-r="${i}" title="${esc(R.d)}"><svg viewBox="0 0 124 42" style="background:${D.board}">${pad(a)}${pad(b)}${pad(c)}${R.f({a:b, b:a}, D.rat, 0, D)}${R.f({a:b, b:c}, D.rat, 1, D)}</svg><span><i>${String(i + 1).padStart(2, '0')}</i>${esc(R.n)}${R.kept ? '<b class="kp">kept</b>' : ''}</span></button>`;
+    }).join('');
+    applyAnim();
+  }
+  const SWS = [
+    ['rat', 'Ratsnest', 'Airwires for the clicked net'],
+    ['all', 'All nets', 'Faint airwires for every signal net'],
+    ['anim', 'Animate', 'Flow, pulse and comet motion'],
+    ['len', 'Length labels', 'mm on each airwire'],
+    ['gnd', 'Ground pins grey', 'GND pins use the ground colour'],
+    ['frames', 'Shield frames', 'Dashed shield-can outlines'],
+    ['dim', 'Dim other pins', 'Fade pins not on the net'],
+    ['refs', 'Part names', 'U0201, U0604…'],
+  ];
+  function renderSw() {
+    $('sws').innerHTML = `<div class="seglbl">Topology</div><div class="seg" role="group" aria-label="Ratsnest topology">
+        <button data-topo="star" class="${S.sw.topo === 'star' ? 'on' : ''}" title="Every wire starts at the clicked pin">Star from pin</button>
+        <button data-topo="chain" class="${S.sw.topo === 'chain' ? 'on' : ''}" title="Shortest chain linking all pins (MST)">Shortest chain</button></div>` +
+      SWS.map(([k, b, s]) => `<label class="sw"><input type="checkbox" role="switch" data-sw="${k}"${S.sw[k] ? ' checked' : ''}><span><b>${b}</b><small>${s}</small></span></label>`).join('');
+  }
+  const kindCol = (D, k) => ({bga:D.chip, ic:D.ic, rf:D.rf, conn:D.chip, pass:D.pad, cap:D.cap, diode:D.diode, tp:D.pad, hole:D.hole})[k];
+  function renderInfo() {
+    const D = DES[S.d], net = netOf();
+    if (!net) { $('info').innerHTML = '<span class="muted">Click any pin to light up its net. Wheel to zoom into the small parts, drag to pan.</span>'; return; }
+    const p = PADS[S.pad], N = NETS[net], parts = new Set(N.pads.map(x => x.part.ref)).size, E = net === 'NC' ? [] : ratEdges(net);
+    const tot = E.reduce((s, e) => s + geo(e).L * MMPX, 0), MAX = 40;
+    $('info').innerHTML = `<span class="chip"><i style="background:${kindCol(D, p.part.k)}"></i>${esc(p.part.ref)} · ${KINDS[p.part.k].n} · pin ${esc(p.pin)}</span>
+      <span class="net" style="background:${D.hi};color:${ink(D.hi)}">${esc(net)}</span>
+      <span class="muted">${N.pads.length} pins on ${parts} parts · ${E.length} airwires · ${tot.toFixed(1)} mm</span>
+      <span class="chips">${N.pads.slice(0, MAX).map(x => `<button class="chip${x.k === S.pad ? ' sel' : ''}" data-k="${x.k}">${esc(x.part.ref)}.${esc(x.pin)}</button>`).join('')}${N.pads.length > MAX ? `<span class="muted">+${N.pads.length - MAX} more</span>` : ''}</span>`;
+  }
+  function renderLegend() {
+    const D = DES[S.d], cnt = {}; PARTS.forEach(p => cnt[p.k] = (cnt[p.k] || 0) + 1);
+    const sw = k => {
+      const bgc = `<rect width="26" height="18" fill="${D.board}"/>`;
+      switch (k) {
+        case 'bga': return bgc + `<rect x="5" y="2" width="16" height="14" fill="${D.chip}"/>` + [0, 1, 2].map(j => [0, 1, 2].map(i => `<circle cx="${9 + i * 4}" cy="${5 + j * 4}" r="1.2" fill="${D.pad}"/>`).join('')).join('');
+        case 'ic': return bgc + `<rect x="6" y="3" width="14" height="12" fill="${D.ic}"/>`;
+        case 'rf': return bgc + `<rect x="6" y="3" width="14" height="12" fill="${D.ic}" stroke="${D.rf}" stroke-width="2"/>`;
+        case 'conn': return bgc + `<rect x="3" y="5" width="20" height="8" fill="${D.chip}"/>` + [0, 1, 2, 3].map(i => `<rect x="${5 + i * 4.5}" y="6.5" width="2" height="5" fill="${D.pad}"/>`).join('');
+        case 'pass': return bgc + `<rect x="7" y="6" width="5" height="6" fill="${D.pad}"/><rect x="15" y="6" width="5" height="6" fill="${D.gnd}"/>`;
+        case 'cap': case 'diode': return bgc + `<rect x="5" y="6" width="4" height="6" fill="${D.pad}"/><rect x="9" y="6.5" width="8" height="5" fill="${D[k]}"/><rect x="17" y="6" width="4" height="6" fill="${D.pad}"/>`;
+        case 'tp': return bgc + `<circle cx="13" cy="9" r="6" fill="${D.pad}"/>`;
+        case 'hole': return bgc + `<circle cx="13" cy="9" r="6" fill="${D.hole}"/>`;
+      }
+    };
+    $('legend').innerHTML = '<span class="lt">Part types · click to spot them</span>' + Object.keys(KINDS).map(k =>
+      `<button class="lg${S.kind === k ? ' on' : ''}" data-t="${k}"><svg viewBox="0 0 26 18">${sw(k)}</svg>${KINDS[k].n} <em>${cnt[k] || 0}</em></button>`).join('') +
+      `<button class="lg" disabled><svg viewBox="0 0 26 18"><rect width="26" height="18" fill="${D.board}"/><circle cx="8" cy="9" r="4" fill="${D.hi}"/><circle cx="19" cy="9" r="4" fill="${D.gnd}"/></svg>Net pin / GND pin</button>`;
+  }
+  function applyAnim() {
+    document.body.classList.toggle('still', !S.sw.anim);
+    document.querySelectorAll('svg').forEach(s => { try { S.sw.anim ? s.unpauseAnimations() : s.pauseAnimations(); } catch (e) {} });
+  }
+  function renderAll() {
+    const D = DES[S.d];
+    $('capN').textContent = `${String(S.d + 1).padStart(2, '0')} · ${D.n}`;
+    $('capD').textContent = D.d + '  ·  Ratsnest: ' + RS[S.r].n;
+    renderBoard(); renderInfo(); renderLegend();
+    document.querySelectorAll('.dc').forEach(b => b.classList.toggle('sel', +b.dataset.d === S.d));
+    document.querySelectorAll('.rc').forEach(b => b.classList.toggle('sel', +b.dataset.r === S.r));
+    save();
+  }
+  const setDesign = i => { S.d = (i + DES.length) % DES.length; renderRList(); renderAll(); document.querySelector('.dc.sel')?.scrollIntoView({block:'nearest'}); };
+  const setRat = i => { S.r = (i + RS.length) % RS.length; if (!S.sw.rat) { S.sw.rat = true; renderSw(); } renderAll(); };
+
+  /* ---------- export in Schemax pcb_themes.json format ---------- */
+  const LAYERS = {baseLayer:'#a71e68c3', layer1:'#a74a90e2', layer2:'#a7f28c28', layer3:'#a73dbb5c', layer4:'#a7e8c51a', layer5:'#a72cc4d4', layer6:'#a7e5484d', layer7:'#a79b72f0', layer8:'#a7a3d13a',
+    layer9:'#a7b5703c', layer10:'#a71f9e89', layer11:'#a7f29bc0', layer12:'#a78fa3b8', layer13:'#a7d9d07a', layer14:'#a7b0f0c0', layer15:'#a7d4b3ff', layer16:'#a7ffd9a0'};
+  const argb = (h, a = 'ff') => '#' + a + h.slice(1);
+  const toSchemax = D => ({
+    background:argb(D.bg), base:'Default', boardFill:argb(D.board), componentFill:argb(D.chip), componentNameText:argb(D.label),
+    groundPin:argb(D.gnd), ...LAYERS, name:D.n, ncPin:argb(D.ic), netText:argb(ink(D.hi)), outline:argb(D.edge), overridePinColors:true,
+    partHighlightBorder:argb(D.rf), partHighlightFill:argb(D.ic), partOutline:argb(D.frame), pin:argb(D.pad), pinOutline:argb(mix(D.board, '#000000', .5)),
+    pinText:argb(ink(D.pad)), ratsnet:argb(D.rat), refEdge:'#2effffff', refPlate:'#d1030e16', sameNetPin:argb(D.hi), selectedPin:argb(D.sel), silkscreen:argb(D.frame, 'c0'),
+  });
+  const toast = m => { const t = $('toast'); t.textContent = m; t.hidden = false; clearTimeout(toast.t); toast.t = setTimeout(() => t.hidden = true, 1800); };
+  const download = (name, text) => { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([text], {type:'application/json'})); a.download = name; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000); };
+  $('copyT').onclick = () => { const txt = JSON.stringify(toSchemax(DES[S.d]), null, 4);
+    (navigator.clipboard ? navigator.clipboard.writeText(txt) : Promise.reject()).then(() => toast(`Copied "${DES[S.d].n}" for Schemax`), () => { download(DES[S.d].n.replace(/\W+/g, '_') + '.json', txt); toast('Clipboard blocked, downloaded instead'); }); };
+  $('saveAll').onclick = () => { download('pcb_themes.json', JSON.stringify({themes:DES.map(toSchemax)}, null, 4)); toast('Downloaded pcb_themes.json (20 themes)'); };
+
+  /* ---------- events ---------- */
+  $('dList').addEventListener('click', e => { const b = e.target.closest('[data-d]'); if (b) setDesign(+b.dataset.d); });
+  $('rList').addEventListener('click', e => { const b = e.target.closest('[data-r]'); if (b) setRat(+b.dataset.r); });
+  $('sws').addEventListener('change', e => { const k = e.target.dataset.sw; if (k) { S.sw[k] = e.target.checked; renderAll(); } });
+  $('sws').addEventListener('click', e => { const b = e.target.closest('[data-topo]'); if (b) { S.sw.topo = b.dataset.topo; renderSw(); renderAll(); } });
+  $('info').addEventListener('click', e => { const b = e.target.closest('[data-k]'); if (b) { S.pad = +b.dataset.k; renderAll(); } });
+  $('legend').addEventListener('click', e => { const b = e.target.closest('[data-t]'); if (b) { S.kind = S.kind === b.dataset.t ? null : b.dataset.t; renderAll(); } });
+  $('prevD').onclick = () => setDesign(S.d - 1);
+  $('nextD').onclick = () => setDesign(S.d + 1);
+  $('clear').onclick = () => { S.pad = null; S.kind = null; renderAll(); };
+  $('theme').onclick = () => { const r = document.documentElement, dark = matchMedia('(prefers-color-scheme: dark)').matches;
+    const cur = r.dataset.theme || (dark ? 'dark' : 'light'); r.dataset.theme = cur === 'dark' ? 'light' : 'dark'; };
+  document.addEventListener('keydown', e => {
+    if (e.target.closest('input,textarea')) return;
+    if (e.key === 'ArrowRight') { setDesign(S.d + 1); e.preventDefault(); }
+    else if (e.key === 'ArrowLeft') { setDesign(S.d - 1); e.preventDefault(); }
+    else if (e.key === ']') setRat(S.r + 1); else if (e.key === '[') setRat(S.r - 1);
+    else if (e.key === 'Escape') $('clear').click();
+  });
+
+  // pan / zoom / click / hover; tiny pins are easier to hit: snap to the nearest pin within a few units
+  const toBoard = (cx, cy) => { const p = new DOMPoint(cx, cy).matrixTransform(bd.getScreenCTM().inverse()); return {x:p.x, y:p.y}; };
+  const nearest = (pt, max) => { let best = null, bd2 = max * max; for (const p of PADS) { const d = (p.x - pt.x) ** 2 + (p.y - pt.y) ** 2; if (d < bd2) { bd2 = d; best = p; } } return best; };
+  const hitPad = e => { const t = e.target.closest('[data-k]'); if (t) return PADS[+t.dataset.k]; const s = V.w / bd.getBoundingClientRect().width; return nearest(toBoard(e.clientX, e.clientY), Math.max(2, 7 * s)); };
+  function zoomAt(f, pt) { const nw = Math.max(50, Math.min(2400, V.w * f)), k = nw / V.w;
+    V = {x:pt.x - (pt.x - V.x) * k, y:pt.y - (pt.y - V.y) * k, w:V.w * k, h:V.h * k}; setVB(); }
+  bd.addEventListener('wheel', e => { e.preventDefault(); zoomAt(e.deltaY > 0 ? 1.15 : 1 / 1.15, toBoard(e.clientX, e.clientY)); }, {passive:false});
+  let drag = null;
+  bd.addEventListener('pointerdown', e => { drag = {x:e.clientX, y:e.clientY, v:{...V}, moved:false, id:e.pointerId}; });
+  bd.addEventListener('pointermove', e => {
+    if (drag) { const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+      if (!drag.moved && Math.hypot(dx, dy) > 4) { drag.moved = true; bd.setPointerCapture(drag.id); bd.classList.add('panning'); $('tip').hidden = true; }
+      if (drag.moved) { const r = bd.getBoundingClientRect(), s = Math.max(drag.v.w / r.width, drag.v.h / r.height); V = {...drag.v, x:drag.v.x - dx * s, y:drag.v.y - dy * s}; setVB(); return; } }
+    const p = hitPad(e), tip = $('tip');
+    if (!p) { tip.hidden = true; return; }
+    const D = DES[S.d], r = $('stage').getBoundingClientRect();
+    tip.innerHTML = `<i style="background:${kindCol(D, p.part.k)}"></i><b>${esc(p.part.ref)}</b> · pin ${esc(p.pin)} → <b>${esc(p.net)}</b><small>${KINDS[p.part.k].n} · ${NETS[p.net].pads.length} pins on this net</small>`;
+    tip.hidden = false;
+    tip.style.left = Math.min(e.clientX - r.left + 14, r.width - tip.offsetWidth - 8) + 'px';
+    tip.style.top = Math.min(e.clientY - r.top + 16, r.height - tip.offsetHeight - 8) + 'px';
+  });
+  bd.addEventListener('pointerleave', () => { $('tip').hidden = true; });
+  bd.addEventListener('pointerup', e => {
+    const d = drag; drag = null; bd.classList.remove('panning');
+    if (!d || d.moved) return;
+    const p = hitPad(e); S.pad = p ? p.k : null; renderAll();
+  });
+  document.querySelector('.zoom').addEventListener('click', e => { const z = e.target.closest('[data-z]')?.dataset.z; if (!z) return;
+    if (z === 'fit') fitView(); else zoomAt(z === 'in' ? 1 / 1.4 : 1.4, {x:V.x + V.w / 2, y:V.y + V.h / 2}); });
+
+  renderDList(); renderRList(); renderSw(); fitView(); renderAll();
+})();
+</script>
+</body>
+</html>

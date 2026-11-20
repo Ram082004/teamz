@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Glass pin card + vertical layers</title>
+<title>Solid pin card + layers</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;800&display=swap" rel="stylesheet">
 <style>
 :root{--page:#e9edf3;--card:#fff;--hair:#dfe4ec;--text:#0e2140;--text-2:#4a5b75;--text-3:#8592a6;--acc:#0d847d;--acc-soft:rgba(13,132,125,.12);
@@ -436,11 +436,34 @@ main{max-width:1340px;margin:auto;padding:20px 24px 80px;display:grid;grid-templ
 .k21 .ac{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:10px 8px 8px}
 .k21 .ac button{display:flex;align-items:center;justify-content:center;gap:6px;height:28px;border-radius:8px;font:600 11px Inter;background:var(--gfill);box-shadow:inset 0 0 0 1px var(--gline)}.k21 .ac button:hover{background:var(--gfill2)}
 .k21 .ac button:first-child{background:var(--c);color:#0b1220;box-shadow:0 0 14px -4px var(--c)}
+
+/* ================= SOLID MODE — no glass, no blur, anywhere ================= */
+:root{--gl:#ffffff;--gb:#d5dce7;--ghi:transparent;--gfill:#f1f4f8;--gfill2:#e4e9f1;--gline:#e1e6ee}
+[data-theme=dark]{--gl:#141c2b;--gb:#2b3649;--ghi:transparent;--gfill:#1a2336;--gfill2:#232e44;--gline:#26324a}
+.smk{--gl:#0f1623;--gb:#2b3649;--ghi:transparent;--gt:#f1f5fb;--gs:#a7b4c8;--gfill:#182133;--gfill2:#232e44;--gline:#26324a}
+*,*::before,*::after{-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+.top{background:var(--page)}
+.gls{box-shadow:0 0 0 1px var(--gb),0 12px 26px -14px rgba(0,0,0,.7)}
+.dk.gls{box-shadow:0 -1px 0 var(--gb),0 -10px 24px -14px rgba(0,0,0,.7)}
+.k3::before,.cd .gls[class]::before{display:none}
+/* hover card: solid surface + solid layer-colour strip on top */
+.cd .gls[class]{background-color:var(--gl);box-shadow:inset 0 4px 0 var(--c),0 0 0 1px var(--gb),0 16px 30px -14px rgba(0,0,0,.75)}
+.cd .gls[class]>:first-child{margin-top:2px}
+/* leader: a solid line in the layer colour, no glow ring */
+.ld,.ld.l{height:2px;background:var(--c)}
+.ld::before{display:none}
+.ld::after{width:8px;height:8px;margin:-4px;background:var(--c);box-shadow:0 0 0 2px #fff}
+/* new pin design: a solid map-pin that drops onto the hovered pin */
+.pm{position:absolute;z-index:21;width:24px;height:24px;margin:-29px 0 0 -12px;border-radius:50% 50% 50% 0;background:var(--c);border:2.5px solid #fff;transform:rotate(-45deg);box-shadow:-3px 3px 0 rgba(0,0,0,.35);pointer-events:none}
+.pm::after{content:"";position:absolute;left:50%;top:50%;width:7px;height:7px;margin:-3.5px;border-radius:50%;background:#fff}
+.pm.drop{animation:pmd .32s cubic-bezier(.34,1.56,.64,1)}
+@keyframes pmd{from{transform:translateY(-14px) rotate(-45deg);opacity:0}to{transform:rotate(-45deg);opacity:1}}
+.pmb{position:absolute;z-index:20;width:14px;height:5px;margin:-2px 0 0 -7px;border-radius:50%;background:rgba(0,0,0,.45);pointer-events:none}
 </style>
 </head>
 <body>
 <header class="top"><div class="in">
-  <div><h1>Glass pin card + docked layer toolbar — 21 designs</h1><p>Every layer toolbar is docked to the bottom edge. Click a number to show only that layer, ALL for every layer. Rest the mouse on a gold pin: a glass card opens beside it, joined by a line in the layer colour.</p></div>
+  <div><h1>Solid pin card + docked layer toolbar — 21 designs</h1><p>Every layer toolbar is docked to the bottom edge. Click a number to show only that layer, ALL for every layer. Rest the mouse on a gold pin: a map-pin drops onto it and a solid card opens beside it, joined by a line in the layer colour. No glass or blur anywhere.</p></div>
   <button class="tbtn" data-a="theme">◐ Light / Dark</button>
 </div></header>
 <main id="main"></main>
@@ -569,13 +592,13 @@ const C = {
 };
 
 const META = [
-  ['Notched tab bar + frosted card', 'Mobile-style tab bar: layers 1–5 and 6–10 either side of a raised centre button showing the current layer'],
-  ['Neumorphic soft keys + smoked card', 'Soft extruded keys that press in when chosen, with a colour tick'],
-  ['Blueprint strip + aurora card', 'Technical-drawing look: grid paper, dimension lines, title block with REV and layer'],
-  ['Piano keys + glass inspector', 'Each layer is a key; the chosen key goes down and glows in its colour'],
+  ['Notched tab bar + solid card', 'Mobile-style tab bar: layers 1–5 and 6–10 either side of a raised centre button showing the current layer'],
+  ['Neumorphic soft keys + dark solid card', 'Soft extruded keys that press in when chosen, with a colour tick'],
+  ['Blueprint strip + solid card', 'Technical-drawing look: grid paper, dimension lines, title block with REV and layer'],
+  ['Piano keys + solid inspector', 'Each layer is a key; the chosen key goes down and glows in its colour'],
   ['Hardware switches + diode gauge', 'Toggle switch + LED per layer on a metal panel; red ALL ON and black OFF push buttons'],
   ['Timeline + playhead + pin badge', 'A ruler with ticks; a playhead slides to the chosen layer'],
-  ['Sliding pill + glass terminal', 'One segmented control; a colour pill glides to the chosen layer'],
+  ['Sliding pill + solid terminal', 'One segmented control; a colour pill glides to the chosen layer'],
   ['Cross-section stack-up + mini-map', 'The real board stack seen from the side; click a copper line to show that layer'],
   ['Rotary knob + LCD + shortcut card', 'Turn the knob (click left / right half); LCD readout and layer LEDs'],
   ['Folder tabs + split card', 'Browser-style tabs on a folder body; the chosen tab opens to show its name, with a status line below'],
@@ -585,20 +608,21 @@ const META = [
   ['Command line + action card', 'Type 3, all, top, inner, outer, next and press Enter, or click a token'],
   ['Seven-segment display + side label', 'Amber digital readout L03, ▲ ▼, and a row of status LEDs'],
   ['SMD chips on PCB + pad preview', 'Each layer is a tiny IC on green solder mask; the chosen chip lights up'],
-  ['Opacity rings + neon glass', 'A ring per layer shows its opacity; click to cycle 100 → 50 → 0'],
+  ['Opacity rings + neon solid card', 'A ring per layer shows its opacity; click to cycle 100 → 50 → 0'],
   ['Split-flap board + tiles', 'Airport-style flip letters show the layer; ◀ ▶ and colour dots to jump'],
-  ['Card fan + liquid glass', 'Layers as a hand of cards; the chosen card rises out of the deck'],
+  ['Card fan + solid card', 'Layers as a hand of cards; the chosen card rises out of the deck'],
   ['Trace histogram + pro card', 'Bar chart of traces per layer; click a bar to show it, stats at the right'],
-  ['Bottom edge tabs + glass app card', 'Glass tabs rise from the bottom edge (the chosen tab grows and shows its name); glass card with net + copy, Part / Pin / Diode, connected bar, actions']];
+  ['Bottom edge tabs + solid app card', 'Solid tabs rise from the bottom edge (the chosen tab grows and shows its name); solid card with net + copy, Part / Pin / Diode, connected bar, actions']];
 
 /* ---------- render ---------- */
 $('#main').innerHTML = META.map(([t, d], k) => `<section class="card"><div class="meta"><span class="num">${String(k + 1).padStart(2, '0')}</span><div><h3>${t}</h3><p>${d}</p></div></div><div class="stg" id="s${k + 1}" data-n="${k + 1}"></div></section>`).join('');
-function render(n) { const s = st(n), el = $('#s' + n); el.innerHTML = board(s) + U[n](s) + '<i class="ld"></i><div class="cd"></div>'; card(n); }
+function render(n) { const s = st(n), el = $('#s' + n); el.innerHTML = board(s) + U[n](s) + '<i class="ld"></i><i class="pmb"></i><i class="pm"></i><div class="cd"></div>'; card(n); }
 const GAP = 30, DEFN = {};
 function card(n) {
   const s = st(n), el = $('#s' + n), i = s.hov ?? (DEFN[n] ?? DEF), p = PINS[i], cd = el.querySelector('.cd'), ld = el.querySelector('.ld');
   el.querySelectorAll('.pn').forEach(c => { const q = PINS[+c.dataset.pv]; c.classList.toggle('hl', q.net === p.net && +c.dataset.pv !== i); c.classList.toggle('cur', +c.dataset.pv === i); });
   cd.innerHTML = C[n](p); cd.style.setProperty('--c', LC[p.layer]); ld.style.setProperty('--c', LC[p.layer]);
+  const pm = el.querySelector('.pm'), pmb = el.querySelector('.pmb'); pm.style.setProperty('--c', LC[p.layer]);
   cd.style.left = '0px'; cd.style.top = '0px';
   const pr = el.querySelector(`[data-pv="${i}"]`).getBoundingClientRect(), er = el.getBoundingClientRect(), px = pr.left + pr.width / 2 - er.left, py = pr.top + pr.height / 2 - er.top;
   const w = cd.offsetWidth, h = cd.offsetHeight; let x = px + GAP, right = true;
@@ -608,6 +632,8 @@ function card(n) {
   cd.style.left = x + 'px'; cd.style.top = y + 'px';
   ld.classList.toggle('l', !right); ld.style.top = py + 'px';
   ld.style.left = (right ? px : x + w) + 'px'; ld.style.width = (right ? x - px : px - x - w) + 'px';
+  pm.style.left = pmb.style.left = px + 'px'; pm.style.top = pmb.style.top = py + 'px';
+  if (pm.dataset.i !== String(i)) { pm.dataset.i = i; pm.classList.remove('drop'); void pm.offsetWidth; pm.classList.add('drop'); }
 }
 for (let n = 1; n <= 21; n++) render(n);
 
