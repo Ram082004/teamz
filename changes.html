@@ -271,11 +271,128 @@ main{max-width:1220px;margin:auto;padding:22px 24px 80px;display:grid;gap:22px}
 .swb:hover svg.i{transform:rotate(180deg)}
 .toast{position:fixed;left:50%;bottom:24px;z-index:60;transform:translate(-50%,20px);opacity:0;transition:.25s;background:#0e2140;color:#fff;padding:10px 16px;border-radius:10px;font-weight:600;font-size:12.5px;pointer-events:none}
 .toast.on{opacity:1;transform:translate(-50%,0)}
+
+/* ===== design C: the Schemax app's tab band today — a copy of src/ui/swaptabbar.cpp =====
+   tokens = LibTok (librarypanel.cpp) + STok hair override + ThemeManager @FILE_SCHEMATIC / @COPPER */
+.sx{--s-win:#ffffff;--s-bar:#f2f5f9;--s-hair:rgba(14,33,64,.118);--s-hair2:rgba(14,33,64,.149);--s-text:#0e2140;--s-text2:#45556b;--s-text3:#7d8a9b;--s-hover:rgba(14,33,64,.051);
+  --s-acc:#0f8f88;--s-acct:#0f8f88;--s-accsoft:rgba(18,163,155,.11);--s-pdf:#d83b36;--s-pcb:#c4681f;--s-tool:#0d847d;--s-softk:11%;
+  --s-ui:"Segoe UI Variable Text","Segoe UI",system-ui,sans-serif;--s-mono:"JetBrains Mono","Cascadia Mono",Consolas,monospace}
+[data-theme=dark] .sx{--s-win:#111923;--s-bar:#16202c;--s-hair:rgba(255,255,255,.102);--s-hair2:rgba(255,255,255,.122);--s-text:#e6edf6;--s-text2:#a8b5c6;--s-text3:#6c7b8f;--s-hover:rgba(255,255,255,.043);
+  --s-acc:#16a69d;--s-acct:#2dd4bf;--s-accsoft:rgba(45,212,191,.11);--s-pdf:#e04b45;--s-pcb:#e08a3c;--s-tool:#2dd4bf;--s-softk:20%}
+.sx [style*="--tc"],.sx .sxr{--ts:color-mix(in srgb,var(--tc) var(--s-softk),var(--s-win))}
+.sxb{position:relative;z-index:5;flex:none;display:flex;flex-direction:column;gap:1px;padding-bottom:1px;background:var(--s-hair)}
+.sxr{position:relative;height:28px;display:flex;align-items:center;gap:6px;padding:0 8px 0 10px;background:var(--s-bar)}
+.sxr.act{background:color-mix(in srgb,var(--ts) 50%,var(--s-bar))}
+.sxr.act::before{content:"";position:absolute;left:0;top:5px;bottom:5px;width:3px;border-radius:0 3px 3px 0;background:var(--tc)}
+.sxs{position:relative;flex:1;min-width:0;height:22px;display:flex;align-items:center;gap:2px;padding-right:22px;overflow-x:auto;overflow-y:hidden;scrollbar-width:none}
+.sxs::-webkit-scrollbar{display:none}
+.sxs.fd{-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 28px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 28px),transparent)}
+.sxe{font:400 11.5px var(--s-ui);color:var(--s-text3);padding:0 4px;white-space:nowrap}
+.sxc{flex:none;display:flex;align-items:center;gap:4px;height:20px;padding:0 3px 0 7px;border:0;border-radius:8px;cursor:pointer;
+  background:color-mix(in srgb,var(--ts) 55%,var(--s-win));box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--tc) 30%,transparent);
+  font:700 10.5px var(--s-mono);color:var(--s-text);white-space:nowrap;transition:background .12s,box-shadow .12s,opacity .12s}
+.sxc:hover{background:var(--ts);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--tc) 60%,transparent)}
+.sxr:not(.act) .sxc{opacity:.78}.sxr:not(.act) .sxc:hover{opacity:1}
+.sxc .nm{max-width:340px;overflow:hidden;text-overflow:ellipsis}
+.sxc.sel{padding:0 4px 0 10px;background:var(--s-win);box-shadow:inset 0 0 0 1.5px var(--tc);font-size:11px;color:var(--tc)}
+.sxc.sel .nm{max-width:380px}
+.sxr:not(.act) .sxc.sel{box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--tc) 60%,transparent)}
+.sxc.sel.new{animation:sxsel .24s cubic-bezier(.33,1,.68,1)}
+@keyframes sxsel{from{color:var(--s-text);box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--tc) 35%,transparent)}}
+.sxx{flex:none;display:grid;place-items:center;width:14px;height:14px;border-radius:50%;color:var(--s-text3);opacity:.55}
+.sxc.sel .sxx{width:15px;height:15px;opacity:1}.sxc:hover .sxx{opacity:1}
+.sxx:hover{background:var(--tc);color:#fff;opacity:1}
+.sxend,.sxend4{flex:none;display:flex;align-items:center;gap:6px}.sxend4{gap:4px}
+.sxl,.sxw,.sxy{flex:none;display:flex;align-items:center;height:20px;border:0;border-radius:8px;background:var(--s-win);box-shadow:inset 0 0 0 1px var(--s-hair);font:700 11px var(--s-ui);color:var(--s-text2);cursor:pointer;white-space:nowrap}
+.sxl{gap:5px;padding:0 5px 0 7px}
+.sxl:hover{box-shadow:inset 0 0 0 1px var(--s-hair2);color:var(--s-text)}
+.sxl.open{box-shadow:inset 0 0 0 2px var(--s-acc);color:var(--s-text)}
+.sxl .cv{display:grid;color:var(--s-text3);transition:transform .2s}.sxl.open .cv{transform:rotate(180deg)}
+.sxg{flex:none;display:flex;gap:2px;width:15px;height:11px;padding:1px;border:1.5px solid currentColor;border-radius:3px}
+.sxg i{flex:1;border-radius:1px}.sxg i.s{background:currentColor;opacity:.55}.sxg i.p{background:var(--s-pdf)}.sxg i.b{background:var(--s-pcb)}
+.sxw{gap:5px;padding:0 9px 0 7px}
+.sxw svg{color:var(--tc);transition:transform .3s cubic-bezier(.34,1.56,.64,1)}
+.sxw:hover{box-shadow:inset 0 0 0 1px var(--tc);background:var(--ts);color:var(--tc)}.sxw:hover svg{transform:rotate(180deg)}
+.sxy{justify-content:center;width:26px}
+.sxy:hover{box-shadow:inset 0 0 0 1px var(--s-hair2);background:var(--s-hover);color:var(--s-text)}
+.sxb.hid{gap:0}
+.sxh{height:19px;display:flex;align-items:center;justify-content:flex-end;padding-right:12px;background:var(--s-bar)}
+.sxp{display:flex;align-items:center;gap:4px;height:16px;padding:0 10px 0 8px;border:0;border-radius:8px;background:var(--s-bar);box-shadow:inset 0 0 0 1px var(--s-hair);font:700 9.5px var(--s-ui);color:var(--s-acct);cursor:pointer;white-space:nowrap}
+.sxp:hover{background:var(--s-win);box-shadow:inset 0 0 0 1px var(--s-acct)}
+.sxpop{position:absolute;z-index:30;width:300px;padding:8px;border-radius:14px;background:var(--s-win);box-shadow:0 0 0 1px var(--s-hair),0 22px 44px -16px rgba(14,33,64,.4);animation:sxpin .16s cubic-bezier(.33,1,.68,1)}
+[data-theme=dark] .sxpop{box-shadow:0 0 0 1px var(--s-hair),0 22px 44px -16px rgba(0,0,0,.8)}
+@keyframes sxpin{from{opacity:0;transform:translateY(-4px)}}
+.sxpop::before{content:"";position:absolute;top:-5px;left:calc(var(--ax,40px) - 5px);width:10px;height:10px;background:var(--s-win);transform:rotate(45deg);box-shadow:-1px -1px 0 var(--s-hair)}
+.sxph{height:22px;display:flex;align-items:center;padding-left:4px;margin-bottom:4px;font:700 12.5px var(--s-ui);color:var(--s-text)}
+.sxo{display:flex;align-items:center;gap:10px;width:100%;height:40px;margin-bottom:2px;padding:0 8px 0 7px;border:0;border-radius:9px;background:none;text-align:left;cursor:pointer}
+.sxo:hover{background:var(--s-hover)}
+.sxo.on{background:var(--s-accsoft);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--s-acc) 55%,transparent)}
+.sxo.dis{cursor:default}.sxo.dis:hover{background:none}.sxo.dis>*{opacity:.5}
+.sxv{flex:none;display:flex;gap:2px;width:38px;height:26px;padding:3px;border-radius:5px;background:var(--s-bar)}
+.sxv i{flex:1;border-radius:2px;background:#fff;box-shadow:inset 0 0 0 1px var(--s-hair);border-top:2.5px solid var(--s-pdf)}
+.sxv i.b{background:#0f4d36;box-shadow:none;border-top-color:var(--s-pcb)}
+.sxt{flex:1;min-width:0}
+.sxt b{display:flex;align-items:center;gap:6px;font:700 12px var(--s-ui);color:var(--s-text)}
+.sxo.on .sxt b{color:var(--s-acc)}
+.sxt small{display:block;font:400 10.5px var(--s-ui);color:var(--s-text3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sxk{flex:none;display:grid;place-items:center;height:18px;padding:0 5px;border-radius:5px;background:var(--s-bar);box-shadow:inset 0 0 0 1px var(--s-hair);font:600 10px var(--s-ui);color:var(--s-text3)}
+.sxo.on .sxk{background:var(--s-win);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--s-acc) 50%,transparent);color:var(--s-acc)}
+.sxdv{height:1px;margin:8px 0;background:var(--s-hair)}
+.sxss{display:flex;align-items:center;justify-content:center;gap:7px;width:100%;height:30px;border:0;border-radius:9px;background:var(--s-bar);font:700 11.5px var(--s-ui);color:var(--s-text2);cursor:pointer}
+.sxss:hover{background:var(--s-accsoft);color:var(--s-acc)}
+.sxtool{flex:1;display:grid;place-items:center;align-content:center;gap:6px;color:var(--s-text3);font:600 13px var(--s-ui)}
+.sxtool b{font-size:16px;color:var(--s-tool)}
+/* design C extras: find-a-tab ideas */
+.sx{position:relative}
+.sxkb{font:600 9.5px var(--s-ui);padding:0 4px;border-radius:4px;background:var(--s-bar);box-shadow:inset 0 0 0 1px var(--s-hair);color:var(--s-text3);line-height:14px}
+.sxcnt{gap:3px;padding:0 7px 0 5px;font-family:var(--s-mono)}
+.sxcnt .cv,.sxcnt svg{color:var(--tc,var(--s-text3))}
+.sxpal{position:absolute;z-index:40;left:50%;top:38px;transform:translateX(-50%);width:460px;max-width:calc(100% - 24px);border-radius:12px;overflow:hidden;background:var(--s-win);box-shadow:0 0 0 1px var(--s-hair),0 26px 54px -18px rgba(14,33,64,.5);animation:sxpin .14s ease-out}
+.sxpq{display:flex;align-items:center;gap:9px;padding:0 12px;height:44px;border-bottom:1px solid var(--s-hair);color:var(--s-text3)}
+.sxpq input{flex:1;min-width:0;border:0;outline:0;background:none;font:600 13px var(--s-ui);color:var(--s-text)}
+.sxpq span{font:600 10.5px var(--s-ui);white-space:nowrap}
+.sxpl{max-height:290px;overflow:auto;padding:6px}
+.sxpi{display:flex;align-items:center;gap:9px;width:100%;height:32px;padding:0 8px;border:0;border-radius:8px;background:none;text-align:left;color:var(--s-text);cursor:pointer}
+.sxpi .ty{flex:none;width:34px;padding:2px 0;border-radius:4px;background:var(--tc);color:#fff;font:800 9px var(--s-mono);text-align:center}
+.sxpi b{font:700 12px var(--s-mono);white-space:nowrap}
+.sxpi .md{margin-left:auto;font:400 11px var(--s-ui);color:var(--s-text3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sxpi em{font:700 9.5px var(--s-ui);font-style:normal;color:var(--s-acc);white-space:nowrap}
+.sxpi:hover{background:var(--s-hover)}.sxpi.on{background:var(--s-accsoft);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--s-acc) 45%,transparent)}
+.sxpf{display:flex;gap:14px;padding:7px 12px;border-top:1px solid var(--s-hair);font:500 10.5px var(--s-ui);color:var(--s-text3)}
+.sxpf kbd{margin-right:2px}
+.sxlst{position:absolute;z-index:40;width:280px;max-height:340px;overflow:auto;padding:6px;border-radius:12px;background:var(--s-win);box-shadow:0 0 0 1px var(--s-hair),0 22px 44px -16px rgba(14,33,64,.45);animation:sxpin .14s ease-out}
+.sxlst .sxph i{margin-left:6px;font:600 10.5px var(--s-ui);font-style:normal;color:var(--s-text3)}
+.sxli{display:flex;align-items:center;gap:8px;width:100%;height:36px;padding:0 6px 0 8px;border:0;border-radius:8px;background:none;text-align:left;cursor:pointer}
+.sxli .dot{flex:none;width:6px;height:6px;border-radius:50%;background:color-mix(in srgb,var(--tc) 45%,transparent)}
+.sxli .tx{flex:1;min-width:0}.sxli b{display:block;font:700 11.5px var(--s-mono);color:var(--s-text)}
+.sxli small{display:block;font:400 10.5px var(--s-ui);color:var(--s-text3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sxli:hover{background:var(--s-hover)}.sxli.on{background:var(--ts)}.sxli.on .dot{background:var(--tc)}.sxli.on b{color:var(--tc)}
+.sxli .sxx{opacity:0}.sxli:hover .sxx{opacity:1}
+.sxgp{flex:none;display:flex;align-items:center;gap:4px;height:20px;margin-left:6px;padding:0 6px;border:0;border-radius:6px;background:none;font:700 10px var(--s-ui);color:var(--s-text3);white-space:nowrap;cursor:pointer}
+.sxgp:first-child{margin-left:0}
+.sxgp i{font-style:normal;min-width:15px;height:14px;padding:0 3px;border-radius:7px;background:color-mix(in srgb,var(--tc) 16%,transparent);color:var(--tc);font:700 9px/14px var(--s-mono);text-align:center}
+.sxgp::before{content:"";width:0;height:0;border:4px solid transparent;border-top-color:currentColor;margin-top:4px;transition:transform .15s}
+.sxgp.fo::before{transform:rotate(-90deg) translate(2px,-2px)}
+.sxgp:hover{background:var(--s-hover);color:var(--s-text)}
+.sxj{flex:none;display:grid;place-items:center;width:14px;height:14px;margin:0 4px 0 -3px;border-radius:4px;background:#facc15;color:#1a1300;font:800 10px var(--s-mono);text-transform:uppercase;box-shadow:0 1px 0 rgba(0,0,0,.25)}
+.sxjt{position:absolute;z-index:30;right:12px;top:66px;padding:5px 10px;border-radius:8px;background:#1a1300;color:#facc15;font:700 11px var(--s-ui)}
+.sxjt .sxkb{background:rgba(250,204,21,.15);color:#facc15;box-shadow:none}
+.sxpk{position:fixed;z-index:80;width:230px;padding:8px;border-radius:12px;background:var(--s-win);box-shadow:0 0 0 1px var(--s-hair),0 22px 44px -14px rgba(14,33,64,.5);pointer-events:none;animation:sxpin .14s ease-out;font-family:var(--s-ui)}
+.sxpk .pv{height:120px;border-radius:7px;overflow:hidden;margin-bottom:7px;background:var(--s-bar)}
+.sxpk .pv svg{width:100%;height:100%;display:block}
+.sxpk .pv.tool{display:grid;place-items:center;font:700 14px var(--s-ui);color:var(--s-tool)}
+.sxpk .ty{display:inline-block;padding:1px 5px;margin-right:5px;border-radius:4px;background:var(--tc);color:#fff;font:800 9px var(--s-mono);vertical-align:1px}
+.sxpk b{font:700 12px var(--s-mono);color:var(--s-text)}
+.sxpk small{display:block;margin-top:3px;font-size:11px;color:var(--s-text3)}
+.sxpk em{display:block;margin-top:5px;font:700 10px var(--s-ui);font-style:normal;color:var(--s-acc)}
+.ideas{display:flex;flex-wrap:wrap;gap:5px;align-items:center;margin-top:8px}
+.ideas .btn{height:28px;padding:0 10px;font-size:12px}
+.ideas #ideaD{font-size:12px;color:var(--text-3)}
 </style>
 </head>
 <body>
 <header class="top"><div class="in">
-  <div><h1>Tabs with the tree view — Capsule switch vs Expanding strip</h1><p>Both shown inside the real layout: library tree on the left. Click a file in the tree to open it; the green dot means it is open.</p></div>
+  <div><h1>Tabs with the tree view — Two rows, Expanding strip, and the Schemax app today</h1><p>Both shown inside the real layout: library tree on the left. Click a file in the tree to open it; the green dot means it is open.</p></div>
   <div class="ctl">
     <span class="cnt" id="cnt"></span>
     <button class="btn" data-a="reset">Small (2 + 1)</button>
@@ -315,8 +432,8 @@ const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(
 const CAT = (() => { const b = {}; for (const t of TYPES) L[t].forEach((f, i) => { ((b[f.br] = b[f.br] || {})[f.md] = b[f.br][f.md] || []).push([t, i]); }); return b; })();
 
 /* ---------- state ---------- */
-let S; const U = {1:{}, 2:{}};
-for (const n of [1, 2]) { U[n].open = new Set(['Apple', 'Apple/MacBook Pro 13in', 'Apple/iPhone 13 Pro Max', 'Samsung']); U[n].q = ''; }
+let S; const U = {1:{}, 2:{}, 3:{}};
+for (const n of [1, 2, 3]) { U[n].open = new Set(['Apple', 'Apple/MacBook Pro 13in', 'Apple/iPhone 13 Pro Max', 'Samsung']); U[n].q = ''; }
 function reset() { S = {o:{pdf:[0,1], pcb:[0]}, a:{pdf:0, pcb:0}, t:'pdf'}; draw(); }
 function fill() { S = {o:{pdf:[0,1,2,3,4,5,6,7,8,9], pcb:[0,1,2,3,4,5,6,7,8,9]}, a:{pdf:1, pcb:0}, t:'pdf'}; draw(); }
 function act(t, i) { S.a[t] = i; S.t = t; draw(); }
@@ -480,10 +597,234 @@ R[1] = () => {
 
 R[2] = u => `${tree(2)}<div class="content" style="flex-direction:row"><div class="r6${u.pin ? ' pin' : ''}"><div class="r6in">${TYPES.map(t => `<div class="r6h ${t}"><span class="tl">${TT[t]}</span><span class="ct">${S.o[t].length} open</span>${t === 'pdf' ? `<button class="pinb" data-a="pin">${u.pin ? '⇤ Unpin' : '📌 Keep open'}</button>` : ''}</div>${S.o[t].map(i => `<button class="i6 ${t}${st(t, i)}" ${A(t, i)}><span class="av">${F(t, i).k.slice(0, 5)}</span>${lab(t, i)}${X(t, i)}</button>`).join('')}`).join('')}</div></div>${view()}</div>`;
 
+
+/* ---------- design C: the Schemax app's tab band today (a copy of src/ui/swaptabbar.cpp) ---------- */
+const AP = {lay:0, pop:false, hide:false, swap:false, tools:[], tool:null, last:''}, SXL = {};
+const TOOLS = ['UART Terminal', 'Diode Meter', 'Net Compare'];
+let KW = 1;
+const SXI = {chev:'M6 9l6 6 6-6', tick:'M5.5 12.5l3 3 7-7',
+  eye:'M2.5 12C5 6.5 8.5 5 12 5s7 1.5 9.5 7c-2.5 5.5-6 7-9.5 7s-7-1.5-9.5-7zM15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0z'};
+SXI.eyeOff = SXI.eye + 'M4 4l16 16';
+const sxi = (d, px, w = 1.8) => `<svg viewBox="0 0 24 24" width="${px}" height="${px}" fill="none" stroke="currentColor" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${d}"/></svg>`;
+const sxX = big => big ? '<svg viewBox="0 0 15 15" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M4.3 4.3l6.4 6.4M4.3 10.7l6.4-6.4"/></svg>'
+                       : '<svg viewBox="0 0 14 14" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M4.1 4.1l5.8 5.8M4.1 9.9l5.8-5.8"/></svg>';
+const CL = [['Single', 'One file, full width'], ['PDF × PDF', 'Two schematics side by side'], ['PDF × PCB', 'Schematic and its board'], ['PCB × PCB', 'Two boards side by side']];
+const cOk = i => i === 0 || (i === 1 ? S.o.pdf.length >= 2 : i === 2 ? S.o.pdf.length > 0 && S.o.pcb.length > 0 : S.o.pcb.length >= 2);
+const cEn = i => i === AP.lay || cOk(i);
+const cWhy = i => { const d = S.o.pdf.length, b = S.o.pcb.length;
+  if (i === 1) return d === 0 ? 'Open two PDFs to compare' : 'Open one more PDF to compare';
+  if (i === 3) return b === 0 ? 'Open two PCBs to compare' : 'Open one more PCB to compare';
+  return !d && !b ? 'Open a PDF and a PCB to use split view' : !d ? 'Open a PDF to use split view' : 'Open a PCB to use split view'; };
+const sxGlyph = k => `<span class="sxg">${k === 0 ? '<i class="s"></i>' : `<i class="${k === 3 ? 'b' : 'p'}"></i><i class="${k === 1 ? 'p' : 'b'}"></i>`}</span>`;
+const second = t => S.o[t].find(x => x !== S.a[t]) ?? null;
+const toolOn = () => S.t === 'pdf' && AP.tool != null;
+function paneC(t, i, foc) {
+  if (i == null) return `<div class="pane ${t}${foc ? ' foc' : ''}"><div class="empty">No second ${TT[t]} open</div></div>`;
+  return `<div class="pane ${t}${foc ? ' foc' : ''}"><div class="vh"><span class="bd">${TT[t]}</span><b>${F(t, i).c}</b><span>${F(t, i).n}</span></div><div class="pg ${t}">${art(t, i)}</div></div>`;
+}
+function viewC() {
+  if (toolOn() && AP.lay === 0) return `<div class="view"><div class="sxtool"><b>${esc(AP.tools[AP.tool])}</b>Tool tab (a PDF-lane tab underneath)</div></div>`;
+  if (!AP.lay) return view();
+  const P = [null, [['pdf', S.a.pdf], ['pdf', second('pdf')]], [['pdf', S.a.pdf], ['pcb', S.a.pcb]], [['pcb', S.a.pcb], ['pcb', second('pcb')]]][AP.lay];
+  const Q = AP.swap ? [P[1], P[0]] : P;
+  return `<div class="split">${Q.map(([t, i], k) => paneC(t, i, AP.lay === 2 ? t === S.t : k === (AP.swap ? 1 : 0))).join('')}</div>`;
+}
+R[3] = () => {
+  if (AP.lay && !cOk(AP.lay)) AP.lay = 0;
+  cxPrep();
+  if (AP.tool != null && AP.tool >= AP.tools.length) AP.tool = AP.tools.length ? AP.tools.length - 1 : null;
+  const tOn = toolOn(), oth = S.t === 'pdf' ? 'pcb' : 'pdf', canSwap = S.o[oth].length > 0;
+  // a file type's row shows only while one of its files is open; with neither, the PDF row stays
+  const showPcb = S.o.pcb.length > 0, showPdf = S.o.pdf.length > 0 || !showPcb;
+  const top = showPcb ? 'pcb' : 'pdf', bottom = showPdf ? 'pdf' : 'pcb';
+  const layB = `<button class="sxl${AP.pop ? ' open' : ''}" data-a="cLaym" title="View layout&#10;Single · PDF × PDF · PDF × PCB · PCB × PCB · Alt+1–4">${sxGlyph(AP.lay)}<span>Layout</span><span class="cv">${sxi(SXI.chev, 11, 2)}</span></button>`;
+  const pdfEnd = `<span class="sxend4">${canSwap ? `<button class="sxw" style="--tc:var(--s-${oth})" data-a="cLane" data-t="${oth}" title="Swap to ${TT[oth]} files&#10;Alt+S">${sxi(SWAP, 13)}<span>${TT[oth]}</span></button>` : ''}<button class="sxy" data-a="cHide" title="Hide tabs&#10;More room for the page - the eye under the bar brings them back">${sxi(SXI.eyeOff, 14, 1.9)}</button></span>`;
+  const ends = t => cxEnd(t, t === top) + (top === bottom ? layB + pdfEnd : t === top ? layB : pdfEnd);
+  const sel = {pdf: tOn ? null : S.a.pdf, pcb: S.a.pcb, tool: tOn ? AP.tool : null};
+  const act = {pdf: S.t === 'pdf' && !tOn, pcb: S.t === 'pcb', tool: tOn};
+  const actKey = act.tool ? 'tool:' + AP.tool : act.pcb ? 'pcb:' + S.a.pcb : 'pdf:' + S.a.pdf, isNew = actKey !== AP.last; AP.last = actKey;
+  const chip = (lane, i, label) => { const on = sel[lane] === i;
+    return `<button class="sxc${on ? ' sel' : ''}${on && act[lane] && isNew ? ' new' : ''}" data-a="cAct" data-l="${lane}" data-i="${i}" title="${esc(label)}&#10;Middle-click to close">${cxJ(lane, i)}<span class="nm">${esc(label)}</span><span class="sxx" data-a="cX" data-l="${lane}" data-i="${i}" title="Close">${sxX(on)}</span></button>`; };
+  const row = (lane, items, end) => `<div class="sxr${act[lane] ? ' act' : ''}" style="--tc:var(--s-${lane})"><div class="sxs" data-sxk="${lane}">${items.length ? items.join('') : `<span class="sxe">No ${lane === 'pdf' ? 'PDF' : 'PCB'} open — pick one in the Library</span>`}</div>${end ? `<span class="sxend">${end}</span>` : ''}</div>`;
+  const pop = AP.pop ? `<div class="sxpop" role="dialog" aria-label="View layout"><div class="sxph">View layout</div>${CL.map(([n, d], i) => {
+      const on = AP.lay === i, en = cEn(i), pv = i === 0 ? `<i class="${S.t === 'pcb' ? 'b' : ''}"></i>` : `<i class="${i === 3 ? 'b' : ''}"></i><i class="${i >= 2 ? 'b' : ''}"></i>`;
+      return `<button class="sxo${on ? ' on' : ''}${en ? '' : ' dis'}" ${en ? `data-a="cLay" data-i="${i}"` : ''} title="${esc(en ? d : cWhy(i))}  ·  Alt+${i + 1}"><span class="sxv">${pv}</span><span class="sxt"><b>${n}${on ? `<span style="color:var(--s-acc);display:grid">${sxi(SXI.tick, 12, 2.2)}</span>` : ''}</b><small>${en ? d : cWhy(i)}</small></span><span class="sxk">Alt+${i + 1}</span></button>`; }).join('')}
+      ${AP.lay ? `<div class="sxdv"></div><button class="sxss" data-a="cSwap">${sxi(SWAP, 14)}${AP.lay === 1 ? 'Swap left and right PDF' : AP.lay === 3 ? 'Swap left and right PCB' : 'Swap PDF and PCB sides'}</button>` : ''}</div>` : '';
+  const band = AP.hide
+    ? `<div class="sxb hid"><div class="sxh"><button class="sxp" data-a="cHide" title="Show tabs">${sxi(SXI.eye, 12, 2)}Show tabs · ${S.o.pdf.length + S.o.pcb.length}</button></div></div>`
+    : `<div class="sxb">${showPcb ? row('pcb', cxChips('pcb', chip), ends('pcb')) : ''}${showPdf ? row('pdf', cxChips('pdf', chip), ends('pdf')) : ''}${AP.tools.length ? row('tool', AP.tools.map((n, i) => chip('tool', i, n)), '') : ''}${pop}</div>`;
+  return `${tree(3)}<div class="content sx">${band}${cxOver()}${viewC()}</div>`;
+};
+function cBefore() { $all('#w3 .sxs').forEach(s => SXL[s.dataset.sxk] = s.scrollLeft); }
+function cFade(s) { s.classList.toggle('fd', s.scrollWidth > s.clientWidth + 1 && s.scrollLeft < s.scrollWidth - s.clientWidth - 1); }
+function cAfter() {
+  $all('#w3 .sxs').forEach(s => {
+    if (SXL[s.dataset.sxk] != null) s.scrollLeft = SXL[s.dataset.sxk];
+    const c = s.querySelector('.sxc.sel');   // keep the active chip in view (48px margin, like ensureWidgetVisible)
+    if (c) { if (c.offsetLeft - 48 < s.scrollLeft) s.scrollLeft = c.offsetLeft - 48; else if (c.offsetLeft + c.offsetWidth + 48 > s.scrollLeft + s.clientWidth) s.scrollLeft = c.offsetLeft + c.offsetWidth + 48 - s.clientWidth; }
+    cFade(s);
+  });
+  const b = $('#w3 .sxl'), p = $('#w3 .sxpop'), band = $('#w3 .sxb');
+  if (b && p && band) { const br = b.getBoundingClientRect(), bb = band.getBoundingClientRect();
+    const left = Math.max(4, Math.min(br.left - bb.left - 2, bb.width - p.offsetWidth - 4));
+    p.style.left = left + 'px'; p.style.top = (br.bottom - bb.top + 12) + 'px'; p.style.setProperty('--ax', (br.left + br.width / 2 - bb.left - left) + 'px'); }
+}
+function cRun(a, el) {
+  const l = el.dataset.l, i = el.dataset.i != null ? +el.dataset.i : null;
+  switch (a) {
+    case 'cAct': if (l === 'tool') { S.t = 'pdf'; AP.tool = i; } else { S.t = l; S.a[l] = i; if (l === 'pdf') AP.tool = null; } break;
+    case 'cX': if (l === 'tool') { AP.tools.splice(i, 1); if (AP.tool != null && AP.tool >= i) AP.tool = AP.tool === i ? (AP.tools.length ? Math.max(0, i - 1) : null) : AP.tool - 1; } else return close(l, i); break;
+    case 'cLane': S.t = el.dataset.t; if (S.a[S.t] == null && S.o[S.t].length) S.a[S.t] = S.o[S.t][0]; break;
+    case 'cLaym': AP.pop = !AP.pop; break;
+    case 'cLay': AP.lay = i; AP.pop = false; if (i === 1) S.t = 'pdf'; if (i === 3) S.t = 'pcb'; break;
+    case 'cSwap': AP.swap = !AP.swap; AP.pop = false; break;
+    case 'cHide': AP.hide = !AP.hide; AP.pop = false; break;
+    case 'cTool': { const n = TOOLS.find(x => !AP.tools.includes(x)); if (n) { AP.tools.push(n); AP.tool = AP.tools.length - 1; S.t = 'pdf'; } else { AP.tools = []; AP.tool = null; toast('Tool tabs closed'); } break; }
+    default: return false;
+  }
+  draw(); return true;
+}
+document.addEventListener('click', e => {
+  if (e.target.closest('#w3')) KW = 3; else if (e.target.closest('#w1')) KW = 1;
+  const el = e.target.closest('[data-a]'), a = el && el.dataset.a;
+  if (AP.pop && !e.target.closest('.sxpop,.sxl')) { AP.pop = false; if (!a || !a.startsWith('c')) draw(); }
+  if (!el) return;
+  if (a === 'open' && el.closest('#w3')) { AP.tool = null; return draw(); }   // the shared handler already opened it
+  if (a.startsWith('c') && a.length > 1 && a[1] === a[1].toUpperCase()) cRun(a, el);
+});
+document.addEventListener('mousedown', e => { if (e.button === 1 && e.target.closest('.sxc')) e.preventDefault(); });
+document.addEventListener('auxclick', e => { if (e.button !== 1) return; const c = e.target.closest('.sxc'); if (!c) return; e.preventDefault(); cRun('cX', c); });
+document.addEventListener('wheel', e => { const s = e.target.closest('.sxs'); if (!s || s.scrollWidth <= s.clientWidth) return;
+  e.preventDefault(); s.scrollLeft += Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY / 2; }, {passive:false});
+document.addEventListener('scroll', e => { if (e.target.classList && e.target.classList.contains('sxs')) cFade(e.target); }, true);
+function cKey(e) {
+  if (cxKey(e)) return;
+  if (e.key === 'Escape' && AP.pop) { AP.pop = false; draw(); return; }
+  if (!e.altKey) return;
+  const k = e.key.toLowerCase();
+  if (k === 's') { e.preventDefault(); const o = S.t === 'pdf' ? 'pcb' : 'pdf'; if (S.o[o].length) { S.t = o; if (S.a[o] == null) S.a[o] = S.o[o][0]; draw(); } }
+  else if (['1', '2', '3', '4'].includes(k)) { e.preventDefault(); const i = +k - 1; if (cOk(i) && AP.lay !== i) cRun('cLay', {dataset:{i:String(i)}}); }
+}
+
+
+/* ---------- design C extras: 5 ideas for finding one tab among 10 + 10 (picked in C's card; 0 = the app as it is) ---------- */
+Object.assign(AP, {idea:0, pal:false, q:'', pi:0, list:null, jump:false, coll:new Set()});
+const IDEAS = [['Off', 'The app as it is today'], ['Find-tab palette', 'Ctrl+K: type part of a name, model or brand; Enter jumps to it'], ['Tab list ▾', 'A “▾ 10” button on each row opens the full list with model names'],
+  ['Hover peek', 'Rest on a chip: a preview card shows the page, model and brand'], ['Group by device', 'Chips grouped under their model; click a group label to fold it'], ['Jump letters', 'Alt+J puts a letter on every chip; press it to jump there']];
+const JL = 'asdfghjklqwertyuiopzxcvbnm';
+let JMAP = {};
+const cxAll = () => [...S.o.pcb.map(i => ['pcb', i]), ...S.o.pdf.map(i => ['pdf', i]), ...AP.tools.map((n, i) => ['tool', i])];
+const cxName = (l, i) => l === 'tool' ? AP.tools[i] : F(l, i).c;
+function cxPrep() { JMAP = {}; if (AP.idea === 5 && AP.jump) cxAll().forEach(([l, i], k) => { if (k < JL.length) JMAP[l + ':' + i] = JL[k]; }); }
+const cxJ = (l, i) => JMAP[l + ':' + i] ? `<b class="sxj">${JMAP[l + ':' + i]}</b>` : '';
+function cxEnd(lane, isTop) {
+  let h = '';
+  if (AP.idea === 2 && lane !== 'tool') h += `<button class="sxl sxcnt${AP.list === lane ? ' open' : ''}" data-a="cList" data-l="${lane}" title="All open ${TT[lane]} tabs">${sxi(SXI.chev, 11, 2.2)}<span>${S.o[lane].length}</span></button>`;
+  if (isTop && AP.idea === 1) h += `<button class="sxl" data-a="cPal" title="Find a tab · Ctrl+K">${sxi('M10.5 4a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13zM20 20l-4.8-4.8', 12, 2.2)}<span>Find tab</span><kbd class="sxkb">Ctrl K</kbd></button>`;
+  if (isTop && AP.idea === 5) h += `<button class="sxl${AP.jump ? ' open' : ''}" data-a="cJump" title="Show jump letters · Alt+J">${sxi('M4 6h16M4 12h10M4 18h7', 12, 2.2)}<span>Jump</span><kbd class="sxkb">Alt J</kbd></button>`;
+  return h;
+}
+function cxChips(lane, chip) {
+  const items = S.o[lane];
+  if (AP.idea !== 4) return items.map(i => chip(lane, i, F(lane, i).c));
+  const G = new Map(); items.forEach(i => { const m = F(lane, i).md; if (!G.has(m)) G.set(m, []); G.get(m).push(i); });
+  const out = [];
+  for (const [m, list] of G) {
+    const key = lane + '|' + m, folded = AP.coll.has(key), cur = list.filter(i => i === S.a[lane]);
+    out.push(`<button class="sxgp${folded ? ' fo' : ''}" data-a="cGrp" data-g="${esc(key)}" title="${esc(m)} · ${list.length} open · click to ${folded ? 'unfold' : 'fold'}">${esc(m)}<i>${list.length}</i></button>`);
+    (folded ? cur : list).forEach(i => out.push(chip(lane, i, F(lane, i).c)));
+  }
+  return out;
+}
+function cxHits() {
+  const q = AP.q.toLowerCase().trim();
+  return cxAll().filter(([l, i]) => !q || (l === 'tool' ? AP.tools[i] : [F(l, i).c, F(l, i).n, F(l, i).md, F(l, i).br, TT[l]].join(' ')).toLowerCase().includes(q));
+}
+const cxCur = (l, i) => l === 'tool' ? toolOn() && AP.tool === i : S.t === l && S.a[l] === i && !(l === 'pdf' && toolOn());
+function cxOver() {
+  let h = '';
+  if (AP.idea === 1 && AP.pal) {
+    const H = cxHits(); AP.pi = Math.max(0, Math.min(AP.pi, H.length - 1));
+    h += `<div class="sxpal" role="dialog" aria-label="Find a tab"><label class="sxpq">${sxi('M10.5 4a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13zM20 20l-4.8-4.8', 15, 2)}<input data-pq value="${esc(AP.q)}" placeholder="Find an open tab: name, model or brand…" spellcheck="false"><span>${H.length} of ${cxAll().length}</span></label>
+      <div class="sxpl">${H.map(([l, i], k) => `<button class="sxpi${k === AP.pi ? ' on' : ''}" style="--tc:var(--s-${l})" data-a="cGo" data-l="${l}" data-i="${i}"><span class="ty">${l === 'tool' ? 'TOOL' : TT[l]}</span><b>${esc(cxName(l, i))}</b>${l === 'tool' ? '' : `<span class="md">${esc(F(l, i).md)}</span>`}${cxCur(l, i) ? '<em>showing</em>' : ''}</button>`).join('') || '<div class="sxe" style="padding:12px">No open tab matches</div>'}</div>
+      <div class="sxpf"><span><kbd class="sxkb">↑</kbd><kbd class="sxkb">↓</kbd> move</span><span><kbd class="sxkb">Enter</kbd> open</span><span><kbd class="sxkb">Esc</kbd> close</span></div></div>`;
+  }
+  if (AP.idea === 2 && AP.list) {
+    const l = AP.list;
+    h += `<div class="sxlst" style="--tc:var(--s-${l})"><div class="sxph">${TT[l]} tabs <i>${S.o[l].length} open</i></div>${S.o[l].map(i => `<button class="sxli${cxCur(l, i) ? ' on' : ''}" data-a="cGo" data-l="${l}" data-i="${i}"><span class="dot"></span><span class="tx"><b>${esc(F(l, i).c)}</b><small>${esc(F(l, i).md)} · ${esc(F(l, i).br)}</small></span><span class="sxx" data-a="cX" data-l="${l}" data-i="${i}" title="Close">${sxX(false)}</span></button>`).join('') || '<div class="sxe" style="padding:10px">Nothing open</div>'}</div>`;
+  }
+  if (AP.idea === 5 && AP.jump) h += `<div class="sxjt">Press a letter to jump · <kbd class="sxkb">Esc</kbd> cancel</div>`;
+  return h;
+}
+function cxGo(l, i) { AP.pal = false; AP.list = null; AP.jump = false; AP.q = ''; cRun('cAct', {dataset:{l, i:String(i)}}); }
+function cxAfter() {
+  $all('[data-a="cIdea"]').forEach(b => b.classList.toggle('pri', +b.dataset.i === AP.idea));
+  const d = $('#ideaD'); if (d) d.textContent = IDEAS[AP.idea][1];
+  const inp = $('#w3 [data-pq]'); if (inp && document.activeElement !== inp) { inp.focus(); inp.setSelectionRange(inp.value.length, inp.value.length); }
+  const b = AP.list && $(`#w3 .sxcnt[data-l="${AP.list}"]`), p = $('#w3 .sxlst'), c = $('#w3 .content.sx');
+  if (b && p && c) { const br = b.getBoundingClientRect(), cr = c.getBoundingClientRect();
+    p.style.left = Math.max(4, Math.min(br.right - cr.left - p.offsetWidth, cr.width - p.offsetWidth - 4)) + 'px'; p.style.top = (br.bottom - cr.top + 6) + 'px'; }
+  const pl = $('#w3 .sxpi.on'); if (pl) pl.scrollIntoView({block:'nearest'});
+}
+document.addEventListener('click', e => {
+  const el = e.target.closest('[data-a]'), a = el && el.dataset.a;
+  if (AP.list && !e.target.closest('.sxlst,.sxcnt')) { AP.list = null; if (!el) draw(); }
+  if (AP.pal && !e.target.closest('.sxpal,[data-a="cPal"]')) { AP.pal = false; if (!el) draw(); }
+  if (!el) return;
+  if (a === 'cIdea') { AP.idea = +el.dataset.i; AP.pal = false; AP.list = null; AP.jump = false; KW = 3; draw(); }
+  else if (a === 'cPal') { AP.pal = !AP.pal; AP.q = ''; AP.pi = 0; draw(); }
+  else if (a === 'cList') { AP.list = AP.list === el.dataset.l ? null : el.dataset.l; draw(); }
+  else if (a === 'cGrp') { const g = el.dataset.g; AP.coll.has(g) ? AP.coll.delete(g) : AP.coll.add(g); draw(); }
+  else if (a === 'cJump') { AP.jump = !AP.jump; draw(); }
+  else if (a === 'cGo') cxGo(el.dataset.l, +el.dataset.i);
+}, true);
+document.addEventListener('input', e => { if (e.target.matches('[data-pq]')) { AP.q = e.target.value; AP.pi = 0; draw(); } });
+function cxKey(e) {   // runs before cKey; returns true when it used the key
+  if (AP.idea === 1 && (e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); AP.pal = !AP.pal; AP.q = ''; AP.pi = 0; draw(); return true; }
+  if (AP.idea === 1 && AP.pal) {
+    const H = cxHits();
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { e.preventDefault(); AP.pi = (AP.pi + (e.key === 'ArrowDown' ? 1 : -1) + H.length) % Math.max(1, H.length); draw(); return true; }
+    if (e.key === 'Enter' && H[AP.pi]) { e.preventDefault(); cxGo(H[AP.pi][0], H[AP.pi][1]); return true; }
+    if (e.key === 'Escape') { AP.pal = false; draw(); return true; }
+    return true;   // typing goes to the input
+  }
+  if (AP.idea === 5 && e.altKey && e.key.toLowerCase() === 'j') { e.preventDefault(); AP.jump = !AP.jump; draw(); return true; }
+  if (AP.idea === 5 && AP.jump) {
+    e.preventDefault();
+    if (e.key === 'Escape') { AP.jump = false; draw(); return true; }
+    const hit = Object.entries(JMAP).find(([, ch]) => ch === e.key.toLowerCase());
+    if (hit) { const [l, i] = hit[0].split(':'); cxGo(l, +i); }
+    return true;
+  }
+  if (e.key === 'Escape' && AP.list) { AP.list = null; draw(); return true; }
+  return false;
+}
+// idea 3: hover peek
+let PK = null, PKT = 0;
+document.addEventListener('mouseover', e => {
+  if (AP.idea !== 3) return;
+  const c = e.target.closest('#w3 .sxc');
+  clearTimeout(PKT);
+  if (!c) { if (PK && !e.target.closest('.sxpk')) { PK.remove(); PK = null; } return; }
+  const l = c.dataset.l, i = +c.dataset.i;
+  PKT = setTimeout(() => {
+    if (PK) PK.remove();
+    PK = document.createElement('div'); PK.className = 'sxpk sx';
+    const r = c.getBoundingClientRect();
+    PK.innerHTML = l === 'tool' ? `<div class="pv tool">${esc(AP.tools[i])}</div><b>${esc(AP.tools[i])}</b><small>Tool tab</small>`
+      : `<div class="pv">${art(l, i)}</div><span class="ty" style="--tc:var(--s-${l})">${TT[l]}</span><b>${esc(F(l, i).c)}</b><small>${esc(F(l, i).n)} · ${esc(F(l, i).br)} › ${esc(F(l, i).md)}</small>${cxCur(l, i) ? '<em>On screen now</em>' : '<em>Click to show</em>'}`;
+    document.body.appendChild(PK);
+    PK.style.left = Math.max(8, Math.min(r.left + r.width / 2 - PK.offsetWidth / 2, innerWidth - PK.offsetWidth - 8)) + 'px';
+    PK.style.top = (r.bottom + 8) + 'px';
+    if (document.documentElement.dataset.theme === 'dark') PK.dataset.dk = '1';
+  }, 260);
+});
+document.addEventListener('scroll', () => { if (PK) { PK.remove(); PK = null; } }, true);
 /* ---------- cards ---------- */
 const META = [
   {h:'Two tab rows + tree', p:'Tree on the left. Above the page, <b>PCB tabs sit on the top row</b> and <b>PDF tabs on the row below</b>, so both types are always visible. <b>View layout</b> is at the right end of the PCB row (Single · PDF | PDF · PDF | PCB), and <b>Swap</b> is at the right end of the PDF row (or <kbd>Alt</kbd>+<kbd>S</kbd>). The row that is showing on the page is highlighted.', w:['PCB on top, PDF below','View layout: right end of PCB row · Alt 1/2/3','Swap: right end of PDF row · Alt+S','Click any chip to show it']},
-  {h:'Expanding strip + tree', p:'Tree on the left, then a thin 52-pixel strip of short codes. Rest the mouse on it and it slides open with every full name. <b>📌 Keep open</b> pins it as a real column.', w:['Page keeps almost full width','PDF and PCB both visible','Pin it when you need it']}];
+  {h:'Expanding strip + tree', p:'Tree on the left, then a thin 52-pixel strip of short codes. Rest the mouse on it and it slides open with every full name. <b>📌 Keep open</b> pins it as a real column.', w:['Page keeps almost full width','PDF and PCB both visible','Pin it when you need it']},
+  {h:'Schemax app today (exact copy)', p:'The tab band as it is built in the app now (<b>src/ui/swaptabbar.cpp</b>), same sizes and colours: 28px rows, PCB row on top, PDF row below, a <b>Tools</b> row while a tool is open. A type\'s row shows only while one of its files is open. Every chip shows its full name; the active one gets the type-colour outline. <b>Layout</b> opens the View layout list (Single · PDF × PDF · PDF × PCB · PCB × PCB, Alt+1–4, plus Swap sides). <b>Swap</b> + the <b>eye</b> sit at the end of the bottom row; the eye folds the band to a 20px strip with a Show tabs pill. Use this as the baseline when you test a new design. <button class="btn" data-a="cTool" style="margin-top:6px">Open / close a tool tab</button><div class="ideas"><b style="font-size:12px">10 tabs open: how to find one?</b>' + IDEAS.map(([n], i) => `<button class="btn" data-a="cIdea" data-i="${i}">${i ? i + ' · ' : ''}${n}</button>`).join('') + '<span id="ideaD"></span></div>', w:['Matches the app 1:1','Middle-click closes · wheel scrolls a row','Alt+S swap · Alt+1–4 layout (click this window first)']}];
 $('#main').innerHTML = META.map((m, n) => `<section class="opt" data-n="${n + 1}"><div class="meta"><span class="num">${String.fromCharCode(65 + n)}</span><div><h3>${m.h}</h3><p>${m.p}</p><div class="why">${m.w.map(x => `<span>${x}</span>`).join('')}</div></div></div><div class="win" id="w${n + 1}"></div></section>`).join('') +
   `<section class="opt ask"><div class="meta"><span class="num">?</span><div><h3>How to compare</h3></div></div><ul>
     <li>Click files in the tree in both windows — watch where the new tab appears and how quickly you find it again.</li>
@@ -494,7 +835,9 @@ $('#main').innerHTML = META.map((m, n) => `<section class="opt" data-n="${n + 1}
 function draw() {
   const th0 = $('#w1 .thumb'), prev = th0 ? [th0.offsetLeft, th0.offsetWidth] : null;
   const keep = {}; $all('[data-keep]').forEach(n => keep[n.dataset.keep] = n.scrollTop);
-  for (const n of [1, 2]) $('#w' + n).innerHTML = R[n](U[n]);
+  cBefore();
+  for (const n of [1, 2, 3]) $('#w' + n).innerHTML = R[n](U[n]);
+  cAfter(); cxAfter();
   $all('[data-keep]').forEach(n => { if (keep[n.dataset.keep] != null) n.scrollTop = keep[n.dataset.keep]; });
   $('#cnt').textContent = `PDF ${S.o.pdf.length}/10 · PCB ${S.o.pcb.length}/10`;
   const th = $('#w1 .thumb'), on = $('#w1 .cap .ty.on');
@@ -535,6 +878,7 @@ document.addEventListener('input', e => {
 });
 
 document.addEventListener('keydown', e => {
+  if (KW === 3) return cKey(e);
   if (e.key === 'Escape' && LY.pop) { LY.pop = false; draw(); }
   if (e.altKey && ['1', '2', '3'].includes(e.key)) { e.preventDefault(); setLay(LAYS[+e.key - 1][0]); }
   if (e.altKey && e.key.toLowerCase() === 's') { e.preventDefault(); typeA(S.t === 'pdf' ? 'pcb' : 'pdf'); }
